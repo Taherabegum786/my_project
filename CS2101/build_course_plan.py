@@ -16,9 +16,9 @@ R, BD = "Times-Roman", "Times-Bold"
 def st(name, size, font=R, align=0, **kw):
     return ParagraphStyle(name, fontName=font, fontSize=size, leading=size * 1.25, alignment=align, **kw)
 
-CELL, CELLC, HEAD = st("cell", 10), st("cellc", 10, align=TA_CENTER), st("head", 10, BD)
-BODY = st("body", 10.5)
-UNIT_H = st("unit", 14, BD, spaceBefore=10, spaceAfter=4, keepWithNext=1)
+CELL, CELLC, HEAD = st("cell", 9), st("cellc", 9, align=TA_CENTER), st("head", 9, BD)
+BODY = st("body", 9.5)
+UNIT_H = st("unit", 11.5, BD, spaceBefore=6, spaceAfter=3, keepWithNext=1)
 
 # (topic, hours, mode of teaching, learning activity)
 UNITS = [
@@ -94,18 +94,18 @@ UNITS = [
     ]),
 ]
 
-GRID = [("GRID", (0, 0), (-1, -1), 0.6, colors.black),
+GRID = [("GRID", (0, 0), (-1, -1), 0.5, colors.black),
         ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E6E6E6")),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-        ("TOPPADDING", (0, 0), (-1, -1), 3), ("BOTTOMPADDING", (0, 0), (-1, -1), 4)]
+        ("TOPPADDING", (0, 0), (-1, -1), 1.5), ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5)]
 
 
 def unit_table(topics):
-    data = [[Paragraph(h, HEAD) for h in ("S.No.", "Topic", "Hours", "Mode of Teaching", "Learning Activity")]]
+    data = [[Paragraph(h, HEAD) for h in ("S.No.", "Topic", "Hrs", "Mode of Teaching", "Learning Activity")]]
     for i, (topic, hrs, mode, act) in enumerate(topics, 1):
         data.append([Paragraph(str(i), CELLC), Paragraph(topic, CELL), Paragraph(str(hrs), CELLC),
                      Paragraph(mode, CELL), Paragraph(act, CELL)])
-    t = Table(data, colWidths=[13 * mm, 64 * mm, 15 * mm, 37 * mm, 51 * mm], repeatRows=1)
+    t = Table(data, colWidths=[12 * mm, 73 * mm, 11 * mm, 35 * mm, 55 * mm], repeatRows=1)
     t.setStyle(TableStyle(GRID))
     return t
 
@@ -118,8 +118,8 @@ for text, size, font, gap in [("COURSE PLAN", 18, BD, 10), (COURSE, 22, BD, 8), 
 story.append(PageBreak())
 
 story += [
-    Paragraph("<u>UNIT-WISE COURSE PLAN</u>", st("t1", 18, BD, TA_CENTER, spaceAfter=10)),
-    Paragraph("<u>DISCRETE MATHEMATICAL STRUCTURES (CS2101)</u>", st("t2", 13, BD, TA_CENTER, spaceAfter=12)),
+    Paragraph("<u>UNIT-WISE COURSE PLAN</u>", st("t1", 15, BD, TA_CENTER, spaceAfter=6)),
+    Paragraph("<u>DISCRETE MATHEMATICAL STRUCTURES (CS2101)</u>", st("t2", 11.5, BD, TA_CENTER, spaceAfter=6)),
     Paragraph(f"<b>Class:</b> {CLASS} &nbsp; | &nbsp; <b>Total Hours:</b> 60 (15 weeks × 4 hours)", BODY),
     Spacer(1, 3),
     Paragraph("<b>Text Book:</b> Kenneth H. Rosen, <i>Discrete Mathematics &amp; Its Applications with "
@@ -135,14 +135,14 @@ for num, name, topics in UNITS:
 total = sum(d[2] for d in dist)
 assert total == 60, total
 
-data = [[Paragraph(h, st("hc", 10, BD, TA_CENTER)) for h in ("Unit", "Unit Title", "Hours", "Percentage")]]
+data = [[Paragraph(h, st("hc", 9, BD, TA_CENTER)) for h in ("Unit", "Unit Title", "Hours", "Percentage")]]
 data += [[Paragraph(n, CELLC), Paragraph(t, CELL), Paragraph(str(h), CELLC),
           Paragraph(f"{h / total * 100:.2f}%", CELLC)] for n, t, h in dist]
 data.append(["", Paragraph("<b>GRAND TOTAL</b>", CELL), Paragraph(f"<b>{total}</b>", CELLC),
              Paragraph("<b>100%</b>", CELLC)])
-dt = Table(data, colWidths=[20 * mm, 90 * mm, 35 * mm, 35 * mm])
+dt = Table(data, colWidths=[16 * mm, 110 * mm, 30 * mm, 30 * mm])
 dt.setStyle(TableStyle(GRID))
-story.append(KeepTogether([Paragraph("Overall Hour Distribution", UNIT_H), dt]))
+story += [Paragraph("Overall Hour Distribution", UNIT_H), dt]
 
 modes = [
     "Each session is a 1-hour lecture: concepts are introduced on the board or through PPT, followed by worked examples from the text book.",
@@ -156,12 +156,12 @@ modes = [
 ]
 story.append(KeepTogether([
     Paragraph("General Modes of Teaching", UNIT_H),
-    ListFlowable([ListItem(Paragraph(m, BODY), leftIndent=12) for m in modes],
-                 bulletType="bullet", leftIndent=12, bulletFontSize=8),
+    ListFlowable([ListItem(Paragraph(m, BODY), leftIndent=10) for m in modes],
+                 bulletType="bullet", leftIndent=10, bulletFontSize=7),
 ]))
 
-doc = SimpleDocTemplate(OUT, pagesize=A4, leftMargin=15 * mm, rightMargin=15 * mm,
-                        topMargin=15 * mm, bottomMargin=15 * mm,
+doc = SimpleDocTemplate(OUT, pagesize=A4, leftMargin=12 * mm, rightMargin=12 * mm,
+                        topMargin=12 * mm, bottomMargin=12 * mm,
                         title="Discrete Mathematical Structures (CS2101) – Course Plan", author=FACULTY)
 doc.build(story)
 print("wrote", OUT)
