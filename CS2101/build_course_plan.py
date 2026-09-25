@@ -7,8 +7,8 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.platypus import (SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle,
                                 PageBreak, ListFlowable, ListItem, KeepTogether)
 
-COURSE = "DISCRETE MATHEMATICAL STRUCTURES (CS2101)"
-CLASS = "II Year – I Semester"
+COURSE = "DISCRETE MATHEMATICAL STRUCTURES"
+PROGRAMME = "MASTER OF SCIENCE"
 FACULTY = "Dr. K. Venkata Ramana"
 OUT = __file__.replace("build_course_plan.py", "Course_Plan_CS2101.pdf")
 
@@ -111,16 +111,17 @@ def unit_table(topics):
 
 
 story = [Spacer(1, 70 * mm)]
-for text, size, font, gap in [("COURSE PLAN", 18, BD, 10), (COURSE, 22, BD, 8), (CLASS, 12, R, 40),
+for text, size, font, gap in [(PROGRAMME, 16, BD, 10), ("COURSE PLAN", 18, BD, 10), (COURSE, 22, BD, 40),
                               ("Prepared by", 12, R, 4), (FACULTY, 18, BD, 4),
                               ("Department of CSSE", 12, R, 2), ("Andhra University", 12, BD, 0)]:
     story += [Paragraph(text, st("c", size, font, TA_CENTER)), Spacer(1, gap * mm / 2 + 4)]
 story.append(PageBreak())
 
 story += [
+    Paragraph(PROGRAMME, st("t0", 13, BD, TA_CENTER, spaceAfter=4)),
     Paragraph("<u>UNIT-WISE COURSE PLAN</u>", st("t1", 15, BD, TA_CENTER, spaceAfter=6)),
-    Paragraph("<u>DISCRETE MATHEMATICAL STRUCTURES (CS2101)</u>", st("t2", 11.5, BD, TA_CENTER, spaceAfter=6)),
-    Paragraph(f"<b>Class:</b> {CLASS} &nbsp; | &nbsp; <b>Total Hours:</b> 60 (15 weeks × 4 hours)", BODY),
+    Paragraph(f"<u>{COURSE}</u>", st("t2", 11.5, BD, TA_CENTER, spaceAfter=6)),
+    Paragraph(f"<b>Total Hours:</b> 60 (15 weeks × 4 hours)", BODY),
     Spacer(1, 3),
     Paragraph("<b>Text Book:</b> Kenneth H. Rosen, <i>Discrete Mathematics &amp; Its Applications with "
               "Combinatorics and Graph Theory</i>, Tata McGraw-Hill", BODY),
@@ -162,6 +163,6 @@ story.append(KeepTogether([
 
 doc = SimpleDocTemplate(OUT, pagesize=A4, leftMargin=12 * mm, rightMargin=12 * mm,
                         topMargin=12 * mm, bottomMargin=12 * mm,
-                        title="Discrete Mathematical Structures (CS2101) – Course Plan", author=FACULTY)
+                        title="Discrete Mathematical Structures – Course Plan", author=FACULTY)
 doc.build(story)
 print("wrote", OUT)

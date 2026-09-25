@@ -12,7 +12,7 @@ from docx.shared import Pt, Mm
 src = open(__file__.replace("build_course_plan_docx.py", "build_course_plan.py")).read()
 ns = {"__file__": "x"}
 exec(src.split("GRID = [")[0], ns)
-UNITS, COURSE, CLASS, FACULTY = ns["UNITS"], ns["COURSE"], ns["CLASS"], ns["FACULTY"]
+UNITS, COURSE, PROGRAMME, FACULTY = ns["UNITS"], ns["COURSE"], ns["PROGRAMME"], ns["FACULTY"]
 exec("modes = [" + src.split("modes = [")[1].split("]\n")[0] + "]", ns)
 MODES = ns["modes"]
 OUT = __file__.replace("build_course_plan_docx.py", "Course_Plan_CS2101.docx")
@@ -91,17 +91,18 @@ def table(header, rows, widths_mm, centre_cols=(), bold_last=False):
 
 # ---- cover page
 para(before=200)
-for text, size, bold, gap in [("COURSE PLAN", 18, True, 8), (COURSE, 22, True, 6), (CLASS, 12, False, 60),
+for text, size, bold, gap in [(PROGRAMME, 16, True, 8), ("COURSE PLAN", 18, True, 8), (COURSE, 22, True, 60),
                               ("Prepared by", 12, False, 4), (FACULTY, 18, True, 4),
                               ("Department of CSSE", 12, False, 2), ("Andhra University", 12, True, 0)]:
     para(text, size, bold, WD_ALIGN_PARAGRAPH.CENTER, after=gap)
 doc.paragraphs[-1].add_run().add_break(WD_BREAK.PAGE)
 
 # ---- unit-wise plan
+para(PROGRAMME, 13, True, WD_ALIGN_PARAGRAPH.CENTER, after=4)
 para("UNIT-WISE COURSE PLAN", 15, True, WD_ALIGN_PARAGRAPH.CENTER, after=6, underline=True)
 para(COURSE, 11.5, True, WD_ALIGN_PARAGRAPH.CENTER, after=6, underline=True)
 p = para(after=2)
-for txt, b in [("Class: ", True), (CLASS + "   |   ", False), ("Total Hours: ", True), ("60 (15 weeks × 4 hours)", False)]:
+for txt, b in [("Total Hours: ", True), ("60 (15 weeks × 4 hours)", False)]:
     r = p.add_run(txt); r.bold = b; r.font.size = Pt(9.5)
 p = para(after=2)
 for txt, b, it in [("Text Book: ", True, False), ("Kenneth H. Rosen, ", False, False),
@@ -129,7 +130,7 @@ for m in MODES:
     r = p.add_run(m); r.font.size = Pt(9.5)
     p.paragraph_format.space_after = Pt(0)
 
-doc.core_properties.title = "Discrete Mathematical Structures (CS2101) – Course Plan"
+doc.core_properties.title = "Discrete Mathematical Structures – Course Plan"
 doc.core_properties.author = FACULTY
 doc.save(OUT)
 print("wrote", OUT)
