@@ -58,7 +58,7 @@ def cant_split(row):
     el = OxmlElement("w:cantSplit"); el.set(qn("w:val"), "true"); row._tr.get_or_add_trPr().append(el)
 
 
-def table(header, rows, widths_mm, centre_cols=(), bold_last=False):
+def table(header, rows, widths_mm, centre_cols=(), bold_last=False, keep_all=False):
     t = doc.add_table(rows=1, cols=len(header))
     t.style = "Table Grid"
     t.alignment = WD_TABLE_ALIGNMENT.CENTER
@@ -71,7 +71,7 @@ def table(header, rows, widths_mm, centre_cols=(), bold_last=False):
             cell.width = Mm(widths_mm[i])
             cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
             p = cell.paragraphs[0]
-            p.paragraph_format.keep_with_next = ri == 0
+            p.paragraph_format.keep_with_next = ri == 0 or (keep_all and ri < n - 1)
             r = p.add_run(str(val))
             r.font.size = Pt(9)
             r.bold = ri == 0 or (bold_last and ri == n - 1 and i > 0)
@@ -123,7 +123,7 @@ total = sum(d[2] for d in dist)
 para("Overall Hour Distribution", 11.5, True, before=6, after=3, keep=True)
 table(["Unit", "Unit Title", "Hours", "Percentage"],
       [(n, t, h, f"{h / total * 100:.2f}%") for n, t, h in dist] + [("", "GRAND TOTAL", total, "100%")],
-      [16, 110, 30, 30], centre_cols=(0, 2, 3), bold_last=True)
+      [16, 110, 30, 30], centre_cols=(0, 2, 3), bold_last=True, keep_all=True)
 
 para("General Modes of Teaching", 11.5, True, before=6, after=3, keep=True)
 for m in MODES:
