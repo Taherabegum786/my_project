@@ -84,7 +84,11 @@ more than all PQ computation, and raising the server's initial window from
 165\,ms.  We also specify and evaluate deferred asynchronous PQ
 verification (DAPV), a client-only change that completes the handshake
 after the classical check and verifies the PQ components in background
-workers under a precisely defined provisional state.  Its latency gain
+workers under a precisely defined provisional state.  A Tamarin analysis
+proves that promoted sessions retain the full hybrid guarantees and
+provisional ones exactly the classical guarantees, and finds attacks when
+session tickets are usable before promotion or the PQ signature is not
+bound to the transcript.  The latency gain of deferral
 equals the verification work removed from the critical path minus a
 dispatch cost ($R^2 = 0.999$), with a break-even point of about 0.14\,ms of
 verification work per handshake.  Lattice-based schemes on an AVX2 CPU fall
@@ -236,10 +240,14 @@ which the session is promoted from a \state{provisional} to a
   without vector instructions ML-DSA gains 9\%, SLH-DSA-128f gains
   13--26\%, and with millisecond-scale verification deferral cuts latency
   by up to 65\% and also completes full authentication sooner.
-\item \textbf{The provisional window is short and boundable.}  With a
-  bounded worker pool it lasts 0.08\ms\ at the median and 0.42\ms\ at the
-  99th percentile for ML-DSA-44; the resulting exposure is bounded by an
-  application-layer data cap.
+\item \textbf{Deferral is provably safe if, and only if, two rules are
+  followed.}  A Tamarin analysis proves that a promoted session has the
+  full hybrid guarantees (secure unless \emph{both} keys are compromised)
+  and a provisional one exactly the classical guarantees, and finds attacks
+  when session tickets are usable before promotion or when the PQ
+  signature does not cover the transcript.  The provisional window itself
+  is short: 0.08\ms\ at the median and 0.42\ms\ at the 99th percentile
+  for ML-DSA-44 with a bounded worker pool.
 \item \textbf{Deferral does not raise server throughput.}  The server's
   work is unchanged, in both separate and co-located CPU placements.
 \item \textbf{TCP configuration matters more than verification.}  Raising
@@ -259,10 +267,13 @@ which the session is promoted from a \state{provisional} to a
   validation across five schemes, five RTTs, three initial windows and two
   congestion controllers (Sections~\ref{sec:analytical}
   and~\ref{sec:res_model}).
-\item The \textbf{specification of deferred PQ verification}: the
-  semantics of the provisional state (permitted data, session tickets and
-  resumption, alerts), transcript binding, and an application interface
-  (Section~\ref{sec:design}).
+\item The \textbf{specification and formal verification of deferred PQ
+  verification}: the semantics of the provisional state (permitted data,
+  session tickets and resumption, alerts) and an application interface
+  (Section~\ref{sec:design}), with a Tamarin model that proves its
+  authentication and secrecy properties under compromise of either key and
+  exhibits attacks on three unsafe variants, identifying which design
+  rules are necessary (Section~\ref{sec:formal}).
 \item An \textbf{open implementation} in OpenSSL~3.5 with the OQS provider,
   and a reproducible testbed with client and server on separate network
   stacks and cores, a 1500-byte-MTU emulated link with loss, and
@@ -509,8 +520,10 @@ not bound to the full session transcript; the final TLS~1.3 design and its
 symbolic analysis~\cite{Cremers2017} ensure such binding.  In DAPV the
 deferred signature is part of \texttt{CertificateVerify}, which is included
 in the transcript authenticated by both \texttt{Finished} messages before
-any application data is sent (Section~\ref{sec:binding}).  A formal model
-of the provisional state is future work.
+any application data is sent (Section~\ref{sec:binding}).  We verify the
+provisional state formally in Tamarin~\cite{Tamarin2013} and show that
+this binding, and a rule on session tickets, are necessary
+(Section~\ref{sec:formal}).
 
 \paragraph{Industrial deployment}  Google's CECPQ1 and CECPQ2
 experiments~\cite{Braithwaite2016,Langley2016CECPQ1,Langley2018CECPQ2} and
@@ -669,13 +682,20 @@ failure to the application.
 \subsection{Transcript binding}
 \label{sec:binding}
 
-The server \texttt{Finished} MAC covers \texttt{CertificateVerify} and
-therefore $\sigma_P$; the client verifies it before step~6.  An attacker
-therefore cannot substitute $\sigma_P$ with a signature from another
-session, or modify it in transit, without causing the server
-\texttt{Finished} check to fail.  Binding guarantees \emph{which}
-signature is verified later; it does not by itself guarantee that the
-signature is \emph{valid}, which is precisely what step~7 checks.
+Two bindings are present.  First, $\sigma_P$ is a signature over the
+transcript hash, which includes both parties' fresh key shares, so a
+$\sigma_P$ from any other session does not verify.  Second, the server
+\texttt{Finished} and the traffic keys are computed over a transcript that
+includes \texttt{CertificateVerify}, so a modified $\sigma_P$ makes the
+\texttt{Finished} check fail before step~6.  Our formal analysis
+(Section~\ref{sec:formal}) shows that the first binding is essential and
+the second is not: if $\sigma_P$ does not cover the transcript, an
+adversary holding only the classical key can replay an old $\sigma_P$ and
+reach full authentication; if only the \texttt{Finished} coverage is
+removed, all properties still hold, and a tampered $\sigma_P$ merely causes
+an abort.  Binding guarantees \emph{which} signature is verified later; it
+does not by itself guarantee that the signature is \emph{valid}, which is
+precisely what step~7 checks.
 
 \subsection{Algorithms}
 \label{sec:algorithms}
@@ -1439,9 +1459,107 @@ round trip that the handshake needs anyway.
 \section{Security Analysis}
 \label{sec:security}
 
-The analysis below is a risk characterisation, not a proof.  A formal
-analysis of the provisional state---e.g., in Tamarin, extending
-existing TLS~1.3 models~\cite{Cremers2017}---is future work.
+We first verify the security of the provisional-state design formally
+(Section~\ref{sec:formal}) and then quantify the residual exposure that
+the design permits by construction (Sections~\ref{sec:leakage}
+and~\ref{sec:attacks}).
+
+\subsection{Formal verification}
+\label{sec:formal}
+
+\paragraph{Model} We modelled a hybrid-authenticated TLS~1.3 handshake
+with DAPV in the Tamarin prover~\cite{Tamarin2013} (version 1.10.0, Maude
+3.5).  Each server holds a classical signing key $k_E$ and a PQ signing key
+$k_P$, bound to its name by an authentic public-key registry that stands in
+for the PKI.  The key exchange is modelled as Diffie--Hellman, standing in
+for X25519MLKEM768.  The server signs the transcript hash with both keys;
+the Finished MACs and the application key are derived from the transcript
+including both signatures.  The client verifies $\sigma_E$ and the server
+Finished, enters \state{provisional}, sends its Finished and one
+application message, and later either verifies $\sigma_P$ and is promoted,
+or aborts.  After promotion it may send further data and accept a session
+ticket, and a later resumption with that ticket claims the server's
+authentication.  The adversary controls the network (Dolev--Yao) and may
+at any time reveal $k_E$ (modelling a classical break, a CRQC, or a
+fraudulently issued classical certificate) and/or $k_P$ of any server.
+Record-layer details, alerts and the PSK key schedule are abstracted; the
+model and all proofs are released with the paper.
+
+\begin{table}[t]
+\centering
+\caption{Tamarin results for DAPV as specified and three unsafe variants
+  (\checkmark\ verified for all traces; $\times$ attack found).  All
+  existence lemmas (executability, and non-vacuity: the adversary does
+  succeed with both keys, and with $k_E$ alone completes a provisional
+  handshake the server never ran) are verified in every variant.}
+\label{tab:tamarin}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llcccc}
+\toprule
+& \textbf{Property} (holds unless \dots) & \textbf{DAPV} & \textbf{Tickets} &
+  \textbf{Unbound} & \textbf{No Fin.} \\
+& & & \textbf{early} & $\sigma_P$ & \textbf{cover} \\
+\midrule
+P1 & provisional: server authenticated (unless $k_E$) & \checkmark & \checkmark & \checkmark & \checkmark \\
+P2 & provisional data secret (unless $k_E$)            & \checkmark & \checkmark & \checkmark & \checkmark \\
+P4a & full auth.\ (unless $k_P$)                       & \checkmark & \checkmark & $\times$   & \checkmark \\
+P4b & full auth.\ (unless $k_E$)                       & \checkmark & \checkmark & \checkmark & \checkmark \\
+P5 & full auth., injective agreement (unless both)     & \checkmark & \checkmark & $\times$   & \checkmark \\
+P6a & full-state key secret (unless both)              & \checkmark & \checkmark & $\times$   & \checkmark \\
+P6b & full-state data secret (unless both)             & \checkmark & \checkmark & $\times$   & \checkmark \\
+P7 & exposed session never promoted (unless $k_P$)     & \checkmark & \checkmark & $\times$   & \checkmark \\
+P8 & resumption authenticated (unless both)            & \checkmark & $\times$   & $\times$   & \checkmark \\
+\midrule
+& Proof time (4 cores)                                 & 17\,s & 21\,s & 26\,s & 12\,s \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Results} Table~\ref{tab:tamarin} summarises the 15 lemmas.  For
+DAPV as specified, Tamarin proves all of them.  In the provisional state
+the client obtains exactly classical-strength guarantees: the server is
+authenticated and provisional data is secret unless $k_E$ is compromised
+(P1, P2), and an existence lemma confirms that an adversary holding $k_E$
+can indeed impersonate the server and read provisional data (P3).  After
+promotion the guarantees are those of synchronous hybrid verification:
+authentication holds as long as \emph{either} key is uncompromised (P4a,
+P4b), with injective agreement on transcript and key (P5), and the traffic
+key and all later data stay secret unless \emph{both} keys are compromised
+(P6).  A session whose provisional data reached an adversary holding only
+$k_E$ is never promoted (P7), and resumption inherits the full hybrid
+guarantee (P8).
+
+\paragraph{Attacks on unsafe variants} The three variants test which
+design rules are necessary.
+\emph{(i) Tickets usable while provisional} (as a straightforward
+implementation would do): Tamarin finds an attack on P8.  An adversary
+holding only $k_E$ answers the client's hello with its own key share, signs
+the transcript with $k_E$, completes the provisional handshake and sends a
+session ticket; the deferred PQ check later aborts that connection, but the
+stored ticket lets every future resumption ``authenticate'' the adversary
+as the server, without any PQ verification.  The rule of
+Section~\ref{sec:state_semantics}---hold tickets until promotion---is
+therefore necessary.
+\emph{(ii) $\sigma_P$ not bound to the transcript} (e.g., a PQ signature
+over the server identity only, as in a deferred check of a static
+credential): Tamarin finds attacks on six properties; the adversary replays
+a $\sigma_P$ observed in any earlier session and is promoted to full
+authentication with $k_E$ alone.  This is the deferred-authentication
+analogue of the attack Cremers et al.\ found on an early TLS~1.3
+draft~\cite{Cremers2016}.
+\emph{(iii) Finished and traffic key not covering the signatures}: all
+properties still hold, because $\sigma_P$ itself covers the transcript.
+The essential binding is therefore the transcript signature, not the
+Finished MAC.
+
+\paragraph{Scope} The analysis is symbolic (perfect cryptography) and
+abstracts the TLS~1.3 key schedule, PSK binders and 0-RTT; it establishes
+the logic of the provisional state, not the computational security of the
+hybrid combiner, for which we rely on existing
+results~\cite{Bindel2017,BindelHale2023}.  Integrating the provisional state
+into the full TLS~1.3 Tamarin model of Cremers et al.~\cite{Cremers2017}
+would remove these abstractions.
 
 \subsection{Threat model}
 
@@ -1452,9 +1570,12 @@ in the classical component, and (ii) a \emph{CRQC} adversary, who can forge
 ECDSA.  Against (i), DAPV provides the same final guarantee as synchronous
 hybrid verification, but data sent during \Dt\ reaches a peer
 authenticated only classically.  Against (ii), the provisional state offers
-no protection: DAPV is appropriate only while CRQCs capable of real-time
-forgery are not a practical threat, and deployments must reassess it as
-that changes.
+no protection, but promoted sessions do: authentication and secrecy after
+promotion hold as long as the PQ key is uncompromised (P4a, P6 in
+Table~\ref{tab:tamarin}).  DAPV is therefore appropriate only while CRQCs
+capable of real-time forgery are not a practical threat to what is sent
+provisionally, and deployments must reassess the data cap as that
+changes.
 
 \subsection{Leakage bound}
 \label{sec:leakage}
@@ -1680,8 +1801,10 @@ instructions, SLH-DSA, multi-signature chains and embedded-class verifiers
 lie above it, and there deferral cuts latency by 9--65\% and, by verifying
 independent signatures in parallel, also shortens the time to full
 quantum-safe authentication.  The provisional window it creates is a
-fraction of a millisecond and its exposure is bounded by an
-application-layer data cap.
+fraction of a millisecond, its exposure is bounded by an
+application-layer data cap, and its security is formally verified
+provided that session tickets are withheld until promotion and the PQ
+signature covers the transcript.
 
 \subsection*{Future work}
 \begin{enumerate}[noitemsep]
@@ -1692,7 +1815,8 @@ application-layer data cap.
   real devices on the break-even curve of Figure~\ref{fig:e6}.
 \item Multi-algorithm credentials, where more independent verifications
   can be parallelised.
-\item A formal (e.g., Tamarin) model of the provisional state.
+\item Integration of the provisional state into the full TLS~1.3 Tamarin
+  model, including PSK binders and 0-RTT, and a computational analysis.
 \item Server-side deferral for hybrid client certificates in mutual TLS.
 \end{enumerate}
 

@@ -1,0 +1,26 @@
+summary of summaries:
+
+analyzed: dapv.spthy
+
+  processing time: 17.05s
+  
+  executable_full (exists-trace): verified (10 steps)
+  executable_resumption (exists-trace): verified (12 steps)
+  executable_abort_after_provisional (exists-trace): verified (13 steps)
+  attack_possible_with_both_keys (exists-trace): verified (13 steps)
+  provisional_impersonation_with_classical_key (exists-trace): verified (11 steps)
+  provisional_authentication (all-traces): verified (13 steps)
+  provisional_data_secrecy (all-traces): verified (19 steps)
+  provisional_exposure_with_classical_key (exists-trace): verified (14 steps)
+  full_authentication_needs_PQ_key (all-traces): verified (10 steps)
+  full_authentication_needs_classical_key (all-traces): verified (6 steps)
+  full_authentication_injective (all-traces): verified (24 steps)
+  full_key_secrecy (all-traces): verified (30 steps)
+  full_data_secrecy (all-traces): verified (32 steps)
+  impersonated_session_never_promoted (all-traces): verified (21 steps)
+  resumption_authentication (all-traces): verified (36 steps)
+
+==============================================================================
+
+real	0m17.132s
+user	0m41.340s

@@ -23,6 +23,8 @@
  *   NAIVE_TICKETS  tickets received while PROVISIONAL are usable at once
  *   NO_BINDING     the PQ signature covers only the server identity, not the
  *                  handshake transcript (an unbound deferred signature)
+ *   NO_FIN_COVER   the PQ signature covers the transcript, but neither the
+ *                  server Finished nor the traffic key covers the signatures
  *
  * Abstractions: the key exchange is modelled as Diffie-Hellman (standing in
  * for X25519MLKEM768); certificates are modelled by an authentic binding of
@@ -41,6 +43,13 @@ functions: mac/2, kdf/1
 macros: pqmsg(tr, S) = <'CV', S>
 #else
 macros: pqmsg(tr, S) = <'CV', tr>
+#endif
+
+/* What the Finished MACs and the traffic key cover besides the transcript. */
+#ifdef NO_FIN_COVER
+macros: sigs(sigE, sigP) = 'none'
+#else
+macros: sigs(sigE, sigP) = <sigE, sigP>
 #endif
 
 restriction Equality:
@@ -82,8 +91,8 @@ rule Server_Respond:
       sigE = sign(<'CV', tr>, kE)
       sigP = sign(pqmsg(tr, $S), kP)
       hk   = kdf(<'hs', k, tr>)
-      sfin = mac(<'sf', tr, sigE, sigP>, hk)
-      ak   = kdf(<'app', k, tr, sigE, sigP, sfin>)
+      sfin = mac(<'sf', tr, sigs(sigE, sigP)>, hk)
+      ak   = kdf(<'app', k, tr, sigs(sigE, sigP), sfin>)
   in
     [ In(<nc, X>), Fr(~ns), Fr(~y), Fr(~sid), !LtkE($S, kE), !LtkP($S, kP) ]
   --[ Running($S, tr, ak) ]->
@@ -97,13 +106,13 @@ rule Client_Provisional:
       k    = Y ^ ~x
       tr   = h(<~nc, X, ns, Y, $S>)
       hk   = kdf(<'hs', k, tr>)
-      ak   = kdf(<'app', k, tr, sigE, sigP, sfin>)
-      cfin = mac(<'cf', tr, sigE, sigP, sfin>, hk)
+      ak   = kdf(<'app', k, tr, sigs(sigE, sigP), sfin>)
+      cfin = mac(<'cf', tr, sigs(sigE, sigP), sfin>, hk)
   in
     [ St_C1(~tid, $S, ~nc, ~x, pkE, pkP), In(<ns, Y, sigE, sigP, sfin>),
       Fr(~d) ]
   --[ Eq(verify(sigE, <'CV', tr>, pkE), true),
-      Eq(sfin, mac(<'sf', tr, sigE, sigP>, hk)),
+      Eq(sfin, mac(<'sf', tr, sigs(sigE, sigP)>, hk)),
       Provisional(~tid, $S, ak, tr),
       ProvData(~tid, $S, ~d) ]->
     [ St_C2(~tid, $S, tr, sigP, pkP, ak, k),
@@ -132,7 +141,7 @@ rule Server_Finish:
   let psk = kdf(<'res', k, tr>)
   in
     [ St_S1(~sid, $S, tr, sigE, sigP, sfin, hk, ak, k), In(cfin) ]
-  --[ Eq(cfin, mac(<'cf', tr, sigE, sigP, sfin>, hk)),
+  --[ Eq(cfin, mac(<'cf', tr, sigs(sigE, sigP), sfin>, hk)),
       ServerAccept(~sid, $S, ak),
       IssueTicket($S, psk) ]->
     [ Out(senc(<'tkt', psk>, ak)) ]
@@ -177,6 +186,20 @@ lemma executable_resumption:
 lemma executable_abort_after_provisional:
   exists-trace
   "Ex tid S ak tr #i #j. Provisional(tid, S, ak, tr) @ #i & Abort(tid, S) @ #j"
+
+/* Non-vacuity: with both keys the adversary does impersonate the server,
+   and with the classical key alone it does complete a provisional
+   handshake that the server never ran. */
+lemma attack_possible_with_both_keys:
+  exists-trace
+  "Ex tid S ak tr #i. FullAuth(tid, S, ak, tr) @ #i
+     & not (Ex #j. Running(S, tr, ak) @ #j)"
+
+lemma provisional_impersonation_with_classical_key:
+  exists-trace
+  "Ex tid S ak tr #i. Provisional(tid, S, ak, tr) @ #i
+     & not (Ex #j. Running(S, tr, ak) @ #j)
+     & not (Ex #p. RevP(S) @ #p)"
 
 /* ------------------------------------------------------------------ */
 /* P1  PROVISIONAL gives classical-strength authentication.           */
