@@ -272,6 +272,14 @@ in
     ]->
     [ State(C3, tid, C, S, ClientState),
       RecvStream(tid, C, S, auth_status, app_keys),
-      // DAPV: no deferred signature in PSK mode
-      !DAPV_Full(tid)
+      // DAPV: no deferred signature in PSK mode (see dapv_psk_full)
+      DAPV_PSKMode(tid)
     ]
+
+/* DAPV: a PSK-authenticated session is fully authenticated at once.  A
+   separate small rule keeps proofs about !DAPV_Full independent of the
+   large PSK handshake rule; the behaviour is unchanged. */
+rule dapv_psk_full:
+    [ DAPV_PSKMode(tid) ]
+  --[ DAPV_PSKFull(tid) ]->
+    [ !DAPV_Full(tid) ]

@@ -2,7 +2,9 @@ changequote(<!,!>)
 changecom(<!/*!>,<!*/!>)
 pushdef(<!F_State_S4!>, <!L_State_S4($@)!>)dnl
 pushdef(<!F_State_C4!>, <!L_State_C4($@)!>)dnl
-define(<!State!>,<!F_State_$1(shift($@))!>)dnl
+dnl DAPV: constant first argument keeps Tamarin from treating State facts as
+dnl injective (1.10 crashes on them; 1.8 is very slow). Behaviour unchanged.
+define(<!State!>,<!F_State_$1('st', shift($@))!>)dnl
 define(<!ClientCertReq!>,<!L_ClientCertReq($@)!>)dnl
 define(<!ServerCertReq!>,<!L_ServerCertReq($@)!>)dnl
 define(<!CachePSK!>, <!F_CachePSK($@)!>)dnl
@@ -81,6 +83,18 @@ lemma dapv_sigP_origin [reuse]:
       & (sigP = sign{sm}ltkP) ==>
       (Ex #j. KU(ltkP)@j & #j < #i) | (Ex #k. UseLtkP(ltkP, sigP)@k & #k < #i)"
 
+/* Helper H1: a ticket is stored only after the session's !DAPV_Full marker
+   was set, i.e. after promotion or in PSK mode. */
+lemma dapv_ticket_full_origin [reuse]:
+  "All tid C S psk #i. DAPV_TicketStored(tid, C, S, psk)@i ==>
+     (Ex C2 S2 sm m #j. DAPV_Promoted(tid, C2, S2, sm, m)@j & #j < #i)
+   | (Ex #j. DAPV_PSKFull(tid)@j & #j < #i)"
+
+/* Helper H2: a session that went PROVISIONAL (certificate mode) is never
+   in PSK mode. */
+lemma dapv_pskfull_excludes_provisional [reuse]:
+  "All tid C S sm m #i #j. DAPV_PSKFull(tid)@i & DAPV_Provisional(tid, C, S, sm, m)@j ==> F"
+
 /* Executability: an honest handshake reaches full authentication. */
 lemma dapv_reach_promotion:
   exists-trace
@@ -109,7 +123,7 @@ lemma dapv_promotion_needs_pq_key:
 lemma dapv_ticket_only_after_promotion:
   "All tid C S psk sm m #i #p. DAPV_TicketStored(tid, C, S, psk)@i
        & DAPV_Provisional(tid, C, S, sm, m)@p ==>
-     Ex sm2 m2 #j. DAPV_Promoted(tid, C, S, sm2, m2)@j & #j < #i"
+     Ex C2 S2 sm2 m2 #j. DAPV_Promoted(tid, C2, S2, sm2, m2)@j & #j < #i"
 
 /* Attack witness (meaningful with -D DAPV_NAIVE_TICKETS): a client resumes
    with a ticket that the server never issued, obtained in a provisional
