@@ -1,0 +1,228 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="900" viewBox="0 0 720 900">
+  <rect width="720" height="900" fill="#ffffff"/>
+
+  <!-- ── fonts / global style ── -->
+  <style>
+    text { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; fill: #1a1a1a; }
+    .label   { font-size: 12px; }
+    .bold    { font-size: 12px; font-weight: 700; }
+    .small   { font-size: 10.5px; }
+    .step    { font-size: 11px; fill: #999999; }
+    .msg     { font-size: 11px; fill: #2c2c2c; }
+    .note    { font-size: 10.5px; }
+  </style>
+
+  <!-- ══════════════════════════════════════════════
+       ENTITY HEADER BOXES
+  ══════════════════════════════════════════════ -->
+
+  <!-- Client Main Thread -->
+  <rect x="50" y="30" width="140" height="50" rx="7"
+        fill="#DBEAFE" stroke="#1D4ED8" stroke-width="1.4"/>
+  <text class="bold" x="120" y="52" text-anchor="middle" fill="#1E3A8A">Client</text>
+  <text class="small" x="120" y="68" text-anchor="middle" fill="#1D4ED8">Main Thread</text>
+
+  <!-- Client Background Thread -->
+  <rect x="290" y="30" width="140" height="50" rx="7"
+        fill="#FEF3C7" stroke="#D97706" stroke-width="1.4"/>
+  <text class="bold" x="360" y="52" text-anchor="middle" fill="#92400E">Client</text>
+  <text class="small" x="360" y="68" text-anchor="middle" fill="#B45309">Background Thread</text>
+
+  <!-- Server -->
+  <rect x="540" y="30" width="140" height="50" rx="7"
+        fill="#D1FAE5" stroke="#059669" stroke-width="1.4"/>
+  <text class="bold" x="610" y="57" text-anchor="middle" fill="#065F46">Server</text>
+
+  <!-- ══════════════════════════════════════════════
+       LIFELINES
+  ══════════════════════════════════════════════ -->
+  <line x1="120" y1="80" x2="120" y2="850"
+        stroke="#CCCCCC" stroke-width="1" stroke-dasharray="5 4"/>
+  <line x1="360" y1="80" x2="360" y2="850"
+        stroke="#CCCCCC" stroke-width="1" stroke-dasharray="5 4"/>
+  <line x1="610" y1="80" x2="610" y2="850"
+        stroke="#CCCCCC" stroke-width="1" stroke-dasharray="5 4"/>
+
+  <!-- ══════════════════════════════════════════════
+       STEP NUMBERS (left gutter)
+  ══════════════════════════════════════════════ -->
+  <text class="step" x="28" y="125" text-anchor="middle">1</text>
+  <text class="step" x="28" y="158" text-anchor="middle">2</text>
+  <text class="step" x="28" y="195" text-anchor="middle">3</text>
+  <text class="step" x="28" y="285" text-anchor="middle">4</text>
+  <text class="step" x="28" y="330" text-anchor="middle">5</text>
+  <text class="step" x="28" y="372" text-anchor="middle">6</text>
+  <text class="step" x="28" y="404" text-anchor="middle">7</text>
+  <text class="step" x="28" y="560" text-anchor="middle">8</text>
+
+  <!-- ══════════════════════════════════════════════
+       MESSAGES
+  ══════════════════════════════════════════════ -->
+
+  <!-- 1. ClientHello -->
+  <defs>
+    <marker id="ah" viewBox="0 0 8 8" refX="7" refY="4"
+            markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M1 1 L7 4 L1 7" fill="none" stroke="#1D4ED8"
+            stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="ah-grn" viewBox="0 0 8 8" refX="7" refY="4"
+            markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M1 1 L7 4 L1 7" fill="none" stroke="#059669"
+            stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="ah-amb" viewBox="0 0 8 8" refX="7" refY="4"
+            markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M1 1 L7 4 L1 7" fill="none" stroke="#D97706"
+            stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="ah-red" viewBox="0 0 8 8" refX="7" refY="4"
+            markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M1 1 L7 4 L1 7" fill="none" stroke="#DC2626"
+            stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <line x1="124" y1="122" x2="606" y2="122"
+        stroke="#1D4ED8" stroke-width="1.5" marker-end="url(#ah)"/>
+  <text class="msg" x="365" y="115" text-anchor="middle">ClientHello</text>
+
+  <!-- 2. ServerHello -->
+  <line x1="606" y1="155" x2="124" y2="155"
+        stroke="#059669" stroke-width="1.5" marker-end="url(#ah-grn)"/>
+  <text class="msg" x="365" y="148" text-anchor="middle">ServerHello</text>
+
+  <!-- 3. Server flight -->
+  <line x1="606" y1="192" x2="124" y2="192"
+        stroke="#059669" stroke-width="1.5" marker-end="url(#ah-grn)"/>
+  <text class="msg" x="365" y="185" text-anchor="middle">
+    {Certificate, CertVerify [&#x3C3;<tspan baseline-shift="sub" font-size="9">E</tspan>
+    &#x2016; &#x3C3;<tspan baseline-shift="sub" font-size="9">P</tspan>], Finished}
+  </text>
+
+  <!-- Transcript binding note -->
+  <rect x="380" y="202" width="195" height="62" rx="5"
+        fill="#FEF2F2" stroke="#DC2626" stroke-width="1"/>
+  <text class="note" x="390" y="220" fill="#991B1B">Finished MAC covers full</text>
+  <text class="note" x="390" y="235" fill="#991B1B">transcript, including &#x3C3;<tspan baseline-shift="sub" font-size="9">P</tspan> bytes</text>
+  <text class="note" x="390" y="250" fill="#991B1B">(inherent binding)</text>
+  <!-- leader line -->
+  <line x1="200" y1="192" x2="380" y2="224"
+        stroke="#DC2626" stroke-width="0.8" stroke-dasharray="3 3"/>
+
+  <!-- horizontal divider -->
+  <line x1="44" y1="262" x2="510" y2="262"
+        stroke="#E5E7EB" stroke-width="0.8"/>
+
+  <!-- 4. Verify sigma_E box -->
+  <rect x="50" y="268" width="145" height="34" rx="5"
+        fill="#DBEAFE" stroke="#1D4ED8" stroke-width="1"/>
+  <text class="label" x="122" y="290" text-anchor="middle" fill="#1E3A8A">
+    Verify &#x3C3;<tspan baseline-shift="sub" font-size="9">E</tspan>  (&#x2248; tens &#x3BC;s)
+  </text>
+
+  <!-- horizontal divider -->
+  <line x1="44" y1="312" x2="510" y2="312"
+        stroke="#E5E7EB" stroke-width="0.8"/>
+
+  <!-- 5. PROVISIONAL box -->
+  <rect x="50" y="316" width="145" height="32" rx="5"
+        fill="#FEF3C7" stroke="#D97706" stroke-width="1.2"/>
+  <text class="bold" x="122" y="337" text-anchor="middle" fill="#92400E">PROVISIONAL</text>
+
+  <!-- 6. Dispatch async -->
+  <line x1="124" y1="368" x2="354" y2="368"
+        stroke="#D97706" stroke-width="1.4" stroke-dasharray="7 3"
+        marker-end="url(#ah-amb)"/>
+  <text class="msg" x="240" y="360" text-anchor="middle" fill="#B45309">
+    AsyncVerify(&#x3C3;<tspan baseline-shift="sub" font-size="9">P</tspan>)
+  </text>
+
+  <!-- 7. Client Finished -->
+  <line x1="124" y1="402" x2="606" y2="402"
+        stroke="#1D4ED8" stroke-width="1.5" marker-end="url(#ah)"/>
+  <text class="msg" x="365" y="394" text-anchor="middle">{Finished}</text>
+
+  <!-- ══════════════════════════════════════════════
+       WINDOW OF VULNERABILITY
+  ══════════════════════════════════════════════ -->
+
+  <!-- Shaded region -->
+  <rect x="325" y="360" width="42" height="188"
+        fill="#FEF2F2" opacity="0.5"/>
+
+  <!-- Bracket -->
+  <line x1="472" y1="360" x2="472" y2="548"
+        stroke="#DC2626" stroke-width="1.3"/>
+  <line x1="468" y1="360" x2="476" y2="360"
+        stroke="#DC2626" stroke-width="1.3"/>
+  <line x1="468" y1="548" x2="476" y2="548"
+        stroke="#DC2626" stroke-width="1.3"/>
+
+  <!-- WoV box -->
+  <rect x="480" y="388" width="196" height="130" rx="6"
+        fill="#FEF2F2" stroke="#DC2626" stroke-width="1.1"/>
+  <text class="bold" x="578" y="412" text-anchor="middle" fill="#991B1B">Window of</text>
+  <text class="bold" x="578" y="428" text-anchor="middle" fill="#991B1B">Vulnerability (&#x394;t)</text>
+  <line x1="490" y1="436" x2="666" y2="436" stroke="#FECACA" stroke-width="0.8"/>
+  <text class="note" x="490" y="452" fill="#B91C1C">Classical security only.</text>
+  <text class="note" x="490" y="468" fill="#B91C1C">CRQC adversary is outside</text>
+  <text class="note" x="490" y="484" fill="#B91C1C">the threat model.</text>
+  <text class="note" x="490" y="503" fill="#9CA3AF">Full quantum safety holds</text>
+  <text class="note" x="490" y="518" fill="#9CA3AF">only after &#x394;t elapses.</text>
+
+  <!-- Δt measurement marker -->
+  <line x1="343" y1="366" x2="343" y2="548"
+        stroke="#D97706" stroke-width="0.8" stroke-dasharray="3 3"/>
+  <text class="small" x="335" y="456" text-anchor="middle" fill="#B45309"
+        transform="rotate(-90 335 456)">&#x394;t</text>
+
+  <!-- ── BG thread: PQC crypto ── -->
+  <rect x="292" y="420" width="152" height="36" rx="5"
+        fill="#D1FAE5" stroke="#059669" stroke-width="1"/>
+  <text class="bold" x="368" y="434" text-anchor="middle" fill="#065F46">PQC verify</text>
+  <text class="small" x="368" y="449" text-anchor="middle" fill="#047857">&lt; 0.15 ms (crypto only)</text>
+
+  <!-- ── BG thread: scheduling ── -->
+  <rect x="292" y="468" width="152" height="36" rx="5"
+        fill="#EDE9FE" stroke="#7C3AED" stroke-width="1"/>
+  <text class="bold" x="368" y="482" text-anchor="middle" fill="#4C1D95">Thread dispatch</text>
+  <text class="small" x="368" y="497" text-anchor="middle" fill="#6D28D9">14 – 21 ms overhead</text>
+
+  <!-- ══════════════════════════════════════════════
+       SUCCESS PATH
+  ══════════════════════════════════════════════ -->
+  <line x1="354" y1="560" x2="124" y2="560"
+        stroke="#059669" stroke-width="1.4" stroke-dasharray="7 3"
+        marker-end="url(#ah-grn)"/>
+  <text class="msg" x="240" y="552" text-anchor="middle" fill="#059669">Promote session</text>
+
+  <!-- 8. FULLY_AUTHENTICATED -->
+  <rect x="50" y="568" width="145" height="33" rx="5"
+        fill="#D1FAE5" stroke="#059669" stroke-width="1.2"/>
+  <text class="bold" x="122" y="589" text-anchor="middle" fill="#065F46">FULLY_AUTH</text>
+
+  <!-- Policy note -->
+  <rect x="50" y="614" width="290" height="52" rx="5"
+        fill="#F0FDF4" stroke="#86EFAC" stroke-width="1"/>
+  <text class="note" x="60" y="633" fill="#166534">Low-risk data: permitted from PROVISIONAL</text>
+  <text class="note" x="60" y="652" fill="#166534">Sensitive ops: deferred to FULLY_AUTH</text>
+
+  <!-- ══════════════════════════════════════════════
+       FAILURE PATH
+  ══════════════════════════════════════════════ -->
+  <line x1="354" y1="690" x2="124" y2="690"
+        stroke="#DC2626" stroke-width="1.3" stroke-dasharray="6 3"
+        marker-end="url(#ah-red)"/>
+  <text class="msg" x="240" y="682" text-anchor="middle" fill="#DC2626">
+    PQC fails &#x2192; terminate
+  </text>
+
+  <rect x="50" y="700" width="145" height="33" rx="5"
+        fill="#FEE2E2" stroke="#DC2626" stroke-width="1.2"/>
+  <text class="bold" x="122" y="721" text-anchor="middle" fill="#991B1B">bad_certificate</text>
+
+  <text class="small" x="122" y="756" text-anchor="middle"
+        fill="#6B7280" font-style="italic">Connection terminated</text>
+
+</svg>

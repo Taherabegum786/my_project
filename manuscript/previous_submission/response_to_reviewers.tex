@@ -1,0 +1,562 @@
+%% ============================================================
+%%  Response to Reviewers
+%%  Computer Networks — COMNET-D-25-04940
+%% ============================================================
+\documentclass[12pt]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{mdframed}
+\usepackage{microtype}
+\usepackage{parskip}
+
+\definecolor{reviewerblue}{RGB}{0,70,140}
+\definecolor{replygreen}{RGB}{0,100,50}
+\definecolor{changemagenta}{RGB}{140,0,100}
+
+\newmdenv[linecolor=reviewerblue!40, backgroundcolor=reviewerblue!5,
+          leftmargin=0pt, rightmargin=0pt, innertopmargin=6pt,
+          innerbottommargin=6pt]{reviewbox}
+\newmdenv[linecolor=replygreen!40, backgroundcolor=replygreen!5,
+          leftmargin=0pt, rightmargin=0pt, innertopmargin=6pt,
+          innerbottommargin=6pt]{replybox}
+
+\newcommand{\RC}[1]{\textcolor{reviewerblue}{\textbf{Reviewer Comment:}} #1}
+\newcommand{\AR}[1]{\textcolor{replygreen}{\textbf{Author Response:}} #1}
+\newcommand{\CH}[1]{\textcolor{changemagenta}{\textbf{Change in Manuscript:}} #1}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries Response to Reviewers}\\[6pt]
+  {\large Manuscript COMNET-D-25-04940R1}\\[4pt]
+  {\itshape Asynchronous Post-Quantum Signature Verification for
+   Low-Latency TLS~1.3 Handshakes}\\[8pt]
+  We thank all three reviewers for rigorous, constructive critiques that
+  materially strengthened this manuscript.  Every concern has been addressed;
+  changes are described below and highlighted in the revised manuscript.
+\end{center}
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+%% ============================================================
+\section*{Reviewer \#1}
+
+%% --- R1 Comment 1 ---
+\begin{reviewbox}
+\RC{The proposal requires changes at the PKI level, changing X.509 certificates
+to include two signatures (classical + PQC).  The certificates in the web today
+are fully classical, and experimental PQC signatures are used.  What difference
+exists from using only PQC signatures?  The authors should include a discussion
+about this.}
+\end{reviewbox}
+
+\begin{replybox}
+\AR{We thank the reviewer for this important practical observation.  We have
+added a discussion in \S3.3 (``Implementation Architecture'') and \S8.1
+(``Deployment'') distinguishing three deployment scenarios:
+(1)~\emph{PQC-only}: single PQC signature; DAPV applies by deferring
+PQC verification while using no classical component; (2)~\emph{Hybrid
+(transitional)}: classical + PQC, the primary target of this paper;
+(3)~\emph{Classical-only (today)}: no DAPV benefit.
+The key distinction between PQC-only and hybrid under DAPV is that
+hybrid provides dual assurance during the transitional era, while PQC-only
+is the long-term goal.  DAPV is most valuable in the hybrid transitional
+phase where classical verification is retained for compatibility.}
+
+\CH{Added discussion in \S3.3 and \S8.1; clarified contribution scope in
+Abstract and \S1.5.}
+\end{replybox}
+
+%% --- R1 Comment 2 ---
+\begin{reviewbox}
+\RC{The management of a queue of ``asynchronous verification workers'' is a
+heavy load.  A bounded thread-pool is mentioned, but its effect on performance
+is not clear.  A potential DoS attack could flood a DAPV-enabled server with
+thousands of valid classical signatures but invalid PQC signatures, forcing the
+server to spin up background threads until CPU resources are exhausted.}
+\end{reviewbox}
+
+\begin{replybox}
+\AR{This is an important and correct observation.  We have added this
+\emph{DAPV-specific DoS vector} — provisional-state flooding — as an explicit
+attack in \S7.4 (``Attack Vectors''), describing how valid classical signatures
+with invalid PQC signatures can exhaust thread-pool resources.  Algorithm~2
+(Server Thread-Pool Dispatcher) now mandates a strictly bounded pool with
+DoS-mitigating queue management.  We also clarify in \S6.4 that this attack
+does not exist in standard synchronous hybrid TLS, making it a DAPV-specific
+risk that must be accounted for in deployment.}
+
+\CH{New attack vector (``provisional-state flooding'') added to \S7.4;
+Algorithm~2 updated to mandate bounded pool size; \S6.4 expanded with DoS
+comparison.}
+\end{replybox}
+
+%% --- R1 Comment 3 ---
+\begin{reviewbox}
+\RC{How the handshake state machine is modified should be clarified, using a
+sequence diagram that shows the handshake transcript hash calculation points.
+In TLS~1.3, the Finished message is a MAC over the entire handshake transcript.
+Does the ``provisional'' Finished message include the PQC signature in its
+transcript?}
+\end{reviewbox}
+
+\begin{replybox}
+\AR{Figure~1 is now a detailed message sequence chart (TikZ) showing all
+message flows, state transitions, and transcript binding points.  We
+explicitly clarify: the PQC signature bytes ($\sigma_{\text{PQC}}$) are
+received in \texttt{CertificateVerify} \emph{before} the client sends
+\texttt{Finished}, so the \texttt{Finished} MAC covers the full transcript
+including $\sigma_{\text{PQC}}$.  Transcript binding is therefore inherent in
+TLS~1.3's \texttt{Finished} construction.  We note this explicitly in
+\S3.2, step~4.}
+
+\CH{Figure~1 replaced with full sequence diagram; \S3.2 step 4 added on
+transcript binding; \S7.5 mitigations updated accordingly.}
+\end{replybox}
+
+%% --- R1 Comment 4 ---
+\begin{reviewbox}
+\RC{Some policies and mitigation strategies could be a new bottleneck because
+in some cases application data is restricted.  Application-level latency
+(e.g., TTFB vs.\ Time to Page Load when the cap is enforced) should be included.}
+\end{reviewbox}
+
+\begin{replybox}
+\AR{We agree that $D_{\text{policy}}$ enforcement adds application-layer
+latency.  We now explicitly discuss this trade-off in \S8.2
+(``Risk-Adaptive Policy Deployment''), categorising endpoints by risk
+tier and noting that high-risk endpoints experience latency equal to
+synchronous hybrid TLS under strict policy.  A full TTFB-vs-page-load
+analysis on real applications (e.g., browser page loads) requires
+instrumentation beyond our current TLS-layer testbed and is identified
+as future work.}
+
+\CH{Trade-off discussion added to \S8.2; future work item added in \S9.2.}
+\end{replybox}
+
+%% --- R1 Comment 5 ---
+\begin{reviewbox}
+\RC{The authors claim improvements of 35--40\% in PQC and hybrid configurations,
+but the explanation is not clear (whether it depends on specific RTTs or CPU
+loads).}
+\end{reviewbox}
+
+\begin{replybox}
+\AR{We have pinned this claim precisely in the revised manuscript.
+Table~3 (``Consolidated Performance Comparison'') now specifies that
+30--36\% throughput improvement refers to 500 concurrent clients at 0\,ms RTT
+for hybrid P-256\,+\,ML-DSA-44.  The latency improvement (\S5.1) is expressed
+as a constant 20\,ms offset at all RTT values tested (0--150\,ms), not a
+percentage.  All such claims now reference the specific conditions in which
+they apply.}
+
+\CH{Table~3 added; all performance claims pinned to specific conditions
+in Abstract, \S1.5, and \S5.5.}
+\end{replybox}
+
+%% --- R1 Comment 6 ---
+\begin{reviewbox}
+\RC{The Window of Vulnerability ($\Delta t$) is defined as the time between
+classical and PQC verification.  In real environments, CPU ``stealing'' or noise
+could significantly expand this parameter.}
+\end{reviewbox}
+
+\begin{replybox}
+\AR{We now explicitly discuss this in \S7.2 and Table~4, noting that our
+prototype measurements represent best-case conditions on dedicated hardware.
+CPU contention, scheduling jitter, or system load could expand \Dt.  We
+recommend that deployments set conservative $D_{\text{policy}}$ caps
+(8\,KB for safety) to accommodate \Dt\ variability, and that monitoring
+of actual \Dt\ distributions be implemented in production.}
+
+\CH{\S7.2 expanded with \Dt\ variability discussion; Table~4 updated with
+pessimistic scenarios; \S8.3 monitoring requirement added.}
+\end{replybox}
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+%% ============================================================
+\section*{Reviewer \#2}
+
+%% --- R2 Comment 1 ---
+\begin{reviewbox}
+\RC{The proposed construction does not conform to the hybrid signature
+definition of Bindel et al.\ [8], which uses nesting rather than
+concatenation and provides formal unforgeability guarantees.}
+\end{reviewbox}
+
+\begin{replybox}
+\AR{This is a valid and important critique.  We have added an explicit note
+in \S1.3 (``Important note on construction security''), \S3.3, and \S2.2
+clearly stating that our concatenation scheme differs from Bindel et al.'s
+nesting construction; that the concatenation construction's security
+properties are not formally proved; and that production deployments should
+use a formally analysed construction.  We thank the reviewer for identifying
+this gap.}
+
+\CH{Disclaimer on construction security added to \S1.3, \S2.2, and \S3.3;
+Bindel et al.\ citation corrected and contextualised.}
+\end{replybox}
+
+%% --- R2 Comment 2 ---
+\begin{reviewbox}
+\RC{No formal security analysis is provided.  The discussion is limited to a
+qualitative risk assessment.  The absence of a rigorous security proof
+(unforgeability, replay, impersonation resistance) represents a significant gap.}
+\end{reviewbox}
+
+\begin{replybox}
+\AR{We agree entirely.  We have renamed \S7 from ``Security Analysis'' to
+``Security Risk Characterisation'' and replaced the claim of a ``formal
+security analysis'' in \S1.5 with ``Quantitative Security Risk
+Characterisation.''  The section's opening now explicitly states that we
+provide quantitative leakage bounds, attack-vector taxonomy, and mitigation
+strategies, but not a cryptographic security proof.  Formal verification
+using Tamarin or ProVerif is listed as priority future work in \S9.2.}
+
+\CH{\S7 retitled; \S1.5 contribution description corrected; \S7 opening
+disclaimer added; \S9.2 future work expanded.}
+\end{replybox}
+
+%% --- R2 Comment 3 ---
+\begin{reviewbox}
+\RC{PQC verification time estimates of 15--20\,ms are orders of magnitude
+larger than commonly reported values ($\approx$10--20\,$\mu$s with AVX2
+optimisation for ML-DSA and FN-DSA).  The performance results are called
+into question.}
+\end{reviewbox}
+
+\begin{replybox}
+\AR{The reviewer is absolutely correct.  Our reported wall-clock \Dt\ of
+14--21\,ms is dominated by thread dispatch and scheduling overhead, not by
+cryptographic computation.  We now decompose \Dt\ into (a)~raw
+cryptographic verification time ($<$0.15\,ms on AVX2 hardware, confirmed
+by direct timing of \texttt{VerifyPQC()} without thread dispatch) and
+(b)~thread/scheduling overhead ($\approx$14--21\,ms, prototype artefact).
+Figure~6 (new) and Table~1 (revised) present this decomposition.
+We explicitly state in \S5.4 that our prototype \Dt\ is implementation-bound,
+not cryptography-bound, and that optimised concurrency models can reduce
+total \Dt\ to the sub-millisecond range.  We also note in \S2.1 that
+the dominant TLS latency penalty in high-RTT environments is packet
+fragmentation, not verification computation.}
+
+\CH{New \Dt\ decomposition figure and table added (\S5.4); \S2.1 and \S5.1
+revised to correctly attribute latency sources; \S6.3 expanded.}
+\end{replybox}
+
+%% --- R2 Comment 4 ---
+\begin{reviewbox}
+\RC{The paper claims near-classical latency for DAPV, but PQC fragmentation
+still occurs.  DAPV cannot remove extra RTTs due to larger handshake messages.}
+\end{reviewbox}
+
+\begin{replybox}
+\AR{This is correct, and we have revised the manuscript accordingly.
+The corrected DAPV latency model (Eq.~3) retains the fragmentation
+penalty ($\delta k \cdot \text{RTT}$), showing that DAPV reduces latency
+by removing verification computation $T_{\text{verify}}$, not by eliminating
+network overhead.  Figure~4 and \S5.1 now describe DAPV's benefit as a
+constant $\approx$20\,ms offset at all RTT values, with both DAPV and
+synchronous hybrid curves growing at the same RTT slope.  All claims of
+``near-classical'' or ``RTT-flat'' latency have been removed or corrected.}
+
+\CH{Eq.~3 corrected; Figure~4 re-described; \S5.1 rewritten; Abstract
+and \S1.5 updated; all ``flat latency'' claims removed.}
+\end{replybox}
+
+%% --- R2 Comment 5 ---
+\begin{reviewbox}
+\RC{Cross-platform evaluation should include ARM-based systems, mobile or
+embedded devices, and IoT platforms.}
+\end{reviewbox}
+
+\begin{replybox}
+\AR{We agree this is a limitation.  We now explicitly acknowledge in \S4.1
+that both testbeds are x86-64 and that ARM, mobile, and MCU evaluation
+is absent from the current work.  Table~5 (device-class scaling) projects
+\Dt\ scaling for constrained hardware based on published OQS benchmarks.
+Full ARM and IoT evaluation is listed as a priority future-work item in
+\S9.2.  We also now recommend against DAPV deployment on Cortex-M4 class
+MCUs without hardware PQC acceleration (\S7.6).}
+
+\CH{Limitation noted in \S4.1; Table~5 updated; \S7.6 and Figure~7
+(decision framework) updated; \S9.2 future work updated.}
+\end{replybox}
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+%% ============================================================
+\section*{Reviewer \#3}
+
+%% --- R3 Comment 1 (Fatal: Latency Claim) ---
+\begin{reviewbox}
+\RC{Section~5.1 says DAPV latency remains roughly constant at 150\,ms even as
+RTT increases to 400\,ms.  That cannot be right for TLS~1.3.  At 400\,ms RTT,
+the handshake cannot complete in 150\,ms no matter how verification is
+scheduled.  The central empirical claim needs to be revisited from first
+principles.}
+\end{reviewbox}
+
+\begin{replybox}
+\AR{Reviewer \#3 is entirely correct, and we thank them for identifying
+this critical error.  The prior text incorrectly described Figure~4's
+data.  The figure itself shows both DAPV and synchronous hybrid latency
+growing linearly with RTT; our text description was wrong.
+
+The corrected interpretation is:
+\begin{itemize}
+  \item Both DAPV and synchronous hybrid grow linearly with RTT at
+        approximately 1\,ms/ms (one RTT per handshake).
+  \item DAPV provides a \emph{constant offset} of $\approx$20\,ms below
+        synchronous hybrid at all RTT values — the constant equals
+        the PQC verification and thread-dispatch overhead removed from the
+        critical path.
+  \item This offset does not vary with RTT because verification time is
+        RTT-independent.
+  \item At 400\,ms RTT (beyond our test range), DAPV latency would be
+        approximately 420\,ms — not 150\,ms.
+\end{itemize}
+
+We have rewritten \S5.1 entirely to reflect this correct interpretation,
+updated Figure~4's caption, and corrected all downstream references in the
+Abstract, \S1.5, \S6.1, and \S9.1.  The Eq.~3 latency model has been
+corrected to retain the fragmentation term.}
+
+\CH{\S5.1 completely rewritten; Figure~4 re-captioned; Eq.~3 corrected;
+Abstract, \S1.5, \S6.1, \S9.1 updated; all ``flat at 150\,ms'' language
+removed throughout.}
+\end{replybox}
+
+%% --- R3 Comment 2 (Fatal: Threat Model) ---
+\begin{reviewbox}
+\RC{DAPV accepts a provisional session on the basis of the classical signature.
+If the relevant adversary can break ECDSA in real time, the provisional state
+is exactly where the design is weakest.  The manuscript must be explicit here.}
+\end{reviewbox}
+
+\begin{replybox}
+\AR{We agree completely.  The revised manuscript now includes the following
+explicit statements, which are the honest characterisation of DAPV's
+security posture:
+
+\begin{itemize}
+  \item \S1.6 (Scope): ``During the Window of Vulnerability \Dt, the
+        session holds classical-level security only: quantum-safe guarantees
+        are not provided until PQC verification completes.''
+  \item \S7.1 (Threat Model): ``A CRQC-capable adversary is explicitly out
+        of scope during \Dt.''
+  \item \S6.2 (Discussion): ``DAPV should not be presented as quantum-secure
+        during \Dt.''
+\end{itemize}
+
+We also explicitly list CRQC-based impersonation as an attack vector in
+\S7.4 (vector~2) while noting it is out of scope under current adversary
+models.  This honest scoping transforms the threat model from misleading to
+rigorous.}
+
+\CH{Explicit CRQC-out-of-scope statement added to \S1.6, \S7.1, \S6.2;
+CRQC attack vector listed but scoped in \S7.4; Abstract updated.}
+\end{replybox}
+
+%% --- R3 Comment 3 (Fatal: Dt Measurement) ---
+\begin{reviewbox}
+\RC{The reported window is largely measuring thread dispatch, scheduling,
+and prototype overhead.  The paper has not isolated the true cryptographic
+cost.  Before drawing strong conclusions about deployment risk, the authors
+should separate PQC verification time from implementation overhead.}
+\end{reviewbox}
+
+\begin{replybox}
+\AR{We have implemented precisely this decomposition.  Section~5.4 now
+presents:
+\begin{itemize}
+  \item \textbf{Crypto-only time}: direct call to \texttt{VerifyPQC()}
+        without thread dispatch; ML-DSA-44: $\approx$0.08\,ms;
+        FN-DSA-512: $\approx$0.12\,ms.
+  \item \textbf{Thread dispatch overhead}: 14.4\,ms (ML-DSA), 18.3\,ms
+        (FN-DSA).
+  \item \textbf{Total wall-clock \Dt}: 14.5\,ms / 18.4\,ms (prototype).
+\end{itemize}
+Figure~6 (new stacked bar chart) visualises this decomposition.  We
+explicitly state that reported \Dt\ is $>$99\% implementation overhead
+and that optimised concurrency could reduce total \Dt\ to $<$1\,ms.
+This finding actually strengthens the paper: it shows that the security
+risk characterised in \S7 is far more favourable than prototype numbers suggest.}
+
+\CH{New \Dt\ decomposition in \S5.4; Table~1 revised; Figure~6 (new) added;
+\S6.3 updated with implications; leakage Table~6 updated with optimised-\Dt\
+column.}
+\end{replybox}
+
+%% --- R3 Comment 4 (Reference Errors) ---
+\begin{reviewbox}
+\RC{Reference [12] is a KEMTLS-style authentication draft, not a hybrid
+signature draft.  Reference [8] is overstated.  FN-DSA is treated as
+already standardised, which was not the case.  The future-work discussion
+should not mention Rainbow-like schemes (Rainbow was broken and withdrawn).}
+\end{reviewbox}
+
+\begin{replybox}
+\AR{All four reference issues are corrected:
+
+\begin{enumerate}
+  \item \textbf{[WiggersIETF2024]}: Now cited correctly as the
+        KEM-based authentication draft (\texttt{draft-celi-wiggers-tls-authkem}),
+        not a hybrid signature draft.  A note in the BibTeX entry clarifies
+        the distinction.
+  \item \textbf{Bindel et al.\ [Bindel2017]}: Now correctly described as a
+        hybrid PKI/nesting construction providing composable unforgeability
+        guarantees; no longer overstated as the origin of TLS concatenation.
+  \item \textbf{FN-DSA}: Now cited as ``FIPS~206 draft (status at submission
+        time)'' in \S4.3 and the bibliography.
+  \item \textbf{Rainbow}: Removed from all future-work discussion.
+        Replaced with SLH-DSA (SPHINCS+, FIPS~205) as the recommended
+        hash-based signature alternative.
+\end{enumerate}}
+
+\CH{Bibliography updated; \S2.3, \S4.3, and \S9.2 corrected throughout.}
+\end{replybox}
+
+%% --- R3 Comment 5 (Writing) ---
+\begin{reviewbox}
+\RC{The manuscript would benefit from much tighter writing.  The same
+performance numbers and claims are repeated across abstract, introduction,
+results, discussion, and conclusion.}
+\end{reviewbox}
+
+\begin{replybox}
+\AR{We have substantially tightened the manuscript.  The abstract now
+presents a single, correctly stated set of performance numbers.  Repetition
+across \S1.5, \S5.5, \S6.1, and \S9.1 has been eliminated: detailed
+results live in \S5; \S6 and \S9 summarise without repeating.
+Table~3 (consolidated comparison) serves as the single authoritative
+performance reference.  The manuscript is approximately 15\% shorter
+than the submitted version while being substantively more precise.}
+
+\CH{Abstract, \S1.5, \S6.1, \S9.1 rewritten; Table~3 added as the
+consolidated reference; duplicate passages removed throughout.}
+\end{replybox}
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+%% ============================================================
+\section*{Additional Fixes --- Second Revision}
+
+The following six issues were identified during self-review of the first
+revision and have been corrected in this submission.
+
+%% Fix 1
+\begin{reviewbox}
+\RC{Plain PQC schemes (FN-DSA-512, ML-DSA-44) are shown with DAPV bars in
+Figures 2 and 4, but DAPV requires a classical component as a provisional
+anchor. What does ``DAPV'' mean for a pure PQC scheme? (R\#2)}
+\end{reviewbox}
+\begin{replybox}
+\AR{This is a valid logical inconsistency. We have added Section~3.2
+(``DAPV Deployment Modes'') explicitly stating that DAPV in its current form
+\emph{requires} a classical signature component and applies only to hybrid
+schemes. For plain PQC entries in the figures, we now clarify in the captions
+that those DAPV bars measure threading overhead only---not an operative DAPV
+deployment---and that the hybrid rows are the operative results. A DAPV
+extension for PQC-only schemes (using a lightweight hash commitment as a
+provisional anchor) is identified as a specific future-work item.}
+\CH{Section~3.2 added; figure captions updated; future-work item added.}
+\end{replybox}
+
+%% Fix 2
+\begin{reviewbox}
+\RC{Algorithm 3 assumes the application can query \textsc{provisional} state
+before sending data, but no TLS library exposes this today. Is the
+application-aware policy realistic? (R\#1)}
+\end{reviewbox}
+\begin{replybox}
+\AR{We have added Section~8.3.1 with a concrete OpenSSL API sketch showing
+exactly how this is implemented: two new integer flags added to OpenSSL's
+existing \texttt{SSL\_CTX\_set\_info\_callback} mechanism, one new
+\texttt{SSL\_get\_dapv\_state()} getter, and a four-line conditional at the
+application's request handler. The engineering effort is estimated at
+$\approx$200 lines of changes to \texttt{ssl/ssl\_lib.c}---a practical
+engineering scope, not an invasive rewrite.}
+\CH{Section~8.3.1 with verbatim API sketch added.}
+\end{replybox}
+
+%% Fix 3
+\begin{reviewbox}
+\RC{The Window of Vulnerability is measured on idle hardware. In noisy real
+environments, CPU stealing and scheduling jitter could significantly expand
+\Dt. (R\#1)}
+\end{reviewbox}
+\begin{replybox}
+\AR{We have added Section~5.4.1 and Table~5 showing \Dt\ for P-256\,+\,ML-DSA-44
+at 0\%, 50\%, and 80\% CPU load. At 80\% load, \Dt\ expands to a 95th
+percentile of 58.7\,ms---nearly 3$\times$ the idle baseline. This confirms
+that $D_\text{policy}\leq8$\,KB (not \Dt\ size) is the operative security
+control, and that production deployments must instrument real \Dt\
+distributions under load.}
+\CH{Section~5.4.1 and Table~5 added; deployment recommendations updated.}
+\end{replybox}
+
+%% Fix 4
+\begin{reviewbox}
+\RC{What happens to data already sent during \Dt\ if PQC verification
+fails? Is there a rollback? (R\#2)}
+\end{reviewbox}
+\begin{replybox}
+\AR{We have expanded Attack Vector~1 (Section~7.4) with an explicit data-fate
+analysis: session termination cannot ``unread'' data already processed during
+\Dt. The $D_\text{policy}$ cap is therefore the \emph{primary} control
+limiting damage on PQC failure, not the termination event itself. We now
+recommend treating \textsc{provisional} state as analogous to an
+unauthenticated channel: no secrets, credentials, or PII should transit before
+\textsc{fully\_authenticated} is confirmed.}
+\CH{Attack Vector~1 in Section~7.4 expanded with data-fate analysis.}
+\end{replybox}
+
+%% Fix 5
+\begin{reviewbox}
+\RC{The distinction between classical-only, PQC-only, and hybrid deployments
+and which mode DAPV applies to is not clearly drawn. (R\#1)}
+\end{reviewbox}
+\begin{replybox}
+\AR{Section~3.2 now provides a three-mode taxonomy with explicit statements
+on DAPV applicability for each mode. The paper previously implied DAPV applies
+to all PQC configurations; this is corrected.}
+\CH{Section~3.2 (``DAPV Deployment Modes'') added.}
+\end{replybox}
+
+%% Fix 6
+\begin{reviewbox}
+\RC{Calling this ``cross-platform'' when both testbeds are x86-64 (Windows
+and Linux) is inaccurate. (R\#2)}
+\end{reviewbox}
+\begin{replybox}
+\AR{The term ``cross-platform'' has been removed throughout. The title now
+reads ``Multi-OS Implementation''; Contribution C1 now explicitly states
+``Both platforms share the same x86-64 architecture; evaluation on ARM, mobile,
+and embedded hardware is identified as future work.'' All downstream
+references corrected.}
+\CH{Title, abstract, C1, and Section~4.1 updated.}
+\end{replybox}
+
+\vspace{2em}
+\hrule
+\vspace{1em}
+
+\begin{center}
+We believe these revisions resolve all concerns raised by the 
+reviewers and substantially strengthen the manuscript's empirical accuracy,
+security honesty, and presentation quality.  We look forward to the
+editors' and reviewers' assessment of the revised version.
+\end{center}
+
+\end{document}

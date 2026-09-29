@@ -1,0 +1,457 @@
+%% references.bib -- revised manuscript
+%% Entries carried over from the previous submission (unchanged unless noted)
+
+@inproceedings{Paquin2020,
+  author    = {Christian Paquin and Douglas Stebila and Goutam Tamvada},
+  title     = {Benchmarking Post-Quantum Cryptography in {TLS}},
+  booktitle = {Post-Quantum Cryptography},
+  editor    = {Jintai Ding and Jean-Pierre Tillich},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {12100},
+  pages     = {72--91},
+  publisher = {Springer},
+  address   = {Cham},
+  year      = {2020},
+  doi       = {10.1007/978-3-030-44223-1_5}
+}
+
+@inproceedings{Sikeridis2020a,
+  author    = {Dimitrios Sikeridis and Panos Kampanakis and Michael Devetsikiotis},
+  title     = {Post-Quantum Authentication in {TLS} 1.3: A Performance Study},
+  booktitle = {Proceedings of the Network and Distributed System Security Symposium (NDSS)},
+  year      = {2020},
+  doi       = {10.14722/ndss.2020.24203}
+}
+
+@inproceedings{Sikeridis2020b,
+  author    = {Dimitrios Sikeridis and Panos Kampanakis and Michael Devetsikiotis},
+  title     = {Assessing the Overhead of Post-Quantum Cryptography in {TLS} 1.3 and {SSH}},
+  booktitle = {Proceedings of the 16th International Conference on Emerging
+               Networking Experiments and Technologies (CoNEXT'20)},
+  pages     = {149--156},
+  publisher = {ACM},
+  year      = {2020},
+  doi       = {10.1145/3386367.3431305}
+}
+
+@article{Montenegro2026,
+  author    = {Jos{\'e} A. Montenegro and Rodrigo Rios and Javier Lopez-Cerezo},
+  title     = {A Performance Evaluation Framework for Post-Quantum {TLS}},
+  journal   = {Future Generation Computer Systems},
+  volume    = {175},
+  pages     = {108062},
+  year      = {2026},
+  doi       = {10.1016/j.future.2025.108062}
+}
+
+@article{Alnahawi2024,
+  author    = {Nouri Alnahawi and Johannes M{\"u}ller and Jan Oupicky and Alexander Wiesmaier},
+  title     = {A Comprehensive Survey on Post-Quantum {TLS}},
+  journal   = {{IACR} Communications in Cryptology},
+  volume    = {1},
+  number    = {2},
+  pages     = {41--71},
+  year      = {2024}
+}
+
+%% --- OQS Project --------------------------------------------
+
+@inproceedings{OQS2017,
+  author    = {Douglas Stebila and Michele Mosca},
+  title     = {Post-Quantum Key Exchange for the Internet and the Open Quantum Safe Project},
+  booktitle = {Selected Areas in Cryptography (SAC 2016)},
+  editor    = {Roberto Avanzi and Howard Heys},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {10532},
+  pages     = {1--24},
+  publisher = {Springer},
+  address   = {Cham},
+  year      = {2017},
+  note      = {OQS benchmarks available at \url{https://openquantumsafe.org/}}
+}
+
+%% --- Hybrid Authentication ----------------------------------
+
+@inproceedings{Bindel2017,
+  author    = {Nina Bindel and Udyani Herath and Matthew McKague and Douglas Stebila},
+  title     = {Transitioning to a Quantum-Resistant Public Key Infrastructure},
+  booktitle = {Post-Quantum Cryptography (PQCrypto 2017)},
+  editor    = {Tanja Lange and Tsuyoshi Takagi},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {10346},
+  pages     = {384--405},
+  publisher = {Springer},
+  address   = {Cham},
+  year      = {2017},
+  note      = {Provides nesting-based hybrid signature construction with
+               composable unforgeability guarantees; differs from the
+               concatenation construction used in our prototype.}
+}
+
+%% --- IETF Drafts --------------------------------------------
+
+%%
+%% NOTE: [WiggersIETF2024] is correctly cited as the KEM-based authentication
+%% draft (draft-celi-wiggers-tls-authkem), NOT as a hybrid signature draft.
+%% The hybrid signature/key exchange design is a separate IETF effort.
+%%
+
+@misc{WiggersIETF2024,
+  author    = {Thom Wiggers and Sofía Celi and Peter Schwabe and
+               Douglas Stebila and Nick Sullivan},
+  title     = {{KEM}-Based Authentication for {TLS} 1.3},
+  howpublished = {IETF Internet-Draft
+                  \texttt{draft-celi-wiggers-tls-authkem}},
+  year      = {2024},
+  note      = {\url{https://datatracker.ietf.org/doc/draft-celi-wiggers-tls-authkem/}
+               (Work in Progress). This draft specifies KEM-based authentication;
+               hybrid signature design is covered by separate IETF work items.}
+}
+
+%% --- Industrial Experiments ---------------------------------
+
+@misc{Langley2016CECPQ1,
+  author    = {Adam Langley},
+  title     = {{CECPQ1} Results},
+  howpublished = {Imperial Violet Blog},
+  month     = nov,
+  year      = {2016},
+  note      = {\url{https://www.imperialviolet.org/2016/11/28/cecpq1.html}}
+}
+
+@misc{Langley2018CECPQ2,
+  author    = {Adam Langley},
+  title     = {{CECPQ2}},
+  howpublished = {Imperial Violet Blog},
+  month     = dec,
+  year      = {2018},
+  note      = {\url{https://www.imperialviolet.org/2018/12/12/cecpq2.html}}
+}
+
+@misc{Kwiatkowski2019,
+  author    = {Kris Kwiatkowski and Luke Valenta},
+  title     = {The {TLS} Post-Quantum Experiment},
+  howpublished = {Cloudflare Blog},
+  month     = oct,
+  year      = {2019},
+  note      = {\url{https://blog.cloudflare.com/the-tls-post-quantum-experiment/}}
+}
+
+@misc{Braithwaite2016,
+  author    = {Matt Braithwaite},
+  title     = {Experimenting with Post-Quantum Cryptography},
+  howpublished = {Google Security Blog},
+  month     = jul,
+  year      = {2016},
+  note      = {\url{https://security.googleblog.com/2016/07/experimenting-with-post-quantum.html}}
+}
+
+%% --- TLS Security Analyses ----------------------------------
+
+@techreport{ENISA2023,
+  author      = {{European Union Agency for Cybersecurity (ENISA)}},
+  title       = {Post-Quantum Cryptography: Preparing for the Quantum Era},
+  institution = {ENISA},
+  year        = {2023},
+  note        = {\url{https://www.enisa.europa.eu/publications/post-quantum-cryptography}}
+}
+
+@techreport{NSA2022,
+  author      = {{U.S. National Security Agency (NSA)}},
+  title       = {Commercial National Security Algorithm Suite and Quantum
+                 Computing Roadmap},
+  institution = {NSA},
+  year        = {2022},
+  note        = {\url{https://www.nsa.gov/Press-Room/News-Highlights/Article/Article/3215760}}
+}
+
+@techreport{NCSC2024,
+  author      = {{U.K. National Cyber Security Centre (NCSC)}},
+  title       = {Next Steps in Preparing for Post-Quantum Cryptography},
+  institution = {NCSC},
+  year        = {2024},
+  note        = {\url{https://www.ncsc.gov.uk/whitepaper/next-steps-preparing-for-post-quantum-cryptography}}
+}
+
+%% --- NIST PQC Standards ------------------------------------
+
+@techreport{FIPS204,
+  author      = {{National Institute of Standards and Technology}},
+  title       = {{FIPS} 204: Module-Lattice-Based Digital Signature Standard ({ML-DSA})},
+  institution = {NIST},
+  year        = {2024},
+  note        = {\url{https://doi.org/10.6028/NIST.FIPS.204}}
+}
+
+%%
+%% NOTE: FN-DSA (Falcon) was a NIST draft standard (FIPS 206 draft) at
+%% the time of our experiments.  We cite the draft and note that
+%% finalisation was expected.
+%%
+
+@techreport{FIPS205,
+  author      = {{National Institute of Standards and Technology}},
+  title       = {{FIPS} 205: Stateless Hash-Based Digital Signature Standard ({SLH-DSA} / SPHINCS+)},
+  institution = {NIST},
+  year        = {2024},
+  note        = {\url{https://doi.org/10.6028/NIST.FIPS.205}}
+}
+
+%% --- Quantum Computing Threat --------------------------------
+
+@article{Shor1994,
+  author    = {Peter W. Shor},
+  title     = {Algorithms for Quantum Computation: Discrete Logarithms and
+               Factoring},
+  journal   = {Proceedings of the 35th Annual Symposium on Foundations
+               of Computer Science (FOCS)},
+  pages     = {124--134},
+  year      = {1994},
+  doi       = {10.1109/SFCS.1994.365700}
+}
+
+%% --- Additional Benchmarking --------------------------------
+
+@inproceedings{Sosnowski2023,
+  author    = {Markus Sosnowski and Florian Wiedner and Eric Hauser and Lion Steger and Dimitrios Schoinianakis and Sebastian Gallenm{\"u}ller and Georg Carle},
+  title     = {The Performance of Post-Quantum {TLS} 1.3},
+  booktitle = {Companion of the 19th International Conference on Emerging
+               Networking Experiments and Technologies (CoNEXT Companion '23)},
+  publisher = {ACM},
+  year      = {2023,
+  doi       = {10.1145/3624354.3630585}
+}
+}
+
+@inproceedings{Gonzalez2022,
+  author    = {Ruben Gonzalez and Thom Wiggers},
+  title     = {{KEMTLS} vs.\ Post-Quantum {TLS}: Performance on Embedded Systems},
+  booktitle = {Proceedings of the International Conference on Security, Privacy
+               and Applied Cryptographic Engineering (SPACE)},
+  year      = {2022},
+  note      = {\url{https://kemtls.org/publication/kemtls-embedded/}}
+}
+
+@inproceedings{Schwabe2021,
+  author    = {Peter Schwabe and Douglas Stebila and Thom Wiggers},
+  title     = {More Efficient Post-Quantum {KEMTLS} with Pre-Distributed Public Keys},
+  booktitle = {Computer Security -- ESORICS 2021},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {12972},
+  pages     = {3--22},
+  publisher = {Springer},
+  year      = {2021},
+  doi       = {10.1007/978-3-030-88418-5_1}
+}
+
+@misc{Langley2023Quantum,
+  author    = {Adam Langley},
+  title     = {Quantum-Resistant Authentication in {TLS}},
+  howpublished = {Chromium Blog},
+  month     = sep,
+  year      = {2023},
+  note      = {\url{https://blog.chromium.org/2023/09/quantum-resistant-authentication-in-tls.html}}
+}
+
+@misc{ReddyTschofenig2025,
+  author    = {Tirumaleswar Reddy and Hannes Tschofenig},
+  title     = {Post-Quantum Cryptography Recommendations for {TLS}-Based Applications},
+  howpublished = {IETF Internet-Draft \texttt{draft-ietf-uta-pqc-app-00}},
+  month     = sep,
+  year      = {2025},
+  note      = {\url{https://datatracker.ietf.org/doc/draft-ietf-uta-pqc-app/} (Work in Progress)}
+}
+
+
+%% ------------------------------------------------------------
+%% Corrected / replaced entries
+%% ------------------------------------------------------------
+
+%% Replaces the previous "Cremers2016" entry, which referred to a
+%% non-existent Internet-Draft.
+@inproceedings{Cremers2016,
+  author    = {Cas Cremers and Marko Horvat and Sam Scott and Thyla van der Merwe},
+  title     = {Automated Analysis and Verification of {TLS} 1.3: 0-{RTT}, Resumption
+               and Delayed Authentication},
+  booktitle = {Proceedings of the IEEE Symposium on Security and Privacy (S\&P)},
+  pages     = {470--485},
+  year      = {2016},
+  doi       = {10.1109/SP.2016.35}
+}
+
+%% Replaces the previous "Cheval2022" entry, which could not be verified.
+@inproceedings{Cremers2017,
+  author    = {Cas Cremers and Marko Horvat and Jonathan Hoyland and Sam Scott
+               and Thyla van der Merwe},
+  title     = {A Comprehensive Symbolic Analysis of {TLS} 1.3},
+  booktitle = {Proceedings of the ACM SIGSAC Conference on Computer and
+               Communications Security (CCS)},
+  pages     = {1773--1788},
+  year      = {2017},
+  doi       = {10.1145/3133956.3134063}
+}
+
+@techreport{FIPS206Draft,
+  author      = {{National Institute of Standards and Technology}},
+  title       = {{FIPS} 206 (Initial Public Draft): {FFT} over {NTRU}-Lattice-Based
+                 Digital Signature Algorithm ({FN-DSA})},
+  institution = {NIST},
+  year        = {2025},
+  note        = {Draft standard. AUTHORS: verify status, date and URL before submission.}
+}
+
+%% ------------------------------------------------------------
+%% New references
+%% ------------------------------------------------------------
+
+@techreport{FIPS203,
+  author      = {{National Institute of Standards and Technology}},
+  title       = {{FIPS} 203: Module-Lattice-Based Key-Encapsulation Mechanism
+                 Standard ({ML-KEM})},
+  institution = {NIST},
+  year        = {2024},
+  doi         = {10.6028/NIST.FIPS.203}
+}
+
+@misc{RFC8446,
+  author       = {Eric Rescorla},
+  title        = {The Transport Layer Security ({TLS}) Protocol Version 1.3},
+  howpublished = {RFC 8446, IETF},
+  year         = {2018},
+  doi          = {10.17487/RFC8446}
+}
+
+@misc{RFC6928,
+  author       = {Jerry Chu and Nandita Dukkipati and Yuchung Cheng and Matt Mathis},
+  title        = {Increasing {TCP}'s Initial Window},
+  howpublished = {RFC 6928, IETF},
+  year         = {2013},
+  doi          = {10.17487/RFC6928}
+}
+
+@misc{RFC7918,
+  author       = {Adam Langley and Nagendra Modadugu and Bodo Moeller},
+  title        = {Transport Layer Security ({TLS}) False Start},
+  howpublished = {RFC 7918, IETF},
+  year         = {2016},
+  doi          = {10.17487/RFC7918}
+}
+
+@misc{ECDHEMLKEM,
+  author       = {Kris Kwiatkowski and Panos Kampanakis and Bas Westerbaan and
+                  Douglas Stebila},
+  title        = {Post-Quantum Hybrid {ECDHE-MLKEM} Key Agreement for {TLSv1.3}},
+  howpublished = {IETF Internet-Draft \texttt{draft-ietf-tls-ecdhe-mlkem}},
+  year         = {2026},
+  note         = {Work in progress}
+}
+
+@misc{CompositeSigs,
+  author       = {Mike Ounsworth and John Gray and Massimiliano Pala and
+                  Jan Klaussner and Scott Fluhrer},
+  title        = {Composite {ML-DSA} for use in {X.509} Public Key Infrastructure},
+  howpublished = {IETF Internet-Draft \texttt{draft-ietf-lamps-pq-composite-sigs}},
+  year         = {2026},
+  note         = {Work in progress}
+}
+
+@misc{HybridSpectrums,
+  author       = {Nina Bindel and Britta Hale and Deirdre Connolly and Florence Driscoll},
+  title        = {Hybrid Signature Spectrums},
+  howpublished = {IETF Internet-Draft \texttt{draft-ietf-pquip-hybrid-signature-spectrums}},
+  note         = {Work in progress. AUTHORS: verify author list and year.}
+}
+
+@misc{BindelHale2023,
+  author       = {Nina Bindel and Britta Hale},
+  title        = {A Note on Hybrid Signature Schemes},
+  howpublished = {Cryptology ePrint Archive, Paper 2023/423},
+  year         = {2023},
+  note         = {\url{https://eprint.iacr.org/2023/423}}
+}
+
+@article{Mosca2018,
+  author    = {Michele Mosca},
+  title     = {Cybersecurity in an Era with Quantum Computers: Will We Be Ready?},
+  journal   = {IEEE Security \& Privacy},
+  volume    = {16},
+  number    = {5},
+  pages     = {38--41},
+  year      = {2018},
+  doi       = {10.1109/MSP.2018.3761723}
+}
+
+@article{Ducas2018Dilithium,
+  author    = {L{\'e}o Ducas and Eike Kiltz and Tancr{\`e}de Lepoint and Vadim Lyubashevsky
+               and Peter Schwabe and Gregor Seiler and Damien Stehl{\'e}},
+  title     = {{CRYSTALS-Dilithium}: A Lattice-Based Digital Signature Scheme},
+  journal   = {IACR Transactions on Cryptographic Hardware and Embedded Systems},
+  volume    = {2018},
+  number    = {1},
+  pages     = {238--268},
+  year      = {2018},
+  doi       = {10.13154/tches.v2018.i1.238-268}
+}
+
+@inproceedings{Schwabe2020KEMTLS,
+  author    = {Peter Schwabe and Douglas Stebila and Thom Wiggers},
+  title     = {Post-Quantum {TLS} Without Handshake Signatures},
+  booktitle = {Proceedings of the ACM SIGSAC Conference on Computer and
+               Communications Security (CCS)},
+  pages     = {1461--1480},
+  year      = {2020},
+  doi       = {10.1145/3372297.3423350}
+}
+
+@inproceedings{Paul2022,
+  author    = {Sebastian Paul and Yulia Kuzovkova and Norman Lahr and Ruben Niederhagen},
+  title     = {Mixed Certificate Chains for the Transition to Post-Quantum
+               Authentication in {TLS} 1.3},
+  booktitle = {Proceedings of the ACM Asia Conference on Computer and
+               Communications Security (ASIA CCS)},
+  pages     = {727--740},
+  year      = {2022},
+  doi       = {10.1145/3488932.3497755}
+}
+
+@inproceedings{KampanakisKallitsis2022,
+  author    = {Panos Kampanakis and Michael Kallitsis},
+  title     = {Faster Post-Quantum {TLS} Handshakes Without Intermediate {CA} Certificates},
+  booktitle = {Cyber Security, Cryptology, and Machine Learning (CSCML 2022)},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {13301},
+  publisher = {Springer},
+  year      = {2022},
+  doi       = {10.1007/978-3-031-07689-3_25}
+}
+
+@inproceedings{Sikeridis2022ICA,
+  author    = {Dimitrios Sikeridis and Sean Huntley and David Ott and Michael Devetsikiotis},
+  title     = {Intermediate Certificate Suppression in Post-Quantum {TLS}: An
+               Approximate Membership Querying Approach},
+  booktitle = {Proceedings of the 18th International Conference on emerging
+               Networking EXperiments and Technologies (CoNEXT)},
+  publisher = {ACM},
+  year      = {2022},
+  doi       = {10.1145/3555050.3569127}
+}
+
+@inproceedings{Hu2019QTLS,
+  author    = {Xiaokang Hu and Changzheng Wei and Jian Li and Brian Will and Ping Yu
+               and Lu Gong and Haibing Guan},
+  title     = {{QTLS}: High-Performance {TLS} Asynchronous Offload Framework with
+               {Intel} {QuickAssist} Technology},
+  booktitle = {Proceedings of the 24th ACM SIGPLAN Symposium on Principles and
+               Practice of Parallel Programming (PPoPP)},
+  pages     = {158--172},
+  year      = {2019},
+  doi       = {10.1145/3293883.3295705}
+}
+
+@inproceedings{pqm4,
+  author    = {Matthias J. Kannwischer and Joost Rijneveld and Peter Schwabe and
+               Ko Stoffelen},
+  title     = {pqm4: Testing and Benchmarking {NIST} {PQC} on {ARM} {Cortex-M4}},
+  booktitle = {Second NIST PQC Standardization Conference},
+  year      = {2019}
+}

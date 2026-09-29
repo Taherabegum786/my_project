@@ -1,0 +1,1384 @@
+%% ============================================================
+%%  Asynchronous Post-Quantum Signature Verification for
+%%  Low-Latency TLS 1.3 Handshakes
+%%  Computer Networks — Elsevier
+%%  Revised Manuscript
+%% ============================================================
+\documentclass[preprint,10pt,3p]{elsarticle}
+
+%% ---- Core packages -----------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{url}
+\usepackage[protrusion=true,expansion=false]{microtype}
+\usepackage{enumitem}
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\usepackage{placeins}   %% provides \FloatBarrier
+\usepackage{geometry}
+\geometry{margin=1.8cm, top=2cm, bottom=2cm, includehead=false}
+\usepackage{svg} % in preamble
+\usepackage{hyperref}
+
+
+% Add these packages to your LaTeX preamble for SVG support with math expressions:
+
+\usepackage{svg}           % For \includesvg command
+\usepackage{amsmath}       % For math symbols
+\usepackage{amssymb}       % For additional math symbols
+\usepackage[utf8]{inputenc} % For Unicode support (if needed)
+\usepackage[T1]{fontenc}   % For font encoding
+
+% Optional: Set the SVG path (adjust to your directory structure)
+% \svgpath{{./figures/}}
+
+%% ---- Float placement tuning --------------------------------
+\setcounter{topnumber}{9}
+\setcounter{bottomnumber}{9}
+\setcounter{totalnumber}{20}
+\renewcommand{\topfraction}{0.90}
+\renewcommand{\bottomfraction}{0.90}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.85}
+
+%% ---- Tight float/caption spacing ---------------------------
+\setlength{\textfloatsep}{8pt plus 2pt minus 2pt}
+\setlength{\floatsep}{6pt plus 2pt minus 2pt}
+\setlength{\intextsep}{6pt plus 2pt minus 2pt}
+\setlength{\abovecaptionskip}{4pt}
+\setlength{\belowcaptionskip}{2pt}
+
+%% ---- Paragraph spacing -------------------------------------
+\setlength{\parskip}{2pt plus 1pt}
+
+%% ---- Figure path -------------------------------------------
+%% Place all matplotlib-generated figures inside ./figures/
+\graphicspath{{figures/}}
+
+%% ---- Convenience macros ------------------------------------
+\newcommand{\Dt}{\ensuremath{\Delta t}}
+\newcommand{\ms}{\,ms}
+
+\journal{Computer Networks}
+
+%% ============================================================
+\begin{document}
+\begin{frontmatter}
+
+\title{Deferred Asynchronous Post-Quantum Signature Verification for
+Low-Latency TLS~1.3 Handshakes}
+
+% \author[au1]{Tahera Begum Abdul\corref{cor1}}
+% %\author[au1]{ Tahera Begum Abdul \\ \texttt{taherabegum.abdul@gmail.com}}
+% \ead{taherabegum.abdul@gmail.com}
+% \author[au1]{K.~Venkata Ramana}\\
+
+% %\href{mailto:taherabegum.abdul@gmail.com}{taherabegum.abdul@gmail.com}
+
+% \address[au1]{Department of Computer Science and Systems Engineering,
+% Andhra University, Visakhapatnam, Andhra Pradesh, India}
+
+\author[au1]{Tahera Begum Abdul\corref{cor1}}
+\ead{taherabegum.abdul@gmail.com}
+
+\author[au1]{K.~Venkata Ramana}
+
+\cortext[cor1]{Corresponding author}
+
+\address[au1]{Department of Computer Science and Systems Engineering,
+Andhra University, Visakhapatnam, Andhra Pradesh, India}
+
+
+%% ---- Abstract ----------------------------------------------
+\begin{abstract}
+Post-quantum cryptography (PQC) standardisation by NIST has prompted urgent
+migration efforts across Internet security infrastructure, with Transport Layer
+Security (TLS) 1.3 as the primary deployment target.  Hybrid authentication
+schemes --- combining a classical signature algorithm such as ECDSA P-256 with a
+post-quantum counterpart such as ML-DSA-44 --- provide transitional resilience
+against both contemporary and quantum-capable adversaries, but the substantial
+difference in signature sizes between classical and post-quantum schemes
+introduces fragmentation of TLS handshake messages across multiple TCP segments.
+This fragmentation incurs additional network round trips and degrades server
+throughput by up to 55\% relative to classical-only deployments.
+
+This paper presents \textit{Deferred Asynchronous PQC Verification} (DAPV), a
+protocol-level optimisation that separates the two verification stages of a
+hybrid TLS~1.3 handshake.  The classical ECDSA component is verified
+synchronously, completing the handshake and deriving session keys immediately;
+the post-quantum component is dispatched to a background thread for concurrent
+verification.  On PQC success the session is promoted to full authentication;
+on failure the connection is immediately terminated.  This architecture removes
+the per-connection computational cost of PQC verification from the handshake
+critical path while preserving eventual quantum-safe authentication guarantees.
+
+Four contributions are made.  First, a proof-of-concept implementation is
+presented within OpenSSL~3.x using the Open Quantum Safe (OQS) provider,
+validated on both Windows~11 and Ubuntu~22.04 with AVX2-optimised PQC
+primitives.  Second, controlled experiments across RTT values of 0--150\ms\ and
+concurrency levels of 100--1000 clients establish that DAPV reduces
+client-perceived handshake latency by a constant offset of approximately 20\ms,
+independent of RTT, with server throughput improving by 30--36\% for hybrid
+P-256\,+\,ML-DSA-44 at 500 concurrent clients.  Third, decomposition of the
+Window of Vulnerability (\Dt) --- the interval between provisional handshake
+completion and PQC confirmation --- reveals that the measured 14--21\ms\ window
+is dominated by thread scheduling overhead rather than cryptographic
+computation, which costs less than 0.15\ms\ on modern AVX2 hardware.  Fourth,
+a quantitative risk characterisation provides leakage bounds across link speeds
+and CPU load levels, identifies a novel denial-of-service vector specific to
+deferred verification, and proposes concrete mitigations including a bounded
+thread pool, a data-transmission cap, and a minimal OpenSSL API design for
+application-layer policy enforcement.
+\end{abstract}
+
+\begin{keyword}
+Post-Quantum Cryptography \sep TLS 1.3 \sep Hybrid Authentication \sep
+Deferred Verification \sep ML-DSA \sep FN-DSA \sep Handshake Latency \sep
+Window of Vulnerability
+\end{keyword}
+\end{frontmatter}
+
+%% ============================================================
+\section{Introduction}
+\label{sec:intro}
+
+\subsection{Context and Motivation}
+
+Public-key cryptography as deployed in contemporary secure communication
+protocols rests on the computational intractability of integer factorisation and
+the discrete logarithm problem.  Shor's algorithm~\cite{Shor1994} renders both
+problems efficiently solvable on a sufficiently capable quantum computer,
+placing the long-term security of protocols such as TLS directly at risk.
+While quantum hardware of the scale required to threaten current key sizes does
+not yet exist, the threat is operationally significant today because of the
+``Harvest Now, Decrypt Later'' (HNDL) attack model~\cite{Alnahawi2024}: an
+adversary who records encrypted traffic today may decrypt it retroactively once
+quantum capability matures, exposing data with multi-year sensitivity lifetimes.
+In recognition of this risk, NIST has standardised a suite of post-quantum
+algorithms~\cite{FIPS204}, and national cybersecurity agencies including the
+NSA~\cite{NSA2022} and ENISA~\cite{ENISA2023} have issued migration timelines
+with near-term compliance obligations.
+
+TLS~1.3~\cite{Cremers2016,Cheval2022} carries the authentication and
+confidentiality infrastructure of the modern Internet, protecting web traffic,
+API communications, cloud workloads, and mobile ecosystems across billions of
+connections per day.  Migrating TLS to post-quantum cryptography is therefore
+a matter of immediate operational importance.
+
+\subsection{The Hybrid Transition Strategy}
+
+Direct replacement of classical algorithms with post-quantum alternatives
+carries interoperability risk during the transition period.  Hybrid
+authentication addresses this by concatenating a classical and a post-quantum
+signature within a single TLS~1.3 \texttt{CertificateVerify}
+message~\cite{Bindel2017,WiggersIETF2024}, preserving security against
+classical adversaries while simultaneously providing quantum-safe authentication
+for clients that can verify it.
+
+The performance cost is non-trivial.  The ECDSA P-256 signature occupies
+approximately 72~bytes, whereas the NIST-standardised ML-DSA-44
+signature~\cite{FIPS204} requires approximately 2420~bytes---a 35-fold
+increase.  The combined payload for a P-256\,+\,ML-DSA-44 hybrid handshake
+exceeds 3850~bytes, far surpassing the standard Ethernet MTU of 1500~bytes.
+TCP fragmentation introduces additional round trips proportional to network
+latency, disproportionately penalising wide-area and mobile connections.
+Empirical studies consistently report latency increases of 50--300\% and
+throughput reductions exceeding 50\%~\cite{Paquin2020,Sikeridis2020a,
+Sikeridis2020b,Montenegro2026}.
+
+\subsection{Research Gap}
+
+Existing work on PQC integration into TLS focuses primarily on measurement,
+documenting the overhead of candidate algorithms across hardware and network
+conditions.  Architectural mitigations remain largely unexplored.  PQC
+signature \emph{verification} on modern processors is extremely fast---ML-DSA-44
+and FN-DSA-512 complete in well under 1~ms on AVX2-capable
+hardware~\cite{OQS2017}---yet verification is scheduled synchronously on the
+handshake critical path.  Decoupling PQC verification from the critical path
+while preserving its eventual security guarantee is the central design insight
+of DAPV.
+
+\subsection{Contributions}
+
+\begin{enumerate}[label=(\arabic*), leftmargin=*]
+\item \textbf{Protocol design.}  DAPV is specified as a modification to the
+  TLS~1.3 client-side handshake state machine, defining the
+  \textsc{provisional} authentication state, conditions for entry and
+  promotion, and transcript-binding properties that prevent replay.
+
+\item \textbf{Multi-OS implementation.}  A proof-of-concept is constructed
+  within OpenSSL~3.x using the OQS provider, supporting both thread-per-request
+  and bounded thread-pool concurrency models, validated on Windows~11 and
+  Ubuntu~22.04.  Both testbeds use x86-64 architecture; ARM and embedded
+  platforms are a direction for future work.
+
+\item \textbf{Empirical evaluation.}  Controlled experiments across five
+  cryptographic configurations, five RTT conditions, and three concurrency
+  levels characterise DAPV's latency, throughput, CPU utilisation, and \Dt\
+  in detail.  The Window of Vulnerability is decomposed into cryptographic
+  and scheduling components, and its behaviour under CPU load is quantified.
+
+\item \textbf{Security characterisation.}  Leakage bounds are derived for the
+  provisional window.  A novel denial-of-service attack vector specific to
+  deferred verification is identified, and a concrete OpenSSL API for
+  application-layer policy enforcement is presented.
+\end{enumerate}
+
+\subsection{Scope and Limitations}
+
+DAPV targets the hybrid deployment scenario in which a classical signature
+component provides the synchronous provisional anchor.  PQC-only deployments
+are outside its current scope.  The provisional window provides classical-level
+authentication only; quantum-safe guarantees are established solely upon
+completion of background PQC verification.  DAPV is therefore unsuitable for
+compliance-critical applications where any interval of unverified session state
+is impermissible.
+
+The remainder of this paper is organised as follows.  Section~\ref{sec:related}
+surveys background and related work.  Section~\ref{sec:design} presents the
+DAPV protocol design, implementation, and analytical framework.
+Section~\ref{sec:setup} describes the experimental setup.
+Section~\ref{sec:results} reports results.  Section~\ref{sec:security}
+provides the security analysis.  Section~\ref{sec:deployment} discusses
+deployment considerations.  Section~\ref{sec:comparison} situates results
+against prior work.  Section~\ref{sec:conclusion} concludes.
+
+%% ============================================================
+\section{Background and Related Work}
+\label{sec:related}
+
+\subsection{TLS~1.3 Authentication and Transcript Integrity}
+
+TLS~1.3 provides server authentication through a certificate-based handshake.
+The server transmits a \texttt{CertificateVerify} message containing a
+signature over the handshake transcript, followed by a \texttt{Finished} MAC.
+The \texttt{Finished} MAC is computed over the complete transcript hash, which
+includes every preceding handshake message---including the full byte content
+of \texttt{CertificateVerify}.  This property is central to DAPV's security:
+the PQC signature bytes are present in the transcript and bound into the client
+\texttt{Finished} message before any application data is exchanged, even though
+their verification is deferred.
+
+\subsection{PQC Performance in TLS}
+
+Paquin, Stebila, and Tamvada~\cite{Paquin2020} conducted the first systematic
+benchmarking of post-quantum algorithms in TLS, reporting latency increases of
+80--300\% for lattice-based signature schemes in high-RTT environments.
+Sikeridis et al.~\cite{Sikeridis2020a,Sikeridis2020b} studied hybrid
+authentication, observing throughput reductions exceeding 50\% and attributing
+these primarily to TCP fragmentation rather than computational cost.  Montenegro
+et al.~\cite{Montenegro2026} confirmed these findings across a broader range of
+hybrid configurations.  Open Quantum Safe benchmarking~\cite{OQS2017}
+established that ML-DSA-44 and FN-DSA-512 verification on AVX2-capable
+hardware completes in 10--100~$\mu$s, confirming that the latency penalty is
+dominated by network fragmentation.  Recent work by Sosnowski et
+al.~\cite{Sosnowski2023} provides additional characterisation across diverse
+network conditions.
+
+\subsection{Hybrid Signature Constructions}
+
+Bindel et al.~\cite{Bindel2017} formalised hybrid certificate and signature
+schemes with composable unforgeability guarantees using a nesting construction.
+The present implementation uses a simpler concatenation encoding
+$\langle\sigma_E\,\|\,\sigma_P\rangle$ consistent with IETF draft
+conventions~\cite{WiggersIETF2024}.  This does not carry the same formal
+guarantees; production deployments should adopt a construction satisfying the
+composable unforgeability definition of Bindel et al.
+
+\subsection{Deferred Authentication}
+
+Post-handshake authentication was proposed for TLS~1.3.  Cremers et
+al.~\cite{Cremers2016} identified that without explicit transcript binding, this
+mechanism is vulnerable to replay attacks.  Symbolic analyses of TLS~1.3
+post-handshake flows~\cite{Cheval2022} confirmed that deferred authentication
+requires strict cryptographic context binding.  In DAPV, the PQC signature is
+included in the transcript before the client \texttt{Finished} message; the
+vulnerability identified by Cremers et al.\ does not apply.
+
+\subsection{Industrial Deployments and Standardisation}
+
+Google's CECPQ1 and CECPQ2 experiments~\cite{Langley2016CECPQ1,
+Langley2018CECPQ2,Braithwaite2016} integrated post-quantum key exchange into
+Chrome, demonstrating operational feasibility at scale.  Cloudflare deployed
+PQC key exchange across CDN edge servers~\cite{Kwiatkowski2019}, reporting
+measurable but manageable latency impacts.  The IETF
+\texttt{draft-celi-wiggers-tls-authkem}~\cite{WiggersIETF2024} specifies
+KEM-based authentication; hybrid signature standardisation is a separate,
+ongoing effort.  Neither industrial programme has addressed PQC authentication
+latency as a design objective.
+
+%% ============================================================
+\section{System Design}
+\label{sec:design}
+
+\subsection{Design Objectives}
+
+DAPV is designed to satisfy three objectives simultaneously: (i)~reduce
+client-observed handshake latency to near-classical levels; (ii)~preserve the
+eventual quantum-safe authentication guarantee of the hybrid scheme; and
+(iii)~confine the modification to the client-side verification step, requiring
+no changes to the server, wire format, or TLS record layer.
+
+\subsection{Deployment Modes}
+\label{sec:modes}
+
+Three deployment configurations are distinguished.  In \textit{classical-only}
+operation (ECDSA alone), DAPV is not applicable.  In \textit{hybrid} operation
+(classical\,+\,PQC), the classical signature provides a lightweight synchronous
+anchor for the provisional state; PQC verification is deferred.  This is the
+operative deployment scenario analysed in this paper.  In \textit{PQC-only}
+operation (no classical component), DAPV cannot function in its present form
+because no lightweight synchronous operation is available to anchor the
+provisional state; this is an open design challenge identified in the future
+work.
+
+\subsection{Protocol Architecture}
+\label{sec:protocol}
+
+Figure~\ref{fig:sequence} illustrates the DAPV-modified TLS~1.3 handshake.
+Processing proceeds in six stages.
+
+\begin{enumerate}[leftmargin=*, noitemsep]
+\item The client receives \texttt{CertificateVerify} containing the hybrid
+  signature $\langle\sigma_E\|\sigma_P\rangle$.
+
+\item The ECDSA component $\sigma_E$ is verified synchronously (tens of
+  microseconds), providing the provisional authentication decision.
+
+\item On success, the session transitions to \textsc{provisional}: session
+  keys are derived and the client sends its \texttt{Finished} message.
+  The \texttt{Finished} MAC covers the complete transcript, including $\sigma_P$
+  bytes, establishing cryptographic binding before any application data is sent.
+
+\item $\sigma_P$ is dispatched to a background thread for asynchronous
+  verification.
+
+\item On successful PQC verification, the session transitions to
+  \textsc{fully\_authenticated}.
+
+\item PQC verification failure at any point terminates the connection with
+  \texttt{bad\_certificate}.
+\end{enumerate}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.92\columnwidth]{dapv_sequence_preview1.pdf}
+  \caption{DAPV-modified TLS~1.3 handshake.
+    ($\sigma_E$: ECDSA component; $\sigma_P$: PQC component.)
+    The client \texttt{Finished} MAC is computed over the full handshake
+    transcript including $\sigma_P$ bytes, establishing cryptographic
+    binding before any application data is exchanged.  The Window of
+    Vulnerability ($\Delta t$) spans the interval between provisional
+    completion and PQC confirmation.}
+  \label{fig:sequence}
+\end{figure}
+
+
+
+% \begin{figure}[htbp]
+%   \centering
+%   \includesvg[width=0.92\columnwidth]{dapv_sequence_preview.svg}
+%   \caption{DAPV-modified TLS~1.3 handshake.
+%     ($\sigma_E$: ECDSA component; $\sigma_P$: PQC component.)
+%     The client \texttt{Finished} MAC is computed over the full handshake
+%     transcript including $\sigma_P$ bytes, establishing cryptographic
+%     binding before any application data is exchanged.  The Window of
+%     Vulnerability ($\Delta t$) spans the interval between provisional
+%     completion and PQC confirmation.}
+%   \label{fig:sequence}
+% \end{figure}
+
+% \begin{figure}[htbp]
+%   \centering
+%   \includesvg[width=0.92\columnwidth]{dapv_sequence_preview_latex.svg}
+%   \caption{DAPV-modified TLS~1.3 handshake.
+%     ($\sigma_E$: ECDSA component; $\sigma_P$: PQC component.)
+%     The client \texttt{Finished} MAC is computed over the full handshake
+%     transcript including $\sigma_P$ bytes, establishing cryptographic
+%     binding before any application data is exchanged.  The Window of
+%     Vulnerability ($\Delta t$) spans the interval between provisional
+%     completion and PQC confirmation.}
+%   \label{fig:sequence}
+% \end{figure}
+
+
+\subsection{Analytical Framework}
+\label{sec:analytical}
+
+\subsubsection{Handshake Latency Model}
+
+Classical TLS~1.3 handshake latency follows an affine function of RTT:
+\begin{equation}
+  L_\text{classical} = L_0 + k \cdot \text{RTT}
+  \label{eq:classical}
+\end{equation}
+where $L_0$ is the base computational latency and $k$ is the number of
+required handshake round trips.  Under hybrid PQC authentication, enlarged
+payloads trigger TCP fragmentation, introducing $\delta k \geq 0$ additional
+round trips:
+\begin{equation}
+  L_\text{hybrid} = L_0 + (k + \delta k) \cdot \text{RTT}
+  \label{eq:hybrid}
+\end{equation}
+DAPV removes PQC verification time $T_\text{verify}$ from the critical path
+but does not alter fragmentation behaviour:
+\begin{equation}
+  L_\text{DAPV} \approx L_0 + (k + \delta k) \cdot \text{RTT} - T_\text{verify}
+  \label{eq:dapv}
+\end{equation}
+Because $T_\text{verify}$ is RTT-independent, the latency benefit of DAPV is a
+\emph{constant offset} relative to the synchronous hybrid curve, not a change
+in slope.
+
+\subsubsection{Throughput Model}
+
+Server throughput under hybrid authentication is modulated by PQC signature
+size $S_\text{pqc}$ relative to the MTU $S_\text{mtu} = 1500$~bytes:
+\begin{equation}
+  T_\text{hybrid} = \frac{T_\text{classical}}
+    {1 + \lambda \cdot S_\text{pqc} / S_\text{mtu}}
+\end{equation}
+where $\lambda \geq 0$ captures RTT and congestion effects.
+
+\subsubsection{Leakage and Risk}
+
+The maximum application data traversing the provisional channel during \Dt\ is:
+\begin{equation}
+  L_\text{max} = \frac{B \times \Dt}{8}
+  \label{eq:leakage}
+\end{equation}
+where $B$ is link bandwidth in bits per second.  A data-transmission cap
+$D_\text{policy}$ applied at the application layer bounds this irrespective of
+\Dt\ and $B$.  The provisional exposure probability follows:
+\begin{equation}
+  R(\Dt, B) = 1 - e^{-\beta B \Dt}
+  \label{eq:risk}
+\end{equation}
+where $\beta$ is an empirical scaling factor calibrated to the acceptable
+risk threshold.
+
+\subsubsection{System Efficiency}
+
+\begin{equation}
+  E_\text{DAPV} = \frac{T_\text{DAPV} / T_\text{classical}}
+                       {L_\text{DAPV} / L_\text{hybrid}}
+  \label{eq:efficiency}
+\end{equation}
+$E_\text{DAPV} > 1$ indicates a net system-level benefit: proportionally greater
+throughput improvement than residual latency cost.
+
+\subsection{Algorithms}
+\label{sec:algorithms}
+
+Algorithms~\ref{alg:client}--\ref{alg:policy} formalise the client handshake
+procedure, server dispatch mechanism, and application-layer policy enforcement.
+
+\begin{algorithm}[H]
+\caption{DAPV Client Handshake Procedure}
+\label{alg:client}
+\DontPrintSemicolon
+\KwIn{Hybrid signature $\langle\sigma_E, \sigma_P\rangle$ in \texttt{CertificateVerify}}
+\KwOut{Session state $\in$ \{\textsc{provisional}, \textsc{fully\_authenticated}\}}
+\BlankLine
+Extract $\sigma_E$ and $\sigma_P$ from \texttt{CertificateVerify}\;
+\uIf{$\mathrm{VerifyECDSA}(\sigma_E,\;\mathrm{cert}) = \mathrm{true}$}{
+  $\mathrm{session.state} \leftarrow \textsc{provisional}$\;
+  Derive session keys\;
+  Compute \texttt{Finished} MAC over full transcript (includes $\sigma_P$ bytes)\;
+  Send \texttt{Finished}\;
+  Dispatch $\mathrm{AsyncVerify}(\sigma_P,\;\mathrm{cert},\;\mathrm{sid})$
+    to background thread\;
+}
+\Else{
+  Send \texttt{bad\_certificate}\;  Abort connection\;
+}
+\BlankLine
+\SetKwProg{Proc}{procedure}{:}{}
+\Proc{$\mathrm{AsyncVerify}(\sigma_P,\;\mathrm{cert},\;\mathrm{sid})$}{
+  \uIf{$\mathrm{VerifyPQC}(\sigma_P,\;\mathrm{cert}) = \mathrm{success}$}{
+    $\mathrm{session}(\mathrm{sid}).\mathrm{state}
+      \leftarrow \textsc{fully\_authenticated}$\;
+  }
+  \Else{
+    Terminate $\mathrm{session}(\mathrm{sid})$\;
+    Send \texttt{bad\_certificate}\;
+  }
+}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Bounded Server Thread-Pool Dispatcher}
+\label{alg:server}
+\DontPrintSemicolon
+\KwIn{Verification task queue; pool bound $M$}
+Initialise thread pool $\mathcal{P}$ with $M$ workers\tcp*{$M$ bounded
+  to resist provisional flooding}
+\While{server running}{
+  \If{$\mathrm{TaskQueue} \neq \emptyset$}{
+    $\mathrm{task} \leftarrow \mathrm{Dequeue}(\mathrm{TaskQueue})$\;
+    Assign task to idle worker $w \in \mathcal{P}$\;
+    $w.\mathrm{execute}\bigl(
+      \mathrm{VerifyPQC}(\mathrm{task}.\sigma_P,\;\mathrm{task.cert})
+    \bigr)$\;
+  }
+}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Application-Layer Data Transmission Policy}
+\label{alg:policy}
+\DontPrintSemicolon
+\KwIn{\texttt{session.state}; outbound payload size $d$; cap $D_\text{policy}$}
+\uIf{$\mathrm{session.state} = \textsc{provisional}$}{
+  \uIf{$d > D_\text{policy}$}{
+    Buffer payload\;
+    Retry after \textsc{fully\_authenticated}\;
+  }
+  \Else{
+    Transmit payload\;
+  }
+}
+\Else{
+  Transmit payload unconditionally\;
+}
+\end{algorithm}
+
+\subsection{Implementation}
+\label{sec:impl}
+
+The proof-of-concept is built on OpenSSL~3.2 with the OQS provider and
+liboqs~\cite{OQS2017}, patching the \texttt{oqs\_sig\_verify} callback to
+dispatch the PQC component asynchronously via \texttt{CreateThread} (Windows)
+or \texttt{pthread} (Linux).  Hybrid certificates concatenate ECDSA P-256 and
+PQC public keys; signatures are encoded as
+$\langle\mathrm{len}(\sigma_E)\|\sigma_E\|\sigma_P\rangle$.
+
+Three concurrency models are supported: (i)~\textit{thread per request}, used
+in this prototype for simplicity; (ii)~\textit{bounded thread pool}, recommended
+for production to cap resource consumption and resist denial-of-service;
+and (iii)~\textit{event-driven dispatch}, suitable for high-concurrency edge
+deployments.
+
+%% ============================================================
+\section{Experimental Setup}
+\label{sec:setup}
+
+\subsection{Hardware Platforms}
+
+Experiments were conducted on two testbeds.  The Windows testbed comprised an
+Intel Core i7-11800H (8 cores, 2.3~GHz, 32~GB RAM) running Windows~11 Pro.
+The Linux testbed comprised an Intel Xeon Silver~4310 (12 cores, 2.1~GHz,
+64~GB RAM) running Ubuntu~22.04 LTS.  Both systems used dedicated Gigabit
+Ethernet.  AVX2 support was confirmed active on both platforms prior to
+benchmarking.  Both testbeds share x86-64 microarchitecture; evaluation on
+ARM-class embedded hardware is a direction for future work.
+
+\subsection{Software Stack}
+
+OpenSSL~3.2 was compiled with the OQS provider~\cite{OQS2017} and liboqs,
+providing AVX2-optimised implementations of all PQC schemes under test.
+Compiler toolchains were Visual Studio~2022 (Windows) and GCC~11.3 (Linux).
+DAPV modifications were confined to the \texttt{oqs\_sig\_verify} callback and
+connection state machine; no changes were required to TLS record processing or
+key derivation.
+
+\subsection{Cryptographic Configurations}
+
+Five configurations were benchmarked:
+\begin{itemize}[noitemsep]
+  \item \textbf{ECDSA P-256} --- classical baseline.
+  \item \textbf{FN-DSA-512} --- NIST Level~1; FIPS~206 draft at time of
+        experiments; compact signatures with fast verification.
+  \item \textbf{ML-DSA-44} --- NIST Level~2; FIPS~204 final standard; larger
+        signatures with well-studied lattice security.
+  \item \textbf{P-256\,+\,FN-DSA-512} --- hybrid; primary DAPV target.
+  \item \textbf{P-256\,+\,ML-DSA-44} --- hybrid; primary DAPV target.
+\end{itemize}
+
+\noindent Standalone FN-DSA-512 and ML-DSA-44 DAPV measurements (without a
+classical anchor) are included to characterise threading overhead; they do not
+represent operative DAPV deployments and should be interpreted accordingly.
+
+\subsection{Network Emulation}
+
+One-way delay was introduced using Clumsy~0.3 (Windows) and \texttt{tc netem}
+(Linux), producing RTT values of 0, 20, 50, 100, and 150\ms.  Packet loss was
+held at zero to isolate fragmentation effects from retransmission events.
+
+\subsection{Measurement Procedure}
+
+Four metrics were collected across 30 repetitions per configuration:
+
+\begin{enumerate}[noitemsep]
+\item \textbf{Handshake latency} (ms): wall-clock interval from
+  \texttt{ClientHello} transmission to receipt of server \texttt{Finished},
+  measured at the client.
+
+\item \textbf{Server throughput} (conn/s): maximum sustained TLS handshake
+  rate under 100, 500, and 1000 concurrent clients.
+
+\item \textbf{Peak CPU utilisation} (\%): server-side peak during handshake
+  bursts.
+
+\item \textbf{Window of Vulnerability (\Dt)}: decomposed into (a)~raw PQC
+  cryptographic verification time (timed directly without thread dispatch) and
+  (b)~total wall-clock \Dt\ including thread creation and scheduling.
+\end{enumerate}
+
+\noindent Standard deviation was below 4\% of the mean in all cases;
+95\% confidence intervals are reported throughout.
+
+%% ============================================================
+\section{Results}
+\label{sec:results}
+
+\subsection{Handshake Latency at Zero RTT}
+\label{sec:res_latency0}
+
+Figure~\ref{fig:latency_bar} presents mean handshake latency at 0\ms\ RTT,
+where differences reflect computational overhead alone.  DAPV reduces latency
+for both hybrid configurations: from 48.5 to 34.2\ms\ for
+P-256\,+\,FN-DSA-512 (a reduction of 29\%) and from 55.6 to 34.9\ms\ for
+P-256\,+\,ML-DSA-44 (37\%).  The classical P-256 baseline is unaffected.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.92\columnwidth]{fig01_latency_bar_0ms.pdf}
+  \caption{Mean handshake latency at 0\ms\ RTT for all five configurations
+    under synchronous (blue) and DAPV (red) scheduling.  Green arrows indicate
+    the absolute and percentage reduction for the two operative hybrid
+    configurations (shaded background).  Standalone PQC DAPV entries
+    quantify threading overhead only.}
+  \label{fig:latency_bar}
+\end{figure}
+
+\subsection{Latency as a Function of RTT}
+\label{sec:res_latency_rtt}
+
+Figure~\ref{fig:latency_rtt} presents handshake latency versus RTT for
+P-256\,+\,ML-DSA-44.  All three curves grow linearly with RTT, consistent with
+Equations~\eqref{eq:classical} and~\eqref{eq:hybrid}: the dominant driver at
+high RTT is the fragmentation-induced extra round trip.  DAPV maintains a
+constant offset of approximately 20\ms\ below the synchronous hybrid curve
+across the full tested range, confirming the RTT-independence of
+$T_\text{verify}$ in Equation~\eqref{eq:dapv}.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.92\columnwidth]{fig02_latency_vs_rtt.pdf}
+  \caption{Handshake latency versus RTT for P-256\,+\,ML-DSA-44.  DAPV
+    delivers a constant $\approx$20\ms\ reduction relative to synchronous
+    hybrid at every tested RTT value.  The double-headed arrow at RTT\,=\,150\ms\
+    marks this constant offset.  Both DAPV and synchronous hybrid curves have
+    equal slopes, confirming that fragmentation-induced extra round trips are
+    not eliminated by DAPV.}
+  \label{fig:latency_rtt}
+\end{figure}
+
+Figure~\ref{fig:latency_saving} isolates the absolute latency saving provided
+by DAPV for each configuration at three RTT values.  Savings vary by less than
+0.2\ms\ across RTT conditions, confirming the RTT-independence of
+$T_\text{verify}$.  P-256\,+\,ML-DSA-44 yields the largest saving (20.7\ms)
+because ML-DSA-44 carries a higher per-call computational cost than FN-DSA-512.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.92\columnwidth]{fig03_latency_saving_by_rtt.pdf}
+  \caption{Absolute latency reduction (Sync\,$-$\,DAPV) for each configuration
+    at RTT\,=\,0, 50, and 150\ms.  The near-constant saving across RTT
+    conditions---variation below 0.2\ms---confirms that $T_\text{verify}$ is
+    RTT-independent.  P-256\,+\,ML-DSA-44 achieves the largest reduction
+    owing to ML-DSA-44's higher computational cost.}
+  \label{fig:latency_saving}
+\end{figure}
+
+\subsection{Server Throughput}
+\label{sec:res_throughput}
+
+Figure~\ref{fig:throughput_bar} presents server throughput at 100 and 1000
+concurrent clients.  Classical ECDSA sustains approximately 820~conn/s.  Hybrid
+schemes degrade to 390--420~conn/s---a reduction exceeding 50\%.  DAPV
+restores throughput to 530--565~conn/s at 100 clients (30--36\% improvement
+over synchronous hybrid).  The improvement arises from earlier release of
+server-side connection state: once the client sends its \texttt{Finished}
+message under provisional authentication, the server may begin processing the
+next connection without waiting for PQC verification.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.92\columnwidth]{fig04_throughput_bar.pdf}
+  \caption{Server throughput at 100 (solid bars) and 1000 (hatched bars)
+    concurrent clients.  Blue bars denote synchronous operation; red bars
+    denote DAPV.  DAPV improves throughput by 30--36\% for hybrid
+    P-256\,+\,ML-DSA-44 at 100 clients, declining to $\approx$30\% at 1000
+    as thread-pool scheduling contention increases.
+    Standard deviation below 4\% of mean throughout.}
+  \label{fig:throughput_bar}
+\end{figure}
+
+Figure~\ref{fig:throughput_rtt} extends this analysis across RTT values at
+500 concurrent clients.  Both synchronous hybrid and DAPV hybrid degrade
+monotonically with RTT as fragmentation extends connection dwell time.  DAPV
+maintains a 30--34\% throughput advantage across the full RTT range.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.92\columnwidth]{fig05_throughput_vs_rtt.pdf}
+  \caption{Server throughput versus RTT at 500 concurrent clients.
+    The shaded region between synchronous and DAPV hybrid curves represents
+    the DAPV throughput gain.  Percentage labels indicate the gain at each
+    RTT value.  Both curves degrade with RTT due to fragmentation; the
+    relative gain is stable at 30--34\%.}
+  \label{fig:throughput_rtt}
+\end{figure}
+
+Figure~\ref{fig:uplift} summarises throughput uplift across all tested
+concurrency levels.  Uplift is stable at 34--36\% for P-256\,+\,ML-DSA-44 and
+31--35\% for P-256\,+\,FN-DSA-512, confirming that the improvement is robust
+to concurrency within the tested range.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.82\columnwidth]{fig06_throughput_uplift.pdf}
+  \caption{DAPV throughput uplift (\%) relative to synchronous hybrid, at
+    100, 500, and 1000 concurrent clients.  The shaded band illustrates the
+    stable improvement region.  Uplift is consistent across concurrency levels,
+    suggesting the benefit is not sensitive to client load within this range.}
+  \label{fig:uplift}
+\end{figure}
+
+\subsection{CPU Utilisation}
+\label{sec:res_cpu}
+
+Figure~\ref{fig:cpu} presents peak server CPU utilisation during handshake
+bursts.  Classical ECDSA peaks at 35\%; hybrid configurations peak at
+79--85\%.  DAPV does not reduce aggregate CPU consumption; the same
+cryptographic operations execute in both scheduling models.  What DAPV changes
+is the \textit{temporal distribution} of that work: rather than sustained
+high-utilisation plateaus coinciding with client-observed handshake completion,
+computation is distributed into background thread activity that overlaps with
+the handling of subsequent connections.  This redistribution reduces peak
+utilisation episodes and improves scheduler responsiveness under high
+concurrency, contributing to the throughput improvement reported above.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.88\columnwidth]{fig07_cpu_utilisation.pdf}
+  \caption{Peak server CPU utilisation during handshake bursts (synchronous
+    configurations).  Bars are colour-coded by utilisation tier: green\,=\,low
+    ($<$50\%), orange\,=\,moderate (50--80\%), red\,=\,high ($>$80\%).
+    DAPV redistributes PQC computation into background threads, reducing peak
+    episodes without changing aggregate work.
+    95\% confidence intervals within $\pm$3 percentage points.}
+  \label{fig:cpu}
+\end{figure}
+
+\subsection{Window of Vulnerability Decomposition}
+\label{sec:res_delta_t}
+
+Figure~\ref{fig:deltat_decomp} decomposes the total \Dt\ into its constituent
+components.  The PQC cryptographic verification operation completes in
+0.08--0.14\ms\ on AVX2 hardware, consistent with published OQS benchmarks.
+Thread creation, OS scheduling, and context-switching overhead account for the
+remainder, contributing 14--21\ms\ to the total prototype \Dt.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.92\columnwidth]{fig08_delta_t_decomposition.pdf}
+  \caption{\Dt\ decomposed into PQC cryptographic verification time (cyan,
+    $<$0.15\ms) and thread dispatch and OS scheduling overhead (purple,
+    14--21\ms).  The cryptographic component accounts for less than 1\% of
+    the total \Dt\ in the prototype implementation.  An optimised bounded
+    thread pool would bring total \Dt\ close to the cryptographic bound.}
+  \label{fig:deltat_decomp}
+\end{figure}
+
+This decomposition has an important security implication: the true exposure
+window --- the interval during which a forged message could go undetected ---
+corresponds to the cryptographic verification time (below 0.15\ms) rather than
+to the implementation-overhead \Dt\ (14--21\ms).
+
+Table~\ref{tab:delta_t} provides full statistical characterisation of \Dt\
+across 30 trials per configuration.
+
+\begin{table}[htbp]
+\centering
+\caption{Window of Vulnerability (\Dt) decomposition, 30 trials per
+  configuration, idle hardware.  All values in ms.}
+\label{tab:delta_t}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Scheme} & \textbf{Crypto} & \textbf{Thread} &
+\textbf{Total \Dt} & \textbf{95\% CI} \\
+\midrule
+FN-DSA-512            & 0.12 & 18.28 & 18.4 & [16.6,\;20.2] \\
+ML-DSA-44             & 0.08 & 14.42 & 14.5 & [13.1,\;15.9] \\
+P-256\,+\,FN-DSA-512  & 0.14 & 18.76 & 18.9 & [16.7,\;21.1] \\
+P-256\,+\,ML-DSA-44   & 0.10 & 21.10 & 21.2 & [18.6,\;23.8] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Figure~\ref{fig:deltat_load} characterises \Dt\ under server CPU load for
+P-256\,+\,ML-DSA-44.  At 80\% CPU utilisation, the 95th-percentile \Dt\
+reaches 58.7\ms---approximately 2.5 times the idle-hardware median---driven by
+OS scheduling latency for background threads competing with foreground
+connection processing.  Deployment policy must therefore calibrate the
+data-transmission cap $D_\text{policy}$ against worst-case \Dt\ under
+production load rather than idle-hardware measurements.  Based on these
+results, a conservative cap of $D_\text{policy} \leq 8$~KB is recommended.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.88\columnwidth]{fig09_delta_t_vs_cpu_load.pdf}
+  \caption{\Dt\ for P-256\,+\,ML-DSA-44 at three server CPU load levels.
+    Each load level shows median, mean, and 95th-percentile \Dt\ across
+    30 trials.  At 80\% CPU load, the 95th-percentile reaches 58.7\ms,
+    approximately 2.5$\times$ the idle median, due to OS scheduling contention.
+    The dashed line marks the idle-hardware 95th percentile for reference.}
+  \label{fig:deltat_load}
+\end{figure}
+
+\subsection{Signature Size and Fragmentation}
+\label{sec:res_size}
+
+Figure~\ref{fig:overhead} presents the combined public key and signature payload
+alongside the 1500-byte Ethernet MTU boundary.  FN-DSA-512 at 1587~bytes
+marginally exceeds the MTU, requiring two TCP segments.  ML-DSA-44 at
+2420~bytes requires three.  The hybrid P-256\,+\,ML-DSA-44 combination at
+3858~bytes requires at minimum three segments, commonly four or more with
+certificate overhead.  These figures explain the $\delta k$ fragmentation
+penalty in Equation~\eqref{eq:hybrid} and confirm that DAPV's 20\ms\ latency
+improvement cannot eliminate the extra round trips induced by fragmentation.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.88\columnwidth]{fig10_signature_size.pdf}
+  \caption{Combined public key and signature payload per configuration.
+    The dashed red line marks the 1500-byte Ethernet MTU.  Green bars fall
+    within the MTU; red bars require TCP fragmentation.  The segment count
+    for each configuration is annotated.  DAPV defers verification but
+    cannot reduce payload size; fragmentation persists in all hybrid
+    configurations.}
+  \label{fig:overhead}
+\end{figure}
+
+\subsection{Consolidated Results}
+\label{sec:res_summary}
+
+Table~\ref{tab:summary} presents a unified comparison across all evaluated
+configurations at 500 concurrent clients.
+
+\begin{table}[htbp]
+\centering
+\caption{Consolidated performance comparison across all configurations.
+  Throughput at 500 concurrent clients; \Dt\ on Windows testbed.
+  \textbf{Bold}: operative DAPV results.
+  $\dagger$: standalone PQC with threaded dispatch; no classical provisional
+  anchor; included as threading-overhead reference only
+  (see Section~\ref{sec:modes}).}
+\label{tab:summary}
+\small
+\setlength{\tabcolsep}{6pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrrr}
+\toprule
+\textbf{Configuration} &
+  \textbf{Latency 0\ms} & \textbf{Latency 150\ms} &
+  \textbf{Throughput} & \textbf{Peak CPU} & \textbf{\Dt} \\
+& (ms) & (ms) & (conn/s) & (\%) & (ms) \\
+\midrule
+ECDSA P-256 (classical)               & 15.2 & 165 & 770 & 35 & --- \\[3pt]
+FN-DSA-512, synchronous               & 30.1 & 180 & 380 & 76 & --- \\
+FN-DSA-512, DAPV$^\dagger$            & 26.7 & 163 & 495 & 76 & 18.4 \\[3pt]
+ML-DSA-44, synchronous                & 41.2 & 191 & 390 & 82 & --- \\
+ML-DSA-44, DAPV$^\dagger$             & 29.3 & 172 & 510 & 82 & 14.5 \\[3pt]
+P-256\,+\,FN-DSA-512, synchronous     & 48.5 & 199 & 440 & 85 & --- \\
+\textbf{P-256\,+\,FN-DSA-512, DAPV}   & \textbf{34.2} & \textbf{179} & \textbf{575 (+31\%)} & \textbf{85} & \textbf{18.9} \\[3pt]
+P-256\,+\,ML-DSA-44, synchronous      & 55.6 & 206 & 470 & 79 & --- \\
+\textbf{P-256\,+\,ML-DSA-44, DAPV}    & \textbf{34.9} & \textbf{185} & \textbf{615 (+31\%)} & \textbf{79} & \textbf{21.2} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+Table~\ref{tab:efficiency} reports the system efficiency metric
+$E_\text{DAPV}$ (Equation~\eqref{eq:efficiency}) for the two hybrid
+configurations.  Both exceed 1.0, confirming a net system-level benefit across
+both throughput and latency dimensions.
+
+\begin{table}[htbp]
+\centering
+\caption{System efficiency metric $E_\text{DAPV}$ for hybrid configurations.
+  Computed at 500 concurrent clients, 0\ms\ RTT.
+  $E_\text{DAPV} > 1$: net system-level improvement.}
+\label{tab:efficiency}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Scheme} &
+  $T_\text{DAPV}/T_\text{cl.}$ &
+  $L_\text{DAPV}/L_\text{hyb.}$ &
+  $E_\text{DAPV}$ & \textbf{Outcome} \\
+\midrule
+P-256\,+\,FN-DSA-512 & 0.747 & 0.706 & 1.058 & Net gain \\
+P-256\,+\,ML-DSA-44  & 0.799 & 0.628 & 1.272 & Net gain \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:full_rtt} extends the consolidated view to all five RTT
+conditions, presenting complete latency and throughput data for every
+configuration.  Latency at intermediate RTT values is obtained by linear
+interpolation between the measured 0\ms\ and 150\ms\ endpoints, consistent
+with the affine model of Equation~\eqref{eq:latency_dapv}.  Throughput values
+for P-256\,+\,ML-DSA-44 across RTT are directly measured
+(Figure~\ref{fig:tput_rtt}); those for P-256\,+\,FN-DSA-512 at non-zero RTT
+are scaled by the same proportional degradation factor observed for
+P-256\,+\,ML-DSA-44 and are marked~$^*$.  Throughput for standalone PQC
+configurations was not measured beyond RTT\,=\,0\ms\ and is omitted.
+
+\begin{table*}[htbp]
+\centering
+\caption{Complete latency and throughput results for all configurations and
+  all five tested RTT conditions (0--150\,ms).
+  Latency at RTT\,=\,20, 50, 100\,ms is linearly interpolated between the
+  measured 0\,ms and 150\,ms endpoints (slope $\approx$\,1\,ms/ms\,RTT for
+  all schemes; see Section~\ref{sec:res_latency_rtt}).
+  Throughput at 500 concurrent clients; boldface rows are operative DAPV
+  deployments.
+  ${}^\dagger$~standalone PQC; no classical anchor; throughput measured at
+  RTT\,=\,0\,ms only.
+  ${}^*$~extrapolated via the RTT-degradation ratio of P-256\,+\,ML-DSA-44.}
+\label{tab:full_rtt}
+\small
+\setlength{\tabcolsep}{4pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}l r rr rr  rr rr@{}}
+\toprule
+\multirow{2}{*}{\textbf{Configuration}} &
+\multirow{2}{*}{\textbf{RTT}} &
+\multicolumn{4}{c}{\textbf{Handshake Latency (ms)}} &
+\multicolumn{4}{c}{\textbf{Throughput @ 500 clients (conn/s)}} \\
+\cmidrule(lr){3-6}\cmidrule(lr){7-10}
+& \textbf{(ms)} &
+  \textit{Sync} & \textit{DAPV} & $\Delta L$ (ms) & $\Delta L$ (\%) &
+  \textit{Sync} & \textit{DAPV} & Gain (c/s) & Gain (\%) \\
+\midrule
+ECDSA P-256           &   0 &  15.2 & ---   & ---  & ---  & 770 & --- & ---      & ---    \\
+(classical baseline)  &  20 &  35.2 & ---   & ---  & ---  & 710 & --- & ---      & ---    \\
+                      &  50 &  65.1 & ---   & ---  & ---  & 640 & --- & ---      & ---    \\
+                      & 100 & 115.1 & ---   & ---  & ---  & 570 & --- & ---      & ---    \\
+                      & 150 & 165.0 & ---   & ---  & ---  & 495 & --- & ---      & ---    \\
+\addlinespace[3pt]
+FN-DSA-512            &   0 &  30.1 &  26.7 &  3.4 & 11.3 & 380 & 495 & $+$115  & $+$30.3 \\
+(DAPV$^\dagger$)      &  20 &  50.1 &  44.9 &  5.2 & 10.4 & --- & --- & ---     & ---    \\
+                      &  50 &  80.1 &  72.2 &  7.9 &  9.9 & --- & --- & ---     & ---    \\
+                      & 100 & 130.1 & 117.6 & 12.5 &  9.6 & --- & --- & ---     & ---    \\
+                      & 150 & 180.0 & 163.0 & 17.0 &  9.4 & --- & --- & ---     & ---    \\
+\addlinespace[3pt]
+ML-DSA-44             &   0 &  41.2 &  29.3 & 11.9 & 28.9 & 390 & 510 & $+$120  & $+$30.8 \\
+(DAPV$^\dagger$)      &  20 &  61.2 &  48.3 & 12.9 & 21.1 & --- & --- & ---     & ---    \\
+                      &  50 &  91.1 &  76.9 & 14.2 & 15.6 & --- & --- & ---     & ---    \\
+                      & 100 & 141.1 & 124.4 & 16.7 & 11.8 & --- & --- & ---     & ---    \\
+                      & 150 & 191.0 & 172.0 & 19.0 &  9.9 & --- & --- & ---     & ---    \\
+\addlinespace[5pt]
+\textbf{P-256\,+\,FN-DSA-512}  &   \textbf{0} &  \textbf{48.5} & \textbf{34.2} & \textbf{14.3} & \textbf{29.5} & \textbf{440} & \textbf{575}       & $\mathbf{+135}$ & $\mathbf{+30.7}$ \\
+\textbf{(operative DAPV)}       &  \textbf{20} &  \textbf{68.6} & \textbf{53.5} & \textbf{15.1} & \textbf{22.0} & \textbf{412}$^*$ & \textbf{538}$^*$ & $\mathbf{+126}$ & $\mathbf{+30.6}$ \\
+                                &  \textbf{50} &  \textbf{98.7} & \textbf{82.5} & \textbf{16.2} & \textbf{16.4} & \textbf{370}$^*$ & \textbf{483}$^*$ & $\mathbf{+113}$ & $\mathbf{+30.5}$ \\
+                                & \textbf{100} & \textbf{148.8} & \textbf{130.7} & \textbf{18.1} & \textbf{12.2} & \textbf{332}$^*$ & \textbf{434}$^*$ & $\mathbf{+102}$ & $\mathbf{+30.7}$ \\
+                                & \textbf{150} & \textbf{199.0} & \textbf{179.0} & \textbf{20.0} & \textbf{10.1} & \textbf{290}$^*$ & \textbf{379}$^*$ & $\mathbf{+89}$  & $\mathbf{+30.7}$ \\
+\addlinespace[5pt]
+\textbf{P-256\,+\,ML-DSA-44}   &   \textbf{0} &  \textbf{55.6} & \textbf{34.9} & \textbf{20.7} & \textbf{37.2} & \textbf{470} & \textbf{615} & $\mathbf{+145}$ & $\mathbf{+30.9}$ \\
+\textbf{(operative DAPV)}       &  \textbf{20} &  \textbf{75.7} & \textbf{54.9} & \textbf{20.8} & \textbf{27.5} & \textbf{440} & \textbf{580} & $\mathbf{+140}$ & $\mathbf{+31.8}$ \\
+                                &  \textbf{50} & \textbf{105.8} & \textbf{85.0} & \textbf{20.8} & \textbf{19.7} & \textbf{395} & \textbf{525} & $\mathbf{+130}$ & $\mathbf{+32.9}$ \\
+                                & \textbf{100} & \textbf{155.9} & \textbf{135.0} & \textbf{20.9} & \textbf{13.4} & \textbf{355} & \textbf{470} & $\mathbf{+115}$ & $\mathbf{+32.4}$ \\
+                                & \textbf{150} & \textbf{206.0} & \textbf{185.0} & \textbf{21.0} & \textbf{10.2} & \textbf{310} & \textbf{415} & $\mathbf{+105}$ & $\mathbf{+33.9}$ \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}
+
+Three observations emerge from Table~\ref{tab:full_rtt}.
+First, the absolute latency saving $\Delta L$ grows with RTT for all
+configurations: for P-256\,+\,ML-DSA-44 it rises from 20.7\ms\ at RTT\,=\,0
+to 21.0\ms\ at RTT\,=\,150\ms, consistent with Figure~\ref{fig:latency_saving}.
+Second, the \emph{relative} saving $\Delta L$ (\%) declines sharply with RTT
+--- from 37.2\% to 10.2\% for P-256\,+\,ML-DSA-44 --- because the absolute
+saving is fixed while total latency grows linearly; this is an expected
+consequence of the RTT-affine model.
+Third, the throughput gain for P-256\,+\,ML-DSA-44 is stable within
+3 percentage points across the full tested RTT range (30.9--33.9\%),
+confirming that DAPV's benefit does not depend on any particular network
+condition.
+
+%% ============================================================
+\section{Security Analysis}
+\label{sec:security}
+
+The analysis presented here provides quantitative risk characterisation,
+including leakage bounds, attack taxonomy, and mitigation strategies.  A formal
+game-based cryptographic security proof --- for example, an EU-CMA analysis of
+the DAPV-modified handshake under combined classical and quantum adversarial
+models using Tamarin or ProVerif --- is outside the scope of the present work
+and is identified as a priority direction for future research.
+
+\subsection{Threat Model}
+
+The analysis follows the extended Dolev--Yao model: the adversary controls the
+communication channel and may intercept, delay, replay, and modify messages.
+Two adversary classes are distinguished.
+
+A \textit{classical adversary} cannot break ECDSA in real time.  This is the
+relevant adversary during the provisional window \Dt: the ECDSA signature serves
+as the synchronous authentication anchor, and a classical adversary cannot
+forge $\sigma_E$ to impersonate the server.
+
+A \textit{CRQC-equipped adversary} can in principle execute Shor's algorithm to
+forge ECDSA signatures.  This adversary class is outside the threat model of
+the provisional window: full quantum-safe authentication is established only
+after background PQC verification succeeds.  This scoping is operationally
+appropriate under current conditions, as quantum hardware capable of attacking
+ECDSA at Internet scale does not currently exist.  As the threat landscape
+evolves, the acceptable magnitude of \Dt\ must be re-evaluated.
+
+\subsection{Leakage Bounds}
+
+Table~\ref{tab:leakage} presents provisional data exposure bounds derived from
+Equation~\eqref{eq:leakage} for representative link speeds.  Under the
+prototype \Dt\ of 14--21\ms, gigabit links can transmit 1.8--2.5~MB during the
+provisional window, motivating a conservative $D_\text{policy}$ cap.  With an
+optimised thread-pool implementation reducing total \Dt\ below 1\ms, the same
+link transmits at most 125~KB, comfortably within a 256-KB cap.
+
+\begin{table}[htbp]
+\centering
+\caption{Maximum provisionally transmitted data during \Dt.
+  Bounds from $L_\text{max} = B \times \Dt / 8$.
+  The optimised column assumes a thread-pool implementation reducing total
+  \Dt\ below 1\ms.}
+\label{tab:leakage}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+& \multicolumn{2}{c}{\textbf{Prototype \Dt}} &
+  \multicolumn{2}{c}{\textbf{Optimised \Dt}} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+\textbf{Link speed} & @15\ms & @21\ms & @0.5\ms & @1\ms \\
+\midrule
+1\,Mbps   & 1.8\,KB  & 2.6\,KB  & 62\,B    & 125\,B  \\
+100\,Mbps & 183\,KB  & 256\,KB  & 6.1\,KB  & 12.5\,KB \\
+1\,Gbps   & 1.8\,MB  & 2.5\,MB  & 61\,KB   & 125\,KB  \\
+10\,Gbps  & 17.9\,MB & 25\,MB   & 610\,KB  & 1.25\,MB \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Figure~\ref{fig:risk} presents the provisional exposure probability
+$R(\Dt, B)$ (Equation~\eqref{eq:risk}) as a function of \Dt\ for four link
+speeds.  At prototype \Dt\ on gigabit links, $R$ approaches 10\%; with
+optimised \Dt\ below 1\ms, $R$ falls below 0.1\% at all tested speeds.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.92\columnwidth]{fig11_risk_vs_delta_t.pdf}
+  \caption{Provisional exposure risk $R(\Dt, B)$ versus \Dt\ for four link
+    speeds.  Vertical dashed lines mark the prototype \Dt\ ($\approx$20\ms)
+    and the projected optimised \Dt\ ($<$1\ms).  At prototype \Dt\ on gigabit
+    links, risk approaches 10\%; an optimised implementation reduces this
+    below 0.1\% at all tested speeds.}
+  \label{fig:risk}
+\end{figure}
+
+\subsection{Device Scaling}
+
+Table~\ref{tab:scaling} projects \Dt\ for device classes beyond the x86-64
+testbeds, based on published OQS benchmarks~\cite{OQS2017}.  DAPV is not
+recommended for Cortex-M4 class microcontrollers without dedicated PQC hardware
+acceleration, as the resulting \Dt\ of up to 700\ms\ would permit data volumes
+far exceeding any practical $D_\text{policy}$ cap.
+
+\begin{table}[htbp]
+\centering
+\caption{Projected \Dt\ scaling across device classes.
+  Cryptographic verification times from OQS benchmarks~\cite{OQS2017};
+  thread scheduling estimates extrapolated from prototype measurements.}
+\label{tab:scaling}
+\small
+\begin{tabular}{lrrl}
+\toprule
+\textbf{Device class} & \textbf{Crypto (ms)} & \textbf{95th \%ile \Dt} &
+  \textbf{Recommendation} \\
+\midrule
+Desktop, i7 AVX2   & $<$0.15   & $<$25    & Recommended \\
+Raspberry Pi 4     & 3--10     & 20--35   & Use bounded pool \\
+Low-power ARM SBC  & 12--25    & 35--60   & Conservative cap required \\
+Cortex-M4 MCU      & 120--600  & $700+$   & Not recommended \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Attack Vectors and Mitigations}
+
+\paragraph{Classical MitM during \Dt.}
+An adversary who can impersonate the server using a fraudulently obtained ECDSA
+certificate passes ECDSA verification and obtains a provisional session; PQC
+verification subsequently detects the invalid $\sigma_P$ and terminates the
+connection.  Data exchanged during \Dt\ may be exposed.  The $D_\text{policy}$
+cap directly bounds this exposure; applications should restrict provisional
+transmission to non-sensitive content.
+
+\paragraph{CRQC-enabled impersonation.}
+An adversary with quantum capability to forge ECDSA could also forge a valid
+PQC signature, defeating both verification stages.  This adversary is outside
+the threat model of the provisional window; full quantum-safe authentication
+holds only after \Dt\ elapses.
+
+\paragraph{Handshake transcript replay.}
+Reuse of a captured \texttt{CertificateVerify} is prevented by TLS~1.3's
+session-specific transcript hash, which incorporates ephemeral key material.
+The \texttt{Finished} MAC additionally binds $\sigma_P$ bytes before any
+application data is transmitted.
+
+\paragraph{Provisional flooding (DAPV-specific DoS).}
+An adversary can flood connections with a valid $\sigma_E$ but deliberately
+malformed $\sigma_P$.  Each connection enters provisional state, allocates a
+background thread, and fails only when that thread executes.  With an unbounded
+thread pool, this attack exhausts server resources.  A bounded pool with fixed
+maximum worker count $M$, supplemented by connection-rate limiting, contains
+this attack: the adversary can occupy at most $M$ background workers
+simultaneously while legitimate foreground connections continue to be served.
+
+\paragraph{Exfiltration via large provisional transfers.}
+If $D_\text{policy}$ is misconfigured to allow arbitrarily large provisional
+transmissions, an adversary in provisional state can exfiltrate substantial data.
+The cap mitigates this directly; a value of $\leq 8$~KB is recommended based on
+the 95th-percentile \Dt\ at 80\% CPU load.
+
+Table~\ref{tab:mitigations} summarises the mitigation mapping.
+
+\begin{table}[htbp]
+\centering
+\caption{DAPV attack vectors and mitigations.}
+\label{tab:mitigations}
+\small
+\begin{tabular}{p{3.8cm}p{6.0cm}}
+\toprule
+\textbf{Attack vector} & \textbf{Mitigation} \\
+\midrule
+Classical MitM during \Dt
+  & $D_\text{policy} \leq 8$\,KB; restrict provisional window to
+    non-sensitive content. \\[4pt]
+CRQC impersonation
+  & Outside current scope; full quantum-safe authentication guaranteed
+    post-\Dt. \\[4pt]
+Transcript replay
+  & Inherent in TLS~1.3 transcript hash and \texttt{Finished} MAC. \\[4pt]
+Provisional flooding (DoS)
+  & Bounded thread pool (fixed $M$); connection rate limiting. \\[4pt]
+Exfiltration via large transfer
+  & $D_\text{policy}$ cap enforced at application layer
+    (Algorithm~\ref{alg:policy}). \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Application-Layer Policy Interface}
+
+Implementing $D_\text{policy}$ enforcement requires the TLS library to expose
+the current session authentication state to the application layer.  The
+following design achieves this within OpenSSL~3.x via the existing
+\texttt{SSL\_CTX\_set\_info\_callback} mechanism, requiring no changes to TLS
+record processing or key derivation:
+
+\begin{verbatim}
+#define SSL_DAPV_STATE_NONE        0
+#define SSL_DAPV_STATE_PROVISIONAL 1
+#define SSL_DAPV_STATE_FULL_AUTH   2
+#define SSL_DAPV_STATE_PQC_FAILED  3
+
+int SSL_get_dapv_state(const SSL *ssl);
+
+void dapv_info_cb(const SSL *ssl, int where, int ret) {
+    if (where & SSL_CB_DAPV_PROVISIONAL)
+        app_set_state(SSL_get_app_data(ssl), PROVISIONAL);
+    else if (where & SSL_CB_DAPV_FULL_AUTH)
+        app_set_state(SSL_get_app_data(ssl), FULL_AUTH);
+    else if (where & SSL_CB_DAPV_PQC_FAILED)
+        app_set_state(SSL_get_app_data(ssl), FAILED);
+}
+
+int handle_request(SSL *ssl, Request *req) {
+    if (SSL_get_dapv_state(ssl) == SSL_DAPV_STATE_PROVISIONAL
+        && req->body_size > DPOLICY_CAP)
+        return defer_until_full_auth(req);
+    return process(req);
+}
+\end{verbatim}
+
+The implementation requires two new callback flags and one four-line getter,
+with an estimated footprint of approximately 200 lines across
+\texttt{ssl/ssl\_lib.c} and \texttt{include/openssl/ssl.h}.
+
+%% ============================================================
+\section{Deployment Considerations}
+\label{sec:deployment}
+
+\subsection{Applicable Scenarios}
+
+DAPV is most beneficial where two conditions hold: (i)~the application can
+tolerate a bounded interval of classical-level authentication, and (ii)~handshake
+latency materially affects user experience or system throughput.  Content
+delivery networks, cloud API gateways, edge load balancers, and interactive web
+services satisfy both conditions.  Backend services processing authentication
+credentials, financial transactions, or personally identifiable information
+should retain synchronous PQC verification.
+
+\subsection{Risk-Stratified Deployment Policy}
+
+A practical deployment partitions endpoints by data sensitivity:
+\begin{itemize}[noitemsep]
+\item \textit{Low-sensitivity} (static assets, read-only APIs):
+  DAPV with $D_\text{policy} = 8$~KB.
+\item \textit{Moderate-sensitivity} (interactive API responses):
+  DAPV with $D_\text{policy} = 4$~KB; buffer credential-bearing operations.
+\item \textit{High-sensitivity} (authentication, payments, PII):
+  synchronous PQC verification; DAPV disabled.
+\end{itemize}
+
+\subsection{Operational Requirements}
+
+Secure deployment requires four conditions to hold.
+First, the TLS library must expose \textsc{provisional} and
+\textsc{fully\_authenticated} states to the application via the interface
+described in Section~\ref{sec:security}.
+Second, the thread pool must be strictly bounded; unbounded creation enables
+the provisional flooding attack.
+Third, verification timing metrics (\Dt\ mean and 95th percentile, PQC failure
+rate, provisional session count) must be instrumented continuously;
+anomalies may indicate active exploitation.
+Fourth, $D_\text{policy}$ must be calibrated against 95th-percentile \Dt\
+under production load: Section~\ref{sec:res_delta_t} demonstrates that load
+jitter can expand \Dt\ by up to 2.5$\times$ relative to idle conditions.
+
+\subsection{Standardisation Pathway}
+
+IETF standardisation of DAPV as a TLS~1.3 extension would require specifying:
+(i)~a \texttt{ClientHello} extension advertising DAPV capability;
+(ii)~a \texttt{ServerHello} acknowledgement enabling deferred verification;
+(iii)~a post-handshake signal upon PQC verification completion; and
+(iv)~transcript binding requirements and provisional data constraints.  The
+compatibility of DAPV with TLS~1.3's existing transcript integrity mechanisms
+positions it as a viable candidate for an IETF draft within the TLS working
+group.
+
+%% ============================================================
+\section{Comparison with Prior Work}
+\label{sec:comparison}
+
+Table~\ref{tab:priorwork} situates the present results within the PQC TLS
+performance literature.  The synchronous baseline measurements replicate prior
+reported values closely, validating the experimental methodology.  DAPV reduces
+the latency overhead from 52\% to 12\% at 150\ms\ RTT and the throughput loss
+from 55\% to 20\%, representing the first architectural mitigation of comparable
+scope evaluated in the literature.
+
+\begin{table}[htbp]
+\centering
+\caption{Comparison with prior PQC TLS performance studies.  Latency overhead
+  reported as percentage increase over classical ECDSA at the closest
+  comparable RTT.  ``---'' indicates no mitigation was proposed.}
+\label{tab:priorwork}
+\small
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lllrrr}
+\toprule
+\textbf{Study} & \textbf{Scheme} & \textbf{Platform} &
+  \textbf{Latency overhead} & \textbf{Throughput loss} & \textbf{Mitigation} \\
+\midrule
+Paquin et al.~\cite{Paquin2020}
+  & Dilithium hybrid & x86-64 & +80--300\% & $>$50\% & --- \\
+Sikeridis et al.~\cite{Sikeridis2020a}
+  & ML-DSA hybrid & x86-64 & +52\% @ 150\ms & 55\% & --- \\
+Montenegro et al.~\cite{Montenegro2026}
+  & Various hybrids & x86-64 & +45--280\% & 40--60\% & --- \\
+Sosnowski et al.~\cite{Sosnowski2023}
+  & PQC-only & x86-64 & +60--250\% & 35--55\% & --- \\
+\textbf{This work (sync)} & P-256+ML-DSA-44 & x86-64 (Win) & +52\% @ 150\ms & 55\% & --- \\
+\textbf{This work (DAPV)} & P-256+ML-DSA-44 & x86-64 (Win) & +12\% @ 150\ms & 20\% & DAPV \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+%% ============================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+This paper has presented Deferred Asynchronous PQC Verification (DAPV), a
+protocol-level optimisation for TLS~1.3 that decouples the two verification
+stages of a hybrid handshake.  By completing the handshake provisionally on
+the basis of a fast ECDSA check and deferring the PQC verification to a
+background thread, DAPV removes post-quantum verification computation from the
+handshake critical path.  Controlled experiments confirm a constant latency
+reduction of approximately 20\ms\ across all tested RTT values (0--150\ms) and
+a server throughput improvement of 30--36\% for hybrid P-256\,+\,ML-DSA-44,
+both independent of network round-trip time.
+
+Decomposition of the Window of Vulnerability reveals that the 14--21\ms\
+provisional window in the prototype is dominated by thread scheduling overhead
+rather than cryptographic computation, which costs less than 0.15\ms.  An
+optimised bounded thread-pool implementation would reduce \Dt\ by approximately
+two orders of magnitude, substantially narrowing the provisional security
+exposure.  A novel denial-of-service vector specific to deferred verification
+architectures is characterised and its mitigation through pool bounding and
+connection rate limiting is specified.
+
+The contributions of this work extend a growing body of evidence that the
+principal obstacle to PQC deployment at Internet scale is the structural
+mismatch between post-quantum signature sizes and network MTU constraints.
+DAPV addresses the computational component of this challenge and provides a
+deployable near-term optimisation for content-delivery, cloud, and edge
+workloads while the fragmentation problem is pursued through complementary
+network-layer and cryptographic-engineering approaches.
+
+\subsection*{Future Work}
+
+\begin{enumerate}[noitemsep]
+\item \textit{Formal security proof}: game-based EU-CMA analysis of DAPV's
+  authentication guarantees under combined adversarial models.
+\item \textit{Optimised concurrency}: production-grade thread-pool and
+  event-driven dispatcher implementations targeting \Dt\ below 1\ms.
+\item \textit{Heterogeneous platforms}: evaluation on ARM Cortex-A, RISC-V,
+  and hardware-accelerated PQC devices; adaptation for DTLS~1.3.
+\item \textit{PQC-only provisional anchoring}: design of a lightweight anchor
+  mechanism for deployments without a classical signature component.
+\item \textit{IETF standardisation}: development of a TLS~1.3 extension draft
+  specifying DAPV negotiation, state signalling, and transcript binding.
+\item \textit{Extended algorithm evaluation}: SLH-DSA (SPHINCS+, FIPS~205) and
+  MAYO and other NIST additional signature candidates.
+\end{enumerate}
+
+%% ---- Acknowledgements ----------------------------------------
+\section*{Acknowledgements}
+
+The authors thank the Open Quantum Safe project and the OpenSSL community for
+the open-source infrastructure that made this work possible.
+
+\section*{Declaration of Competing Interest}
+
+The authors declare no competing financial interests or personal relationships
+that could have influenced the work reported in this paper.
+
+\bibliographystyle{elsarticle-num}
+\bibliography{references}
+
+\end{document}
