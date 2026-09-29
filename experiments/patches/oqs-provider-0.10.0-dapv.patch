@@ -1,5 +1,5 @@
 diff --git a/oqsprov/oqs_sig.c b/oqsprov/oqs_sig.c
-index 4a3c0c7..25dc599 100644
+index 4a3c0c7..83998d4 100644
 --- a/oqsprov/oqs_sig.c
 +++ b/oqsprov/oqs_sig.c
 @@ -337,6 +337,27 @@ endsign:
@@ -30,7 +30,7 @@ index 4a3c0c7..25dc599 100644
  static int oqs_sig_verify(void *vpoqs_sigctx, const unsigned char *sig,
                            size_t siglen, const unsigned char *tbs,
                            size_t tbslen) {
-@@ -450,6 +471,17 @@ static int oqs_sig_verify(void *vpoqs_sigctx, const unsigned char *sig,
+@@ -450,6 +471,32 @@ static int oqs_sig_verify(void *vpoqs_sigctx, const unsigned char *sig,
          ERR_raise(ERR_LIB_USER, OQSPROV_R_WRONG_PARAMETERS);
          goto endverify;
      }
@@ -44,6 +44,21 @@ index 4a3c0c7..25dc599 100644
 +            rv = 1; /* PQ component deferred to the host */
 +            goto endverify;
 +        }
++    }
++    {
++        /* Experiment-only: DAPV_VERIFY_REPEAT=k emulates a verifier k times
++         * slower by performing k-1 additional (discarded) verifications. */
++        static int repeat = -1;
++        if (repeat < 0) {
++            const char *e = getenv("DAPV_VERIFY_REPEAT");
++            repeat = e ? atoi(e) : 1;
++            if (repeat < 1) repeat = 1;
++        }
++        for (int r = 1; r < repeat; r++)
++            (void)OQS_SIG_verify_with_ctx_str(
++                oqs_key, tbs, tbslen, sig + index, siglen - classical_sig_len,
++                poqs_sigctx->context_string, poqs_sigctx->context_string_length,
++                oqsxkey->comp_pubkey[oqsxkey->numkeys - 1]);
 +    }
  #if !defined OQS_VERSION_MINOR ||                                              \
      (OQS_VERSION_MAJOR == 0 && OQS_VERSION_MINOR < 12)

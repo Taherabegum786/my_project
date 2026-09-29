@@ -47,6 +47,13 @@ typedef struct {
 
 static volatile sig_atomic_t reload = 0;
 static uint64_t delay_ns;
+static uint32_t loss_ppm = 0;
+static uint64_t rng = 0x9e3779b97f4a7c15ull;
+
+static uint32_t rnd_ppm(void) { /* xorshift64* */
+    rng ^= rng >> 12; rng ^= rng << 25; rng ^= rng >> 27;
+    return (uint32_t)((rng * 0x2545F4914F6CDD1Dull) >> 32) % 1000000u;
+}
 static double ns_per_byte;
 
 static uint64_t now_ns(void) {
@@ -74,6 +81,11 @@ static void read_delay_file(void) {
     unsigned long long us;
     if (fscanf(f, "%llu", &us) == 1) delay_ns = us * 1000ull;
     fclose(f);
+    f = fopen("/run/tapbridge.loss_ppm", "r");
+    if (!f) return;
+    unsigned int ppm;
+    if (fscanf(f, "%u", &ppm) == 1) loss_ppm = ppm;
+    fclose(f);
 }
 
 /* Read all pending frames from fd into q. */
@@ -84,6 +96,7 @@ static void ingest(int fd, dirq_t *d) {
         ssize_t n = read(fd, f->buf, MAXF);
         if (n <= 0) return;
         if (next == d->head) { d->drops++; continue; }
+        if (loss_ppm && rnd_ppm() < loss_ppm) { d->drops++; continue; }
         uint64_t t = now_ns();
         uint64_t start = d->link_free_ns > t ? d->link_free_ns : t;
         uint64_t tx_done = start + (uint64_t)(n * ns_per_byte);

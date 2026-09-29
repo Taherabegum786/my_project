@@ -26,6 +26,9 @@
  *                  seq <n> | load <conns> <warmup_s> <measure_s>
  * env:   DAPV_CORRUPT=1 flips one byte of each deferred PQ signature
  *        (to check that failures are detected).
+ *        DAPV_VERIFY_REPEAT=k performs each PQ verification k times, in the
+ *        synchronous (provider) and deferred (worker) paths alike, to
+ *        emulate a k-times slower verifier.
  */
 #define _GNU_SOURCE
 #include <arpa/inet.h>
@@ -88,6 +91,7 @@ static joblog_t *jl;
 static _Atomic uint32_t njl;
 static int model = 0; /* 0 none, 1 thread, 2 pool */
 static int corrupt = 0;
+static int verify_repeat = 1; /* emulate a k-times slower verifier */
 static __thread uint32_t cur_serial;
 
 static pthread_mutex_t qmu = PTHREAD_MUTEX_INITIALIZER;
@@ -116,6 +120,8 @@ static void run_job(job_t *j) {
     uint64_t t0 = now_ns();
     OQS_SIG *s = sig_for(j->alg);
     uint64_t c0 = now_ns();
+    for (int r = 1; s && r < verify_repeat; r++) /* see DAPV_VERIFY_REPEAT */
+        (void)OQS_SIG_verify(s, j->msg, j->msglen, j->sig, j->siglen, j->pk);
     int ok = s && OQS_SIG_verify(s, j->msg, j->msglen, j->sig, j->siglen,
                                  j->pk) == OQS_SUCCESS;
     uint64_t c1 = now_ns();
@@ -411,6 +417,8 @@ int main(int argc, char **argv) {
     hs = calloc(MAXHS, sizeof *hs);
     jl = calloc(MAXJOBS, sizeof *jl);
     corrupt = getenv("DAPV_CORRUPT") && atoi(getenv("DAPV_CORRUPT"));
+    if (getenv("DAPV_VERIFY_REPEAT") && atoi(getenv("DAPV_VERIFY_REPEAT")) > 1)
+        verify_repeat = atoi(getenv("DAPV_VERIFY_REPEAT"));
     OQS_init();
 
     srv.sin_family = AF_INET;

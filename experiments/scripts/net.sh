@@ -4,13 +4,15 @@
 # MTU 1500 and no segmentation offload, so TCP segments are real 1500-byte frames.
 #   net.sh up <bridge_cpu> [rate_mbit]
 #   net.sh rtt <ms>        set RTT (one-way delay = ms/2 each direction)
+#   net.sh loss <pct>      set per-direction frame loss
+#   net.sh initcwnd <n>    set server initcwnd / initrwnd (segments)
 #   net.sh down
 set -euo pipefail
 BIN=$(cd "$(dirname "$0")/../bin" && pwd)
 case ${1:-} in
 up)
   CPU=${2:-3}; RATE=${3:-1000}
-  echo 0 > /run/tapbridge.delay_us
+  echo 0 > /run/tapbridge.delay_us; echo 0 > /run/tapbridge.loss_ppm
   rm -f /run/tapbridge.ready
   taskset -c "$CPU" "$BIN/tapbridge" taps tapc 0 "$RATE" /run/tapbridge.ready &
   echo $! > /run/tapbridge.pid
@@ -32,6 +34,14 @@ up)
 rtt)
   echo $(( ${2} * 1000 / 2 )) > /run/tapbridge.delay_us
   kill -HUP "$(cat /run/tapbridge.pid)"
+  ;;
+loss)  # per-direction frame loss in percent, e.g. 1 or 0.5
+  python3 -c "print(int(float('${2}') * 10000))" > /run/tapbridge.loss_ppm
+  kill -HUP "$(cat /run/tapbridge.pid)"
+  ;;
+initcwnd)  # server initcwnd and client initrwnd, in segments
+  ip -n srv route change 10.77.0.0/24 dev taps initcwnd "$2" initrwnd "$2"
+  ip -n cli route change 10.77.0.0/24 dev tapc initrwnd "$2"
   ;;
 down)
   kill "$(cat /run/tapbridge.pid)" 2>/dev/null || true
