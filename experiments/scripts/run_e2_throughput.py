@@ -54,19 +54,29 @@ def main():
                             stderr=subprocess.DEVNULL)
                         time.sleep(0.8)
                         name = f"{pl}__rtt{rtt}__c{conns}__{alg}__{wm.replace(':', '')}__r{rep}"
-                        cli = subprocess.Popen(
+                        # Two client processes (each conns/2 connections) so that the
+                        # single-threaded event loop of one client is not the bottleneck.
+                        clis = [subprocess.Popen(
                             ["ip", "netns", "exec", "cli", "taskset", "-c", ccpu,
                              os.path.join(BIN, "tlsclient"), "10.77.0.1", str(port),
                              os.path.join(d, "root.pem"), GROUP, wm,
-                             os.path.join(OUT, name), "load", str(conns), str(WARM), str(MEAS)],
+                             os.path.join(OUT, f"{name}_p{k}"), "load", str(conns // 2),
+                             str(WARM), str(MEAS)],
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                            for k in range(2)]
                         time.sleep(WARM)
                         s0 = cpu_seconds(srv.pid)
                         time.sleep(MEAS)
                         s1 = cpu_seconds(srv.pid)
-                        out, err = cli.communicate()
+                        kvs = [dict(x.split("=") for x in c.communicate()[0].split()) for c in clis]
+                        hs_n = sum(int(k["handshakes"]) for k in kvs)
+                        kv = {"rate": f"{sum(float(k['rate']) for k in kvs):.1f}",
+                              "mean_hs_ms": f"{sum(float(k['mean_hs_ms']) * int(k['handshakes']) for k in kvs) / max(hs_n, 1):.3f}",
+                              "errors": str(sum(int(k["errors"]) for k in kvs)),
+                              "client_cpu_cores": f"{sum(float(k['client_cpu_cores']) for k in kvs):.3f}",
+                              "pq_jobs": str(sum(int(k["pq_jobs"]) for k in kvs)),
+                              "pq_failures": str(sum(int(k["pq_failures"]) for k in kvs))}
                         srv.kill(); srv.wait()
-                        kv = dict(x.split("=") for x in out.split())
                         w.writerow([pl, rtt, conns, alg, wm, rep, kv["rate"], kv["mean_hs_ms"],
                                     kv["errors"], kv["client_cpu_cores"],
                                     f"{(s1 - s0) / MEAS:.3f}", kv["pq_jobs"], kv["pq_failures"]])

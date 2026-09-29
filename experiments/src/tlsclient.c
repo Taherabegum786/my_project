@@ -331,6 +331,7 @@ static int run_load(int nconn, double warm, double meas, const char *prefix) {
                 if (soerr) { errors++; conn_end(ep, c); conn_start(ep, c); continue; }
                 c->ssl = SSL_new(ctx);
                 SSL_set_fd(c->ssl, c->fd);
+                SSL_set_connect_state(c->ssl);
                 c->st = ST_HS;
                 h->t_hello = now_ns();
             }
