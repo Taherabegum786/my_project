@@ -1,0 +1,50 @@
+diff --git a/oqsprov/oqs_sig.c b/oqsprov/oqs_sig.c
+index 4a3c0c7..25dc599 100644
+--- a/oqsprov/oqs_sig.c
++++ b/oqsprov/oqs_sig.c
+@@ -337,6 +337,27 @@ endsign:
+     return rv;
+ }
+ 
++
++/* ---- DAPV hook -------------------------------------------------------
++ * If the host process exports a symbol "dapv_submit" and it returns 1,
++ * the PQ component of a hybrid signature is handed to the host for deferred
++ * verification after the classical component has verified; this call then
++ * returns success.  If the symbol is absent or returns 0, verification is
++ * performed synchronously as usual.  Used only for the DAPV experiments. */
++#include <dlfcn.h>
++typedef int (*dapv_submit_fn)(const char *alg, const unsigned char *pk,
++                              size_t pklen, const unsigned char *msg,
++                              size_t msglen, const unsigned char *sig,
++                              size_t siglen);
++static dapv_submit_fn dapv_lookup(void) {
++    static int looked_up = 0;
++    static dapv_submit_fn fn = NULL;
++    if (!looked_up) {
++        fn = (dapv_submit_fn)dlsym(RTLD_DEFAULT, "dapv_submit");
++        looked_up = 1;
++    }
++    return fn;
++}
+ static int oqs_sig_verify(void *vpoqs_sigctx, const unsigned char *sig,
+                           size_t siglen, const unsigned char *tbs,
+                           size_t tbslen) {
+@@ -450,6 +471,17 @@ static int oqs_sig_verify(void *vpoqs_sigctx, const unsigned char *sig,
+         ERR_raise(ERR_LIB_USER, OQSPROV_R_WRONG_PARAMETERS);
+         goto endverify;
+     }
++    if (is_hybrid && poqs_sigctx->context_string_length == 0) {
++        dapv_submit_fn submit = dapv_lookup();
++        if (submit != NULL &&
++            submit(oqs_key->method_name,
++                   oqsxkey->comp_pubkey[oqsxkey->numkeys - 1],
++                   oqs_key->length_public_key, tbs, tbslen, sig + index,
++                   siglen - classical_sig_len) == 1) {
++            rv = 1; /* PQ component deferred to the host */
++            goto endverify;
++        }
++    }
+ #if !defined OQS_VERSION_MINOR ||                                              \
+     (OQS_VERSION_MAJOR == 0 && OQS_VERSION_MINOR < 12)
+     if (OQS_SIG_verify(
