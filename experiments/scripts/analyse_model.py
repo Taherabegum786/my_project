@@ -221,18 +221,22 @@ def main():
                                        r2=round(1 - ss_res / ss_tot, 4),
                                        breakeven_work_ms=round(-b / a, 3) if a else None)
     fig, ax = plt.subplots(figsize=(4.6, 2.8))
+    lim = max(3 * r["verify_ms"] for r in r6) * 1.05 if r6 else 1
+    ax.plot([0, lim], [0, lim], ":", color="#8a8984", lw=1, label="gain = work")
     for rtt, col in ((0, C["pool2"]), (50, C["none"])):
         pts = [(3 * r["verify_ms"], r["gain"], r["gain_lo"], r["gain_hi"]) for r in r6 if r["rtt"] == rtt]
         if not pts:
             continue
         ax.errorbar([p[0] for p in pts], [p[1] for p in pts],
                     yerr=[[p[1] - p[2] for p in pts], [p[3] - p[1] for p in pts]],
-                    fmt="-o", color=col, lw=2, ms=4, capsize=2, label=f"RTT {rtt} ms")
-    lim = max(3 * r["verify_ms"] for r in r6) if r6 else 1
-    ax.plot([0, lim], [0, lim], ":", color="#8a8984", lw=1, label="gain = verification work")
+                    fmt="o", color=col, ms=4, capsize=2, label=f"measured, RTT {rtt} ms")
+        f = out.get(f"e6_fit_rtt{rtt}")
+        if f:
+            ax.plot([0, lim], [f["intercept_ms"], f["slope"] * lim + f["intercept_ms"]], "-", color=col, lw=1.5,
+                    label=f"fit: {f['slope']:.2f} W {f['intercept_ms']:+.2f} ms")
     ax.axhline(0, color="#52514e", lw=0.8)
-    ax.set_xscale("symlog", linthresh=0.5); ax.set_yscale("symlog", linthresh=0.5)
-    ax.set_xlabel("PQ verification work per handshake (ms)")
+    ax.set_xlim(0, lim)
+    ax.set_xlabel("PQ verification work per handshake W (ms)")
     ax.set_ylabel("DAPV latency gain (ms)")
     ax.legend(frameon=False, fontsize=7)
     fig.tight_layout(); fig.savefig(os.path.join(FIG, "e6_scaling.pdf")); fig.savefig(os.path.join(FIG, "e6_scaling.png"), dpi=200); plt.close(fig)

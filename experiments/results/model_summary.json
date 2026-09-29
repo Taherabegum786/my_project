@@ -1,8 +1,28 @@
 {
- "model_mape_pct": 2.42,
- "model_max_abs_err_pct": 14.89,
- "model_points": 44,
- "model_dk_correct": 44,
+ "model_all": {
+  "points": 68,
+  "mape_pct": 2.22,
+  "max_abs_err_pct": 14.89,
+  "dk_correct": 68
+ },
+ "model_bbr": {
+  "points": 44,
+  "mape_pct": 2.42,
+  "max_abs_err_pct": 14.89,
+  "dk_correct": 44
+ },
+ "model_cubic": {
+  "points": 24,
+  "mape_pct": 1.86,
+  "max_abs_err_pct": 5.49,
+  "dk_correct": 24
+ },
+ "model_iw10": {
+  "points": 36,
+  "mape_pct": 1.71,
+  "max_abs_err_pct": 7.72,
+  "dk_correct": 36
+ },
  "e6_fit_rtt0": {
   "slope": 0.973,
   "intercept_ms": -0.137,

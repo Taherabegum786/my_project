@@ -1,83 +1,93 @@
-# What the authors still have to do before resubmitting
+# Before you submit: what changed and what is left
 
-## 1. Read this first: the new experiments overturn the original claims
+## 1. What the paper is now
 
-The experiments the reviewers asked for have now been run (see
-`experiments/README.md`). The setup was:
+**New title:** *Post-Quantum Authentication Latency in TLS 1.3: A Validated
+Model and the Limits of Deferred Signature Verification*
 
-- three-certificate hybrid chains;
-- X25519MLKEM768 key exchange;
-- client and server in separate network namespaces on disjoint cores, joined
-  by an emulated 1500-byte-MTU link;
-- 1000 handshakes per configuration;
-- a measured bounded worker pool.
+The paper has been reframed from "DAPV makes TLS faster" into a
+**measurement-and-model paper**. The earlier framing was not supported by the
+new data. Its contributions, all backed by data in `experiments/`:
 
-**Results:**
+1. **A parameter-free latency model** for PQ authentication in TLS 1.3.
+   - Predicts the number of round trips in **68/68** configurations.
+   - Mean absolute latency error **2.2%**.
+   - Covers 5 schemes, RTT 20–150 ms, initial window 10/20/40, BBR and CUBIC.
+2. **The break-even point of deferred verification.**
+   - Gain = 0.97 × verification work − 0.14 ms, with R² = 0.999.
+   - It gains nothing for ML-DSA/FN-DSA on AVX2 CPUs.
+   - It gains 9–26% without vector instructions and up to 65% for slow
+     verifiers.
+3. **Network findings.**
+   - An initial window of 40 cuts SLH-DSA handshakes from 454 to 165 ms at
+     150 ms RTT.
+   - BBR pacing keeps part of the cost.
+   - 3% loss doubles the 90th-percentile latency of ML-DSA handshakes but not
+     of classical ones.
+4. **DAPV specification, security analysis and open implementation.**
+5. **Deployment guidance** (Section 9).
 
-| Claim in the previous version | New measurement |
-|---|---|
-| DAPV saves ≈20 ms of handshake latency | **No measurable saving** for ML-DSA-44, ML-DSA-65 or FN-DSA-512: median change within ±0.2 ms, with CIs spanning 0. A thread per job is **0.15 ms slower**. Only SLH-DSA-128f benefits: −1.59 ms (−13.5%) at RTT 0. |
-| Server throughput +31–36% | **No gain** in either CPU placement. DAPV is −7% to +4% vs synchronous, within run-to-run noise. |
-| Δt = 14–21 ms, dominated by thread overhead | Δt = **0.079 ms median, 0.42 ms p99** (ML-DSA-44, bounded pool); 0.114 / 0.99 ms with a thread per job. |
-| "Δt < 1 ms with a thread pool" (projection) | Now measured, and well below 1 ms. |
+**Scale of the evaluation:** more than 46,000 individually timed handshakes
+across six experiments (E1–E6), plus the throughput runs.
 
-The manuscript has been rewritten around the new data:
-- abstract;
-- contributions;
-- Sections 5–6 (entirely new);
-- the leakage table;
-- conclusion.
+## 2. Remaining red markers in the PDF (2)
 
-The old Windows measurements are no longer reported. Section 6.2 says that
-they could not be reproduced, and that timer-quantised waiting on Windows is
-the most plausible cause.
+- `\journal{}`: the target journal (see section 4).
+- **Repository URL and DOI** (Section 6.2 and the response letter).
+  - Put `experiments/` (code, patch, raw data) in a public GitHub repository.
+  - Archive it on Zenodo to get a DOI.
 
-**This is your decision.** If you believe the Windows prototype measured
-something real, you would have to show why a different implementation gives
-the opposite result. In my assessment, the honest paper is the one now in
-`main.tex`: a careful measurement study showing *when* deferral helps
-(expensive verification) and when it does not (lattice schemes on
-vector-capable CPUs). A measurement-focused venue, or a short paper, may suit
-it better than Computer Networks' full-paper track.
+## 3. Things you must do yourself
 
-## 2. Remaining red markers in `main.pdf` (2)
+- **Understand and check the results.** Read `experiments/README.md`, re-run
+  at least one experiment, and make sure you can explain every number. You
+  will have to defend them to reviewers.
+- **Disclose AI assistance.** Elsevier and most publishers require authors to
+  declare the use of generative-AI tools in writing and in research (for
+  example in a "Declaration of generative AI and AI-assisted technologies"
+  section). The rewriting, implementation, experiments and analysis in this
+  revision were done with an AI assistant. Check your target journal's
+  policy and disclose accordingly. AI tools cannot be listed as authors.
+- **Physical-host validation (strongly recommended).**
+  - Everything ran on one 4-vCPU cloud VM, with network namespaces and
+    disjoint cores standing in for separate machines. This is stated
+    honestly in Section 7.7.
+  - Re-running E1 and E3 on two physical machines would remove the most
+    likely reviewer objection. The drivers only need the IP address and CPU
+    pinning changed.
+- **Optional, and high value:** measure one real ARM device (for example a
+  Raspberry Pi) as the client. That places a real device on the break-even
+  curve (Figure 4).
+- **Check the references.** Confirm FIPS 206's current status and the author
+  list of the "Hybrid Signature Spectrums" draft.
 
-- `\journal{}`: the target journal.
-- **Repository URL and archive DOI** (Section 5.2). Push `experiments/`
-  (code, patch, raw data) to a public repository and archive it on Zenodo.
-  Missing code was one of the stated reasons for the rejection.
+## 4. Where to submit
 
-Also fill the one marker in `response_to_reviewers.tex` (the same URL/DOI).
+Rejection by Computer Networks usually means a new submission elsewhere.
+If you want to go back to Computer Networks, check its policy on
+resubmitting a substantially new manuscript. Good fits for a
+measurement-plus-model paper, roughly from most to least selective:
 
-## 3. Honest limitations to be aware of (all stated in Section 6.4)
+- *IEEE Transactions on Network and Service Management*
+- *Computer Networks* (Elsevier), as a new submission if the policy allows
+- *Computer Communications* (Elsevier)
+- *Journal of Network and Computer Applications* (Elsevier)
+- *Computers & Security* (Elsevier), if you emphasise the provisional-state
+  security analysis
 
-- **Separate *namespaces and cores*, not separate *physical machines*.**
-  Everything ran on one 4-vCPU cloud VM. That removes CPU competition and
-  loopback, which were the reviewers' concrete concerns, but the two sides
-  still share cache, memory bandwidth and the hypervisor. If you can, repeat
-  E1/E2 on two physical hosts: the drivers only need the IP address and CPU
-  pinning changed.
-- **The link is emulated** by a userspace bridge (`netem` was unavailable):
-  fixed delay, 1 Gbit/s, no loss.
-- **One CPU type** (Intel Xeon 2.1 GHz with AVX2). Devices without vector
-  units, where deferral should help most, are still unmeasured. This is the
-  most valuable next experiment if you want a positive result for DAPV.
-- **The hardware changed.** The experiments ran on a cloud VM, not your
-  i7-11800H / Xeon 4310 testbeds. The paper describes the actual testbed.
+A shorter version would also suit venues such as the PQCrypto conference
+or measurement-focused workshops.
 
-## 4. References
+No revision can guarantee acceptance. The honest version is the one most
+likely to survive expert review, because reviewers of PQ-TLS papers know
+the field's numbers well.
 
-- Replaced: the old `Cremers2016` pointed to a non-existent draft and is now
-  the IEEE S&P 2016 paper. `Cheval2022` could not be verified and was
-  replaced by Cremers et al., CCS 2017.
-- Still to verify: FIPS 206's current status, and the HybridSpectrums author
-  list.
+## 5. Files
 
-## Files
-
-- `main.tex` / `main.pdf`: revised manuscript with the new evaluation.
-- `response_to_reviewers.tex` / `.pdf`: point-by-point response.
-- `figures/`: new figures `e1_*.pdf` and `e2_*.pdf`. The old fig01–fig11
-  are no longer used.
-- `previous_submission/`: the R2 sources as uploaded.
-- `../experiments/`: code, patch, raw data, analysis.
+- `main.tex` / `main.pdf`: the revised paper.
+- `response_to_reviewers.tex` / `.pdf`: point-by-point answers to the
+  Computer Networks reviews. Useful as a cover letter ("previously reviewed
+  at…"), or to adapt.
+- `figures/`: the paper's figures.
+- `previous_submission/`: your original R2 sources.
+- `../experiments/`: everything needed to reproduce the results.

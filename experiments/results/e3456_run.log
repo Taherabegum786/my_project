@@ -1,0 +1,25 @@
+e3 cw=10 rtt=50 79s
+e3 cw=20 rtt=50 69s
+e3 cw=40 rtt=50 65s
+e3 cw=10 rtt=150 231s
+e3 cw=20 rtt=150 203s
+e3 cw=40 rtt=150 187s
+e4 loss=0 270s
+e4 loss=1 328s
+e4 loss=3 434s
+e5 rtt=0 60s
+e5 rtt=50 317s
+e6 k=1 rtt=0 3s
+e6 k=2 rtt=0 3s
+e6 k=4 rtt=0 3s
+e6 k=8 rtt=0 3s
+e6 k=16 rtt=0 3s
+e6 k=32 rtt=0 4s
+e6 k=64 rtt=0 5s
+e6 k=1 rtt=50 31s
+e6 k=2 rtt=50 32s
+e6 k=4 rtt=50 32s
+e6 k=8 rtt=50 32s
+e6 k=16 rtt=50 32s
+e6 k=32 rtt=50 32s
+e6 k=64 rtt=50 32s

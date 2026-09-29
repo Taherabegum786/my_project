@@ -14,7 +14,10 @@ This directory reproduces every measurement in Sections 5–6 of `manuscript/mai
 | `scripts/net.sh` | Creates the `srv`/`cli` network namespaces (MTU 1500, offloads off), starts the emulator, and sets the RTT. |
 | `scripts/run_e1_latency.py` | E1: sequential handshakes and per-job Δt at RTT 0/20/50/100/150 ms. |
 | `scripts/run_e2_throughput.py` | E2: closed-loop handshake rate, with separate vs co-located CPU placement. |
-| `scripts/analyse.py` | Summary CSVs and figures. |
+| `scripts/run_e345.py` | E3 (initial window, BBR/CUBIC), E4 (loss), E5 (portable liboqs client), E6 (verification-cost scaling). |
+| `scripts/analyse.py` | E1/E2 summary CSVs and figures. |
+| `scripts/analyse_model.py` | Latency-model validation and E3–E6 analysis. |
+| `src/flightprobe.c` | Measures the server's first-flight size (TCP_INFO). |
 | `results/` | Raw per-handshake and per-job CSVs (E2 raw files are in `e2_raw.tar.gz`), plus summaries. |
 | `figures/` | Figures produced by `analyse.py`. |
 
@@ -35,7 +38,9 @@ scripts/make_certs.sh /opt/dapv_certs
 scripts/net.sh up 3                    # emulator on CPU 3
 python3 scripts/run_e1_latency.py      # about 55 min
 python3 scripts/run_e2_throughput.py   # about 25 min
+python3 scripts/run_e345.py e3 e3cubic e4 e5 e6   # about 70 min; e5 needs a portable liboqs in /opt/liboqs-generic
 python3 scripts/analyse.py
+python3 scripts/analyse_model.py   # needs results/flight_bytes.json (bin/flightprobe)
 ```
 
 CPU placement is fixed in the drivers:
@@ -44,6 +49,9 @@ CPU placement is fixed in the drivers:
 - link emulator on CPU 3
 
 ## Summary of results
+
+- Model: round trips predicted correctly in 68/68 configurations, mean absolute error 2.2% (`results/model_summary.json`).
+- Deferral gain = 0.97 W − 0.14 ms (R² = 0.999), W = PQ verification work per handshake (E6).
 
 - **Latency:** DAPV − synchronous median latency is within ±0.2 ms for ML-DSA-44, ML-DSA-65 and FN-DSA-512 at every RTT. For SLH-DSA-128f it is −1.59 ms at RTT 0. A thread per job adds +0.15 ms.
 - **Δt (bounded pool, ML-DSA-44):** median 0.079 ms, p99 0.42 ms.

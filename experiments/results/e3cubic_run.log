@@ -1,0 +1,6 @@
+e3_cubic cw=10 rtt=50 78s
+e3_cubic cw=20 rtt=50 68s
+e3_cubic cw=40 rtt=50 64s
+e3_cubic cw=10 rtt=150 228s
+e3_cubic cw=20 rtt=150 199s
+e3_cubic cw=40 rtt=150 185s
