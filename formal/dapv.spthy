@@ -1,0 +1,246 @@
+/*
+ * DAPV: Deferred Asynchronous Post-Quantum signature Verification in a
+ * hybrid-authenticated TLS 1.3 handshake -- Tamarin model.
+ *
+ * The server authenticates with a hybrid credential: a classical key kE and
+ * a post-quantum key kP.  Its CertificateVerify carries two signatures over
+ * the handshake transcript, and its Finished MAC and the application
+ * traffic key are derived from the transcript including both signatures
+ * (as in TLS 1.3).  A DAPV client
+ *   1. verifies the classical signature and the server Finished,
+ *   2. enters the PROVISIONAL state: derives the application key, sends its
+ *      Finished and may send (provisional) application data,
+ *   3. later verifies the PQ signature and is either promoted to
+ *      FULLY_AUTHENTICATED or aborts,
+ *   4. uses a session ticket received on the connection only after
+ *      promotion.
+ *
+ * Adversary: Dolev-Yao network adversary who may, at any time, reveal the
+ * classical key (RevE: models a broken or fraudulently obtained classical
+ * credential, or a CRQC) and/or the PQ key (RevP) of any server.
+ *
+ * Variants (tamarin-prover -D FLAG):
+ *   NAIVE_TICKETS  tickets received while PROVISIONAL are usable at once
+ *   NO_BINDING     the PQ signature covers only the server identity, not the
+ *                  handshake transcript (an unbound deferred signature)
+ *
+ * Abstractions: the key exchange is modelled as Diffie-Hellman (standing in
+ * for X25519MLKEM768); certificates are modelled by an authentic binding of
+ * server names to public keys (!Pk); record-layer details, alerts and
+ * PSK/0-RTT key schedules are abstracted; one provisional and one
+ * post-promotion application message per session.
+ */
+theory DAPV
+begin
+
+builtins: diffie-hellman, signing, hashing, symmetric-encryption
+functions: mac/2, kdf/1
+
+/* The message covered by the PQ signature. */
+#ifdef NO_BINDING
+macros: pqmsg(tr, S) = <'CV', S>
+#else
+macros: pqmsg(tr, S) = <'CV', tr>
+#endif
+
+restriction Equality:
+  "All x y #i. Eq(x, y) @ #i ==> x = y"
+
+restriction Inequality:
+  "All x y #i. Neq(x, y) @ #i ==> not (x = y)"
+
+restriction OneRegistrationPerName:
+  "All S #i #j. Register(S) @ #i & Register(S) @ #j ==> #i = #j"
+
+/* ------------------------------------------------------------------ */
+/* Public-key infrastructure and compromise                            */
+
+rule Register_Server:
+    [ Fr(~kE), Fr(~kP) ]
+  --[ Register($S) ]->
+    [ !LtkE($S, ~kE), !LtkP($S, ~kP), !Pk($S, pk(~kE), pk(~kP)),
+      Out(<$S, pk(~kE), pk(~kP)>) ]
+
+rule Reveal_Classical:
+    [ !LtkE($S, k) ] --[ RevE($S) ]-> [ Out(k) ]
+
+rule Reveal_PQ:
+    [ !LtkP($S, k) ] --[ RevP($S) ]-> [ Out(k) ]
+
+/* ------------------------------------------------------------------ */
+/* Handshake                                                           */
+
+rule Client_Hello:
+    [ Fr(~tid), Fr(~nc), Fr(~x), !Pk($S, pkE, pkP) ]
+  --[ ClientStart(~tid, $S) ]->
+    [ St_C1(~tid, $S, ~nc, ~x, pkE, pkP), Out(<~nc, 'g' ^ ~x>) ]
+
+rule Server_Respond:
+  let Y    = 'g' ^ ~y
+      k    = X ^ ~y
+      tr   = h(<nc, X, ~ns, Y, $S>)
+      sigE = sign(<'CV', tr>, kE)
+      sigP = sign(pqmsg(tr, $S), kP)
+      hk   = kdf(<'hs', k, tr>)
+      sfin = mac(<'sf', tr, sigE, sigP>, hk)
+      ak   = kdf(<'app', k, tr, sigE, sigP, sfin>)
+  in
+    [ In(<nc, X>), Fr(~ns), Fr(~y), Fr(~sid), !LtkE($S, kE), !LtkP($S, kP) ]
+  --[ Running($S, tr, ak) ]->
+    [ St_S1(~sid, $S, tr, sigE, sigP, sfin, hk, ak, k),
+      Out(<~ns, Y, sigE, sigP, sfin>) ]
+
+/* Classical check and server Finished: enter PROVISIONAL, send Finished
+   and one provisional application message. */
+rule Client_Provisional:
+  let X    = 'g' ^ ~x
+      k    = Y ^ ~x
+      tr   = h(<~nc, X, ns, Y, $S>)
+      hk   = kdf(<'hs', k, tr>)
+      ak   = kdf(<'app', k, tr, sigE, sigP, sfin>)
+      cfin = mac(<'cf', tr, sigE, sigP, sfin>, hk)
+  in
+    [ St_C1(~tid, $S, ~nc, ~x, pkE, pkP), In(<ns, Y, sigE, sigP, sfin>),
+      Fr(~d) ]
+  --[ Eq(verify(sigE, <'CV', tr>, pkE), true),
+      Eq(sfin, mac(<'sf', tr, sigE, sigP>, hk)),
+      Provisional(~tid, $S, ak, tr),
+      ProvData(~tid, $S, ~d) ]->
+    [ St_C2(~tid, $S, tr, sigP, pkP, ak, k),
+      !Prov(~tid, $S, tr, ak, k),
+      Out(cfin), Out(senc(~d, ak)) ]
+
+/* Deferred PQ verification: promotion or abort. */
+rule Client_Promote:
+    [ St_C2(~tid, $S, tr, sigP, pkP, ak, k) ]
+  --[ Eq(verify(sigP, pqmsg(tr, $S), pkP), true),
+      FullAuth(~tid, $S, ak, tr) ]->
+    [ !Full(~tid, $S, tr, ak, k) ]
+
+rule Client_Abort:
+    [ St_C2(~tid, $S, tr, sigP, pkP, ak, k) ]
+  --[ Neq(verify(sigP, pqmsg(tr, $S), pkP), true),
+      Abort(~tid, $S) ]->
+    [ ]
+
+rule Client_FullData:
+    [ !Full(~tid, $S, tr, ak, k), Fr(~d) ]
+  --[ FullData(~tid, $S, ~d) ]->
+    [ Out(senc(~d, ak)) ]
+
+rule Server_Finish:
+  let psk = kdf(<'res', k, tr>)
+  in
+    [ St_S1(~sid, $S, tr, sigE, sigP, sfin, hk, ak, k), In(cfin) ]
+  --[ Eq(cfin, mac(<'cf', tr, sigE, sigP, sfin>, hk)),
+      ServerAccept(~sid, $S, ak),
+      IssueTicket($S, psk) ]->
+    [ Out(senc(<'tkt', psk>, ak)) ]
+
+/* Session tickets: DAPV rule -- usable only after promotion. */
+rule Client_Ticket_AfterPromotion:
+  let psk = kdf(<'res', k, tr>)
+  in
+    [ !Full(~tid, $S, tr, ak, k), In(senc(<'tkt', psk>, ak)) ]
+  --[ TicketStored(~tid, $S, psk) ]->
+    [ !Ticket($S, psk) ]
+
+#ifdef NAIVE_TICKETS
+/* Naive variant: a ticket received while PROVISIONAL is usable at once. */
+rule Client_Ticket_WhileProvisional:
+  let psk = kdf(<'res', k, tr>)
+  in
+    [ !Prov(~tid, $S, tr, ak, k), In(senc(<'tkt', psk>, ak)) ]
+  --[ TicketStored(~tid, $S, psk) ]->
+    [ !Ticket($S, psk) ]
+#endif
+
+/* PSK resumption inherits the authentication of the issuing session. */
+rule Client_Resume:
+    [ !Ticket($S, psk) ]
+  --[ ResumeAuth($S, psk) ]->
+    [ ]
+
+/* ------------------------------------------------------------------ */
+/* Sanity: the protocol can run to completion without compromise.     */
+
+lemma executable_full:
+  exists-trace
+  "Ex tid S ak tr #i. FullAuth(tid, S, ak, tr) @ #i
+     & not (Ex #r. RevE(S) @ #r) & not (Ex #r. RevP(S) @ #r)"
+
+lemma executable_resumption:
+  exists-trace
+  "Ex S psk #i. ResumeAuth(S, psk) @ #i
+     & not (Ex #r. RevE(S) @ #r) & not (Ex #r. RevP(S) @ #r)"
+
+lemma executable_abort_after_provisional:
+  exists-trace
+  "Ex tid S ak tr #i #j. Provisional(tid, S, ak, tr) @ #i & Abort(tid, S) @ #j"
+
+/* ------------------------------------------------------------------ */
+/* P1  PROVISIONAL gives classical-strength authentication.           */
+lemma provisional_authentication:
+  "All tid S ak tr #i. Provisional(tid, S, ak, tr) @ #i ==>
+     (Ex #j. Running(S, tr, ak) @ #j & #j < #i)
+   | (Ex #r. RevE(S) @ #r & #r < #i)"
+
+/* P2  Data sent while PROVISIONAL is secret unless the classical key is
+       compromised. */
+lemma provisional_data_secrecy:
+  "All tid S d #i #j. ProvData(tid, S, d) @ #i & K(d) @ #j ==>
+     Ex #r. RevE(S) @ #r"
+
+/* P3  ... and that exposure is real: with the classical key alone the
+       adversary can read provisional data (the exposure bounded by the
+       application data cap). */
+lemma provisional_exposure_with_classical_key:
+  exists-trace
+  "Ex tid S d #i #j #r. ProvData(tid, S, d) @ #i & K(d) @ #j & RevE(S) @ #r
+     & not (Ex #p. RevP(S) @ #p)"
+
+/* P4  Hybrid (AND) authentication after promotion: each key alone
+       suffices -- the PQ key protects even if the classical key is broken,
+       and vice versa. */
+lemma full_authentication_needs_PQ_key:
+  "All tid S ak tr #i. FullAuth(tid, S, ak, tr) @ #i ==>
+     (Ex #j. Running(S, tr, ak) @ #j & #j < #i)
+   | (Ex #r. RevP(S) @ #r & #r < #i)"
+
+lemma full_authentication_needs_classical_key:
+  "All tid S ak tr #i. FullAuth(tid, S, ak, tr) @ #i ==>
+     (Ex #j. Running(S, tr, ak) @ #j & #j < #i)
+   | (Ex #r. RevE(S) @ #r & #r < #i)"
+
+/* P5  Injective agreement on transcript and key after promotion. */
+lemma full_authentication_injective:
+  "All tid S ak tr #i. FullAuth(tid, S, ak, tr) @ #i ==>
+     ( (Ex #j. Running(S, tr, ak) @ #j & #j < #i)
+       & not (Ex tid2 #i2. FullAuth(tid2, S, ak, tr) @ #i2 & not (tid2 = tid)) )
+   | ((Ex #r. RevE(S) @ #r) & (Ex #p. RevP(S) @ #p))"
+
+/* P6  Key and data secrecy after promotion require both keys. */
+lemma full_key_secrecy:
+  "All tid S ak tr #i #j. FullAuth(tid, S, ak, tr) @ #i & K(ak) @ #j ==>
+     (Ex #r. RevE(S) @ #r) & (Ex #p. RevP(S) @ #p)"
+
+lemma full_data_secrecy:
+  "All tid S d #i #j. FullData(tid, S, d) @ #i & K(d) @ #j ==>
+     (Ex #r. RevE(S) @ #r) & (Ex #p. RevP(S) @ #p)"
+
+/* P7  A session whose provisional data reached an adversary holding only
+       the classical key is never promoted: the deferred PQ check catches
+       the impersonation. */
+lemma impersonated_session_never_promoted:
+  "All tid S d ak tr #i #j #k. ProvData(tid, S, d) @ #i & K(d) @ #j
+       & FullAuth(tid, S, ak, tr) @ #k ==>
+     Ex #p. RevP(S) @ #p"
+
+/* P8  Resumption inherits hybrid authentication: a ticket accepted by the
+       client was issued by the server, unless both keys are compromised. */
+lemma resumption_authentication:
+  "All S psk #i. ResumeAuth(S, psk) @ #i ==>
+     (Ex #j. IssueTicket(S, psk) @ #j & #j < #i)
+   | ((Ex #r. RevE(S) @ #r) & (Ex #p. RevP(S) @ #p))"
+
+end
