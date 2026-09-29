@@ -1,0 +1,5 @@
+*.spthy
+!dapv_*.spthy.keep
+results/
+proofs_run.log
+parse_upstream.txt
