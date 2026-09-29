@@ -24,8 +24,13 @@ new data. Its contributions, all backed by data in `experiments/`:
    - BBR pacing keeps part of the cost.
    - 3% loss doubles the 90th-percentile latency of ML-DSA handshakes but not
      of classical ones.
-4. **DAPV specification, security analysis and open implementation.**
-5. **Deployment guidance** (Section 9).
+4. **Formal verification (Tamarin) of DAPV.**
+   - All 15 lemmas are verified for the design as specified.
+   - Attacks are found on three unsafe variants, which shows the ticket rule
+     and transcript binding are necessary.
+   - Model and proofs are in `formal/`; the proofs run in under 30 s.
+5. **DAPV specification, security analysis and open implementation.**
+6. **Deployment guidance** (Section 9).
 
 **Scale of the evaluation:** more than 46,000 individually timed handshakes
 across six experiments (E1–E6), plus the throughput runs.
@@ -39,6 +44,7 @@ across six experiments (E1–E6), plus the throughput runs.
 
 ## 3. Things you must do yourself
 
+- **Understand the formal model.** Run `formal/README.md`'s commands and be able to explain the model's abstractions (symbolic crypto, Diffie–Hellman in place of ML-KEM, abstracted key schedule); reviewers from the security community will ask.
 - **Understand and check the results.** Read `experiments/README.md`, re-run
   at least one experiment, and make sure you can explain every number. You
   will have to defend them to reviewers.

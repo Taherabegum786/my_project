@@ -173,8 +173,12 @@ validated on 68 configurations, which shows that congestion-window round
 trips, not computation, dominate; (2)~a precise break-even analysis of
 deferred verification (gain $= 0.97\,W - 0.14$\,ms, $R^2 = 0.999$) that
 tells implementers exactly when it is worthwhile; (3)~the effect of
-initial window, congestion control and loss; and (4)~the provisional-state
-semantics and the risk analysis.
+initial window, congestion control and loss; and (4)~a formal
+verification of the provisional state in Tamarin, which proves that
+promoted sessions keep the full hybrid guarantees and finds attacks on
+unsafe variants (session tickets used before promotion; PQ signature not
+bound to the transcript), establishing which design rules are necessary
+(Section~8.1, Table~8).
 Three-certificate chains already give three independent verifications per
 handshake, which DAPV spreads over two workers.  Algorithm~1 generalises
 directly to multi-algorithm credentials, which we list as future work
