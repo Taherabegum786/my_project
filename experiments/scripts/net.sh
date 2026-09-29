@@ -5,7 +5,8 @@
 #   net.sh up <bridge_cpu> [rate_mbit]
 #   net.sh rtt <ms>        set RTT (one-way delay = ms/2 each direction)
 #   net.sh loss <pct>      set per-direction frame loss
-#   net.sh initcwnd <n>    set server initcwnd / initrwnd (segments)
+#   net.sh initcwnd <n> [cc]  set server initcwnd / initrwnd (segments) and,
+#                             optionally, the congestion control (per route)
 #   net.sh down
 set -euo pipefail
 BIN=$(cd "$(dirname "$0")/../bin" && pwd)
@@ -39,9 +40,10 @@ loss)  # per-direction frame loss in percent, e.g. 1 or 0.5
   python3 -c "print(int(float('${2}') * 10000))" > /run/tapbridge.loss_ppm
   kill -HUP "$(cat /run/tapbridge.pid)"
   ;;
-initcwnd)  # server initcwnd and client initrwnd, in segments
-  ip -n srv route change 10.77.0.0/24 dev taps initcwnd "$2" initrwnd "$2"
-  ip -n cli route change 10.77.0.0/24 dev tapc initrwnd "$2"
+initcwnd)  # server initcwnd and client initrwnd, in segments [congestion control]
+  CC=${3:+congctl $3}
+  ip -n srv route change 10.77.0.0/24 dev taps initcwnd "$2" initrwnd "$2" $CC
+  ip -n cli route change 10.77.0.0/24 dev tapc initrwnd "$2" $CC
   ;;
 down)
   kill "$(cat /run/tapbridge.pid)" 2>/dev/null || true

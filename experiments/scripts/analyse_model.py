@@ -85,32 +85,39 @@ def main():
         rows.append(dict(src="E1", alg=alg, iw=10, rtt=rtt, flight=flights[alg], dk_pred=dk,
                          measured=round(m, 2), predicted=round(pred, 2),
                          err_pct=round(100 * (pred - m) / m, 2)))
-    hs3, _ = load("e3")
-    for (cond, alg, wm), v in sorted(hs3.items()):
+    hs3 = {}
+    for tag in ("e3", "e3_cubic"):
+        h, _ = load(tag)
+        hs3.update({(tag,) + k: v for k, v in h.items()})
+    for (tag, cond, alg, wm), v in sorted(hs3.items()):
         iw = int(cond.split("_")[0][2:]); rtt = int(cond.split("_")[1][3:])
         dk = dk_pred(flights[alg], iw)
         pred = e1[(alg, 0)] + (1 + dk) * rtt
         m = med(v)
-        rows.append(dict(src="E3", alg=alg, iw=iw, rtt=rtt, flight=flights[alg], dk_pred=dk,
+        rows.append(dict(src="E3-" + ("cubic" if tag.endswith("cubic") else "bbr"), alg=alg, iw=iw, rtt=rtt, flight=flights[alg], dk_pred=dk,
                          measured=round(m, 2), predicted=round(pred, 2),
                          err_pct=round(100 * (pred - m) / m, 2),
                          p95=round(pct([float(r["hs_ms"]) for r in v], .95), 2), n=len(v)))
     with open(os.path.join(RES, "model_validation.csv"), "w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=sorted({k for r in rows for k in r}))
         w.writeheader(); w.writerows(rows)
-    errs = [abs(r["err_pct"]) for r in rows]
-    out["model_mape_pct"] = round(st.mean(errs), 2)
-    out["model_max_abs_err_pct"] = round(max(errs), 2)
-    out["model_points"] = len(rows)
-    out["model_dk_correct"] = sum(1 for r in rows
-                                  if abs(r["measured"] - r["predicted"]) < 0.5 * r["rtt"])
+    for name, sel in (("all", lambda r: True), ("bbr", lambda r: r["src"] != "E3-cubic"),
+                      ("cubic", lambda r: r["src"] == "E3-cubic"),
+                      ("iw10", lambda r: r["iw"] == 10)):
+        rr = [r for r in rows if sel(r)]
+        if not rr:
+            continue
+        errs = [abs(r["err_pct"]) for r in rr]
+        out[f"model_{name}"] = dict(points=len(rr), mape_pct=round(st.mean(errs), 2),
+                                    max_abs_err_pct=round(max(errs), 2),
+                                    dk_correct=sum(1 for r in rr if abs(r["measured"] - r["predicted"]) < 0.5 * r["rtt"]))
 
     # Figure: E3 latency vs initcwnd at RTT 150
     fig, ax = plt.subplots(figsize=(4.6, 2.8))
     for alg, col in (("p256_mldsa44", C["none"]), ("p384_mldsa65", C["pool2"]),
                      ("p256_sphincssha2128fsimple", C["a4"]), ("p256", C["classical"])):
         pts = sorted((r["iw"], r["measured"], r["predicted"]) for r in rows
-                     if r["src"] == "E3" and r["alg"] == alg and r["rtt"] == 150)
+                     if r["src"] == "E3-cubic" and r["alg"] == alg and r["rtt"] == 150)
         if not pts:
             continue
         ax.plot([p[0] for p in pts], [p[1] for p in pts], "-o", color=col, lw=2, ms=4, label=ALGNAME[alg])
@@ -118,7 +125,7 @@ def main():
     ax.set_xscale("log", base=2); ax.set_xticks([10, 20, 40]); ax.set_xticklabels(["10", "20", "40"])
     ax.set_xlabel("server initial congestion window (segments)")
     ax.set_ylabel("median handshake latency (ms)")
-    ax.set_title("RTT 150 ms; o measured, x model prediction", fontsize=8)
+    ax.set_title("RTT 150 ms, CUBIC; o measured, x model prediction", fontsize=8)
     ax.legend(frameon=False, fontsize=7)
     fig.tight_layout(); fig.savefig(os.path.join(FIG, "e3_initcwnd.pdf")); fig.savefig(os.path.join(FIG, "e3_initcwnd.png"), dpi=200); plt.close(fig)
 
@@ -133,6 +140,15 @@ def main():
                           hs_p90=round(pct(x, .9), 2), hs_p99=round(pct(x, .99), 2),
                           hs_mean=round(st.mean(x), 2), frac_over_2rtt=round(sum(1 for y in x if y > 100) / len(x), 4),
                           conn_hs_median=round(st.median(t), 2), conn_hs_p99=round(pct(t, .99), 2)))
+    # tail model: a handshake is delayed if any of its data segments is lost;
+    # segments = server first flight + ClientHello (one segment).
+    segs = json.load(open(os.path.join(RES, "flight_segments.json")))
+    base = {r["alg"]: r["hs_median"] for r in lrows if r["loss_pct"] == 0}
+    for r in lrows:
+        x = [float(q["hs_ms"]) for q in hs4[(f"loss{int(r['loss_pct'])}_rtt50", r["alg"], "none")]]
+        r["frac_delayed"] = round(sum(1 for y in x if y > base[r["alg"]] + 25) / len(x), 4)
+        p = r["loss_pct"] / 100
+        r["frac_delayed_model"] = round(1 - (1 - p) ** (segs[r["alg"]] + 1), 4)
     with open(os.path.join(RES, "e4_loss.csv"), "w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=list(lrows[0])); w.writeheader(); w.writerows(lrows)
     fig, ax = plt.subplots(figsize=(4.6, 2.8))

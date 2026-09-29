@@ -195,50 +195,91 @@ synchronously on the handshake critical path.  DAPV targets this component
 \emph{only}: it does not reduce the number of bytes on the wire and does
 not remove any fragmentation- or congestion-window-induced round trip.
 
-\subsection{Research question and approach}
+\subsection{Research questions}
 
 PQ signature verification is fast on processors with vector
 extensions---we measure 37--59\,$\mu$s per ML-DSA or FN-DSA verification
-with AVX2 (Section~\ref{sec:res_delta_t}).  The question we ask is therefore
-not ``is PQ verification slow?'' but: \emph{if the PQ components of a
-hybrid credential are verified after, rather than before, the handshake
-completes, what latency and throughput changes are observed in a real TLS
-stack, for which schemes, and what security exposure does the deferral
-create?}  DAPV answers the first part by verifying the classical component
-synchronously (which yields ordinary classical authentication immediately)
-and verifying the PQ components in background workers, while the handshake
-transcript---which already contains the PQ signature bytes---binds the
-deferred checks to the session.
+with AVX2---yet hybrid authentication adds more than a millisecond to a
+handshake even without any network delay, and whole round trips with
+larger chains.  Operators choosing schemes, chain layouts and TCP settings,
+and implementers deciding where to spend engineering effort, need to know
+which part of this cost comes from computation and which from the network,
+and which mitigations actually work.  We ask:
+\begin{description}[leftmargin=2.2em, style=nextline, itemsep=2pt]
+\item[RQ1] Can the latency of hybrid PQ authentication in TLS~1.3 be
+  \emph{predicted} from a few measurable quantities, and which of them
+  dominate?
+\item[RQ2] When does deferring PQ signature verification past handshake
+  completion---a purely client-side change---reduce latency, and by how
+  much?
+\item[RQ3] What security exposure does deferral create, and how can it be
+  bounded?
+\item[RQ4] How do network conditions and TCP configuration (initial
+  congestion window, congestion control, loss) change the picture?
+\end{description}
+
+To answer RQ2 and RQ3 we specify and implement \textit{Deferred
+Asynchronous PQ Verification} (DAPV): the classical component of a hybrid
+signature is verified synchronously, and the PQ components---already bound
+into the handshake transcript---are verified by background workers, after
+which the session is promoted from a \state{provisional} to a
+\state{fully\_authenticated} state or terminated.
+
+\subsection{Summary of findings}
+
+\begin{enumerate}[label=\textbf{F\arabic*}, leftmargin=2.2em]
+\item \textbf{Round trips dominate, and a parameter-free model predicts
+  them.}  The number of round trips follows from the size of the server's
+  first flight and the initial congestion window alone
+  (Equation~\eqref{eq:dk}); the model predicts it correctly for all
+  \MODELPOINTS{} measured configurations, with a median latency error of
+  \MODELMAPE\%.  One extra round trip (ML-DSA-65, three-certificate chain)
+  costs more than all PQ computation combined.
+\item \textbf{Deferral pays off only above a break-even point.}  Its gain
+  equals the verification work removed from the critical path minus a
+  dispatch cost of $\approx$0.14\ms\ ($R^2 = 0.999$).  On an AVX2 server
+  CPU the lattice schemes fall just below this point and gain nothing;
+  without vector instructions ML-DSA gains 9\%, SLH-DSA-128f gains
+  13--26\%, and with millisecond-scale verification deferral cuts latency
+  by up to 65\% and also completes full authentication sooner.
+\item \textbf{The provisional window is short and boundable.}  With a
+  bounded worker pool it lasts 0.08\ms\ at the median and 0.42\ms\ at the
+  99th percentile for ML-DSA-44; the resulting exposure is bounded by an
+  application-layer data cap.
+\item \textbf{Deferral does not raise server throughput.}  The server's
+  work is unchanged, in both separate and co-located CPU placements.
+\item \textbf{TCP configuration matters more than verification.}  Raising
+  the initial congestion window to 40 segments removes the extra round
+  trips of large chains (\IWSAVING); BBR's pacing, however, retains part
+  of their cost, and under 3\% loss the 90th-percentile latency of
+  ML-DSA-44 and FN-DSA-512 handshakes more than doubles while that of
+  classical P-256 does not.
+\end{enumerate}
 
 \subsection{Contributions}
 
-We deliberately position DAPV as an \emph{implementation-level}
-scheduling strategy with precisely specified local state semantics, not as
-a new TLS protocol mechanism: it changes neither messages nor the wire
-format, and a DAPV client interoperates with unmodified servers.
-Our contributions are:
 \begin{enumerate}[label=(\arabic*), leftmargin=*]
-\item \textbf{Provisional-state semantics.}  A specification of the
-  client state machine with a \state{provisional} state: entry and
-  promotion conditions, the behaviour on failure (alert and teardown),
-  handling of session tickets, resumption and 0-RTT, and an
-  application-facing API to enforce a data cap
-  (Sections~\ref{sec:design} and~\ref{sec:api}).
-\item \textbf{Implementation.}  DAPV in OpenSSL~3.5 via a 32-line hook in
-  the OQS provider, with thread-per-job and bounded-pool worker models,
-  deferring all PQ verifications of a handshake (chain and
-  \texttt{CertificateVerify}) (Section~\ref{sec:impl}).
-\item \textbf{Evaluation.}  Latency, provisional-window duration and
-  completed-handshake rate for four hybrid schemes with three-certificate
-  chains and X25519MLKEM768, five RTTs, two worker models and two CPU
-  placements, with client and server separated by network namespaces,
-  disjoint cores and an emulated link
-  (Section~\ref{sec:results}).  The main finding is negative for the
-  lattice schemes: deferral helps only when PQ verification is expensive.
-\item \textbf{Risk characterisation.}  A bound on data exposed during the
-  provisional window that accounts for both link rate and TCP congestion
-  window, a DAPV-specific denial-of-service vector, and mitigations
-  (Section~\ref{sec:security}).
+\item A \textbf{latency model} for PQ authentication in TLS~1.3 that
+  separates processing, critical-path verification and
+  congestion-window-induced round trips, with no fitted parameters, and its
+  validation across five schemes, five RTTs, three initial windows and two
+  congestion controllers (Sections~\ref{sec:analytical}
+  and~\ref{sec:res_model}).
+\item The \textbf{specification of deferred PQ verification}: the
+  semantics of the provisional state (permitted data, session tickets and
+  resumption, alerts), transcript binding, and an application interface
+  (Section~\ref{sec:design}).
+\item An \textbf{open implementation} in OpenSSL~3.5 with the OQS provider,
+  and a reproducible testbed with client and server on separate network
+  stacks and cores, a 1500-byte-MTU emulated link with loss, and
+  three-certificate hybrid chains with X25519MLKEM768
+  (Section~\ref{sec:setup}).
+\item A \textbf{systematic evaluation} of more than
+  \NHANDSHAKES{} handshakes that quantifies the break-even point of
+  deferral, its security exposure, and the effect of initial window,
+  congestion control and loss (Section~\ref{sec:results}), and
+  \textbf{deployment guidance} derived from it
+  (Section~\ref{sec:deployment}).
 \end{enumerate}
 
 \subsection{Scope and limitations}
@@ -747,42 +788,83 @@ chains, in which every handshake performs three PQ verifications, and
 SLH-DSA-128f (Section~\ref{sec:res_latency}); cases (iii) and (iv) remain
 future work.
 
-\subsection{Analytical model}
+%% ============================================================
+\section{A Latency Model for Post-Quantum Authentication}
 \label{sec:analytical}
 
-Let $k$ be the number of round trips of the handshake (one for a TLS~1.3
-full handshake as seen by the client) and $L_0$ the RTT-independent
-processing time.  Then
+We model the client-observed latency of a full TLS~1.3 handshake, from
+sending \texttt{ClientHello} until the client may send application data,
+as three additive components: RTT-independent processing, verification
+work on the critical path, and round trips.
+
+\subsection{Round trips}
+
+Let $F$ be the size in bytes of the server's first flight
+(\texttt{ServerHello} through server \texttt{Finished}, including record
+overhead), $W_0$ the server's initial congestion window in segments and
+$M$ the maximum segment size.  During slow start the window doubles every
+round trip, so after $n$ additional round trips the server can have sent
+$W_0 M (2^{n+1}-1)$ bytes.  The number of \emph{extra} round trips is
+therefore
 \begin{equation}
-  L = L_0 + (k + \delta k)\,\mathrm{RTT},
+  \delta k(F, W_0) = \min\{\, n \ge 0 : W_0 M (2^{n+1}-1) \ge F \,\},
+  \label{eq:dk}
+\end{equation}
+and the handshake latency is
+\begin{equation}
+  L(\mathrm{RTT}) = L_0 + \bigl(1 + \delta k(F, W_0)\bigr)\,\mathrm{RTT},
   \label{eq:latency}
 \end{equation}
-where $\delta k \ge 0$ counts additional round trips, which occur when the
-server's first flight exceeds the sender's congestion window (initially
-about ten segments~\cite{RFC6928}), \emph{not} merely when a message spans
-several segments: segments within the window are sent back to back.
-DAPV removes the synchronous PQ-path time $T_\text{PQ}$ from $L_0$ and
-leaves $\delta k$ unchanged:
+where $L_0$ is the latency at zero RTT.  Extra round trips arise when the
+flight exceeds the congestion window, \emph{not} when a message exceeds
+the MTU: segments within the window are sent back to back.  The model has
+no parameter to fit: $F$ is measured once per configuration, $W_0 = 10$
+and $M = 1448$ are Linux defaults~\cite{RFC6928}, and $L_0$ is measured
+at zero RTT.
+
+\subsection{Verification on the critical path}
+
+A synchronous client performs $n_v$ PQ verifications of cost $T_v$ each
+before it can send its \texttt{Finished}; they are part of $L_0$.
+Deferral removes them from the critical path but adds a dispatch cost
+$c$ (copying the job and waking a worker).  The latency gain is
 \begin{equation}
-  L_\text{DAPV} = (L_0 - T_\text{PQ}) + (k + \delta k)\,\mathrm{RTT}.
+  \Delta L \approx W_\text{crit} - c, \qquad
+  W_\text{crit} = n_v T_v - W_\text{hidden},
   \label{eq:dapv}
 \end{equation}
-Consequently the saving is an RTT-independent offset, $T_\text{PQ}$, and
-the curves of synchronous and DAPV latency against RTT have equal slope.
-The server's first flight comprises \texttt{ServerHello} (1120-byte
-X25519MLKEM768 share), the encrypted \texttt{EncryptedExtensions},
-\texttt{Certificate}, \texttt{CertificateVerify} and \texttt{Finished}.
-With the three-certificate chains used in Section~\ref{sec:results}, its
-size is dominated by the leaf and intermediate certificates (DER sizes
-0.9, 4.0, 8.4, 11.6 and 35.2~KB for P-256, P-256\,+\,FN-DSA-512,
-P-256\,+\,ML-DSA-44, P-384\,+\,ML-DSA-65 and P-256\,+\,SLH-DSA-128f) plus
-the \texttt{CertificateVerify} signature (0.07, 0.7, 2.5, 3.4 and
-17.1~KB).  Against an initial window of ten 1448-byte segments (14.5~KB),
-the model predicts $\delta k=0$ for P-256, FN-DSA-512 and ML-DSA-44,
-$\delta k=1$ for ML-DSA-65 ($\approx$16~KB) and $\delta k=2$ for
-SLH-DSA-128f ($\approx$54~KB, which needs three slow-start windows of
-14.5, 29 and 58~KB).  Section~\ref{sec:res_latency} confirms all five
-predictions.
+where $W_\text{hidden}$ is verification work that a synchronous client
+already overlaps with network waiting.  With $\delta k = 0$ the whole
+flight arrives together and $W_\text{hidden} = 0$; with $\delta k > 0$ the
+certificate chain can be verified while later windows are in transit, and
+only the verifications that depend on the last window (at least
+\texttt{CertificateVerify}) remain on the critical path.  Deferral
+therefore pays off only when $W_\text{crit} > c$; since both terms are
+independent of RTT, the gain is an RTT-independent offset.
+
+\subsection{Loss}
+
+With independent segment loss probability $p$, a handshake whose
+first-flight exchange consists of $s$ data segments is delayed by at least
+one retransmission round with probability
+\begin{equation}
+  P_\text{delay} \approx 1 - (1-p)^{s}.
+  \label{eq:loss}
+\end{equation}
+Larger PQ flights thus raise the \emph{fraction} of delayed handshakes
+roughly in proportion to their segment count, even when they need no
+extra round trip in the loss-free case.
+
+\subsection{Predictions for our configurations}
+
+The measured first flights (Section~\ref{sec:setup}) are 2.4, 6.1, 12.3,
+16.4 and 53.8~KB for P-256, P-256\,+\,FN-DSA-512, P-256\,+\,ML-DSA-44,
+P-384\,+\,ML-DSA-65 and P-256\,+\,SLH-DSA-128f with three-certificate
+chains and X25519MLKEM768.  Against the default initial window of
+14.5~KB, Equation~\eqref{eq:dk} predicts $\delta k = 0, 0, 0, 1, 2$; with
+$W_0 = 20$ it predicts $\delta k = 1$ only for SLH-DSA-128f, and with
+$W_0 = 40$ no extra round trip at all.  Section~\ref{sec:res_model} tests
+these predictions.
 
 %% ============================================================
 \section{Implementation and Experimental Setup}
@@ -846,12 +928,21 @@ own TCP/IP stack and a TAP interface with a 1500-byte MTU and all
 segmentation and receive offloads disabled, so that TCP transmits real
 1500-byte frames and runs its own congestion control end to end.  The
 emulator forwards each Ethernet frame between the two TAP devices after a
-one-way delay of RTT/2, serialised at 1~Gbit/s.  (The kernel lacked the
+one-way delay of RTT/2, serialised at 1~Gbit/s, and can drop frames
+independently with a configurable probability.  (The kernel lacked the
 \texttt{netem} queueing discipline.)  Measured ping RTTs are 0.06--0.14\ms\
 with no added delay and 50.3\ms\ with 50\ms\ configured.  Traffic therefore
 never uses the loopback interface, and client and server never compete for
 a core.  They still share the memory system and hypervisor of one host
 (Section~\ref{sec:threats}).
+
+\paragraph{TCP} Linux~6.18 defaults: initial congestion window of ten
+segments, MSS 1448 bytes, and the host's default congestion control, BBR,
+which paces transmissions.  Experiment E3 additionally uses CUBIC, which
+does not pace in slow start, selected per route.  The size of each
+configuration's first flight $F$ is measured once, as the number of TCP
+payload bytes the client has received when its handshake completes
+(\texttt{tcpi\_bytes\_received}).
 
 \subsection{Configurations}
 \label{sec:crypto_config}
@@ -895,6 +986,30 @@ repetitions per point, at RTTs of 0 and 50\ms.  Two CPU placements are
 compared: \emph{separate} (server on CPU~0, clients on CPUs~1--2) and
 \emph{co-located} (server and clients share CPUs~0--1, as in the original
 prototype).  We also record server and client CPU utilisation.
+
+\paragraph{E3: initial congestion window} Sequential synchronous
+handshakes with server initial windows of 10, 20 and 40 segments (with a
+matching client receive window) at RTTs of 50 and 150\ms, under BBR and
+CUBIC; 100 handshakes per point, for P-256 and the ML-DSA-44, ML-DSA-65 and
+SLH-DSA-128f hybrids.
+
+\paragraph{E4: packet loss} Sequential synchronous handshakes at 50\ms\
+RTT with 0, 1 and 3\% independent frame loss in each direction; 400
+handshakes per point, for P-256 and the FN-DSA-512, ML-DSA-44 and ML-DSA-65
+hybrids.
+
+\paragraph{E5: client without vector instructions} As E1 at RTTs of 0 and
+50\ms, but the client and the provider it loads use a portable C build of
+liboqs without AVX2, raising ML-DSA-44 verification from 37 to
+115\,$\mu$s; the server keeps the AVX2 build.
+
+\paragraph{E6: verification-cost scaling} To locate the break-even point
+of deferral in a controlled way, each PQ verification is performed $k$
+times ($k = 1, 2, \dots, 64$), identically in the synchronous (provider)
+and deferred (worker) paths, which emulates a verifier $k$ times slower;
+P-256\,+\,ML-DSA-44 at RTTs of 0 and 50\ms, 300 and 100 handshakes per
+point.  At $k = 64$ one verification costs 2.0\ms, approaching the
+millisecond-scale verification times reported for microcontrollers~\cite{pqm4}.
 
 \paragraph{Statistics} For latency we report medians and 95th percentiles;
 differences between DAPV and synchronous verification are differences of
@@ -1268,32 +1383,51 @@ retry-later indication while the session is provisional and the cap is
 reached.
 
 %% ============================================================
-\section{Deployment Considerations}
+\section{Deployment Guidance}
 \label{sec:deployment}
 
-\paragraph{Where DAPV fits}  DAPV suits clients that (i) can tolerate a
-bounded interval of classical-strength authentication for their first
-bytes, and (ii) perform enough synchronous PQ work per handshake for its
-removal to matter: long PQ chains, multi-algorithm credentials, SLH-DSA,
-or devices without vector units.  Browsers fetching public content, API
-clients sending idempotent requests, and edge proxies are examples.
-Clients that immediately send credentials, payment data or personal data
-should verify synchronously or set $D_\text{policy} = 0$ for such
-requests.
+The model and measurements translate into an ordered set of rules.  The
+first three concern size, which dominates; only the fourth concerns
+deferral.
 
-\paragraph{Operational requirements}  A bounded worker pool; exposure of
-the provisional state to applications; monitoring of \Dt\ (mean and
-95th percentile), PQ failure rate and provisional-session count;
-calibration of any cap against \Dt\ under production load; and the ticket
-rules of Section~\ref{sec:state_semantics}.
+\paragraph{1. Keep the first flight within the initial window}  Estimate
+the server's first flight $F$ (certificates actually sent, the
+\texttt{CertificateVerify} signature and about 1.4~KB for the other
+messages with X25519MLKEM768) and compare it with $W_0 \cdot 1448$~bytes.
+With the default $W_0 = 10$ (14.5~KB), a two-certificate hybrid chain with
+ML-DSA-44 (12.3~KB) or FN-DSA-512 (6.1~KB) fits; ML-DSA-65 (16.4~KB) does
+not and costs a full extra RTT; SLH-DSA-128f (53.8~KB) costs two.  Every
+kilobyte beyond the window is far more expensive than any verification.
 
-\paragraph{Device classes}  On devices without vector units the
-verification itself becomes the dominant term of \Dt, increasing both the
-benefit of deferral and the exposure window.  We have not measured such
-devices; published microcontroller benchmarks~\cite{pqm4} suggest
-verification times of milliseconds rather than tenths of a millisecond,
-and a deployment there should re-measure \Dt\ before choosing
-$D_\text{policy}$.
+\paragraph{2. Otherwise, raise the server's initial window}  Where the
+flight cannot be reduced, a larger initial window on the server removes
+the extra round trips (Section~\ref{sec:res_network}); large content
+providers already use windows above ten segments~\cite{Dukkipati2010IW}.
+With a pacing congestion controller such as BBR, part of the cost remains
+because the window is spread over the RTT.
+
+\paragraph{3. Reduce what is sent}  Intermediate-certificate
+suppression~\cite{KampanakisKallitsis2022,Sikeridis2022ICA} and mixed
+chains~\cite{Paul2022} shrink $F$ directly; certificate
+compression~\cite{RFC8879} helps little, because PQ keys and signatures are
+close to incompressible; KEM-based authentication~\cite{Schwabe2020KEMTLS}
+removes the handshake signature altogether.
+
+\paragraph{4. Defer verification only above the break-even point}  Enable
+DAPV only when the PQ verification work on the client's critical path
+exceeds about 0.15--0.25\ms\ per handshake: SLH-DSA, clients without vector
+instructions, multi-algorithm credentials, or long chains of expensive
+signatures.  Use a bounded pool, never a thread per job, which is slower
+than not deferring at all.  On AVX2-class hardware with ML-DSA or FN-DSA,
+synchronous verification is the better choice.
+
+\paragraph{5. When deferring, enforce the provisional semantics}  Expose the
+provisional state to applications and enforce a data cap (8~KB by default,
+zero for sensitive requests); withhold session tickets until promotion;
+bound the worker pool and queue with synchronous fall-back; and monitor
+\Dt\ (median and 99th percentile) and the PQ failure rate.  Clients that
+immediately send credentials, payment data or personal data should verify
+synchronously.
 
 \paragraph{Standardisation}  Because DAPV changes no messages, it needs no
 TLS extension to interoperate.  What would benefit from standardisation is

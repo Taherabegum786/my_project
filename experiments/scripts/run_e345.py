@@ -59,21 +59,22 @@ def run(outdir, runs, ports, n, rounds, env=None):
                 print("FAILED", outdir, name, res.stderr[-300:], flush=True)
 
 
-def e3():
+def e3(cc="bbr", tag="e3"):
+    """cc: congestion control, set per route (the host default is bbr)."""
     algs = ["p256", "p256_mldsa44", "p384_mldsa65", "p256_sphincssha2128fsimple"]
     procs, ports = servers(algs, 7100)
     try:
         for rtt in (50, 150):
             net("rtt", rtt)
             for cw in (10, 20, 40):
-                net("initcwnd", cw)
+                net("initcwnd", cw, cc)
                 time.sleep(0.3)
                 t = time.time()
-                run(os.path.join(ROOT, "results", "e3", f"cw{cw}_rtt{rtt}"),
+                run(os.path.join(ROOT, "results", tag, f"cw{cw}_rtt{rtt}"),
                     [(a, "none") for a in algs], ports, 100, 5)
-                print(f"e3 cw={cw} rtt={rtt} {time.time() - t:.0f}s", flush=True)
+                print(f"{tag} cw={cw} rtt={rtt} {time.time() - t:.0f}s", flush=True)
     finally:
-        net("initcwnd", 10); net("rtt", 0)
+        net("initcwnd", 10, "bbr"); net("rtt", 0)
         for p in procs: p.kill()
 
 
@@ -129,6 +130,10 @@ def e6():
     finally:
         net("rtt", 0)
         for p in procs: p.kill()
+
+
+def e3cubic():
+    e3(cc="cubic", tag="e3_cubic")
 
 
 if __name__ == "__main__":
