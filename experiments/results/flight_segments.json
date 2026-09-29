@@ -1,0 +1,7 @@
+{
+ "p256": 2,
+ "p256_falcon512": 5,
+ "p256_mldsa44": 9,
+ "p384_mldsa65": 13,
+ "p256_sphincssha2128fsimple": 39
+}
