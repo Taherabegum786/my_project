@@ -1,9 +1,10 @@
 #!/bin/bash
 # Proves the DAPV lemmas in the full TLS 1.3 model one at a time.
+# Requires Tamarin 1.8.0 (1.10.0 crashes on the rev21 model: "shapeTerm ... not enough pairs").
 # Budget per lemma: $TIMEOUT seconds, 12 GB heap (4-core, 15 GB machine).
 export LANG=C.UTF-8 LC_ALL=C.UTF-8
 TIMEOUT=${TIMEOUT:-2400}
-TAM="tamarin-prover +RTS -N4 -M12G -RTS"
+TAM="tamarin-prover-1.8.0 +RTS -N4 -M12G -RTS"
 run() { # file lemma heuristic
   local f=$1 l=$2 h=$3
   local out=results/${f%.spthy}__$l.txt
