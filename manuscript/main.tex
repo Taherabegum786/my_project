@@ -75,27 +75,33 @@ FN-DSA) signature must both verify.  This paper studies one component of
 the resulting handshake cost: the client-side verification of the PQ
 signature component.
 
-We present \textit{Deferred Asynchronous PQ Verification} (DAPV), a
+We study \textit{Deferred Asynchronous PQ Verification} (DAPV), a
 client-side, implementation-level change to the TLS~1.3 handshake state
 machine that requires no change to the wire format or to the server.  The
 classical component is verified synchronously and the handshake completes
-in a \state{provisional} state; the PQ component, already bound into the
-handshake transcript, is verified by a background worker, after which the
+in a \state{provisional} state; the PQ components, already bound into the
+handshake transcript, are verified by background workers, after which the
 session is promoted to \state{fully\_authenticated} or terminated.  We
 specify the semantics of the provisional state (permitted data, session
-tickets, alerts, and an application-facing API), implement a proof of
-concept in OpenSSL~3.2 with the Open Quantum Safe provider, and evaluate it
-for P-256\,+\,ML-DSA-44 and P-256\,+\,FN-DSA-512.  In our single-host
-testbed DAPV lowers client-observed handshake latency by an RTT-independent
-offset of about 14--21\ms\ and raises the completed-handshake rate by
-31--36\%.  We show, however, that the arithmetic of PQ verification costs
-below 0.15\ms, so the measured gain is attributable to non-arithmetic costs
-of the synchronous verification path of the prototype rather than to the
-cryptography itself; we discuss what this implies for when deferral is
-worthwhile (long certificate chains, multi-algorithm hybrids, slower schemes
-and constrained devices).  Finally, we bound the data that can be exposed
-during the provisional window, identify a denial-of-service vector specific
-to deferred verification, and give mitigations.
+tickets, alerts, and an application-facing API) and evaluate DAPV in
+OpenSSL~3.5 with the Open Quantum Safe provider, using three-certificate
+hybrid chains, X25519MLKEM768 key exchange, and client and server in
+separate network namespaces on disjoint CPU cores, joined by an emulated
+1500-byte-MTU link.  Over more than 20{,}000 handshakes, deferral does not
+measurably reduce handshake latency for P-256\,+\,ML-DSA-44,
+P-256\,+\,FN-DSA-512 or P-384\,+\,ML-DSA-65 (median change within
+$\pm$0.2\ms\ at RTTs of 0--150\ms), because each PQ verification costs only
+37--59\,$\mu$s; a thread-per-job implementation is slower than synchronous
+verification.  Deferral pays off only when verification is expensive: for
+P-256\,+\,SLH-DSA-128f it saves 1.6\ms\ (13.5\%) at zero RTT.  It does not
+increase server throughput.  With a bounded worker pool, the provisional
+window is 0.08\ms\ at the median and 0.42\ms\ at the 99th percentile for
+ML-DSA-44.  The measurements also confirm that hybrid chains add round trips
+exactly when the server's flight exceeds the TCP initial congestion window
+(one extra for ML-DSA-65, two for SLH-DSA-128f).  Finally, we bound the data
+that can be exposed during the provisional window, identify a
+denial-of-service vector specific to deferred verification, and give
+mitigations.
 \end{abstract}
 
 \begin{keyword}
@@ -192,17 +198,17 @@ not remove any fragmentation- or congestion-window-induced round trip.
 \subsection{Research question and approach}
 
 PQ signature verification is fast on processors with vector
-extensions---our own measurements give 0.08--0.14\ms\ per ML-DSA-44 or
-FN-DSA-512 verification with AVX2 (Section~\ref{sec:res_delta_t}).  The
-question we ask is therefore not ``is PQ verification slow?'' but: \emph{if
-the PQ component of a hybrid credential is verified after, rather than
-before, the handshake completes, what latency and throughput changes are
-observed in a real TLS stack, where do they come from, and what security
-exposure does the deferral create?}  DAPV answers this by verifying the
-classical component synchronously (which yields ordinary classical
-authentication immediately) and verifying the PQ component in a background
-worker, while the handshake transcript---which already contains the PQ
-signature bytes---binds the deferred check to the session.
+extensions---we measure 37--59\,$\mu$s per ML-DSA or FN-DSA verification
+with AVX2 (Section~\ref{sec:res_delta_t}).  The question we ask is therefore
+not ``is PQ verification slow?'' but: \emph{if the PQ components of a
+hybrid credential are verified after, rather than before, the handshake
+completes, what latency and throughput changes are observed in a real TLS
+stack, for which schemes, and what security exposure does the deferral
+create?}  DAPV answers the first part by verifying the classical component
+synchronously (which yields ordinary classical authentication immediately)
+and verifying the PQ components in background workers, while the handshake
+transcript---which already contains the PQ signature bytes---binds the
+deferred checks to the session.
 
 \subsection{Contributions}
 
@@ -218,15 +224,17 @@ Our contributions are:
   handling of session tickets, resumption and 0-RTT, and an
   application-facing API to enforce a data cap
   (Sections~\ref{sec:design} and~\ref{sec:api}).
-\item \textbf{Prototype.}  An implementation in OpenSSL~3.2 with the OQS
-  provider on Windows~11 and Ubuntu~22.04
-  (Section~\ref{sec:impl}); \authorinput{source code URL / archive DOI,
-  see Section~\ref{sec:availability}}.
-\item \textbf{Measurement and decomposition.}  Latency, completed-handshake
-  rate, CPU utilisation and provisional-window duration for two hybrid
-  configurations, five RTTs and three concurrency levels, including a
-  decomposition showing that the measured gain is not explained by the
-  cost of PQ arithmetic (Sections~\ref{sec:res_latency}--\ref{sec:res_delta_t}).
+\item \textbf{Implementation.}  DAPV in OpenSSL~3.5 via a 32-line hook in
+  the OQS provider, with thread-per-job and bounded-pool worker models,
+  deferring all PQ verifications of a handshake (chain and
+  \texttt{CertificateVerify}) (Section~\ref{sec:impl}).
+\item \textbf{Evaluation.}  Latency, provisional-window duration and
+  completed-handshake rate for four hybrid schemes with three-certificate
+  chains and X25519MLKEM768, five RTTs, two worker models and two CPU
+  placements, with client and server separated by network namespaces,
+  disjoint cores and an emulated link
+  (Section~\ref{sec:results}).  The main finding is negative for the
+  lattice schemes: deferral helps only when PQ verification is expensive.
 \item \textbf{Risk characterisation.}  A bound on data exposed during the
   provisional window that accounts for both link rate and TCP congestion
   window, a DAPV-specific denial-of-service vector, and mitigations
@@ -239,8 +247,9 @@ DAPV requires a classical component to provide the synchronous anchor for
 the provisional state; PQ-only deployments are out of scope.  During the
 provisional window the session has classical-strength authentication only,
 so DAPV is unsuitable wherever even a bounded interval of classical-only
-authentication is unacceptable.  Our testbed places client and server on
-the same host \authorinput{confirm}; the implications are discussed in
+authentication is unacceptable.  Our testbed separates client and server by
+network namespaces and disjoint CPU cores on one virtual machine rather than
+by physical hosts; the implications are discussed in
 Section~\ref{sec:threats}.
 
 Section~\ref{sec:background} gives the background on PQ signatures, hybrid
@@ -390,12 +399,12 @@ must be restricted so that it does not inherit a provisional authentication
 could be applied by the server to the client's hybrid signature; we do not
 evaluate this case.
 
-The prototype applies deferral to \authorinput{state precisely which
-signatures are deferred: only the PQ component of \texttt{CertificateVerify},
-or also the PQ components of certificate signatures in the chain}, and the
-chain in all experiments consists of \authorinput{number of certificates
-sent by the server, and whether the leaf is self-signed or issued by a
-test CA}.
+Our implementation defers the PQ component of \emph{every} hybrid
+verification the client performs: the signatures on the leaf and
+intermediate certificates of the chain and the \texttt{CertificateVerify}
+signature, i.e., three PQ verifications per handshake with a
+three-certificate chain (root, intermediate, leaf; the root is the client's
+trust anchor and is not sent).
 
 %% ============================================================
 \section{Related Work}
@@ -673,7 +682,8 @@ dispatch first and cancel the job if $\sigma_E$ fails.
 
 \begin{algorithm}[t]
 \caption{Bounded verification worker pool (recommended design; the
-  evaluated prototype uses one thread per job, Section~\ref{sec:impl})}
+  evaluated with $M=2$ alongside a thread-per-job variant,
+  Section~\ref{sec:impl})}
 \label{alg:server}
 \DontPrintSemicolon
 \KwIn{Pool size $M$; queue capacity $Q$}
@@ -717,9 +727,9 @@ SIMD reduces the \emph{duration} of one verification and is already used
 by our prototype (liboqs AVX2 code paths).  Thread-level deferral changes
 \emph{where} the remaining duration is spent: off the handshake critical
 path.  For a single AVX2 ML-DSA-44 verification the remaining duration is
-about 0.1\ms, and deferring it cannot save more than that; we confirm in
-Section~\ref{sec:res_where} that the latency gain we measure is \emph{not}
-explained by this cost.
+about 37\,$\mu$s, and deferring it cannot save more than that; our
+measurements confirm that for the lattice schemes the saving is within
+measurement noise (Section~\ref{sec:res_latency}).
 
 Deferral becomes worthwhile when the synchronous PQ work on the critical
 path is large, which happens when (i) the chain contains several
@@ -732,10 +742,10 @@ than two algorithms (e.g., ECDSA\,+\,ML-DSA\,+\,SLH-DSA).  Cases (i) and
 parallelise with one another but a worker pool can, one per core.
 Algorithm~\ref{alg:client} generalises directly: all PQ components are
 submitted as separate jobs and the session is promoted when all have
-succeeded.  We have not evaluated these cases; they are the most promising
-direction for follow-up measurements
-\authorinput{if you add experiments with 2--3-certificate chains or
-three-algorithm hybrids, report them here}.
+succeeded.  Our evaluation covers cases (i) and (ii): three-certificate
+chains, in which every handshake performs three PQ verifications, and
+SLH-DSA-128f (Section~\ref{sec:res_latency}); cases (iii) and (iv) remain
+future work.
 
 \subsection{Analytical model}
 \label{sec:analytical}
@@ -759,11 +769,20 @@ leaves $\delta k$ unchanged:
 \end{equation}
 Consequently the saving is an RTT-independent offset, $T_\text{PQ}$, and
 the curves of synchronous and DAPV latency against RTT have equal slope.
-For the single-certificate configuration used in our experiments the
-server flight is approximately 7~KB (two ML-DSA-44 signatures, one
-ML-DSA-44 public key, the classical components and certificate overhead),
-below the initial window, so we expect $\delta k = 0$; our measurements
-(Section~\ref{sec:res_latency}) agree.
+The server's first flight comprises \texttt{ServerHello} (1120-byte
+X25519MLKEM768 share), the encrypted \texttt{EncryptedExtensions},
+\texttt{Certificate}, \texttt{CertificateVerify} and \texttt{Finished}.
+With the three-certificate chains used in Section~\ref{sec:results}, its
+size is dominated by the leaf and intermediate certificates (DER sizes
+0.9, 4.0, 8.4, 11.6 and 35.2~KB for P-256, P-256\,+\,FN-DSA-512,
+P-256\,+\,ML-DSA-44, P-384\,+\,ML-DSA-65 and P-256\,+\,SLH-DSA-128f) plus
+the \texttt{CertificateVerify} signature (0.07, 0.7, 2.5, 3.4 and
+17.1~KB).  Against an initial window of ten 1448-byte segments (14.5~KB),
+the model predicts $\delta k=0$ for P-256, FN-DSA-512 and ML-DSA-44,
+$\delta k=1$ for ML-DSA-65 ($\approx$16~KB) and $\delta k=2$ for
+SLH-DSA-128f ($\approx$54~KB, which needs three slow-start windows of
+14.5, 29 and 58~KB).  Section~\ref{sec:res_latency} confirms all five
+predictions.
 
 %% ============================================================
 \section{Implementation and Experimental Setup}
@@ -772,92 +791,115 @@ below the initial window, so we expect $\delta k = 0$; our measurements
 \subsection{Implementation}
 \label{sec:impl}
 
-The prototype is built on OpenSSL~3.2, liboqs \authorinput{version} and the
-OQS provider \authorinput{version}~\cite{OQS2017}.  Hybrid certificates
-carry the concatenation of the P-256 and PQ public keys; signatures are
-encoded as $\mathrm{len}(\sigma_E)\|\sigma_E\|\sigma_P$.  We modified the
-provider's hybrid signature-verification routine
-(\texttt{oqs\_sig\_verify}) so that, when invoked for the server's
-\texttt{CertificateVerify}, it verifies the classical component, copies
-$(\mathit{pk}_P, m, \sigma_P)$ into a job, dispatches it with
-\texttt{CreateThread} (Windows) or \texttt{pthread\_create} (Linux), and
-returns success to OpenSSL so that the handshake proceeds.  A per-connection
-state object, reachable through \texttt{SSL\_get\_ex\_data}, records the
-state and receives the job result; on failure the main thread sends the
-alert at its next I/O operation \authorinput{confirm mechanism, e.g.,
-polled flag or wake-up via socket pair}.  The prototype creates one thread
-per job; the bounded pool of Algorithm~\ref{alg:server} and the ticket
-handling of Section~\ref{sec:state_semantics} are \authorinput{implemented /
-not implemented in the prototype---state which}.
+\begin{sloppypar}
+We implemented DAPV on OpenSSL~3.5.4, liboqs~0.14.0 (built with AVX2
+optimisations) and oqs-provider~0.10.0~\cite{OQS2017}.  OpenSSL~3.5 provides
+ML-KEM and the X25519MLKEM768 group natively; the OQS provider supplies the
+hybrid signature algorithms \texttt{p256\_mldsa44}, \texttt{p256\_falcon512},
+\texttt{p384\_mldsa65} and
+\texttt{p256\_sphincssha2128\allowbreak fsimple}, which encode
+a hybrid signature as $\mathrm{len}(\sigma_E)\|\sigma_E\|\sigma_P$.
+\end{sloppypar}
+
+\paragraph{Deferral hook} The provider's hybrid verification routine
+(\texttt{oqs\_sig\_verify}) first verifies the classical component and then
+the PQ component.  We added 32 lines that, after the classical component has
+verified, look up a function \texttt{dapv\_submit} exported by the host
+process.  If it exists and accepts the job, the PQ public key, the signed
+message and $\sigma_P$ are copied into a job and the routine returns success;
+otherwise verification proceeds synchronously, unchanged.  Because OpenSSL
+routes both X.509 chain verification and \texttt{CertificateVerify} through
+this routine, all PQ verifications of a handshake are deferred.  The client
+tags each job with the handshake it belongs to (a thread-local handshake
+identifier set before each call into the TLS state machine), and a session
+is fully authenticated when all its jobs have succeeded.
+
+\paragraph{Worker models} \emph{thread}: one new detached thread per job,
+as in the original prototype; \emph{pool}: $M$ pre-started workers serving a
+FIFO queue (Algorithm~\ref{alg:server} without the synchronous fall-back);
+we use $M=2$, one per client core.  The synchronous baseline runs the same
+binaries with deferral disabled.
+
+\paragraph{Correctness} With a test switch that flips one byte of each
+deferred PQ signature, all 50 of 50 test handshakes were detected as failed
+PQ verifications after completing provisionally; in all other runs no PQ
+verification failed.
 
 \subsection{Code and data availability}
 \label{sec:availability}
 
-The source code of the modified provider, the load generator, the
-measurement scripts and the raw measurements are available at
-\authorinput{public repository URL and archived DOI (e.g., Zenodo)}.
+The provider patch, the client and server, the link emulator, the
+experiment drivers, the raw per-handshake and per-job measurements, and the
+analysis scripts are available at \authorinput{public repository URL and
+archived DOI (e.g., Zenodo)}.
 
-\subsection{Hardware and operating systems}
+\subsection{Testbed}
 
-Two x86-64 testbeds were used: an Intel Core i7-11800H (8~cores,
-2.3~GHz, 32~GB RAM) running Windows~11 Pro, and an Intel Xeon Silver~4310
-(12~cores, 2.1~GHz, 64~GB RAM) running Ubuntu~22.04 LTS; AVX2 was enabled
-on both.  Compilers were Visual Studio~2022 and GCC~11.3.  On each testbed,
-the TLS client (load generator) and server ran on the same host
-\authorinput{confirm; state CPU pinning of client and server processes, if
-any}.  Results in Section~\ref{sec:results} are from the
-\authorinput{Windows / Linux} testbed unless stated otherwise.
+All experiments ran on one virtual machine with four vCPUs of an Intel
+Xeon processor at 2.1~GHz (AVX2 and AVX-512), 15~GB of RAM and Linux~6.18
+(Ubuntu~24.04, GCC~13.3).
 
-\subsection{Cryptographic configuration}
+\paragraph{Separating client and server} The server runs in network
+namespace \texttt{srv} pinned to CPU~0, the client in namespace \texttt{cli}
+pinned to CPUs~1--2, and a link emulator on CPU~3.  Each namespace has its
+own TCP/IP stack and a TAP interface with a 1500-byte MTU and all
+segmentation and receive offloads disabled, so that TCP transmits real
+1500-byte frames and runs its own congestion control end to end.  The
+emulator forwards each Ethernet frame between the two TAP devices after a
+one-way delay of RTT/2, serialised at 1~Gbit/s.  (The kernel lacked the
+\texttt{netem} queueing discipline.)  Measured ping RTTs are 0.06--0.14\ms\
+with no added delay and 50.3\ms\ with 50\ms\ configured.  Traffic therefore
+never uses the loopback interface, and client and server never compete for
+a core.  They still share the memory system and hypervisor of one host
+(Section~\ref{sec:threats}).
+
+\subsection{Configurations}
 \label{sec:crypto_config}
 
-Server authentication used five configurations: ECDSA P-256 (classical
-baseline); ML-DSA-44 and FN-DSA-512 alone (synchronous PQ-only baselines);
-and the hybrids P-256\,+\,ML-DSA-44 and P-256\,+\,FN-DSA-512, each measured
-with synchronous verification and with DAPV.  Key exchange used the group
-\authorinput{state the group actually negotiated, e.g., X25519 or
-X25519MLKEM768} in \emph{all} configurations, so that differences between
-configurations are attributable to authentication alone.
-\authorinput{If the group was X25519: add ``Using X25519MLKEM768 instead
-would add 1216 and 1120 bytes to ClientHello and ServerHello respectively
-and about 0.1\,ms of computation to both sides, but would not interact
-with signature verification; the results therefore transfer to a full PQ
-configuration except for these additive terms.'' Better: re-run the hybrid
-configurations with X25519MLKEM768.}
+\paragraph{Certificates} For each algorithm we generated a
+three-certificate chain in which root, intermediate and leaf use the same
+algorithm; the server sends leaf and intermediate, and the root is the
+client's trust anchor.  A handshake therefore involves three hybrid
+verifications.  For P-256\,+\,ML-DSA-44 we additionally used a single
+self-signed leaf trusted directly, matching the original prototype.
 
-\subsection{Network emulation}
+\paragraph{Key exchange} X25519MLKEM768~\cite{ECDHEMLKEM} in all runs, so
+that both confidentiality and authentication are post-quantum; for
+P-256\,+\,ML-DSA-44 we also ran X25519 to isolate the cost of the hybrid
+KEM.
 
-Delay was added with Clumsy~0.3 (Windows) and \texttt{tc netem} (Linux) to
-obtain RTTs of 0, 20, 50, 100 and 150\ms, without packet loss.  On Linux
-the qdisc was attached to \authorinput{interface---if the loopback
-interface, state how delay was split between directions}.
+\paragraph{Handshakes} TLS~1.3 only, full handshakes (session tickets
+disabled), \texttt{TCP\_NODELAY}.  After the handshake the client sends a
+32-byte request and the server echoes it.
 
-\subsection{Metrics and procedure}
+\subsection{Experiments and metrics}
 
-\begin{enumerate}[leftmargin=*,noitemsep]
-\item \textbf{Handshake latency}: at the client, from sending
-  \texttt{ClientHello} to the point at which the client may send
-  application data (after sending its \texttt{Finished}), i.e., the
-  latency seen by the application.
-\item \textbf{Completed-handshake rate}: handshakes completed per second by
-  a closed-loop load generator with 100, 500 or 1000 concurrent clients,
-  each opening a new connection as soon as its previous handshake
-  completes \authorinput{confirm tool and closed-loop behaviour; confirm
-  sessions are not resumed}.  Because client and server share a host, this
-  is a system-level rate, not a server-only capacity.
-\item \textbf{Peak CPU utilisation} of the host during a run.
-\item \textbf{\Dt}: from job submission (step~5) to completion of PQ
-  verification (step~7), decomposed into the verification call alone, timed
-  inside the worker, and the remainder (thread creation, queueing and
-  scheduling).
-\end{enumerate}
-Each configuration was measured in 30 independent runs
-\authorinput{state how many handshakes per run}.  With the observed
-standard deviations of latency and throughput (below 4\% of the mean), 30
-runs give a 95\% confidence-interval half-width of about 1.5\% of the mean,
-which is an order of magnitude smaller than the differences we report.
-\Dt\ is considerably more dispersed (Table~\ref{tab:delta_t}); its tail
-percentiles are reported as descriptive statistics of the pooled samples.
+\paragraph{E1: latency and \Dt} Sequential handshakes at RTTs of 0, 20,
+50, 100 and 150\ms: 1000 handshakes per configuration at 0\ms\ and 200 at
+each other RTT, with all configurations interleaved in ten rounds so that
+drift of the host affects all equally.  \emph{Handshake latency} is measured
+at the client from sending \texttt{ClientHello} to the return of
+\texttt{SSL\_connect}, i.e., when the client has sent its \texttt{Finished}
+and may send application data.  \emph{Time to full authentication} is
+measured from \texttt{ClientHello} to the completion of the last PQ job
+(for synchronous verification it equals the handshake latency).  For every
+job we record the queueing delay, the duration of the verification call
+itself, and $\Dt$, from submission to completion.  E1 comprises 21{,}600
+handshakes and 43{,}200 deferred verifications.
+
+\paragraph{E2: completed-handshake rate} Closed-loop load with 100 or 500
+concurrent connections, split over two client processes; each connection
+performs a handshake and the request--response exchange, then closes and is
+replaced.  Rates are counted over 10\,s after 3\,s of warm-up, three
+repetitions per point, at RTTs of 0 and 50\ms.  Two CPU placements are
+compared: \emph{separate} (server on CPU~0, clients on CPUs~1--2) and
+\emph{co-located} (server and clients share CPUs~0--1, as in the original
+prototype).  We also record server and client CPU utilisation.
+
+\paragraph{Statistics} For latency we report medians and 95th percentiles;
+differences between DAPV and synchronous verification are differences of
+medians, with 95\% bootstrap confidence intervals (1000 resamples).  For
+rates we report the mean and standard deviation over repetitions.
 
 %% ============================================================
 \section{Results}
@@ -866,218 +908,229 @@ percentiles are reported as descriptive statistics of the pooled samples.
 \subsection{Handshake latency}
 \label{sec:res_latency}
 
+\begin{table}[t]
+\centering
+\caption{Median handshake latency (ms), synchronous versus DAPV with a
+  two-worker pool, and the difference of medians with 95\% bootstrap CI.
+  Three-certificate chains, X25519MLKEM768 unless noted.  ``RTTs'' is the
+  fitted slope of latency against RTT (number of round trips).}
+\label{tab:e1}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrrrr}
+\toprule
+& \multicolumn{3}{c}{\textbf{RTT 0\ms}} & \multicolumn{2}{c}{\textbf{RTT 150\ms}} & \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-6}
+\textbf{Configuration} & \textbf{Sync} & \textbf{DAPV} & \textbf{$\Delta$ [95\% CI]}
+  & \textbf{Sync} & \textbf{$\Delta$ [95\% CI]} & \textbf{RTTs} \\
+\midrule
+P-256 (classical)          & 1.36  & ---   & ---                      & 152.4 & ---                    & 1.01 \\
+P-256+FN-DSA-512           & 3.26  & 3.23  & $-0.02$ [$-0.05$, 0.01]  & 154.6 & $-0.16$ [$-0.36$, 0.04] & 1.01 \\
+P-256+ML-DSA-44            & 2.65  & 2.66  & $+0.01$ [$-0.02$, 0.03]  & 154.0 & $+0.06$ [$-0.14$, 0.22] & 1.01 \\
+\quad thread per job       &       & 2.80  & $+0.15$ [0.12, 0.17]     &       & $+0.26$ [0.01, 0.50]    & 1.01 \\
+\quad X25519 key exchange  & 2.46  & 2.49  & $+0.03$ [$-0.00$, 0.06]  & 153.7 & $-0.01$ [$-0.13$, 0.12] & 1.01 \\
+\quad single certificate   & 2.03  & 2.06  & $+0.03$ [0.01, 0.05]     & 153.3 & $-0.07$ [$-0.22$, 0.08] & 1.01 \\
+P-384+ML-DSA-65            & 4.69  & 4.69  & $+0.00$ [$-0.05$, 0.04]  & 309.0 & $+0.13$ [$-0.03$, 0.28] & 2.03 \\
+P-256+SLH-DSA-128f         & 11.74 & 10.15 & $-1.59$ [$-1.68$, $-1.51$] & 478.4 & $-0.61$ [$-0.71$, $-0.49$] & 3.13 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.8\columnwidth]{fig01_latency_bar_0ms.pdf}
-  \caption{Handshake latency at 0\ms\ added RTT, synchronous (blue) versus
-    DAPV (red).  For standalone PQ configurations, the DAPV bars quantify
-    thread overhead only; they are not operative deployments.}
-  \label{fig:latency_bar}
+  \includegraphics[width=0.62\columnwidth]{e1_dapv_gain_by_alg.pdf}
+  \caption{DAPV (pool) minus synchronous median handshake latency at 0\ms\
+    RTT, with 95\% bootstrap CI (1000 handshakes per configuration).  Only
+    SLH-DSA-128f, whose verification costs 0.57\ms, benefits.}
+  \label{fig:gain_by_alg}
 \end{figure}
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.8\columnwidth]{fig02_latency_vs_rtt.pdf}
-  \caption{Handshake latency versus RTT for P-256\,+\,ML-DSA-44.  The three
-    curves have the same slope; DAPV is offset by $\approx$20\ms\ from
-    synchronous hybrid at every RTT.
-    \authorinput{Confirm that the points at RTT = 20, 50 and 100\,ms are
-    measured. If they were interpolated, remove those markers.}}
+  \includegraphics[width=0.62\columnwidth]{e1_latency_vs_rtt.pdf}
+  \caption{Median handshake latency versus RTT, P-256\,+\,ML-DSA-44 with a
+    three-certificate chain and X25519MLKEM768.  The synchronous and DAPV
+    curves coincide; both lie about 1.3\ms\ above classical P-256 at every
+    RTT (one round trip each).}
   \label{fig:latency_rtt}
 \end{figure}
 
-\emph{Takeaway: DAPV lowers latency by an RTT-independent offset; it does not
-change the slope.}  At 0\ms\ RTT (Figure~\ref{fig:latency_bar}), DAPV
-lowers latency from 48.5 to 34.2\ms\ for P-256\,+\,FN-DSA-512 ($-29\%$)
-and from 55.6 to 34.9\ms\ for P-256\,+\,ML-DSA-44 ($-37\%$).  Against RTT
-(Figure~\ref{fig:latency_rtt}) the classical, synchronous-hybrid and DAPV
-curves all have a slope of 1.0\,ms per ms of RTT.  For P-256\,+\,ML-DSA-44
-the DAPV saving is 20.7\ms\ at 0\ms\ RTT and 21.0\ms\ at 150\ms, i.e.,
-RTT-independent to within measurement precision.  For P-256\,+\,FN-DSA-512
-the saving is 14.3\ms\ at 0\ms\ and 20.0\ms\ at 150\ms\ RTT
-\authorinput{this growth is not predicted by Equation~\eqref{eq:dapv};
-please check both values against the raw data and explain or correct}.
-Equal slopes mean $\delta k = 0$ in our configuration, as predicted in
-Section~\ref{sec:analytical}.  The relative saving therefore falls with
-RTT---from 37\% to 10\% for P-256\,+\,ML-DSA-44---because the absolute
-saving is fixed while the RTT term grows.
+\emph{Takeaway: for the lattice-based schemes, deferral does not reduce
+latency; it helps only for SLH-DSA.}  Table~\ref{tab:e1} and
+Figure~\ref{fig:gain_by_alg} show that for FN-DSA-512, ML-DSA-44 and
+ML-DSA-65 the difference between DAPV and synchronous verification is at
+most 0.03\ms\ at 0\ms\ RTT and 0.16\ms\ at 150\ms, and its confidence
+interval includes zero in every case except the single-certificate
+configuration, where DAPV is 0.03\ms\ \emph{slower}.  This is expected:
+three ML-DSA-44 verifications cost about 0.11\ms\ in total
+(Section~\ref{sec:res_delta_t}), comparable to the cost of copying the jobs
+and waking a worker.  Creating a thread per job makes DAPV consistently
+slower, by 0.15\ms\ (5.6\%) at 0\ms\ RTT.  For SLH-DSA-128f, each
+verification costs 0.57\ms, and DAPV lowers the median latency by 1.59\ms\
+(13.5\%) at 0\ms\ RTT, close to the 1.7\ms\ of the three verifications it
+removes from the critical path.
 
-\subsection{Where does the latency saving come from?}
-\label{sec:res_where}
+At non-zero RTT the SLH-DSA saving falls to 0.52--0.69\ms, about one
+verification.  The reason is the extra round trips: the 54~KB server flight
+needs three congestion windows, so the \texttt{Certificate} message is
+complete, and its two chain signatures are verified synchronously, while
+the rest of the flight carrying \texttt{CertificateVerify} is still in
+transit.  Synchronous chain verification is then already hidden behind
+network waiting, and deferral can remove only the final
+\texttt{CertificateVerify} verification from the critical path.
 
-\emph{Takeaway: the saving is two orders of magnitude larger than the cost
-of PQ arithmetic.}  Timed in isolation, a PQ verification takes
-0.08--0.14\ms\ (Table~\ref{tab:delta_t}), yet DAPV saves 14--21\ms.
-The saving must therefore come from other work on the synchronous
-verification path of the prototype, which in the synchronous build runs
-inline on the handshake thread and in the DAPV build runs on the worker.
-Candidates are per-call provider dispatch and key decoding, memory
-allocation, and waiting that is quantised by the operating-system timer:
-the default timer period on Windows is 15.6\ms, close to both the saving
-and the scheduling component of \Dt.
-\authorinput{Profile the synchronous verification path (e.g., perf,
-VTune or ETW) and report the breakdown here. Report the Linux-testbed
-saving and \Dt; if the Windows timer resolution is the cause, the Linux
-values should be much smaller.}
+\emph{Takeaway: round trips are determined by the initial congestion
+window, as modelled.}  The fitted slopes in Table~\ref{tab:e1} are 1.01
+round trips for P-256, FN-DSA-512 and ML-DSA-44 (with one or three
+certificates), 2.03 for ML-DSA-65 and 3.13 for SLH-DSA-128f, matching the
+predictions of Section~\ref{sec:analytical} ($\delta k$ = 0, 0, 0, 1, 2).
+The server flight of P-256\,+\,ML-DSA-44 with a three-certificate chain
+exceeds the MTU eight-fold without costing a round trip; ML-DSA-65 costs a
+full extra RTT (154\ms\ at 150\ms\ RTT), far more than any computational
+saving.  DAPV leaves the slopes unchanged.
 
-This finding has a direct consequence that we state plainly: for a single
-hybrid signature on a desktop-class CPU, most of the benefit we measure
-could also be obtained by optimising the synchronous path.  The
-contribution of deferral itself is bounded by the synchronous PQ work that
-remains on the critical path, which is small in our configuration and
-larger in the cases listed in Section~\ref{sec:why_threads}.
+\emph{Takeaway: hybrid key exchange adds a small constant.}  Replacing
+X25519 with X25519MLKEM768 adds 0.19\ms\ at 0\ms\ RTT
+(2.46 vs 2.65\ms) and no round trip.
 
-\subsection{Completed-handshake rate}
-\label{sec:res_throughput}
-
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=0.8\columnwidth]{fig04_throughput_bar.pdf}
-  \caption{Completed handshakes per second with 100 (solid) and 1000
-    (hatched) concurrent clients; client and server on the same host.}
-  \label{fig:throughput_bar}
-\end{figure}
-
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=0.8\columnwidth]{fig05_throughput_vs_rtt.pdf}
-  \caption{Completed handshakes per second versus RTT at 500 concurrent
-    clients, P-256\,+\,ML-DSA-44.}
-  \label{fig:throughput_rtt}
-\end{figure}
-
-\emph{Takeaway: with client and server on one host, DAPV raises the
-completed-handshake rate by 31--36\%, consistently across concurrency and
-RTT.}  Hybrid authentication lowers the rate from 820 to 390--420
-handshakes/s at 100 clients and from 690 to 290--310 at 1000 clients (55--58\%), relative to classical ECDSA (Figure~\ref{fig:throughput_bar}).  DAPV
-raises it by 35--36\% at 100 clients, 31\% at 500 clients
-(Table~\ref{tab:summary}) and 31--34\% at 1000 clients.  Across RTT at 500
-clients (Figure~\ref{fig:throughput_rtt}) the gain for
-P-256\,+\,ML-DSA-44 stays between 31\% and 34\%.
-
-Because DAPV changes only the client, it cannot reduce the server's
-cryptographic work.  Two mechanisms can raise the measured rate: the
-client-side load generator, which competes with the server for the same
-cores, spends less time blocked per handshake; and each connection holds
-server resources for a shorter time because the client \texttt{Finished}
-arrives earlier.  Our single-host setup cannot separate them, and the first
-mechanism would not appear with clients on separate machines.  The rate
-gain must therefore be read as a property of the combined client--server
-system, not as a server capacity gain.
-\authorinput{Re-run with load generator and server on separate hosts
-(or at least pinned to disjoint cores) and report server-only throughput.}
-
-\subsection{CPU utilisation}
-\label{sec:res_cpu}
-
-\emph{Takeaway: DAPV redistributes but does not reduce CPU work.}  Peak host
-CPU utilisation is 35\% for classical ECDSA and 79--85\% for the hybrid
-configurations, with and without DAPV (Table~\ref{tab:summary}); the same
-operations execute in both cases, but under DAPV the PQ verification runs
-on worker threads concurrently with other connections.
+Hybrid authentication with ML-DSA-44 adds 1.3--1.6\ms\ to the handshake
+relative to classical P-256 across RTTs (Figure~\ref{fig:latency_rtt}).  Of
+this, client-side PQ verification accounts for only about 0.11\ms; we did
+not break down the remainder, which comprises server-side signing,
+transmission of the larger flight and certificate processing.
 
 \subsection{Provisional window \Dt}
 \label{sec:res_delta_t}
 
 \begin{table}[t]
 \centering
-\caption{Decomposition of \Dt\ on idle hardware (30 runs; ms).  ``Crypto''
-  is the verification call timed inside the worker; ``Scheduling'' is the
-  remainder (thread creation, queueing, wake-up).}
+\caption{Per-job verification time and \Dt\ (ms), pooled over all RTTs
+  (three jobs per handshake).}
 \label{tab:delta_t}
 \small
-\begin{tabular}{lrrrr}
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{llrrrrrrr}
 \toprule
-\textbf{Configuration} & \textbf{Crypto} & \textbf{Scheduling} &
-\textbf{Total \Dt\ (mean)} & \textbf{95\% CI of mean} \\
+\textbf{Scheme} & \textbf{Workers} & \textbf{Jobs} & \textbf{Verify} &
+\multicolumn{5}{c}{\textbf{\Dt}} \\
+\cmidrule(lr){5-9}
+ & & & (median) & median & p95 & p99 & p99.9 & max \\
 \midrule
-P-256\,+\,FN-DSA-512  & 0.14 & 18.76 & 18.9 & [16.7,\;21.1] \\
-P-256\,+\,ML-DSA-44   & 0.10 & 21.10 & 21.2 & [18.6,\;23.8] \\
+P-256+ML-DSA-44    & pool   & 5400 & 0.037 & 0.079 & 0.21 & 0.42 & 1.88 & 4.3 \\
+P-256+ML-DSA-44    & thread & 5400 & 0.043 & 0.114 & 0.31 & 0.99 & 2.75 & 9.7 \\
+P-256+FN-DSA-512   & pool   & 5400 & 0.055 & 0.100 & 0.22 & 0.48 & 3.40 & 6.0 \\
+P-384+ML-DSA-65    & pool   & 5400 & 0.059 & 0.120 & 0.27 & 0.60 & 3.24 & 10.2 \\
+P-256+SLH-DSA-128f & pool   & 5400 & 0.567 & 0.700 & 1.71 & 2.31 & 3.87 & 36.5 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.8\columnwidth]{fig09_delta_t_vs_cpu_load.pdf}
-  \caption{\Dt\ for P-256\,+\,ML-DSA-44 under 0\%, 50\% and 80\% background
-    CPU load: median, mean and 95th percentile.}
-  \label{fig:deltat_load}
+  \includegraphics[width=0.62\columnwidth]{e1_dt_cdf.pdf}
+  \caption{Distribution of \Dt\ for P-256\,+\,ML-DSA-44 at 0\ms\ RTT
+    (3000 jobs per worker model).}
+  \label{fig:dt_cdf}
 \end{figure}
 
-\emph{Takeaway: \Dt\ is set by scheduling, not cryptography, and grows
-under load.}  Table~\ref{tab:delta_t} shows that the verification itself is
-under 1\% of \Dt; the rest is scheduling.  Under background CPU load
-(Figure~\ref{fig:deltat_load}), the 95th percentile of \Dt\ grows from
-23.8\ms\ (idle) to 34.2\ms\ at 50\% and 58.7\ms\ at 80\% load, i.e.,
-$2.5\times$ the idle 95th percentile.  Any data cap must therefore be
-calibrated against loaded, not idle, \Dt.  A bounded pool with pre-started
-workers (Algorithm~\ref{alg:server}) removes thread creation from \Dt\ and
-should bring it close to the queueing plus verification time; we have not
-measured such an implementation, and the value it would achieve is a
-projection, not a result \authorinput{if you implement and measure the
-pool, report the measured \Dt\ here}.
+\emph{Takeaway: with a bounded pool the provisional window is a fraction of
+a millisecond, and it usually closes before the handshake does.}
+Table~\ref{tab:delta_t} and Figure~\ref{fig:dt_cdf} show that for
+ML-DSA-44 the median \Dt\ is 0.079\ms\ with a pool and 0.114\ms\ with a
+thread per job; the pool also shortens the tail (99th percentile 0.42
+versus 0.99\ms, maximum 4.3 versus 9.7\ms).  Queueing and wake-up account
+for about half of \Dt; the verification itself for the rest.  Because the
+client still has to verify the server \texttt{Finished}, derive keys and
+send its own \texttt{Finished} after dispatching the jobs, the jobs of the
+lattice schemes usually finish before \texttt{SSL\_connect} returns: the
+median time to full authentication exceeds the median handshake latency by
+less than 0.01\ms.  For SLH-DSA-128f, sessions remain provisional for a
+median of 0.72\ms\ after the handshake completes at 0\ms\ RTT.  The rare
+long tails (up to 36.5\ms) are scheduling delays of the virtual machine.
+Any data cap must therefore be set against the tail, not the median
+(Section~\ref{sec:leakage}).
 
-\subsection{Summary}
-\label{sec:res_summary}
+These values are two orders of magnitude below the 14--21\ms\ reported for
+the earlier Windows prototype of this work.  Together with the absence of
+a latency gain for the lattice schemes, this indicates that the earlier
+measurements reflected costs specific to that prototype, most plausibly
+timer-quantised waiting on Windows, rather than a property of deferred
+verification.  We therefore no longer report them.
+
+\subsection{Completed-handshake rate}
+\label{sec:res_throughput}
 
 \begin{table}[t]
 \centering
-\caption{Summary of measured results.  Rate and CPU at 500 concurrent
-  clients and 0\ms\ RTT; \Dt\ is the idle mean.  Only measured values are
-  shown.}
-\label{tab:summary}
+\caption{Completed handshakes per second (mean $\pm$ s.d. of three 10-s
+  runs), P-256\,+\,ML-DSA-44 hybrid unless noted, X25519MLKEM768.  Server
+  CPU utilisation is shown for the separate placement.}
+\label{tab:e2}
 \small
-\setlength{\tabcolsep}{5pt}
-\begin{tabular}{lrrrrr}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llrrrrr}
 \toprule
-\textbf{Configuration} & \textbf{Latency 0\ms} & \textbf{Latency 150\ms} &
-  \textbf{Rate} & \textbf{Peak CPU} & \textbf{\Dt} \\
-& (ms) & (ms) & (hs/s) & (\%) & (ms) \\
+\textbf{Placement} & \textbf{RTT / conns} & \textbf{P-256} & \textbf{Sync} &
+  \textbf{DAPV thread} & \textbf{DAPV pool} & \textbf{Server CPU} \\
 \midrule
-ECDSA P-256                         & 15.2 & 165 & 770 & 35 & --- \\
-FN-DSA-512, synchronous             & 30.1 & 180 & 380 & 76 & --- \\
-ML-DSA-44, synchronous              & 41.2 & 191 & 390 & 82 & --- \\
-P-256\,+\,FN-DSA-512, synchronous   & 48.5 & 199 & 440 & 85 & --- \\
-P-256\,+\,FN-DSA-512, DAPV          & 34.2 & 179 & 575 (+31\%) & 85 & 18.9 \\
-P-256\,+\,ML-DSA-44, synchronous    & 55.6 & 206 & 470 & 79 & --- \\
-P-256\,+\,ML-DSA-44, DAPV           & 34.9 & 185 & 615 (+31\%) & 79 & 21.2 \\
+separate  & 0\ms\ / 100  & 2045 $\pm$ 33 & 716 $\pm$ 27 & 670 $\pm$ 48 & 691 $\pm$ 33 & 0.96--0.99 \\
+separate  & 0\ms\ / 500  & 1935 $\pm$ 73 & 721 $\pm$ 17 & 681 $\pm$ 46 & 670 $\pm$ 47 & 0.98--0.99 \\
+separate  & 50\ms\ / 100 & 646 $\pm$ 4   & 492 $\pm$ 6  & 477 $\pm$ 12 & 474 $\pm$ 14 & 0.35--0.74 \\
+separate  & 50\ms\ / 500 & 1852 $\pm$ 66 & 672 $\pm$ 23 & 668 $\pm$ 15 & 624 $\pm$ 30 & 0.88--0.99 \\
+\midrule
+co-located & 0\ms\ / 100  & 1327 $\pm$ 13 & 482 $\pm$ 81 & 491 $\pm$ 5  & 500 $\pm$ 7  & \\
+co-located & 0\ms\ / 500  & 1317 $\pm$ 2  & 512 $\pm$ 19 & 478 $\pm$ 29 & 487 $\pm$ 13 & \\
+co-located & 50\ms\ / 100 & 637 $\pm$ 4   & 444 $\pm$ 14 & 426 $\pm$ 5  & 420 $\pm$ 12 & \\
+co-located & 50\ms\ / 500 & 1294 $\pm$ 75 & 491 $\pm$ 37 & 459 $\pm$ 9  & 490 $\pm$ 13 & \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:summary} collects the measured values.  Relative to
-classical ECDSA at 150\ms\ RTT, synchronous P-256\,+\,ML-DSA-44 adds 25\%
-latency and DAPV 12\%; at 500 clients the completed-handshake rate is 39\%
-below classical for the synchronous hybrid and 20\% below with DAPV.
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.85\columnwidth]{e2_rate_rtt0.pdf}
+  \caption{Completed handshakes per second at 0\ms\ RTT with 500 concurrent
+    connections; error bars are $\pm$1 s.d. over three runs.}
+  \label{fig:e2}
+\end{figure}
+
+\emph{Takeaway: DAPV does not increase throughput, with or without
+co-location.}  In the separate placement the server core is saturated
+(utilisation 0.96--0.99) in all configurations except 50\ms\ RTT with 100
+connections, where the rate is bounded by latency.  Hybrid authentication
+lowers the rate from 1935--2045 to 716--721 handshakes/s (by 63--65\%) at
+0\ms\ RTT (Table~\ref{tab:e2}, Figure~\ref{fig:e2}).  DAPV cannot reduce the
+server's work, since it changes only the client, and it does not raise the
+rate: the pool and thread variants are 1--7\% below synchronous
+verification, within one to two standard deviations.  Co-locating client and
+server lowers all rates, because they now share two cores; the DAPV
+variants then differ from synchronous verification by $-7\%$ to $+4\%$,
+again within run-to-run variation.  The 31--36\% gains reported for the earlier
+prototype are not reproduced.
 
 \subsection{Threats to validity}
 \label{sec:threats}
 
 \begin{itemize}[leftmargin=*]
-\item \textbf{Co-location.}  Client and server share a host, so they compete
-  for CPU and the rate measurements include client-side effects
-  (Section~\ref{sec:res_throughput}).  Traffic between them does not cross
-  a physical network interface.
-\item \textbf{Emulated network.}  On the loopback interface, the MTU is
-  64~KB and segmentation offload is typical, so segment counts and
-  congestion-window behaviour differ from those on a real path; delay-only
-  emulation without loss or bandwidth limits does not exercise loss
-  recovery.  Our conclusions about $\delta k$ apply to the emulated setting;
-  in particular, we do not claim to have measured the effect of MTU-sized
-  segmentation.
-\item \textbf{Certificate chain.}  A single-certificate chain understates
-  the size and the number of verifications of real deployments, which
-  typically send a leaf and one intermediate (and embed SCTs).  Longer
-  chains would increase both the size cost (possibly making $\delta k > 0$)
-  and the PQ work that DAPV can defer.
-\item \textbf{Timer resolution.}  Several reported durations are of the same
-  order as the Windows timer period (Section~\ref{sec:res_where}).
-\item \textbf{Prototype concurrency model.}  One thread per job; the
-  recommended bounded pool was not evaluated.
+\item \textbf{One host.}  Client and server have separate network stacks
+  and disjoint cores but share the last-level cache, memory bandwidth and
+  hypervisor of one four-vCPU virtual machine; physically separate hosts
+  would remove this residual interference.  VM scheduling also causes the
+  rare multi-millisecond \Dt\ outliers.
+\item \textbf{Emulated link.}  Delay is added by a userspace emulator with
+  a fixed delay, a 1~Gbit/s rate and no loss; it adds roughly
+  0.03--0.07\ms\ per direction.  Loss, jitter and bandwidth limits, which
+  would lengthen the critical path further, were not studied.
+\item \textbf{Software stack.}  OpenSSL~3.5 spends about 1.4\ms\ on a
+  classical handshake on this machine; with a faster stack, the relative
+  (not the absolute) SLH-DSA saving would be larger.  Results for other
+  TLS libraries may differ.
+\item \textbf{Platform.}  One x86-64 CPU with AVX2; devices without vector
+  units, where verification is slower, were not measured.
+\item \textbf{Server concurrency model.}  The server uses one thread per
+  connection on a single core; an event-driven server would reach a higher
+  absolute rate, but DAPV does not change the server's work.
 \end{itemize}
-\authorinput{Where you have new data from separate hosts, real NICs or
-longer chains, report it and shorten this list accordingly.}
 
 %% ============================================================
 \section{Security Analysis}
@@ -1120,36 +1173,43 @@ gives the bandwidth term; the application cap $D_\text{policy}$ bounds both.
 \begin{table}[t]
 \centering
 \caption{Bandwidth term $B\,\Dt/8$ of Equation~\eqref{eq:leakage} for
-  measured \Dt\ values (decimal units).  The last column is a hypothetical
-  \Dt\ of 1\ms, not a measured value.}
+  measured \Dt\ values (Table~\ref{tab:delta_t}; decimal units).}
 \label{tab:leakage}
 \small
 \begin{tabular}{lrrrr}
 \toprule
-& \multicolumn{3}{c}{\textbf{Measured \Dt}} & \textbf{Hypothetical} \\
-\cmidrule(lr){2-4}
-\textbf{Link rate} & 18.9\ms\ & 21.2\ms\ & 58.7\ms\ (p95, 80\% load) & 1\ms \\
+& \multicolumn{2}{c}{\textbf{ML-DSA-44, pool}} & \textbf{SLH-DSA-128f} & \textbf{All runs} \\
+\cmidrule(lr){2-3}
+\textbf{Link rate} & median 0.079\ms & p99 0.42\ms & p99 2.31\ms & max 36.5\ms \\
 \midrule
-1 Mbit/s   & 2.4 kB   & 2.7 kB   & 7.3 kB   & 125 B   \\
-100 Mbit/s & 236 kB   & 265 kB   & 734 kB   & 12.5 kB \\
-1 Gbit/s   & 2.4 MB   & 2.7 MB   & 7.3 MB   & 125 kB  \\
-10 Gbit/s  & 24 MB    & 27 MB    & 73 MB    & 1.25 MB \\
+1 Mbit/s   & 10 B    & 53 B    & 289 B   & 4.6 kB  \\
+100 Mbit/s & 1.0 kB  & 5.3 kB  & 29 kB   & 456 kB  \\
+1 Gbit/s   & 9.9 kB  & 53 kB   & 289 kB  & 4.6 MB  \\
+10 Gbit/s  & 99 kB   & 525 kB  & 2.9 MB  & 46 MB   \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+In practice the exposure is smaller still.  For the lattice schemes the
+deferred verifications usually complete before the client has finished its
+own side of the handshake (Section~\ref{sec:res_delta_t}), so the session
+is typically already fully authenticated when the application first writes.
+The cap matters for the tail and for expensive schemes: a scheduling delay
+like the worst one we observed (36.5\ms) would, on a low-RTT gigabit path,
+leave room for megabytes without a cap.
 
 \paragraph{Choice of $D_\text{policy}$}  The cap is a policy parameter,
 not a quantity our measurements determine.  Its correct value is the
 amount of data the application is willing to reveal to a peer that has
 passed only the classical check, which depends on the content, not on
 \Dt.  What \Dt\ determines is how often the cap is reached and hence how
-often data must be buffered.  As a heuristic default we suggest 8~KB: it
-is below one initial congestion window, so on WAN paths the cap rather than
-TCP is the binding limit; it is roughly the bandwidth term at 1~Mbit/s
-for the loaded 95th-percentile \Dt\ (7.3~kB), so on slow links the cap is
-rarely reached; and it accommodates typical request headers and small
-requests.  Applications should lower it, or set it to zero, for any
-content they consider sensitive.
+often data must be buffered; with the measured \Dt\ this is rare.  As a
+heuristic default we suggest 8~KB: it is below one initial congestion
+window, so on WAN paths the cap rather than TCP is the binding limit; it
+exceeds the bandwidth term at the 99th-percentile \Dt\ on links of up to
+100~Mbit/s, so it is rarely reached there; and it accommodates typical
+request headers and small requests.  Applications should lower it, or set
+it to zero, for any content they consider sensitive.
 
 \subsection{Attack vectors and mitigations}
 \label{sec:attacks}
@@ -1188,9 +1248,9 @@ signature per connection.
 \label{sec:api}
 
 Enforcing $D_\text{policy}$ requires the TLS library to expose the state.
-We propose the following minimal OpenSSL-style interface
-\authorinput{state whether this interface is implemented in the prototype
-or is a proposal}:
+We propose the following minimal OpenSSL-style interface; it is a design
+proposal and is not part of the evaluated implementation, whose
+measurement client tracks the state internally:
 \begin{verbatim}
 #define SSL_DAPV_STATE_NONE        0   /* not a DAPV session        */
 #define SSL_DAPV_STATE_PROVISIONAL 1   /* sigma_E ok, sigma_P pending */
@@ -1276,32 +1336,46 @@ This work & computation (latency) & defer PQ verification past handshake complet
 \section{Conclusion}
 \label{sec:conclusion}
 
-We studied deferring the PQ component of hybrid TLS~1.3 server
+We studied deferring the PQ components of hybrid TLS~1.3 server
 authentication past handshake completion.  DAPV requires no protocol
 change and is defined by the semantics of a provisional client state:
 classical authentication at completion, promotion on PQ success, teardown
-on failure, a data cap, and tickets withheld until promotion.  In our
-prototype and single-host testbed, it lowers handshake latency by an
-RTT-independent 14--21\ms\ and raises the completed-handshake rate by
-31--36\%.  Our decomposition shows that these gains exceed the cost of PQ
-arithmetic by two orders of magnitude, so for a single signature on a
-modern desktop CPU they reflect the cost of the prototype's synchronous
-path rather than an intrinsic benefit of deferral.  Deferral is most
-relevant where synchronous PQ work is genuinely large: multi-certificate
-chains, multi-algorithm credentials, slow schemes and constrained
-devices.  The exposure it creates is bounded by the data cap and, on WAN
-paths, by the TCP initial window.
+on failure, a data cap, and tickets withheld until promotion.
+
+Measured with three-certificate chains, X25519MLKEM768 and client and
+server on separate network stacks and cores, deferral brings no measurable
+latency or throughput benefit for P-256\,+\,ML-DSA-44,
+P-256\,+\,FN-DSA-512 or P-384\,+\,ML-DSA-65: their verifications cost
+37--59\,$\mu$s each, comparable to the cost of handing them to a worker, and
+creating a thread per verification makes the handshake slower.  Deferral
+does pay off when verification is expensive: for P-256\,+\,SLH-DSA-128f it
+removes 1.6\ms\ (13.5\%) at zero RTT, and about one verification's worth at
+higher RTTs, where extra round trips already hide the synchronous chain
+checks.  The latency cost of PQ authentication is dominated instead by
+round trips, which occur exactly when the server's flight exceeds the
+initial congestion window: one extra for ML-DSA-65 and two for
+SLH-DSA-128f in our chains, each far larger than any computational saving.
+With a bounded pool the provisional window is 0.08\ms\ at the median and
+0.42\ms\ at the 99th percentile for ML-DSA-44, and the exposure it creates
+is bounded by the data cap.
+
+Deferral is therefore worth its added complexity only for clients whose
+per-handshake PQ verification work is large: SLH-DSA or other slow
+schemes, long chains of such signatures, multi-algorithm credentials, or
+devices without vector units.  For lattice-based hybrids on current
+general-purpose CPUs, reducing the size of the authentication data is the
+more effective lever.
 
 \subsection*{Future work}
 \begin{enumerate}[noitemsep]
-\item Measurements with separate client and server hosts over real network
-  interfaces, 2--3-certificate chains and X25519MLKEM768 key exchange.
-\item Multi-algorithm hybrids and SLH-DSA, where several independent
-  verifications can be parallelised across workers.
-\item A bounded-pool implementation and its measured \Dt.
+\item Measurements on physically separate hosts over real network paths
+  with loss and jitter.
+\item Devices without vector units (ARM Cortex-A and microcontrollers),
+  where verification is slower and deferral should help more.
+\item Multi-algorithm hybrids, where independent verifications can run in
+  parallel on several workers.
 \item A formal (e.g., Tamarin) model of the provisional state.
 \item Server-side deferral for hybrid client certificates in mutual TLS.
-\item Evaluation on ARM and microcontroller platforms.
 \end{enumerate}
 
 \section*{Acknowledgements}

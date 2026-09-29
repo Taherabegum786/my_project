@@ -31,8 +31,22 @@ Low-Latency TLS~1.3 Handshakes}
 \end{center}
 
 We thank Reviewers \#4 and \#5 for their careful reading.  Their comments
-led to a substantial rewrite.  The main changes are:
+led to a substantial rewrite and to an entirely new evaluation.  The most
+important change is that \textbf{the evaluation has been redone} with the
+setup the reviewers asked for: three-certificate hybrid chains,
+X25519MLKEM768 key exchange, client and server in separate network
+namespaces on disjoint CPU cores joined by an emulated 1500-byte-MTU link,
+1000 handshakes per configuration (over 20{,}000 in total, with 43{,}200
+deferred verifications timed individually), and a measured bounded worker
+pool.  The new results do not reproduce the latency and throughput gains
+reported in the previous version, and we have revised our claims
+accordingly.  The main changes are:
 \begin{enumerate}[noitemsep]
+\item New evaluation on OpenSSL~3.5 (Sections~5 and~6).  For lattice-based
+  hybrids, deferral does not measurably reduce latency (median change within
+  $\pm$0.2\,ms at RTTs of 0--150\,ms) and does not increase throughput; for
+  SLH-DSA-128f it saves 1.6\,ms (13.5\%).  \Dt\ is 0.08\,ms at the median
+  with a bounded pool.  The earlier 14--21\,ms savings are withdrawn.
 \item The contribution is repositioned as a client-side,
   implementation-level scheduling strategy with specified local state
   semantics, not a protocol mechanism (R5.1).
@@ -43,23 +57,17 @@ led to a substantial rewrite.  The main changes are:
 \item New Background (PQ schemes, hybrid constructions, TLS~1.3
   authentication modes) and a broadened Related Work section with 15 new
   references (R4.1, R4.2, R4 detailed 2).
-\item New analysis showing that the measured latency gain is two orders of
-  magnitude larger than the cost of PQ arithmetic, with the consequences
-  stated plainly; new discussion of threads versus SIMD (R4.1, R4.4, R4.6).
-\item The latency model is corrected: extra round trips arise from the
-  TCP initial congestion window, not from exceeding the MTU; our own data
-  show $\delta k=0$ for the single-certificate configuration.
-\item The exponential risk model (old Eq.~6, old Fig.~11) and the mixed-
-  baseline efficiency metric (old Eq.~7, old Table~3) are removed; the
-  leakage bound now includes the congestion-window limit (R5.3, R5.4).
-\item All interpolated and extrapolated values are removed; only measured
-  values are reported (R5.8).  Six figures and three tables were removed
-  or merged, and each result now opens with its takeaway (R5.6, R5.7).
-\item A Threats-to-Validity section discusses co-location, loopback
-  emulation, chain length and timer resolution (R4.4, R4.5).
+\item The latency model is corrected: extra round trips arise from the TCP
+  initial congestion window, not from exceeding the MTU.  The new data
+  confirm the model's predictions for all five schemes (0, 0, 0, 1 and 2
+  extra round trips).
+\item The exponential risk model (old Eq.~6, Fig.~11) and the mixed-baseline
+  efficiency metric (old Eq.~7, Table~3) are removed; the leakage bound now
+  includes the congestion-window limit and uses measured \Dt\ (R5.3, R5.4).
+\item No interpolated, extrapolated or projected values remain (R5.8, R5.9).
+  Each result opens with its takeaway (R5.6, R5.7).
+\item Implementation, drivers and raw data are released (R4.3).
 \end{enumerate}
-\authorinput{Items marked ``pending'' below need new experiments or
-information from the authors. Update this letter once they are done.}
 
 %% ============================================================
 \section*{Reviewer \#4}
@@ -87,76 +95,70 @@ cannot do.
 certificate chains), hybrid-signature theory and IETF composite
 signatures, asynchronous cryptographic offload in TLS (QTLS/OpenSSL async),
 TLS False Start and 0-RTT as precedents for accepting a bounded weaker
-guarantee, and formal analyses of deferred authentication.  Table~5
+guarantee, and formal analyses of deferred authentication.  Table~6
 positions DAPV relative to these by the cost addressed and approach.
 In revising the bibliography we also found and corrected two entries that
 did not match the cited works (the former Cremers2016 and Cheval2022).
-\CH Section 3, Table 9, bibliography.
+\CH Section 3, Table 6, bibliography.
 
 \RC{W3. The implementation was not made available.}
-\AR The code, load generator, scripts and raw data are released at
-\authorinput{URL and DOI}.  Section~5.1 now describes the implementation
-in detail: which function was modified, how the job is created, how the
-result reaches the connection, and which parts of the design (bounded
-pool, ticket handling, API) are implemented in the prototype.
-\CH Sections 5.1 and 5.2.  \authorinput{pending: release}
+\AR The provider patch, client, server, link emulator, experiment drivers,
+raw per-handshake and per-job measurements, and analysis scripts are
+released at \authorinput{URL and DOI}.  Section~5.1 describes the
+implementation in detail.
+\CH Sections 5.1 and 5.2.
 
 \RC{W4. Methodology: client and server on the same machine compete for CPU;
 number of repetitions not justified and too few; why multithread if PQC
 verification is fast; how many certificates are used; throughput with one
 host is hard to trust.}
-\AR We agree with each point and have addressed them as follows.
-(i)~\emph{Co-location}: the throughput metric is renamed
-``completed-handshake rate'' and explicitly described as a property of the
-combined client--server system.  We explain that since DAPV only changes
-the client, part of the gain may come from reduced client-side CPU
-contention, which would not occur with separate hosts (Section~6.3).
-\authorinput{pending: re-run with separate hosts or disjoint pinned cores
-and report server-only throughput.}
-(ii)~\emph{Repetitions}: Section~5.6 now justifies 30 runs: with standard
-deviations below 4\% of the mean, the 95\% CI half-width is about 1.5\% of
-the mean, an order of magnitude below the reported differences.  We also
-acknowledge that \Dt\ is much more dispersed and that 30 runs are
-insufficient for tail percentiles.
-\authorinput{pending: state the number of handshakes per run; increase
-the \Dt\ sample to $\ge$1000 handshakes.}
-(iii)~\emph{Why threads}: see W1 and the new Section~6.2, which shows that
-the measured saving is not explained by the cost of verification.
-(iv)~\emph{Certificates}: Section~2.3 states the chain used
-\authorinput{number of certificates}.  Section~4.7 computes the server
-flight size and shows that it remains below the initial congestion window,
-consistent with the equal slopes observed.  Threats to validity
-(Section~6.7) explains that 2--3-certificate chains would increase both the
-size cost and the amount of PQ work that can be deferred.
-\authorinput{pending: measurements with a 2- or 3-certificate chain.}
+\AR We agree with every point and have redone the evaluation.
+(i)~\emph{Co-location}: client and server now run in separate network
+namespaces with their own TCP/IP stacks, pinned to disjoint cores, with
+traffic crossing an emulated link rather than loopback (Section~5.3).  We
+also measured the co-located placement explicitly.  In neither placement
+does DAPV increase the completed-handshake rate (Table~4); the earlier
+throughput gains are withdrawn.  The remaining limitation, that both
+namespaces share one virtual machine, is stated in Section~6.4.
+(ii)~\emph{Repetitions}: 1000 handshakes per configuration at zero RTT and
+200 at each other RTT, interleaved in ten rounds; 43{,}200 individually
+timed PQ verifications; throughput runs repeated three times.  Differences
+are reported with bootstrap confidence intervals.
+(iii)~\emph{Why threads}: Section~4.6 discusses this, and the new data
+answer it empirically.  For ML-DSA and FN-DSA (37--59\,$\mu$s per
+verification) threads bring no benefit, and a thread per job is slower.
+Deferral helps only for expensive verification (SLH-DSA-128f, 0.57\,ms).
+(iv)~\emph{Certificates}: all experiments use three-certificate chains
+(root, intermediate, leaf; the server sends two), so each handshake
+performs three PQ verifications, all of which DAPV defers.  A
+single-certificate configuration is kept for comparison.
+\CH Sections 5 and 6 (new), Tables 2--4, Figures 2--5.
 
 \RC{W5. netem may not trigger real TCP behaviour, local traffic bypasses
 the NIC queue, a single certificate does not trigger TCP mechanisms, and
 it is unclear whether PQC key exchange is used.}
-\AR We agree.  The Threats-to-Validity section now states that on the
-loopback interface (64\,KB MTU, segmentation offload) segment counts and
-congestion-window behaviour differ from those on a real path, and that
-we therefore make no claim about MTU-induced segmentation.  We also
-corrected the model (Eq.~1): an extra round trip occurs when the server
-flight exceeds the initial congestion window, not merely the MTU.  The key
-exchange is stated in Section~5.4: \authorinput{group}.  It is identical
-across all configurations, so differences are due to authentication alone.
-\authorinput{pending: repeat hybrid configurations with X25519MLKEM768
-and over a real interface or veth pair between namespaces/hosts.}
+\AR All addressed.  Traffic no longer uses loopback: each namespace has a
+TAP interface with a 1500-byte MTU and segmentation and receive offloads
+disabled, so TCP sends real 1500-byte frames and runs its own congestion
+control.  A userspace link emulator adds the delay (Section~5.3).  With
+three-certificate chains, the TCP mechanisms the reviewer anticipated are
+now visible.  P-384\,+\,ML-DSA-65 needs one extra round trip and
+SLH-DSA-128f two, exactly as predicted from the initial congestion window
+(Table~2, Section~4.7).  X25519MLKEM768 is used in all runs, so both
+confidentiality and authentication are post-quantum; X25519 is measured for
+comparison (+0.19\,ms for the hybrid KEM).
+\CH Sections 4.7, 5.3, 5.4, 6.1.
 
 \RC{W6. Marginal contribution; consider hybrids with more than two
 algorithms, which could use multiple verification threads.}
-\AR We have narrowed and sharpened the claims instead of overstating them.
-The contribution is now framed as (1)~provisional-state semantics,
-including ticket, resumption and alert handling that were not specified
-before; (2)~a prototype; (3)~a measurement and decomposition that shows
-where the gain actually comes from; and (4)~a risk characterisation.  The
-reviewer's multi-algorithm suggestion is adopted in the design:
-Algorithm~1 generalises to submitting each PQ component as an independent
-job, and Section~4.6 identifies this, together with multi-certificate
-chains, as the setting where thread-level deferral is most useful.
-\authorinput{pending: if possible, add a three-algorithm experiment
-(e.g., P-256\,+\,ML-DSA-44\,+\,SLH-DSA or FN-DSA).}
+\AR We have narrowed the claims to what the new data support.  The paper
+now reports, with a fair baseline, when deferral helps (expensive
+verification) and when it does not (lattice schemes on vector-capable
+CPUs), together with the provisional-state semantics and the risk analysis.
+Three-certificate chains already give three independent verifications per
+handshake, which DAPV spreads over two workers.  Algorithm~1 generalises
+directly to multi-algorithm credentials, which we list as future work
+together with devices without vector units.
 
 \RC{D1. The motivation is HNDL, which concerns confidentiality, while the
 proposal concerns authentication; PKI migration is not mentioned; the
@@ -188,8 +190,8 @@ that chain validation also requires signature verifications in the
 \texttt{Certificate} message, and explains how DAPV interacts with each
 mode.  A new rule (Section~4.3) prevents a provisional session's
 tickets from being used for resumption or 0-RTT before promotion.
-\authorinput{Section 2.3: state whether the prototype defers the PQ
-components of chain signatures or only of CertificateVerify.}
+Section~2.3 now states that the implementation defers the PQ components of
+the chain signatures as well as of \texttt{CertificateVerify}.
 
 \RC{D3. Section 3 needs more discussion; some messages of Fig.~1 are not
 explained; design goals.}
@@ -199,10 +201,10 @@ listed in Section~4.1.
 
 \RC{D4. The key-exchange algorithm is not stated; ML-KEM adds bytes and
 computation.}
-\AR Stated in Section~5.4 \authorinput{group}.  Table~1 gives the
-X25519MLKEM768 share sizes (1216/1120 bytes; the reviewer's figure of
-800 bytes corresponds to the ML-KEM-512 public key).
-\authorinput{pending if re-measured with X25519MLKEM768.}
+\AR X25519MLKEM768 is now used in all experiments (Section~5.4), and
+X25519 is measured for comparison.  Table~1 gives the X25519MLKEM768 share
+sizes (1216/1120 bytes).  The reviewer's figure of 800 bytes corresponds to
+the ML-KEM-512 public key.
 
 \RC{D5. Algorithm 1 dispatches the PQC verification after verifying ECDSA.
 Why not dispatch first to run in parallel?  Algorithms are not explained.}
@@ -248,7 +250,8 @@ the TCP congestion-window limit.
 \RC{4. Justify Equation (7), which mixes baselines.}
 \AR We agree the mixed baselines were not meaningful.  The metric and its
 table have been removed; the results report latency and rate changes
-directly against consistent baselines (Section~6.6).
+directly against a single, consistent baseline: synchronous verification
+of the same configuration (Tables~2 and~4).
 
 \RC{5. Justify the 8\,KB cap.}
 \AR It is a heuristic default, not an empirical result.  Section~7.2
@@ -257,32 +260,32 @@ what data the application will reveal to a classical-only authenticated
 peer, and gives the reasoning behind 8\,KB as a default.
 
 \RC{6. Clarify the purpose of Tables 2 and 4.}
-\AR Old Table~2 (\Dt\ decomposition, now Table~2) supports the takeaway
-that \Dt\ is dominated by scheduling, not cryptography; this is now stated
-at the start of Section~6.5.  Old Table~4 has been removed because most
-of its entries were interpolated or extrapolated (see comment~8).
+\AR Old Table~4 has been removed because most of its entries were
+interpolated or extrapolated (see comment~8).  The evaluation is now built
+around three tables, each introduced by its takeaway: Table~2 (latency,
+showing that deferral helps only for SLH-DSA, and that round trips follow
+the congestion-window model), Table~3 (\Dt, showing that the provisional
+window is a fraction of a millisecond with a bounded pool), and Table~4
+(throughput, showing that DAPV does not raise the rate in either CPU
+placement).
 
 \RC{7. Improve the presentation of the evaluation.}
-\AR Removed: old Fig.~3 (duplicated Fig.~2), Fig.~6 (duplicated Figs.~4
-and~5), Fig.~7 (CPU, now in Table~3), Fig.~8 (duplicated Table~2), Fig.~10
-(replaced by Table~1 with correct sizes), Fig.~11 (risk model), old
-Table~3 (efficiency) and Table~4 (interpolated).  Each subsection of
-Section~6 now begins with a one-sentence takeaway.
+\AR The evaluation section has been rewritten around the new
+experiments.  It now has three tables and four figures, each introduced by
+a one-sentence takeaway.  All eleven previous evaluation figures and the
+old efficiency and interpolated tables have been removed.
 
 \RC{8. Why were interpolation and extrapolation used?}
-\AR They should not have been.  All interpolated and extrapolated values
-have been removed and only measured values are reported.
-\authorinput{Explain whether latency at 20/50/100\,ms was actually
-measured (now Fig.~3, which shows points there). If measured, say so; if not,
-remove those points.}
+\AR They should not have been.  All values in the revised paper are
+measured, at all five RTTs, for every configuration (Table~2 and
+Figure~3).
 
 \RC{9. Was the $\Delta t < 1$\,ms thread-pool result implemented or
 projected?}
-\AR It was a projection.  The revised text says so explicitly, removes it
-from the abstract and conclusions, and labels the corresponding column of
-Table~4 as hypothetical.
-\authorinput{pending: if a bounded pool is implemented and measured,
-report it.}
+\AR It was a projection in the previous version.  We have now implemented
+and measured a bounded pool.  \Dt\ is 0.079\,ms at the median and 0.42\,ms
+at the 99th percentile for ML-DSA-44, versus 0.114 and 0.99\,ms with a
+thread per job (Table~3, Figure~4).
 
 \RC{10. VerifyPQC() is not defined; unresolved references in Section 5.7.}
 \AR VerifyPQC and VerifyECDSA are defined in Section~4.5, including the
