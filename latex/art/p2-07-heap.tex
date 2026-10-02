@@ -1,0 +1,22 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[level distance=12mm, tn/.style={tnode, fill=fsand},
+    level 1/.style={sibling distance=30mm}, level 2/.style={sibling distance=15mm}, edge from parent/.style={draw=fgink, line width=0.55pt}]
+  \node[tn] (n0) {90}
+    child { node[tn] (n1) {70} child { node[tn] (n3) {30} } child { node[tn] (n4) {60} } }
+    child { node[tn] (n2) {80} child { node[tn] (n5) {50} } child[missing] };
+  \foreach \i in {0,...,5} \node[font=\scriptsize, text=fwine, inner sep=0pt] at ([xshift=4.6mm, yshift=3.4mm]n\i) {\i};
+  \begin{scope}[shift={(4.4,-1.2)}]
+    \foreach \v [count=\i from 0] in {90,70,80,30,60,50} {
+      \node[draw=fgink, fill=fsand, minimum size=8mm, inner sep=0pt, rectangle, font=\small] at (\i*0.8,0) {\v};
+      \node[font=\scriptsize, text=fwine] at (\i*0.8,-0.65) {\i};
+    }
+    \node[align=left, font=\footnotesize, anchor=north west] at (-0.4,-1.1)
+      {parent$(i) = \lfloor (i-1)/2 \rfloor$\\ left$(i) = 2i+1$,\ \ right$(i) = 2i+2$\\ \textit{(0-based indexing)}};
+  \end{scope}
+\end{tikzpicture}
+\end{adjustbox}
+\caption{A max-heap and the array that stores it level by level. Every parent is at least as large as its
+children, so the maximum sits at index 0.}
+\end{figure}

@@ -1,0 +1,7 @@
+\[
+\text{LCS}[i][j] =
+\begin{cases}
+\text{LCS}[i-1][j-1] + 1 & \text{if } x_i = y_j\\[2pt]
+\max\bigl(\text{LCS}[i-1][j],\ \text{LCS}[i][j-1]\bigr) & \text{otherwise}
+\end{cases}
+\]

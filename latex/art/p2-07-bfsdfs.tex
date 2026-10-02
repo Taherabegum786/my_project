@@ -1,0 +1,18 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[v/.style={vertex, fill=fslate, minimum size=8mm}]
+  \node[v] (A) at (0,1.6) {A}; \node[v] (B) at (2,1.6) {B}; \node[v] (E) at (4,1.6) {E};
+  \node[v] (C) at (0,0) {C}; \node[v] (D) at (2,0) {D};
+  \draw[thinline] (A) -- (B) -- (E) (A) -- (C) -- (D) -- (B);
+  \node[font=\footnotesize, anchor=west, align=left] at (5.2,0.8) {%
+    \renewcommand{\arraystretch}{1.3}\begin{tabular}{@{}l l l@{}}
+    \toprule & \textbf{Order from A} & \textbf{Uses} \\ \midrule
+    BFS (queue) & A B C E D & shortest paths in unweighted graphs \\
+    DFS (stack) & A B E D C & topological sort, SCCs, cycle detection \\
+    \bottomrule \end{tabular}};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{BFS explores level by level; DFS goes as deep as possible before backtracking. Both take $O(V+E)$ with
+adjacency lists and $O(V^2)$ with a matrix. (The exact order depends on the order in which neighbours are listed.)}
+\end{figure}

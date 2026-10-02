@@ -16,6 +16,10 @@
 
 ## 1. Asymptotic Analysis
 
+Asymptotic analysis describes how an algorithm's running time grows with the input size $n$, ignoring constant
+factors and small inputs. It lets us compare algorithms independently of the machine they run on.
+
+<!-- latex: p2-07-notation -->
 ```
 O  (upper bound)      f(n) ≤ c·g(n)        for n ≥ n₀
 Ω  (lower bound)      f(n) ≥ c·g(n)
@@ -25,36 +29,40 @@ o  (strict upper)     lim f/g = 0
 ```
 
 Growth order (memorise):
+<!-- latex: p2-07-growth -->
 ```
 1 < log log n < log n < (log n)^k < √n < n < n log n < n² < n³ < 2ⁿ < 3ⁿ < n! < nⁿ
 Note: log(n!) = Θ(n log n) ; n^(1/log n) = Θ(1) ; 2^(log n) = n ; n^(log n) is super-polynomial
 ```
 
 ### Recurrences — Master Theorem
-T(n) = a·T(n/b) + f(n), a ≥ 1, b > 1. Compare f(n) with **n^(log_b a)**:
+$T(n) = a\,T(n/b) + f(n)$, $a \ge 1$, $b > 1$. Compare $f(n)$ with **$n^{\log_b a}$**:
 
 | Case | Condition | Result |
 |------|-----------|--------|
-| 1 | f(n) = O(n^(log_b a − ε)) | Θ(n^(log_b a)) |
-| 2 | f(n) = Θ(n^(log_b a) · logᵏ n) | Θ(n^(log_b a) · logᵏ⁺¹ n) |
-| 3 | f(n) = Ω(n^(log_b a + ε)) and regularity | Θ(f(n)) |
+| 1 | $f(n) = O(n^{\log_b a - \varepsilon})$ | $\Theta(n^{\log_b a})$ |
+| 2 | $f(n) = \Theta(n^{\log_b a} \log^k n)$ | $\Theta(n^{\log_b a} \log^{k+1} n)$ |
+| 3 | $f(n) = \Omega(n^{\log_b a + \varepsilon})$ and regularity | $\Theta(f(n))$ |
 
 | Recurrence | Solution | Algorithm |
 |-----------|----------|-----------|
-| T(n) = T(n/2) + 1 | Θ(log n) | Binary search |
-| T(n) = 2T(n/2) + n | Θ(n log n) | Merge sort |
-| T(n) = 2T(n/2) + 1 | Θ(n) | Tree traversal, max-min |
-| T(n) = T(n−1) + n | Θ(n²) | Quick sort worst, selection |
-| T(n) = T(n−1) + 1 | Θ(n) | Linear recursion |
-| T(n) = 2T(n−1) + 1 | Θ(2ⁿ) | Tower of Hanoi |
-| T(n) = 7T(n/2) + n² | Θ(n^2.81) | Strassen |
-| T(n) = 8T(n/2) + n² | Θ(n³) | Naive D&C matrix multiply |
-| T(n) = 3T(n/2) + n | Θ(n^1.585) | Karatsuba |
-| T(n) = T(√n) + 1 | Θ(log log n) | — |
-| T(n) = 2T(√n) + log n | Θ(log n · log log n) | — |
-| T(n) = T(n/3) + T(2n/3) + n | Θ(n log n) | Recursion tree |
+| $T(n) = T(n/2) + 1$ | $\Theta(\log n)$ | Binary search |
+| $T(n) = 2T(n/2) + n$ | $\Theta(n \log n)$ | Merge sort |
+| $T(n) = 2T(n/2) + 1$ | $\Theta(n)$ | Tree traversal, max-min |
+| $T(n) = T(n-1) + n$ | $\Theta(n^2)$ | Quick sort worst, selection |
+| $T(n) = T(n-1) + 1$ | $\Theta(n)$ | Linear recursion |
+| $T(n) = 2T(n-1) + 1$ | $\Theta(2^n)$ | Tower of Hanoi |
+| $T(n) = 7T(n/2) + n^2$ | $\Theta(n^{2.81})$ | Strassen |
+| $T(n) = 8T(n/2) + n^2$ | $\Theta(n^3)$ | Naive D&C matrix multiply |
+| $T(n) = 3T(n/2) + n$ | $\Theta(n^{1.585})$ | Karatsuba |
+| $T(n) = T(\sqrt{n}) + 1$ | $\Theta(\log \log n)$ | — |
+| $T(n) = 2T(\sqrt{n}) + \log n$ | $\Theta(\log n \cdot \log \log n)$ | — |
+| $T(n) = T(n/3) + T(2n/3) + n$ | $\Theta(n \log n)$ | Recursion tree |
 
 ## 2. Linear Data Structures
+
+Linear structures arrange items in a sequence. They differ in where items may be inserted and removed: anywhere
+(array, list), at one end only (stack) or at opposite ends (queue).
 
 ### 2.1 Arrays
 - Row-major address: **A[i][j] = B + w·[(i − L₁)·N + (j − L₂)]** where N = number of columns.
@@ -77,7 +85,11 @@ Singly, doubly, circular. Insert at head O(1); search O(n). Reverse a list: thre
 
 ## 3. Trees
 
+A tree stores items hierarchically: one root, and every other node has exactly one parent. Trees give
+logarithmic search when balanced, and they underlie heaps, indexes and syntax trees.
+
 ### 3.1 Binary Tree Facts
+<!-- latex: p2-07-treefacts -->
 ```
 Max nodes at level i (root level 0)          = 2^i
 Max nodes in tree of height h (root h = 0)   = 2^(h+1) − 1
@@ -91,6 +103,7 @@ Full k-ary tree with i internal nodes: n = k·i + 1 nodes, leaves L = (k−1)i +
 
 ### 3.2 Traversals
 
+<!-- latex: p2-07-traversal -->
 ```
           A
         ╱   ╲
@@ -113,6 +126,7 @@ Full k-ary tree with i internal nodes: n = k·i + 1 nodes, leaves L = (k−1)i +
 ### 3.4 AVL Tree
 Balance factor = height(left) − height(right) ∈ {−1, 0, 1}.
 
+<!-- latex: p2-07-avl-rot -->
 ```
  LL case → single right rotation        RR case → single left rotation
        30                20                 10                 20
@@ -134,6 +148,7 @@ Balance factor = height(left) − height(right) ∈ {−1, 0, 1}.
 - Details and order calculations: see [DBMS unit](04-DBMS.md#8-file-organisation--indexing).
 
 ### 3.6 Heaps
+<!-- latex: p2-07-heap -->
 ```
  Max-heap (array: 90 70 80 30 60 50)
           90
@@ -152,6 +167,10 @@ Union by rank + path compression → nearly O(1) amortised: **O(α(n))** (invers
 
 ## 4. Hashing
 
+Hashing stores a key at an address computed from the key itself, so search, insert and delete take $O(1)$ time
+on average. The design questions are the hash function and what to do when two keys collide.
+
+<!-- latex: p2-07-hashfn -->
 ```
 Division:       h(k) = k mod m  (m prime, not close to power of 2)
 Multiplication: h(k) = ⌊m·(k·A mod 1)⌋, A ≈ 0.618 (Knuth)
@@ -168,6 +187,7 @@ Load factor α = n/m
 Open addressing expected probes: unsuccessful ≤ 1/(1 − α); successful ≤ (1/α) ln(1/(1−α)).
 
 **Worked (linear probing, m = 10, h(k) = k mod 10)**: insert 12, 18, 13, 2, 3, 23, 5, 15
+<!-- latex: p2-07-probing -->
 ```
 12 → 2        18 → 8        13 → 3
  2 → 2 ✗ 3 ✗ → 4               3 → 3 ✗ 4 ✗ → 5
@@ -179,6 +199,9 @@ Index: 0   1   2   3   4   5   6   7   8   9
 ```
 
 ## 5. Sorting
+
+Sorting questions test three things: time complexity in the best, average and worst cases; whether the sort is
+stable and in place; and the state of the array after one pass.
 
 | Algorithm | Best | Average | Worst | Space | Stable | In-place |
 |-----------|------|---------|-------|-------|--------|----------|
@@ -199,6 +222,7 @@ Index: 0   1   2   3   4   5   6   7   8   9
 - **Comparison-sort lower bound: Ω(n log n)** (decision tree with n! leaves has height ≥ log₂ n!).
 - Merging k sorted lists of total n: O(n log k) with min-heap.
 
+<!-- latex: p2-07-partition -->
 ```
 Quick sort partition (Lomuto, pivot = last)
 [ 7  2  1  6  8  5  3  4 ]  pivot 4
@@ -213,6 +237,10 @@ Quick sort partition (Lomuto, pivot = last)
 
 ## 7. Algorithm Design Techniques
 
+Most algorithms in the syllabus follow one of five strategies. Recognising the strategy tells you the recurrence
+and therefore the running time.
+
+<!-- latex: p2-07-paradigms -->
 ```mermaid
 flowchart TB
     D[Design paradigms] --> DC[Divide & Conquer<br/>merge sort, quick sort, binary search,<br/>Strassen, closest pair, Karatsuba]
@@ -232,12 +260,14 @@ flowchart TB
 ### 7.1 Key DP Problems
 
 **LCS** of X = ABCBDAB, Y = BDCABA → length **4** (e.g. BCBA). Time O(mn).
+<!-- latex: p2-07-lcs -->
 ```
 LCS[i][j] = LCS[i−1][j−1] + 1                if xᵢ = yⱼ
           = max(LCS[i−1][j], LCS[i][j−1])    otherwise
 ```
 
 **Matrix chain multiplication**: dims 10×30, 30×5, 5×60.
+<!-- latex: p2-07-mcm -->
 ```
 (AB)C = 10·30·5 + 10·5·60 = 1500 + 3000 = 4500  ✔ optimal
 A(BC) = 30·5·60 + 10·30·60 = 9000 + 18000 = 27000
@@ -265,11 +295,15 @@ Number of parenthesisations of n matrices = Catalan C(n−1)
 
 ## 8. Graph Algorithms
 
+A graph $G = (V, E)$ models any network of relationships. The standard algorithms traverse it, find shortest
+paths, build minimum spanning trees and compute maximum flows.
+
 ### 8.1 Representations
 Adjacency matrix: O(V²) space, O(1) edge check. Adjacency list: O(V + E).
 
 ### 8.2 BFS & DFS
 
+<!-- latex: p2-07-bfsdfs -->
 ```
  Graph:  A ── B ── E
          │    │
@@ -295,6 +329,7 @@ Adjacency matrix: O(V²) space, O(1) edge check. Adjacency list: O(V + E).
 | Johnson | All-pairs, sparse | Yes | O(V² log V + VE) |
 
 **Dijkstra worked** (directed edges: A→B 4, A→C 1, C→B 2, C→D 5, B→D 1; source A)
+<!-- latex: p2-07-dijkstra -->
 ```
         4
    A ────────► B
@@ -337,6 +372,10 @@ Step  Visited     dist(A, B, C, D)
 
 ## 10. Complexity Classes
 
+Complexity classes group problems, not algorithms, by the resources the best possible algorithm needs. The
+open question P = NP asks whether every problem whose solution can be checked quickly can also be solved quickly.
+
+<!-- latex: p2-07-np -->
 ```mermaid
 flowchart TB
     subgraph NP[NP - verifiable in polynomial time]
@@ -381,6 +420,7 @@ KMP prefix function for pattern **"ababaca"**: π = [0, 0, 1, 2, 3, 0, 1].
 
 ### 13.1 Recursion Tree for T(n) = 2T(n/2) + n
 
+<!-- latex: p2-07-rectree -->
 ```
 Level 0:                 n                         cost n
 Level 1:          n/2         n/2                  cost n
@@ -393,6 +433,7 @@ For T(n) = T(n − 1) + n: unrolling gives n + (n − 1) + … + 1 = n(n + 1)/2 
 
 ### 13.2 AVL Insertion Trace: 10, 20, 30, 40, 50, 25
 
+<!-- latex: p2-07-avl-trace -->
 ```
 Insert 10, 20, 30 → RR imbalance at 10 → left rotation
       20
@@ -427,6 +468,7 @@ Step 1: right-rotate 40        Step 2: left-rotate 20
 
 ### 13.4 Kruskal vs Prim on the Same Graph
 
+<!-- latex: p2-07-mst -->
 ```mermaid
 flowchart LR
     A((A)) ---|4| B((B))
@@ -451,6 +493,7 @@ Both give MST weight **1 + 2 + 3 + 5 = 11**.
 ### 13.5 Floyd–Warshall Trace
 
 Directed graph: 1→2 (4), 1→3 (11), 2→1 (6), 2→3 (2), 3→1 (3).
+<!-- latex: p2-07-floyd -->
 ```
 D⁰            D¹ (via 1)      D² (via 2)      D³ (via 3) = final
 0  4  11      0  4  11        0  4  6         0  4  6
@@ -475,6 +518,7 @@ Answer **7** (items 1 and 2). Traceback: K[4][5] = K[3][5] = K[2][5] ≠ K[1][5]
 
 ### 13.7 Topological Sort (Kahn's algorithm)
 
+<!-- latex: p2-07-dag -->
 ```mermaid
 flowchart LR
     A[A] --> C[C]

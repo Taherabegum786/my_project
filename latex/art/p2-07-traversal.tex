@@ -1,0 +1,20 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[level distance=13mm, tn/.style={tnode, fill=fslate},
+    level 1/.style={sibling distance=30mm}, level 2/.style={sibling distance=16mm}, edge from parent/.style={draw=fgink, line width=0.55pt}]
+  \node[tn] (A) {A}
+    child { node[tn] (B) {B} child { node[tn] (D) {D} } child { node[tn] (E) {E} } }
+    child { node[tn] (C) {C} child[missing] child { node[tn] (F) {F} } };
+
+  \node[anchor=west, align=left, font=\small] at (4.6,-1.3) {
+    \renewcommand{\arraystretch}{1.25}\begin{tabular}{@{}l l@{}}
+    \toprule \textbf{Order} & \textbf{Sequence}\\ \midrule
+    Preorder (NLR) & A B D E C F\\ Inorder (LNR) & D B E A C F\\ Postorder (LRN) & D E B F C A\\ Level order & A B C D E F\\ \bottomrule
+    \end{tabular}};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Tree traversals. Preorder visits a node before its subtrees, inorder between them and postorder after
+them; level order reads the tree row by row.}
+
+\end{figure}

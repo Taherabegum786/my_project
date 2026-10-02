@@ -1,0 +1,20 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[x=0.85cm]
+  \foreach \v/\c [count=\i from 0] in {7/fpaper, 2/fpaper, 1/fpaper, 6/fpaper, 8/fpaper, 5/fpaper, 3/fpaper, 4/fochre} {
+    \filldraw[fill=\c, draw=fgink, line width=0.5pt] (\i,0) rectangle (\i+1,0.8); \node[font=\small] at (\i+0.5,0.4) {\v}; }
+  \node[capt, anchor=east] at (-0.2,0.4) {before};
+  \node[lbl, anchor=west] at (8.2,0.4) {pivot $= 4$ (last element)};
+  \foreach \v/\c [count=\i from 0] in {2/fsage, 1/fsage, 3/fsage, 4/fochre, 8/frose, 5/frose, 7/frose, 6/frose} {
+    \filldraw[fill=\c, draw=fgink, line width=0.5pt] (\i,-1.8) rectangle (\i+1,-1.0); \node[font=\small] at (\i+0.5,-1.4) {\v}; }
+  \node[capt, anchor=east] at (-0.2,-1.4) {after};
+  \draw[brace] (3,-1.95) -- node[lbl, below=4pt] {$\le$ pivot} (0,-1.95);
+  \draw[brace] (8,-1.95) -- node[lbl, below=4pt] {$>$ pivot} (4,-1.95);
+  \draw[arr, fgink!60] (7.5,-0.05) to[bend left=25] (3.5,-0.95);
+  \node[lbl, anchor=west] at (8.2,-1.4) {pivot in its final place};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Lomuto partition. One pass places the pivot in its final position, with smaller keys to its left and
+larger keys to its right; quicksort then recurses on the two sides.}
+\end{figure}

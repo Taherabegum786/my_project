@@ -1,0 +1,8 @@
+\begin{formulas}
+\begin{align*}
+(AB)C &= 10\cdot30\cdot5 + 10\cdot5\cdot60 = 1500 + 3000 = \mathbf{4500} \quad\text{(optimal)}\\
+A(BC) &= 30\cdot5\cdot60 + 10\cdot30\cdot60 = 9000 + 18000 = 27000\\
+m[i][j] &= \min_{i \le k < j}\bigl(m[i][k] + m[k+1][j] + p_{i-1}\,p_k\,p_j\bigr) \qquad O(n^3)
+\end{align*}
+\end{formulas}
+\noindent The number of ways to parenthesise a product of $n$ matrices is the Catalan number $C_{n-1}$.

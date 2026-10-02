@@ -1,0 +1,26 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[v/.style={vertex, fill=fslate, minimum size=8mm}, w/.style={edgelbl}]
+  \node[v, fill=fochre] (A) at (0,2) {A}; \node[v] (B) at (3,2) {B};
+  \node[v] (C) at (0,0) {C}; \node[v] (D) at (3,0) {D};
+  \draw[arr] (A) -- node[w] {4} (B);
+  \draw[arr, fwine, line width=1pt] (A) -- node[w] {1} (C);
+  \draw[arr, fwine, line width=1pt] (C) -- node[w] {2} (B);
+  \draw[arr] (C) -- node[w] {5} (D);
+  \draw[arr, fwine, line width=1pt] (B) -- node[w] {1} (D);
+  \node[smalllbl] at (-0.2,2.65) {source};
+  \node[font=\footnotesize, anchor=west] at (4.4,1.0) {%
+    \renewcommand{\arraystretch}{1.25}\begin{tabular}{@{}c l c l@{}}
+    \toprule \textbf{Step} & \textbf{Visited} & \textbf{dist(A, B, C, D)} & \textbf{Update}\\ \midrule
+    0 & --- & 0, $\infty$, $\infty$, $\infty$ & \\
+    1 & A & 0, 4, 1, $\infty$ & \\
+    2 & A, C & 0, \textbf{3}, 1, 6 & B via C $= 1+2$; D via C $= 1+5$ \\
+    3 & A, C, B & 0, 3, 1, \textbf{4} & D via B $= 3+1$ \\
+    4 & A, C, B, D & 0, 3, 1, 4 & final \\
+    \bottomrule \end{tabular}};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Dijkstra's algorithm from A. Each step fixes the closest unvisited vertex and relaxes its out-edges; the
+shortest-path tree is drawn in red.}
+\end{figure}

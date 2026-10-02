@@ -1,0 +1,25 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[t/.style={tnode, fill=fslate}, hot/.style={tnode, fill=frose}, e/.style={draw=fgink, line width=0.55pt}]
+  % LL
+  \node[hot] (a) at (0,0) {30}; \node[t] (b) at (-0.8,-1.1) {20}; \node[t] (c) at (-1.6,-2.2) {10};
+  \draw[e] (a) -- (b) -- (c);
+  \draw[arr, line width=0.8pt] (0.4,-1.2) -- node[lbl, above] {right rotate} (2.0,-1.2);
+  \node[t] (d) at (3.3,-0.4) {20}; \node[t] (e1) at (2.5,-1.5) {10}; \node[t] (f) at (4.1,-1.5) {30};
+  \draw[e] (e1) -- (d) -- (f);
+  \node[capt] at (1.2,-3.0) {LL case: single right rotation};
+  % RR
+  \begin{scope}[xshift=7.6cm]
+    \node[hot] (a) at (-1.6,0) {10}; \node[t] (b) at (-0.8,-1.1) {20}; \node[t] (c) at (0,-2.2) {30};
+    \draw[e] (a) -- (b) -- (c);
+    \draw[arr, line width=0.8pt] (0.4,-1.2) -- node[lbl, above] {left rotate} (2.0,-1.2);
+    \node[t] (d) at (3.3,-0.4) {20}; \node[t] (e1) at (2.5,-1.5) {10}; \node[t] (f) at (4.1,-1.5) {30};
+    \draw[e] (e1) -- (d) -- (f);
+    \node[capt] at (1.2,-3.0) {RR case: single left rotation};
+  \end{scope}
+\end{tikzpicture}
+\end{adjustbox}
+\caption{AVL single rotations; the unbalanced node is shaded. The double rotations are combinations: LR = left-rotate
+the child, then right-rotate the node; RL = right-rotate the child, then left-rotate the node.}
+\end{figure}

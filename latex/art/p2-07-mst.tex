@@ -1,0 +1,18 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[v/.style={vertex, fill=fslate, minimum size=8mm}, w/.style={edgelbl}, mst/.style={draw=fwine, line width=1.4pt}]
+  \node[v] (A) at (0,1.8) {A}; \node[v] (B) at (3,1.8) {B}; \node[v] (C) at (0,0) {C};
+  \node[v] (D) at (3,0) {D}; \node[v] (E) at (5.6,0.9) {E};
+  \draw[thinline] (A) -- node[w] {4} (B);
+  \draw[mst] (A) -- node[w] {1} (C);
+  \draw[mst] (B) -- node[w] {2} (C);
+  \draw[mst] (B) -- node[w] {5} (D);
+  \draw[thinline] (C) -- node[w] {8} (D);
+  \draw[mst] (D) -- node[w] {3} (E);
+  \draw[thinline] (C) to[bend right=40] node[w] {9} (E);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{The minimum spanning tree (thick red) has weight $1 + 2 + 3 + 5 = 11$. Kruskal and Prim add the same
+edges, in different orders.}
+\end{figure}

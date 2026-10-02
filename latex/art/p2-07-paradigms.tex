@@ -1,0 +1,21 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[card/.style={ink, rectangle, rounded corners=2pt, fill=fpaper, text width=46mm, align=left, inner sep=5pt, font=\footnotesize, anchor=north,
+    blur shadow={shadow blur steps=6, shadow xshift=0.8pt, shadow yshift=-1pt, shadow opacity=22}},
+    hd/.style={font=\small\bfseries, anchor=south, inner sep=2pt}]
+  \foreach \x/\y/\t/\c/\b in {0/0/Divide \& conquer/fslate/{merge sort, quicksort, binary search, Strassen, closest pair, Karatsuba},
+      5.4/0/Greedy/fsage/{Kruskal, Prim, Dijkstra, Huffman, fractional knapsack, activity selection, job sequencing},
+      10.8/0/Dynamic programming/fsand/{0/1 knapsack, LCS, matrix chain, Floyd--Warshall, Bellman--Ford, OBST, TSP (Held--Karp)},
+      2.7/-3.3/Backtracking/frose/{N-queens, sum of subsets, graph colouring, Hamiltonian cycle, Sudoku},
+      8.1/-3.3/Branch \& bound/fgrey/{0/1 knapsack, TSP, job assignment; prunes with bounds, BFS / least-cost search}} {
+    \node[card] (k) at (\x,\y) {\b};
+    \fill[\c] (k.north west) rectangle ([yshift=6.5mm]k.north east);
+    \draw[fgink, line width=0.55pt, rounded corners=2pt] ([yshift=6.5mm]k.north west) rectangle (k.south east);
+    \draw[fgink, line width=0.4pt] (k.north west) -- (k.north east);
+    \node[hd] at (k.north) {\t};
+  }
+\end{tikzpicture}
+\end{adjustbox}
+\caption{The five algorithm-design paradigms and the standard problems the examination attaches to each.}
+\end{figure}

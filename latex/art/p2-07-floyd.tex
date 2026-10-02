@@ -1,0 +1,8 @@
+\[
+D^{0} = \begin{pmatrix} 0 & 4 & 11\\ 6 & 0 & 2\\ 3 & \infty & 0 \end{pmatrix}\quad
+D^{1} = \begin{pmatrix} 0 & 4 & 11\\ 6 & 0 & 2\\ 3 & \color{fwine}\mathbf{7} & 0 \end{pmatrix}\quad
+D^{2} = \begin{pmatrix} 0 & 4 & \color{fwine}\mathbf{6}\\ 6 & 0 & 2\\ 3 & 7 & 0 \end{pmatrix}\quad
+D^{3} = \begin{pmatrix} 0 & 4 & 6\\ \color{fwine}\mathbf{5} & 0 & 2\\ 3 & 7 & 0 \end{pmatrix}
+\]
+\noindent $D^{k}$ allows vertices $1..k$ as intermediates: $d_{ij} \leftarrow \min(d_{ij},\ d_{ik} + d_{kj})$.
+Changed entries are in red: $3\to1\to2 = 7$, then $1\to2\to3 = 6$, then $2\to3\to1 = 5$. $D^3$ is final.

@@ -1,0 +1,24 @@
+\[
+1 < \log\log n < \log n < (\log n)^k < \sqrt n < n < n\log n < n^2 < n^3 < 2^n < 3^n < n! < n^n
+\]
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \begin{axis}[width=10.5cm, height=6.4cm, xmin=1, xmax=16, ymin=0, ymax=70, axis lines=left,
+      xlabel={$n$}, ylabel={operations}, tick label style={font=\footnotesize}, label style={font=\small},
+      legend style={font=\footnotesize, draw=none, fill=none, at={(1.02,1)}, anchor=north west}, legend cell align=left,
+      every axis plot/.append style={line width=0.9pt, no markers, samples=80, domain=1:16}]
+    \addplot[fgink!55] {log2(x)}; \addlegendentry{$\log n$}
+    \addplot[fsteel!80!black] {x}; \addlegendentry{$n$}
+    \addplot[fmoss!80!black] {x*log2(x)}; \addlegendentry{$n\log n$}
+    \addplot[fochre!90!black, domain=1:8.4] {x^2}; \addlegendentry{$n^2$}
+    \addplot[fwine, domain=1:6.13] {2^x}; \addlegendentry{$2^n$}
+  \end{axis}
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Growth of common running times. For small $n$ the curves cross; asymptotic order describes only
+what happens as $n$ grows large.}
+\end{figure}
+\noindent Useful facts: $\log(n!) = \Theta(n\log n)$; \ $n^{1/\log n} = \Theta(1)$; \ $2^{\log_2 n} = n$; \
+$n^{\log n}$ is super-polynomial.

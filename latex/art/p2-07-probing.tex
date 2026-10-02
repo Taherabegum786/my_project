@@ -1,0 +1,22 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[x=1.05cm]
+  \foreach \i/\v/\c in {0/{}/fpaper, 1/{}/fpaper, 2/12/fsage, 3/13/fsage, 4/2/frose, 5/3/frose, 6/23/frose, 7/5/frose, 8/18/fsage, 9/15/frose} {
+    \filldraw[fill=\c, draw=fgink, line width=0.5pt] (\i,0) rectangle (\i+1,0.8);
+    \node[font=\small] at (\i+0.5,0.4) {\v};
+    \node[font=\scriptsize, text=fgink!70] at (\i+0.5,1.05) {\i};
+  }
+  \node[font=\footnotesize, align=left, anchor=north west] at (0,-0.25) {%
+    \renewcommand{\arraystretch}{1.15}\begin{tabular}{@{}l l l l@{}}
+    12 $\to$ 2 & 18 $\to$ 8 & 13 $\to$ 3 & \\
+    2 $\to$ 2\,\texttimes, 3\,\texttimes, \textbf{4} & 3 $\to$ 3\,\texttimes, 4\,\texttimes, \textbf{5} & 23 $\to$ 3, 4, 5\,\texttimes, \textbf{6} & 5 $\to$ 5, 6\,\texttimes, \textbf{7} \\
+    15 $\to$ 5, 6, 7, 8\,\texttimes, \textbf{9} & & & \\
+    \end{tabular}};
+  \fill[fsage] (7.2,-1.6) rectangle (7.5,-1.35); \node[font=\scriptsize, anchor=west] at (7.55,-1.475) {at home slot};
+  \fill[frose] (7.2,-2.0) rectangle (7.5,-1.75); \node[font=\scriptsize, anchor=west] at (7.55,-1.875) {displaced by probing};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Linear probing, $m = 10$, $h(k) = k \bmod 10$, inserting 12, 18, 13, 2, 3, 23, 5, 15. Keys pile up in
+the run 2--9: this is \emph{primary clustering}.}
+\end{figure}

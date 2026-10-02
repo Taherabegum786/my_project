@@ -1,0 +1,13 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[v/.style={vertex, fill=fslate, minimum size=8mm}]
+  \node[v, fill=fsage] (A) at (0,1.2) {A}; \node[v, fill=fsage] (B) at (0,-0.4) {B};
+  \node[v] (C) at (2.4,1.2) {C}; \node[v] (D) at (2.4,-0.4) {D}; \node[v] (E) at (4.8,0.4) {E};
+  \draw[arr] (A) -- (C); \draw[arr] (B) -- (C); \draw[arr] (B) -- (D); \draw[arr] (C) -- (E); \draw[arr] (D) -- (E);
+  \foreach \n/\d in {A/0, B/0, C/2, D/1, E/2} \node[smalllbl, text=fwine] at ([yshift=6mm]\n) {in \d};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{A DAG for Kahn's algorithm. Vertices with in-degree 0 (green) start the queue; removing a vertex lowers
+the in-degree of its successors.}
+\end{figure}
