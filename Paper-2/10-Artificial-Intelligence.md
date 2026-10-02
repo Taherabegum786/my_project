@@ -369,6 +369,138 @@ flowchart LR
 - Capacity ≈ **0.138 N** patterns for N neurons.
 - Also: **Hebbian learning** ("neurons that fire together wire together") Δw = η·x·y; **BAM** (bidirectional associative memory — Kosko); **ART** (Grossberg – stability–plasticity); RBF networks; Boltzmann machine.
 
+## 11. Deeper Dive — Worked Traces for Every Numerical Topic
+
+### 11.1 Alpha–Beta Trace (depth 3)
+
+```
+                         MAX  A
+               ┌──────────┴──────────┐
+              MIN B                 MIN C
+          ┌─────┴─────┐          ┌─────┴─────┐
+        MAX D       MAX E      MAX F       MAX G
+        ┌─┴─┐       ┌─┴─┐      ┌─┴─┐       ┌─┴─┐
+        3   5       6   9      1   2       0  −1
+```
+
+| Step | Node | α, β on entry | What happens |
+|------|------|---------------|--------------|
+| 1 | D | −∞, +∞ | sees 3, 5 → D = 5 |
+| 2 | B | — | β = 5 |
+| 3 | E | −∞, 5 | sees 6 → α = 6 ≥ β = 5 → **prune leaf 9**; E returns 6 |
+| 4 | B | — | B = min(5, 6) = 5 → A's α = 5 |
+| 5 | F | 5, +∞ | sees 1, 2 → F = 2 |
+| 6 | C | 5, +∞ | β = 2 ≤ α = 5 → **prune G (leaves 0, −1)** |
+| 7 | A | — | A = max(5, 2) = **5** |
+
+3 of 8 leaves pruned; the root value is the same as plain minimax.
+
+### 11.2 Resolution Refutation
+
+**First-order**: "All men are mortal. Socrates is a man. Prove Socrates is mortal."
+```
+1. ¬Man(x) ∨ Mortal(x)          (∀x Man(x) → Mortal(x))
+2. Man(Socrates)
+3. ¬Mortal(Socrates)            (negated goal)
+4. ¬Man(Socrates)               resolve 1, 3 with {x / Socrates}
+5. □  (empty clause)            resolve 2, 4  → goal proved
+```
+**Propositional**: from P → Q, Q → R, P prove R. Clauses ¬P ∨ Q, ¬Q ∨ R, P, ¬R → resolve ¬Q ∨ R with ¬R → ¬Q; with ¬P ∨ Q → ¬P; with P → □.
+
+### 11.3 Forward vs Backward Chaining
+
+Rules: R1: A ∧ B → C; R2: C → D; R3: D ∧ E → F. Facts: A, B, E. Goal: F.
+
+| Forward chaining (data-driven) | Backward chaining (goal-driven) |
+|-------------------------------|---------------------------------|
+| A, B ⊢ C (R1) | Goal F ← need D and E (R3) |
+| C ⊢ D (R2) | E is a fact; D ← need C (R2) |
+| D, E ⊢ F (R3) ✔ | C ← need A and B (R1); both facts ✔ |
+
+### 11.4 Bayes — Medical Test
+
+Disease prevalence 1%, test sensitivity 99%, false-positive rate 5%.
+```
+P(D | +) = P(+ | D)·P(D) / [P(+ | D)·P(D) + P(+ | ¬D)·P(¬D)]
+         = 0.99 × 0.01 / (0.0099 + 0.05 × 0.99)
+         = 0.0099 / 0.0594 ≈ 0.167      → only about 17% of positives actually have the disease
+```
+
+### 11.5 Fuzzy Max–Min Composition & Inference
+
+```
+R = | 0.6  0.3 |      S = | 1.0  0.5 |      T = R ∘ S
+    | 0.2  0.9 |          | 0.8  0.4 |
+T₁₁ = max(min(0.6, 1.0), min(0.3, 0.8)) = max(0.6, 0.3) = 0.6
+T₁₂ = max(min(0.6, 0.5), min(0.3, 0.4)) = max(0.5, 0.3) = 0.5
+T₂₁ = max(min(0.2, 1.0), min(0.9, 0.8)) = max(0.2, 0.8) = 0.8
+T₂₂ = max(min(0.2, 0.5), min(0.9, 0.4)) = max(0.2, 0.4) = 0.4
+T = | 0.6  0.5 |
+    | 0.8  0.4 |
+```
+
+**Sugeno-style inference**: temperature 30 °C → μ_warm = 0.4, μ_hot = 0.6. Rules: warm → fan 40%, hot → fan 80%.
+Output = (0.4 × 40 + 0.6 × 80) / (0.4 + 0.6) = **64%**.
+
+### 11.6 Genetic Algorithm — One Generation (maximise f(x) = x², 5-bit x)
+
+| String | x | f(x) | pᵢ = f/Σf | Expected copies (4pᵢ) |
+|--------|---|------|-----------|----------------------|
+| 01101 | 13 | 169 | 0.144 | 0.58 |
+| 11000 | 24 | 576 | 0.492 | 1.97 |
+| 01000 | 8 | 64 | 0.055 | 0.22 |
+| 10011 | 19 | 361 | 0.309 | 1.23 |
+| | | Σ = 1170 | | |
+
+Crossover 0110|1 × 1100|0 at position 4 → **01100 (12)** and **11001 (25)** — the child 25 is fitter than any parent.
+
+### 11.7 Perceptron Learning AND (η = 1, w = (0, 0), b = 0, output 1 if w·x + b > 0)
+
+| End of epoch | w₁ | w₂ | b | Errors in epoch |
+|--------------|----|----|---|-----------------|
+| 1 | 1 | 1 | 1 | 1 |
+| 2 | 2 | 1 | 0 | 3 |
+| 3 | 2 | 1 | −1 | 3 |
+| 4 | 2 | 2 | −1 | 2 |
+| 5 | 2 | 1 | −2 | 1 |
+| 6 | 2 | 1 | −2 | 0 → converged |
+
+Check: (0,0) → −2 → 0; (0,1) → −1 → 0; (1,0) → 0 → 0; (1,1) → 1 → 1 ✔ = AND.
+
+### 11.8 One Backpropagation Step (single sigmoid neuron)
+
+x = 1, w = 0.5, b = 0, target t = 1, η = 1, E = ½(t − o)².
+```
+net = 0.5 → o = σ(0.5) = 0.6225
+δ = (t − o) · o(1 − o) = 0.3775 × 0.6225 × 0.3775 ≈ 0.0887
+Δw = η δ x = 0.0887 → w_new = 0.5887 (output moves toward the target)
+```
+
+### 11.9 Hopfield Storage & Recall
+
+Store bipolar pattern p = [1, −1, 1]: W = p pᵀ − I.
+```
+W = |  0  −1   1 |      Noisy input x = [1, 1, 1]
+    | −1   0  −1 |      W x = [0, −2, 0] → sign (keep old value on 0) = [1, −1, 1]
+    |  1  −1   0 |      → stored pattern recovered
+```
+
+### 11.10 CSP — Map Colouring with Heuristics
+
+```mermaid
+flowchart LR
+    WA((WA)) --- NT((NT))
+    WA --- SA((SA))
+    NT --- SA
+    NT --- Q((Q))
+    SA --- Q
+    SA --- NSW((NSW))
+    SA --- V((V))
+    Q --- NSW
+    NSW --- V
+```
+Three colours. **MRV/degree heuristic** picks SA first (degree 5). Assign SA = red → WA, NT, Q, NSW, V lose red; WA = green → NT = blue → Q = green → NSW = blue → V = green. Solution found without backtracking; **forward checking** removes inconsistent values early.
+
 ---
 
 ## Previous Year Questions (PYQ pattern)
@@ -381,6 +513,7 @@ flowchart LR
 5. Chess is: **fully observable, deterministic (strategic), sequential, discrete, multi-agent**
 
 **Search**
+
 6. Space complexity of BFS: **O(b^d)**; of DFS: **O(bm)**
 7. Search that combines benefits of BFS and DFS: **iterative deepening DFS**
 8. A* is optimal if the heuristic is: **admissible (never overestimates)**
@@ -393,12 +526,14 @@ flowchart LR
 15. For 8-puzzle, Manhattan distance is: **admissible and dominates misplaced tiles**
 
 **Games**
+
 16. Alpha-beta pruning with perfect ordering reduces time to: **O(b^(m/2))**
 17. Pruning occurs when: **α ≥ β**
 18. Alpha-beta pruning changes the minimax value? **No**
 19. Minimax value of tree with MIN nodes having leaves (3,12,8), (2,4,6), (14,5,2): max(3, 2, 2) = **3**
 
 **Knowledge representation**
+
 20. Frames were proposed by: **Marvin Minsky**
 21. Scripts were proposed by: **Schank & Abelson**
 22. "John gave Mary a book" in CD uses primitive: **ATRANS**
@@ -411,6 +546,7 @@ flowchart LR
 29. Dempster–Shafer theory uses: **belief and plausibility**
 
 **Planning & NLP**
+
 30. STRIPS operators contain: **preconditions, add list, delete list**
 31. Sussman anomaly illustrates a problem with: **linear (goal-stack) planning**
 32. Partial-order planning follows: **least-commitment strategy**
@@ -420,12 +556,14 @@ flowchart LR
 36. ELIZA was developed by: **Joseph Weizenbaum**
 
 **MAS**
+
 37. BDI stands for: **Beliefs, Desires, Intentions**
 38. KQML is used for: **agent communication**
 39. JADE is: **a Java framework for FIPA-compliant multi-agent systems**
 40. Semantic web ontology language: **OWL**
 
 **Fuzzy**
+
 41. Fuzzy logic was introduced by: **Lotfi Zadeh (1965)**
 42. μA = 0.6, μB = 0.3: union **0.6**, intersection **0.3**, complement of A **0.4**
 43. Which law does NOT hold in fuzzy sets? **Law of excluded middle / contradiction**
@@ -435,12 +573,14 @@ flowchart LR
 47. "Very" hedge applied to μ = 0.8: **0.64**
 
 **GA**
+
 48. Genetic algorithms were introduced by: **John Holland**
 49. Operator that maintains diversity: **mutation**
 50. Roulette wheel: fitness values 10, 20, 30, 40 → probability of 3rd: **0.3**
 51. Number of schemata in binary string length 5: **3⁵ = 243**
 
 **Neural networks**
+
 52. Single-layer perceptron cannot learn: **XOR**
 53. Perceptron learning rule: **Δw = η(t − y)x**
 54. Backpropagation uses: **gradient descent with chain rule**
@@ -450,6 +590,21 @@ flowchart LR
 58. Hopfield storage capacity: **≈ 0.138 N**
 59. Learning with reward/penalty: **reinforcement learning**
 60. Hebbian learning rule: **Δw = η·x·y**
+
+**More practice questions**
+
+61. In the tree of §11.1, the number of leaves pruned by alpha–beta: **3**
+62. Resolution proves a goal by deriving: **the empty clause from the negated goal**
+63. Backward chaining starts from: **the goal**
+64. Prevalence 1%, sensitivity 99%, false-positive 5%: P(disease | positive) ≈ **0.17**
+65. Max–min composition entry max(min(0.2, 1.0), min(0.9, 0.8)) = **0.8**
+66. In a GA with fitness values 169, 576, 64, 361, the selection probability of the fittest: **≈ 0.49**
+67. Single-point crossover of 01101 and 11000 after bit 4: **01100 and 11001**
+68. Perceptron weights (w₁, w₂, b) = (2, 1, −2) implement: **AND**
+69. Derivative of the sigmoid at output 0.5: **0.25**
+70. Hopfield weight matrix for one stored pattern p: **p pᵀ − I**
+71. In map colouring, choosing the variable with the fewest legal values is the: **MRV heuristic**
+72. Degree heuristic chooses the variable: **involved in the most constraints with unassigned variables**
 
 ## Quick Revision Box
 - BFS O(b^d) space · DFS O(bm) · IDDFS best uninformed · A* optimal if admissible

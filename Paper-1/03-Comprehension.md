@@ -62,6 +62,57 @@ flowchart TD
 4. Which can be inferred? → (a) technology is harmful (b) access ensures learning (c) guidance is necessary for learning from digital resources (d) teachers are obsolete → **(c)**
 5. Which is NOT stated? → "Teachers will become obsolete" — contradicted.
 
+## Deeper Dive — Two Full Practice Passages (solve in 8 minutes each)
+
+### Passage 1
+
+> India's traditional knowledge systems were never confined to scriptures alone. Farmers who read the
+> sky to predict monsoon onset, healers who classified hundreds of plants by their effects, and
+> artisans who worked metals without modern furnaces all practised forms of empirical inquiry. Yet
+> because this knowledge travelled orally and through apprenticeship, it was rarely recorded in the
+> formats that modern institutions recognise. Colonial administrators, trained to value written
+> evidence, frequently dismissed it as superstition.
+>
+> The challenge today is not to romanticise this heritage but to examine it critically. Some practices
+> survive rigorous testing; others do not. Treating every traditional claim as valid is as unscientific
+> as rejecting all of them. What is needed is a dialogue in which communities are partners, not merely
+> sources of data, and in which the benefits of any discovery return to those who preserved the knowledge.
+
+1. The passage primarily argues that traditional knowledge should be:
+   (a) accepted without question (b) rejected as superstition (c) critically examined in partnership with communities (d) recorded only in scriptures — **Ans: (c)**
+2. According to the passage, traditional knowledge was dismissed during colonial times mainly because:
+   **it was transmitted orally rather than in written form**
+3. The author's tone is best described as: **balanced and analytical**
+4. "Romanticise" in the passage means: **to present something as better or more ideal than it is**
+5. Which statement is NOT supported by the passage?
+   (a) Artisans practised empirical inquiry (b) All traditional practices survive testing (c) Communities should benefit from discoveries (d) Knowledge was passed through apprenticeship — **Ans: (b)**
+
+### Passage 2
+
+> Universities are often described as engines of economic growth, and policymakers increasingly
+> measure them by patents, start-ups and graduate salaries. These indicators matter, but they capture
+> only what is easily counted. A university also preserves languages, questions received wisdom and
+> trains citizens to disagree without hostility. None of these appears in a ranking table.
+>
+> When funding follows only measurable outputs, departments that produce long-term, uncertain or
+> critical knowledge are the first to shrink. The irony is that many technologies now celebrated as
+> commercial successes grew out of research that once looked useless. A wiser policy would balance
+> accountability with patience, judging institutions over decades rather than budget cycles.
+
+1. The central idea: **Universities have valuable functions beyond measurable economic outputs, and policy should recognise them.**
+2. The "irony" mentioned refers to: **commercially successful technologies originating from research once considered useless**
+3. The author would most likely support: **long-term evaluation of universities**
+4. Which is an assumption of the author? **Funding decisions influence which departments survive.**
+5. Suitable title: **"Beyond the Ranking Table: What Universities Are For"**
+
+### Inference vs Assumption vs Conclusion
+
+| Term | Meaning | Test |
+|------|---------|------|
+| Inference | Logically follows from what is stated | "Must this be true if the passage is true?" |
+| Assumption | Unstated premise the argument relies on | Negate it — does the argument collapse? |
+| Conclusion | The main claim the author argues for | Usually signalled by "therefore", "thus", or the last line |
+
 ## Previous Year Questions (PYQ pattern — typical stems seen every cycle)
 
 1. "The central idea of the passage is…" — pick the option that covers all paragraphs.
@@ -74,6 +125,13 @@ flowchart TD
 
 Past passages have covered: environment & sustainability, education policy, Indian philosophy/culture,
 technology & society, economics of development, ethics, colonial history, art & literature.
+
+**More practice: common distractor patterns**
+
+8. Option repeats a phrase from the passage but changes its meaning → **wrong (distortion)**
+9. Option is true in general knowledge but not mentioned → **wrong (outside scope)**
+10. Option covers only one paragraph when the question asks for the central idea → **too narrow**
+11. Option makes a sweeping claim ("all", "never") → **usually extreme, wrong**
 
 ## Practice Routine for 5/5
 - Daily: 1 editorial (The Hindu / Indian Express) → write a 1-line main idea + tone.

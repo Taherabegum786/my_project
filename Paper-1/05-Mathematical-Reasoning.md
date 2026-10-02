@@ -133,6 +133,64 @@ M1·D1·H1 / W1 = M2·D2·H2 / W2
 4. A can finish in 10 days, B in 15. Together = 150/25 = **6 days**.
 5. Two articles each sold at ₹990, one at 10% profit, another at 10% loss. → **1% loss**.
 
+## 6. Deeper Dive — More Question Types with Shortcuts
+
+### 6.1 Types of Reasoning
+- **Deductive**: general → specific; conclusion certain. **Inductive**: specific → general; conclusion probable.
+- **Abductive**: inference to the best explanation (a doctor diagnosing from symptoms).
+- **Analogical**: reasoning from similarity of two cases.
+
+### 6.2 Mixtures & Alligation
+
+```
+   Cheaper (c)            Dearer (d)
+         ╲                ╱
+          ╲    Mean (m)  ╱
+          ╱            ╲
+         ╱              ╲
+   (d − m)              (m − c)
+   Ratio  cheaper : dearer = (d − m) : (m − c)
+```
+**Example**: Rice at ₹40/kg and ₹60/kg mixed to get ₹52/kg → ratio = (60 − 52) : (52 − 40) = 8 : 12 = **2 : 3**.
+
+Repeated dilution: from a vessel of x litres, y litres replaced by water n times → remaining pure = x(1 − y/x)ⁿ.
+
+### 6.3 Ages
+Translate words into equations. "A is twice as old as B; 10 years ago A was three times as old as B":
+A = 2B, A − 10 = 3(B − 10) → 2B − 10 = 3B − 30 → **B = 20, A = 40**.
+
+### 6.4 Partnership
+Profit shared in ratio of **capital × time**. A invests ₹5000 for 12 months, B ₹6000 for 8 months → 60000 : 48000 = **5 : 4**.
+
+### 6.5 Discounting (banker's & true discount)
+```
+True discount TD = (Amount × R × T) / (100 + R·T)
+Banker's discount BD = SI on the amount = A·R·T/100
+BD − TD = SI on TD (Banker's gain) ; Present worth PW = A − TD
+```
+**Example**: A = ₹1100 due in 1 year at 10%: TD = 1100 × 10/110 = ₹100; PW = ₹1000; BD = ₹110; BG = ₹10.
+
+### 6.6 Coding–Decoding Variants
+
+| Type | Example |
+|------|---------|
+| Letter shift | COMPUTER → DPNQVUFS (+1) |
+| Reverse alphabet | GOOD → TLLW (A↔Z) |
+| Position sum | BAD = 2 + 1 + 4 = 7 |
+| Word reversal | READ → DAER |
+| Symbol substitution | If + means ×, − means ÷: 8 + 2 − 4 = 8 × 2 ÷ 4 = **4** |
+
+### 6.7 Fractions & Comparison
+- To compare fractions quickly, cross-multiply: 5/7 vs 7/10 → 50 vs 49 → **5/7 is larger**.
+- Recurring decimals: 0.333… = 1/3; 0.2727… = 27/99 = 3/11.
+
+### 6.8 Worked Mixed Set
+1. Successive discounts 20% and 10% = 20 + 10 − 2 = **28%**.
+2. A sum becomes ₹1331 in 3 years at 10% CI → principal = 1331/1.331 = **₹1000**.
+3. 15 men finish work in 20 days; how many days for 25 men? 15 × 20 / 25 = **12 days**.
+4. Boat: 16 km downstream in 2 h, 8 km upstream in 2 h → speeds 8 and 4 → still water **6 km/h**, stream **2 km/h**.
+5. Average of first 50 natural numbers = (50 + 1)/2 = **25.5**.
+
 ---
 
 ## Previous Year Questions (PYQ pattern)
@@ -155,6 +213,19 @@ M1·D1·H1 / W1 = M2·D2·H2 / W2
 16. If the population increases 10% annually, from 10000 after 2 years: **12100**
 17. Salary increased by 25%; by what % must it be reduced to restore? 25/125 × 100 = **20%**
 18. Two trains 120 m and 180 m at 50 & 40 km/h opposite directions. Time to cross = 300 / (90×5/18) = 300/25 = **12 s**
+
+**More practice questions**
+
+19. Milk at ₹30/L mixed with water (free) to sell at ₹30 with 20% profit. Ratio milk : water = **5 : 1** (cost price of mixture 25 → (25 − 0) : (30 − 25))
+20. Next term: 1, 3, 7, 15, 31, ? → **63**
+21. Next term: 3, 5, 9, 17, 33, ? → **65** (×2 − 1)
+22. Find the odd one: 3, 5, 11, 14, 17 → **14** (not prime)
+23. A and B invest ₹20,000 and ₹30,000 for 6 and 4 months; profit ratio = 120000 : 120000 = **1 : 1**
+24. Ten years ago, father was 4 times his son's age; now he is twice. Son's present age: S − 10 = (2S − 10)/4 → **15 years**
+25. If 'SCHOOL' is coded as 'RBGNNK' (−1), then 'COLLEGE' is: **BNKKDFD**
+26. Pointing to a lady, Rahul says, "She is the daughter of my grandfather's only son." The lady is Rahul's: **sister**
+27. 40% of a number is 60. 75% of it = **112.5**
+28. Ratio of present worth to true discount for ₹1210 due in 2 years at 10% SI: PW = 1210/1.2 = 1008.33; TD = 201.67 → **5 : 1**
 
 ## Quick Revision Box
 - Net % change = a + b + ab/100 · Same SP, ±x% ⇒ loss x²/100 %

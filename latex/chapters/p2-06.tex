@@ -1,0 +1,1166 @@
+\unitchapter{Paper 2 · Unit 6}{Software Engineering}{p2-06}
+
+\textbf{Expected questions: 8--10 · Target: 9+ · Type: mostly theory (Pressman) + metrics numericals (COCOMO, FP, cyclomatic) --- most scoring unit}
+
+\begin{sylbox}
+
+\begin{itemize}
+\tightlist
+\item[$\square$]
+  Software process models: waterfall, prototype, evolutionary (incremental, spiral), concurrent, component-based, formal methods, AOSD, unified process, Agile (XP, Scrum, DSDM, Crystal, FDD, ASD, Kanban)
+\item[$\square$]
+  Software requirements: functional \& non-functional, eliciting, analysis, requirements specification, SRS, validation, management
+\item[$\square$]
+  Software design: abstraction, architecture, patterns, modularity, cohesion \& coupling, information hiding, functional independence, refinement, architectural \& UI design
+\item[$\square$]
+  Software quality: McCall, ISO 9126, quality control \& assurance, risk management, RMMM, software reliability
+\item[$\square$]
+  Estimation \& scheduling: size (LOC, FP), COCOMO, project scheduling \& staffing, timeline charts
+\item[$\square$]
+  Software testing: verification \& validation, error/fault/defect/failure, unit/integration/system/acceptance, white-box \& black-box, regression, performance, stress, alpha/beta
+\item[$\square$]
+  Configuration management; maintenance \& re-engineering; reverse engineering
+\end{itemize}
+
+\end{sylbox}
+
+\needdiagram{figures/p2-06-00}{95pt}
+
+\hypertarget{p2-06--1-software-process-models}{%
+\section{1. Software Process Models}\label{p2-06--1-software-process-models}}
+
+\needspace{100pt}
+
+\hypertarget{p2-06--11-waterfall-royce-1970}{%
+\subsection{1.1 Waterfall (Royce, 1970)}\label{p2-06--11-waterfall-royce-1970}}
+
+\diagramhere{figures/p2-06-00}
+
+\begin{itemize}
+\tightlist
+\item
+  Linear sequential; each phase completes before next. Good when \textbf{requirements are clear \& stable}. No working software until late; high risk.
+\item
+  \textbf{V-Model}: verification phases (left) paired with validation/testing phases (right): Requirements↔Acceptance test, System design↔System test, Architecture↔Integration test, Module design↔Unit test.
+\end{itemize}
+
+\begin{asciiblock}{89pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ Requirements ─────────────────────────► Acceptance testing
+   System design ───────────────────► System testing
+     Architecture design ────────► Integration testing
+        Module design ─────────► Unit testing
+                    ╲         ╱
+                      Coding
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{175pt}
+
+\hypertarget{p2-06--12-prototype-model}{%
+\subsection{1.2 Prototype Model}\label{p2-06--12-prototype-model}}
+
+Quick design → build prototype → customer evaluation → refine → (throwaway or evolutionary). Best when \textbf{requirements are unclear}.
+
+\needspace{100pt}
+
+\hypertarget{p2-06--13-incremental--rad}{%
+\subsection{1.3 Incremental \& RAD}\label{p2-06--13-incremental--rad}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Incremental}: deliver in increments; first increment = core product.
+\item
+  \textbf{RAD} (Rapid Application Development): 60--90 days, component reuse, multiple teams; needs modular \& well-understood requirements.
+\end{itemize}
+
+\needspace{240pt}
+
+\hypertarget{p2-06--14-spiral-model-barry-boehm-1986--risk-driven}{%
+\subsection{\texorpdfstring{1.4 Spiral Model (Barry Boehm, 1986) --- \textbf{risk-driven}}{1.4 Spiral Model (Barry Boehm, 1986) --- risk-driven}}\label{p2-06--14-spiral-model-barry-boehm-1986--risk-driven}}
+
+\begin{asciiblock}{185pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+            1. Determine objectives,      │      2. Evaluate alternatives,
+               alternatives, constraints  │         IDENTIFY & RESOLVE RISKS
+                                          │
+             ┌────────────────────────────┼────────────────────────────┐
+             │       ┌────────────────────┼────────────────────┐       │
+             │       │       ┌────────────┼────────────┐       │       │
+             │       │       │          START          │       │       │
+  ───────────┼───────┼───────┼────────────┼────────────┼───────┼───────┼──────────
+             │       │       └────────────┼────────────┘       │       │
+             │       └────────────────────┼────────────────────┘       │
+             └────────────────────────────┼────────────────────────────┘
+                                          │
+            4. Plan the next phase        │      3. Develop & verify the
+                                          │         next-level product
+  Each loop = one phase; radius = cumulative cost; angle = progress through the quadrants
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  4 quadrants: Planning (objectives) → \textbf{Risk analysis} → Engineering → Evaluation. Meta-model; suits large, high-risk projects.
+\end{itemize}
+
+\needspace{135pt}
+
+\hypertarget{p2-06--15-others}{%
+\subsection{1.5 Others}\label{p2-06--15-others}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2080}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.7920}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Model}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Key idea}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Concurrent & Activities exist simultaneously in different states (state chart) \\
+Component-based (CBSE) & Assemble pre-built COTS components \\
+Formal methods & Mathematical specification (Z, VDM); \textbf{Cleanroom} SE (statistical testing, defect prevention) \\
+AOSD & Aspect-oriented: crosscutting concerns (logging, security) as aspects \\
+\textbf{Unified Process (RUP)} & Use-case driven, architecture-centric, iterative \& incremental. Phases: \textbf{Inception → Elaboration → Construction → Transition} (+ Production) \\
+\end{longtable}
+
+\endgroup
+
+\needspace{135pt}
+
+\hypertarget{p2-06--16-agile}{%
+\subsection{1.6 Agile}\label{p2-06--16-agile}}
+
+\textbf{Agile Manifesto (2001)} values:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Individuals \& interactions} over processes \& tools
+\item
+  \textbf{Working software} over comprehensive documentation
+\item
+  \textbf{Customer collaboration} over contract negotiation
+\item
+  \textbf{Responding to change} over following a plan
+  (12 principles; e.g. deliver frequently, welcome changing requirements, sustainable pace, face-to-face communication.)
+\end{itemize}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1344}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.8656}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Method}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Highlights}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{XP} (Kent Beck) & Pair programming, \textbf{test-first (TDD)}, refactoring, continuous integration, small releases, \textbf{user stories}, spike solutions, CRC cards, collective ownership, 40-hour week \\
+\textbf{Scrum} & \textbf{Sprint} (2--4 weeks, time-boxed), \textbf{Product backlog}, Sprint backlog, \textbf{Daily Scrum} (15 min stand-up), Sprint review, retrospective; roles: \textbf{Product Owner, Scrum Master, Development Team}; burndown chart \\
+DSDM & Time-boxing, \textbf{MoSCoW} prioritisation (Must, Should, Could, Won\textquotesingle t); 80/20 principle \\
+Crystal & Family (Clear, Orange\ldots) by team size \& criticality (Alistair Cockburn) \\
+FDD & Feature Driven Development; features in ≤ 2 weeks \\
+ASD & Adaptive SD: Speculation, Collaboration, Learning (Highsmith) \\
+Kanban & Visual board, limit Work-In-Progress (WIP) \\
+Lean & Eliminate waste \\
+\end{longtable}
+
+\endgroup
+
+\diagram{figures/p2-06-01}
+
+\needspace{135pt}
+
+\hypertarget{p2-06--model-selection-cheat-sheet}{%
+\subsection{Model selection cheat-sheet}\label{p2-06--model-selection-cheat-sheet}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2745}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2236}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Situation}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Model}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Clear, fixed requirements & Waterfall \\
+Unclear requirements & Prototyping \\
+High risk, large & Spiral \\
+Quick delivery, modular & RAD / Incremental \\
+Changing requirements, small teams & Agile \\
+Safety-critical & Formal methods / Cleanroom \\
+\end{longtable}
+
+\endgroup
+
+\needdiagram{figures/p2-06-02}{55pt}
+
+\hypertarget{p2-06--2-requirements-engineering}{%
+\section{2. Requirements Engineering}\label{p2-06--2-requirements-engineering}}
+
+\diagramhere{figures/p2-06-02}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Functional}: what the system does (services). \textbf{Non-functional}: quality constraints --- performance, security, reliability, usability, portability, maintainability (FURPS+).
+\item
+  Elicitation techniques: interviews, questionnaires, \textbf{JAD} (Joint Application Development), \textbf{QFD} (Quality Function Deployment: normal, expected, exciting requirements), brainstorming, use cases, observation, prototyping.
+\item
+  \textbf{SRS} (IEEE 830): characteristics --- correct, unambiguous, complete, consistent, ranked, \textbf{verifiable}, modifiable, traceable. SRS says \textbf{what}, not \textbf{how}.
+\item
+  Requirement traceability matrix. Validation: reviews, prototyping, test-case generation.
+\item
+  Analysis models: \textbf{DFD} (process), ER (data), \textbf{state diagrams} (behaviour), use case diagrams, data dictionary.
+\end{itemize}
+
+\begin{asciiblock}{67pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ DFD notation (Yourdon/DeMarco)
+ ┌──────┐  External entity   ( ○ )  Process (bubble)   ═══  Data store   ──►  Data flow
+ Level 0 DFD = Context diagram (single process, shows external entities only)
+ Balancing: inputs/outputs of child DFD = those of parent process
+\end{Verbatim}
+\end{asciiblock}
+
+\needdiagram{figures/p2-06-03}{55pt}
+
+\hypertarget{p2-06--uml-diagrams}{%
+\subsection{UML Diagrams}\label{p2-06--uml-diagrams}}
+
+\diagramhere{figures/p2-06-03}
+
+Relationships: association, aggregation (◇ hollow, "has-a", weak), composition (◆ filled, strong ownership), generalisation (△ "is-a"), dependency (dashed arrow), realisation. Use case relations: «include» (mandatory), «extend» (optional).
+
+\needspace{269pt}
+
+\hypertarget{p2-06--3-software-design}{%
+\section{3. Software Design}\label{p2-06--3-software-design}}
+
+\needspace{229pt}
+
+\hypertarget{p2-06--31-design-concepts}{%
+\subsection{3.1 Design Concepts}\label{p2-06--31-design-concepts}}
+
+Abstraction (procedural, data), architecture, patterns, separation of concerns, \textbf{modularity}, \textbf{information hiding} (Parnas), \textbf{functional independence} (high cohesion + low coupling), stepwise refinement (Wirth), refactoring, aspects.
+
+\needspace{154pt}
+
+\hypertarget{p2-06--32-cohesion-within-a-module--best-to-worst}{%
+\subsection{3.2 Cohesion (within a module) --- best to worst}\label{p2-06--32-cohesion-within-a-module--best-to-worst}}
+
+\begin{asciiblock}{99pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ BEST  ▲  Functional      – single well-defined task
+       │  Sequential      – output of one part is input to next
+       │  Communicational – parts operate on same data
+       │  Procedural      – parts follow a sequence of execution
+       │  Temporal        – executed at same time (e.g. initialisation)
+       │  Logical         – logically similar tasks, selected by flag
+ WORST ▼  Coincidental    – unrelated tasks
+\end{Verbatim}
+\end{asciiblock}
+
+Mnemonic (worst→best): \textbf{"Coin Logic Temp Proc Comm Seq Func"}.
+
+\needspace{144pt}
+
+\hypertarget{p2-06--33-coupling-between-modules--best-to-worst}{%
+\subsection{3.3 Coupling (between modules) --- best to worst}\label{p2-06--33-coupling-between-modules--best-to-worst}}
+
+\begin{asciiblock}{89pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ BEST  ▲  No coupling / Data coupling – pass only needed data
+       │  Stamp coupling   – pass whole data structure, use part
+       │  Control coupling – pass control flag
+       │  External coupling – share external format/device/protocol
+       │  Common coupling  – share global data
+ WORST ▼  Content coupling – one module modifies/uses internals of another
+\end{Verbatim}
+\end{asciiblock}
+
+\textbf{Goal: high cohesion, low coupling.}
+
+\needspace{210pt}
+
+\hypertarget{p2-06--34-architectural-styles}{%
+\subsection{3.4 Architectural Styles}\label{p2-06--34-architectural-styles}}
+
+Data-centred (repository/blackboard), data-flow (\textbf{pipe \& filter}, batch sequential), call-and-return (main/subprogram, remote procedure), object-oriented, layered, client-server, \textbf{MVC}, event-driven, microservices, SOA.
+
+\needspace{135pt}
+
+\hypertarget{p2-06--35-design-patterns-gof--23}{%
+\subsection{3.5 Design Patterns (GoF -- 23)}\label{p2-06--35-design-patterns-gof--23}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1373}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.8627}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Category}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Patterns}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Creational (5) & Singleton, Factory Method, Abstract Factory, Builder, Prototype \\
+Structural (7) & Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy \\
+Behavioural (11) & Observer, Strategy, Command, Iterator, State, Template Method, Visitor, Mediator, Memento, Chain of Responsibility, Interpreter \\
+\end{longtable}
+
+\endgroup
+
+\needdiagram{figures/p2-06-04}{170pt}
+
+\hypertarget{p2-06--36-ui-design}{%
+\subsection{3.6 UI Design}\label{p2-06--36-ui-design}}
+
+Golden rules (Mandel): place user in control, reduce memory load, make interface consistent. Usability heuristics (Nielsen).
+
+\needspace{140pt}
+
+\hypertarget{p2-06--4-software-quality}{%
+\section{4. Software Quality}\label{p2-06--4-software-quality}}
+
+\needspace{100pt}
+
+\hypertarget{p2-06--mccalls-quality-factors-1977--11-factors-in-3-perspectives}{%
+\subsection{McCall\textquotesingle s Quality Factors (1977) --- 11 factors in 3 perspectives}\label{p2-06--mccalls-quality-factors-1977--11-factors-in-3-perspectives}}
+
+\diagramhere{figures/p2-06-04}
+
+\textbf{ISO 9126} (6 characteristics): \textbf{Functionality, Reliability, Usability, Efficiency, Maintainability, Portability} (FRUEMP). Replaced by \textbf{ISO/IEC 25010} (8: + Security, Compatibility; "functional suitability", "performance efficiency").
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Quality control (QC)}: inspections, reviews, tests --- product-oriented, detect defects.
+\item
+  \textbf{Quality assurance (QA)}: auditing \& reporting --- process-oriented, prevent defects.
+\item
+  \textbf{SQA} activities: FTR (Formal Technical Reviews --- walkthrough, inspection: 3--5 people, ≤ 2 hours prep, ≤ 2 hours meeting), standards, audits.
+\item
+  \textbf{Six Sigma}: 3.4 defects per million opportunities; DMAIC (Define, Measure, Analyse, Improve, Control).
+\item
+  \textbf{CMMI levels}: 1 Initial → 2 Managed (Repeatable) → 3 Defined → 4 Quantitatively Managed → \textbf{5 Optimising}.
+\item
+  ISO 9001 --- QMS standard applicable to software.
+\end{itemize}
+
+\needspace{122pt}
+
+\hypertarget{p2-06--reliability}{%
+\subsection{Reliability}\label{p2-06--reliability}}
+
+\begin{asciiblock}{67pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+MTBF = MTTF + MTTR
+Availability = MTTF / (MTTF + MTTR) × 100%
+ROCOF = rate of occurrence of failure; POFOD = probability of failure on demand
+Reliability R(t) = e^(−λt)   (λ = failure rate)
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{100pt}
+
+\hypertarget{p2-06--risk-management}{%
+\subsection{Risk Management}\label{p2-06--risk-management}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Reactive} (fire-fighting) vs \textbf{Proactive}.
+\item
+  Risk categories: project, technical, business; known, predictable, unpredictable.
+\item
+  \textbf{Risk exposure RE = P × C} (probability × cost/impact).
+\item
+  Risk table → \textbf{RMMM}: Risk \textbf{Mitigation} (avoid), \textbf{Monitoring}, \textbf{Management} (contingency).
+\end{itemize}
+
+\needspace{176pt}
+
+\hypertarget{p2-06--5-estimation}{%
+\section{5. Estimation}\label{p2-06--5-estimation}}
+
+\needspace{136pt}
+
+\hypertarget{p2-06--51-loc--function-points}{%
+\subsection{5.1 LOC \& Function Points}\label{p2-06--51-loc--function-points}}
+
+\textbf{Function Point (Albrecht, 1979)}:
+
+\begin{asciiblock}{46pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+FP = UFP × VAF        VAF = 0.65 + 0.01 × ΣFᵢ     (14 GSCs, each 0–5 → ΣFᵢ ∈ [0, 70])
+VAF range: 0.65 to 1.35
+\end{Verbatim}
+\end{asciiblock}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2685}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0783}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0822}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0889}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Parameter}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Simple}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Average}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Complex}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+External Inputs (EI) & 3 & 4 & 6 \\
+External Outputs (EO) & 4 & 5 & 7 \\
+External Inquiries (EQ) & 3 & 4 & 6 \\
+Internal Logical Files (ILF) & 7 & 10 & 15 \\
+External Interface Files (EIF) & 5 & 7 & 10 \\
+\end{longtable}
+
+\endgroup
+
+\textbf{Worked}: EI = 10 (avg), EO = 8 (avg), EQ = 5 (avg), ILF = 4 (avg), EIF = 2 (avg); ΣFᵢ = 42.
+
+\begin{asciiblock}{57pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+UFP = 10×4 + 8×5 + 5×4 + 4×10 + 2×7 = 40 + 40 + 20 + 40 + 14 = 154
+VAF = 0.65 + 0.42 = 1.07
+FP  = 154 × 1.07 = 164.78
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{112pt}
+
+\hypertarget{p2-06--52-cocomo-boehm-1981}{%
+\subsection{5.2 COCOMO (Boehm, 1981)}\label{p2-06--52-cocomo-boehm-1981}}
+
+\begin{asciiblock}{57pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Basic COCOMO:  Effort E = a·(KLOC)^b  person-months
+               Time   D = c·(E)^d     months
+               Staff  = E / D
+\end{Verbatim}
+\end{asciiblock}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1356}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0457}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0564}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0457}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0564}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.3064}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Mode}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{a}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{b}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{c}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{d}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Description}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Organic} & 2.4 & 1.05 & 2.5 & 0.38 & Small team, familiar, \textless{} 50 KLOC \\
+\textbf{Semi-detached} & 3.0 & 1.12 & 2.5 & 0.35 & Medium, mixed experience \\
+\textbf{Embedded} & 3.6 & 1.20 & 2.5 & 0.32 & Tight constraints, hardware \\
+\end{longtable}
+
+\endgroup
+
+\textbf{Worked}: Organic, 32 KLOC.
+
+\begin{asciiblock}{57pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+E = 2.4 × 32^1.05 ≈ 2.4 × 38.06 ≈ 91 PM
+D = 2.5 × 91^0.38 ≈ 2.5 × 5.55 ≈ 13.9 months
+Staff ≈ 91 / 13.9 ≈ 6.5 persons
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Intermediate COCOMO}: E = a·KLOC\^{}b × \textbf{EAF} (product of \textbf{15 cost drivers} in 4 groups: product, hardware/computer, personnel, project). Coefficients a: 3.2, 3.0, 2.8.
+\item
+  \textbf{Detailed COCOMO}: phase-sensitive effort multipliers.
+\item
+  \textbf{COCOMO II}: Application composition (object points), Early design, Post-architecture models; scale factors.
+\item
+  \textbf{Putnam/SLIM} model: Rayleigh curve; L = Ck · K\^{}(1/3) · td\^{}(4/3).
+\item
+  \textbf{Brooks\textquotesingle{} law}: "Adding manpower to a late project makes it later." Communication paths among n people = n(n−1)/2.
+\end{itemize}
+
+\needspace{100pt}
+
+\hypertarget{p2-06--53-scheduling}{%
+\subsection{5.3 Scheduling}\label{p2-06--53-scheduling}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{WBS} (work breakdown structure), \textbf{Gantt / timeline charts}, \textbf{PERT/CPM} (critical path; see \protect\hyperlink{p2-01--75-pert-cpm}{Unit 1}).
+\item
+  \textbf{Earned Value Analysis}: BCWS (planned value), BCWP (earned value), ACWP (actual cost).
+
+  \begin{itemize}
+  \tightlist
+  \item
+    SPI = BCWP/BCWS; CPI = BCWP/ACWP; SV = BCWP − BCWS; CV = BCWP − ACWP. SPI \textless{} 1 → behind schedule.
+  \end{itemize}
+\item
+  40-20-40 rule: 40\% analysis \& design, 20\% coding, 40\% testing.
+\end{itemize}
+
+\needspace{129pt}
+
+\hypertarget{p2-06--6-software-testing}{%
+\section{6. Software Testing}\label{p2-06--6-software-testing}}
+
+\needspace{89pt}
+
+\hypertarget{p2-06--61-terminology}{%
+\subsection{6.1 Terminology}\label{p2-06--61-terminology}}
+
+\begin{asciiblock}{34pt}
+\begin{Verbatim}[fontsize=\fontsize{8.2}{10.0}\selectfont]
+Mistake/Error (human) ──► Fault/Defect/Bug (in code) ──► Failure (observed deviation at run time)
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Verification}: "Are we building the product right?" (static --- reviews, inspections).
+\item
+  \textbf{Validation}: "Are we building the right product?" (dynamic --- testing against user needs).
+\item
+  Testing shows the \textbf{presence} of bugs, not their absence (Dijkstra).
+\end{itemize}
+
+\needdiagram{figures/p2-06-05}{55pt}
+
+\hypertarget{p2-06--62-levels-of-testing}{%
+\subsection{6.2 Levels of Testing}\label{p2-06--62-levels-of-testing}}
+
+\diagramhere{figures/p2-06-05}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Stub} = dummy called module (top-down). \textbf{Driver} = dummy calling module (bottom-up).
+\item
+  \textbf{Regression testing}: re-run tests after changes. \textbf{Smoke testing}: build verification. \textbf{Sanity}: narrow check after fix.
+\item
+  \textbf{Alpha}: by customers at developer\textquotesingle s site (controlled). \textbf{Beta}: by end users at their site (uncontrolled).
+\item
+  Stress (beyond limits), load (expected load), volume (large data), performance, recovery, security testing.
+\end{itemize}
+
+\needspace{135pt}
+
+\hypertarget{p2-06--63-black-box-vs-white-box}{%
+\subsection{6.3 Black-box vs White-box}\label{p2-06--63-black-box-vs-white-box}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2978}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3226}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Black-box (functional, behavioural)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{White-box (structural, glass-box)}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Equivalence partitioning & Statement coverage \\
+\textbf{Boundary value analysis} & Branch/\allowbreak{}decision coverage \\
+Cause-effect graphing / decision tables & Condition, MC/DC coverage \\
+State transition testing & \textbf{Basis path testing} (cyclomatic complexity) \\
+Orthogonal array testing & Data-flow testing, loop testing \\
+Error guessing & Mutation testing \\
+\end{longtable}
+
+\endgroup
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Boundary value analysis} for range {[}1, 100{]}: test 0, 1, 2, 99, 100, 101 (robust) or 1, 2, 50, 99, 100 (normal: 4n + 1 for n variables).
+\item
+  \textbf{Equivalence classes} for {[}1, 100{]}: one valid (1--100), two invalid (\textless{} 1, \textgreater{} 100).
+\item
+  Coverage strength: Statement \textless{} Branch \textless{} Condition/Decision \textless{} MC/DC \textless{} Multiple condition \textless{} Path.
+\end{itemize}
+
+\needspace{122pt}
+
+\hypertarget{p2-06--64-cyclomatic-complexity-mccabe-1976}{%
+\subsection{6.4 Cyclomatic Complexity (McCabe, 1976)}\label{p2-06--64-cyclomatic-complexity-mccabe-1976}}
+
+\begin{asciiblock}{67pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+V(G) = E − N + 2P        (P = connected components, usually 1)
+V(G) = number of predicate (decision) nodes + 1
+V(G) = number of bounded regions + 1  (regions of planar flow graph incl. outer)
+     = number of linearly independent paths = minimum test cases for basis path testing
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{asciiblock}{142pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ Flow graph for: if (a) { x } else { y }; while (b) { z }
+      (1) if a
+      ╱    ╲
+    (2)x   (3)y
+      ╲    ╱
+      (4) while b ◄──┐
+        │   ╲        │
+        │   (5) z ───┘
+        ▼
+       (6) end
+ N = 6, E = 7  → V(G) = 7 − 6 + 2 = 3   (2 decisions + 1 = 3)
+\end{Verbatim}
+\end{asciiblock}
+
+V(G) ≤ 10 recommended.
+
+\needspace{100pt}
+
+\hypertarget{p2-06--7-software-configuration-management}{%
+\section{7. Software Configuration Management}\label{p2-06--7-software-configuration-management}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{SCM} activities: identification, version control, change control, configuration auditing, status reporting.
+\item
+  \textbf{Baseline}: formally reviewed \& agreed work product; changes only via formal change control (Change Control Board / Authority).
+\item
+  SCIs (Software Configuration Items). Tools: Git, SVN, CVS.
+\end{itemize}
+
+\needspace{135pt}
+
+\hypertarget{p2-06--8-maintenance--re-engineering}{%
+\section{8. Maintenance \& Re-engineering}\label{p2-06--8-maintenance--re-engineering}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1521}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1450}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3427}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Maintenance type}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Share (approx.)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Purpose}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Corrective & \textasciitilde20\% & Fix bugs \\
+\textbf{Adaptive} & \textasciitilde25\% & Adapt to new environment (OS, hardware) \\
+\textbf{Perfective} & \textasciitilde50\% (largest) & New features, performance \\
+Preventive & \textasciitilde5\% & Improve future maintainability (refactoring) \\
+\end{longtable}
+
+\endgroup
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Lehman\textquotesingle s laws} of software evolution (continuing change, increasing complexity\ldots).
+\item
+  \textbf{Re-engineering}: inventory analysis → document restructuring → \textbf{reverse engineering} → code restructuring → data restructuring → \textbf{forward engineering}.
+\item
+  \textbf{Reverse engineering}: extracting design/specification from code (abstraction level ↑). Forward engineering: design → code.
+\item
+  \textbf{Restructuring}: change form without changing functionality.
+\item
+  Software maintenance cost is typically \textbf{60--80\%} of total lifecycle cost.
+\end{itemize}
+
+\needspace{142pt}
+
+\hypertarget{p2-06--other-metrics}{%
+\subsection{Other Metrics}\label{p2-06--other-metrics}}
+
+\begin{asciiblock}{87pt}
+\begin{Verbatim}[fontsize=\fontsize{8.6}{10.4}\selectfont]
+Halstead:  n1 = distinct operators, n2 = distinct operands, N1, N2 = totals
+           Vocabulary n = n1 + n2 ; Length N = N1 + N2
+           Volume V = N log₂ n ; Difficulty D = (n1/2)(N2/n2) ; Effort E = D × V
+Defect density = defects / KLOC
+DRE (Defect Removal Efficiency) = E / (E + D)   E = errors before delivery, D = defects after
+CK (OO) metrics: WMC, DIT, NOC, CBO, RFC, LCOM
+\end{Verbatim}
+\end{asciiblock}
+
+\needdiagram{figures/p2-06-06}{95pt}
+
+\hypertarget{p2-06--9-deeper-dive--modelling-examples-test-design-estimation--reliability-models}{%
+\section{9. Deeper Dive --- Modelling Examples, Test Design, Estimation \& Reliability Models}\label{p2-06--9-deeper-dive--modelling-examples-test-design-estimation--reliability-models}}
+
+\needspace{100pt}
+
+\hypertarget{p2-06--91-level-1-dfd--library-system}{%
+\subsection{9.1 Level-1 DFD --- Library System}\label{p2-06--91-level-1-dfd--library-system}}
+
+\diagramhere{figures/p2-06-06}
+
+Rules: every process has at least one input and one output; data stores connect only through processes; external entities never connect directly to data stores.
+
+\needdiagram{figures/p2-06-07}{55pt}
+
+\hypertarget{p2-06--92-uml-class-diagram}{%
+\subsection{9.2 UML Class Diagram}\label{p2-06--92-uml-class-diagram}}
+
+\diagramhere{figures/p2-06-07}
+
+Visibility: \texttt{+} public, \texttt{-} private, \texttt{\#} protected, \texttt{\textasciitilde{}} package. Multiplicity: 1, 0..1, 0..\emph{, 1..}.
+
+\needdiagram{figures/p2-06-08}{55pt}
+
+\hypertarget{p2-06--93-uml-sequence-diagram--atm-withdrawal}{%
+\subsection{9.3 UML Sequence Diagram --- ATM Withdrawal}\label{p2-06--93-uml-sequence-diagram--atm-withdrawal}}
+
+\diagramhere{figures/p2-06-08}
+
+\needspace{170pt}
+
+\hypertarget{p2-06--94-black-box-test-design--worked}{%
+\subsection{9.4 Black-box Test Design --- Worked}\label{p2-06--94-black-box-test-design--worked}}
+
+Function: \texttt{eligible(age,\ grade)} where age ∈ {[}18, 60{]} and grade ∈ \{A, B, C\}.
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2340}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5241}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Technique}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Test values}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Equivalence classes (age) & valid 18--60 (e.g. 35); invalid \textless{} 18 (e.g. 10); invalid \textgreater{} 60 (e.g. 70) \\
+Equivalence classes (grade) & valid \{A, B, C\}; invalid (e.g. D) \\
+BVA (age, normal) & 18, 19, 39, 59, 60 \\
+Robust BVA (age) & 17, 18, 19, 39, 59, 60, 61 \\
+Worst-case BVA (2 variables) & 5² = 25 combinations; robust worst-case 7² = 49 \\
+\end{longtable}
+
+\endgroup
+
+\textbf{Decision table} (login):
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2046}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0426}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0426}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0426}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0426}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Conditions / Actions}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{R1}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{R2}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{R3}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{R4}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Valid user ID? & T & T & F & F \\
+Valid password? & T & F & T & F \\
+Grant access & ✔ & & & \\
+Show "wrong password" & & ✔ & & \\
+Show "unknown user" & & & ✔ & ✔ \\
+\end{longtable}
+
+\endgroup
+
+\needspace{157pt}
+
+\hypertarget{p2-06--95-intermediate-cocomo--worked}{%
+\subsection{9.5 Intermediate COCOMO --- Worked}\label{p2-06--95-intermediate-cocomo--worked}}
+
+Semi-detached project, 50 KLOC, EAF = 1.2 (product of the 15 cost-driver multipliers).
+
+\begin{asciiblock}{67pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Intermediate coefficients a: organic 3.2, semi-detached 3.0, embedded 2.8 (b as in basic)
+E = 3.0 × 50^1.12 × 1.2 ≈ 3.0 × 80 × 1.2 ≈ 288 person-months
+D = 2.5 × 288^0.35 ≈ 2.5 × 7.26 ≈ 18 months
+Average staff ≈ 288 / 18 = 16 persons
+\end{Verbatim}
+\end{asciiblock}
+
+Cost drivers include RELY (reliability), CPLX (complexity), ACAP (analyst capability), PCAP, TOOL, SCED (schedule constraint), etc.
+
+\needspace{135pt}
+
+\hypertarget{p2-06--96-software-reliability-models}{%
+\subsection{9.6 Software Reliability Models}\label{p2-06--96-software-reliability-models}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2108}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.6024}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Model}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Idea}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Jelinski--Moranda} (1972) & N initial faults; each fix reduces failure rate by a constant φ: λᵢ = φ(N − i + 1) \\
+\textbf{Musa basic execution time} & λ(μ) = λ₀ (1 − μ/ν₀): failure intensity falls linearly with failures experienced \\
+Musa--Okumoto logarithmic & Failure intensity decreases exponentially with failures experienced \\
+Goel--Okumoto (NHPP) & Expected failures m(t) = a(1 − e\^{}(−bt)) \\
+Littlewood--Verrall & Bayesian; failure rates random \\
+\end{longtable}
+
+\endgroup
+
+\textbf{Worked (Musa basic)}: λ₀ = 10 failures/CPU-hr, ν₀ = 100 total failures. After 50 failures: λ = 10(1 − 50/100) = \textbf{5 failures/CPU-hr}.
+
+\needspace{135pt}
+
+\hypertarget{p2-06--97-risk-table--example}{%
+\subsection{9.7 Risk Table --- Example}\label{p2-06--97-risk-table--example}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2191}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0952}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1184}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1723}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2449}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Risk}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Category}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Probability}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Impact (1--4)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Exposure (₹)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{RMMM response}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Key developer leaves & Project & 0.3 & 2 & 0.3 × 4 L = 1.2 L & Cross-training, documentation \\
+Requirements change late & Business & 0.6 & 2 & 0.6 × 2 L = 1.2 L & Agile iterations, change control \\
+New tool unreliable & Technical & 0.2 & 3 & 0.2 × 1 L = 0.2 L & Prototype tool early \\
+\end{longtable}
+
+\endgroup
+
+Risks are sorted by probability × impact; a \textbf{cut-off line} decides which get full RMMM plans.
+
+\needspace{135pt}
+
+\hypertarget{p2-06--98-cmmi-process-areas-by-level-examples}{%
+\subsection{9.8 CMMI Process Areas by Level (examples)}\label{p2-06--98-cmmi-process-areas-by-level-examples}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2005}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2733}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5262}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Level}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Focus}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Example process areas}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+2 Managed & Basic project management & Requirements management, project planning, configuration management, measurement \& analysis, QA \\
+3 Defined & Organisation-wide standard process & Requirements development, technical solution, verification, validation, risk management \\
+4 Quantitatively managed & Statistical control & Organisational process performance, quantitative project management \\
+5 Optimising & Continuous improvement & Causal analysis \& resolution, organisational performance management \\
+\end{longtable}
+
+\endgroup
+
+\needspace{135pt}
+
+\hypertarget{p2-06--previous-year-questions-pyq-pattern}{%
+\section{Previous Year Questions (PYQ pattern)}\label{p2-06--previous-year-questions-pyq-pattern}}
+
+\textbf{Process models}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Which model is most suitable when requirements are not clear? \textbf{Prototyping}
+\item
+  The spiral model was proposed by: \textbf{Barry Boehm}; its key feature: \textbf{risk analysis}
+\item
+  In the spiral model, the radial dimension represents: \textbf{cumulative cost}
+\item
+  RUP phases in order: \textbf{Inception, Elaboration, Construction, Transition}
+\item
+  Which is NOT an agile method? (a) XP (b) Scrum (c) Waterfall (d) DSDM --- \textbf{Ans: (c)}
+\item
+  Pair programming is a practice of: \textbf{Extreme Programming}
+\item
+  In Scrum, the time-boxed iteration is called: \textbf{Sprint}; daily meeting lasts: \textbf{15 minutes}
+\item
+  MoSCoW prioritisation is associated with: \textbf{DSDM}
+\item
+  V-model emphasises: \textbf{verification and validation at each phase}
+\end{enumerate}
+
+\textbf{Requirements \& design}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{9}
+\tightlist
+\item
+  A level-0 DFD is also called: \textbf{context diagram}
+\item
+  "The system shall respond within 2 seconds" is a: \textbf{non-functional requirement}
+\item
+  SRS should specify: \textbf{what the system should do, not how}
+\item
+  Best type of cohesion: \textbf{functional}; worst: \textbf{coincidental}
+\item
+  Best coupling: \textbf{data coupling}; worst: \textbf{content coupling}
+\item
+  Modules sharing global data exhibit: \textbf{common coupling}
+\item
+  Passing a flag to control another module\textquotesingle s logic: \textbf{control coupling}
+\item
+  Information hiding was proposed by: \textbf{David Parnas}
+\item
+  Which UML diagram shows the time-ordered interaction of objects? \textbf{Sequence diagram}
+\item
+  «include» vs «extend»: include is \textbf{mandatory}, extend is \textbf{optional/conditional}
+\item
+  Singleton pattern belongs to: \textbf{creational patterns}
+\item
+  Filled diamond in UML indicates: \textbf{composition}
+\end{enumerate}
+
+\textbf{Quality}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{21}
+\tightlist
+\item
+  Which is NOT a McCall product-operation factor? (a) correctness (b) reliability (c) portability (d) usability --- \textbf{Ans: (c)}
+\item
+  ISO 9126 quality characteristics count: \textbf{6}
+\item
+  CMMI level 5 is: \textbf{Optimising}
+\item
+  Availability with MTTF = 90 h and MTTR = 10 h: \textbf{90\%}
+\item
+  Risk exposure with probability 0.3 and cost ₹50,000: \textbf{₹15,000}
+\item
+  RMMM stands for: \textbf{Risk Mitigation, Monitoring and Management}
+\item
+  QA is \_\_\_\_-oriented while QC is \_\_\_\_-oriented: \textbf{process; product}
+\end{enumerate}
+
+\textbf{Estimation}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{28}
+\tightlist
+\item
+  Value adjustment factor range: \textbf{0.65 to 1.35}
+\item
+  Number of general system characteristics in FP: \textbf{14}
+\item
+  Basic COCOMO organic effort constants: \textbf{a = 2.4, b = 1.05}
+\item
+  Intermediate COCOMO uses how many cost drivers? \textbf{15}
+\item
+  "Adding manpower to a late project makes it later" --- \textbf{Brooks\textquotesingle{} law}
+\item
+  Number of communication paths among 6 team members: \textbf{15}
+\item
+  SPI = 0.8 indicates the project is: \textbf{behind schedule}
+\end{enumerate}
+
+\textbf{Testing}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{35}
+\tightlist
+\item
+  Cyclomatic complexity of a graph with 10 edges, 8 nodes: 10 − 8 + 2 = \textbf{4}
+\item
+  A program has 3 \texttt{if} and 1 \texttt{while}: V(G) = 4 + 1 = \textbf{5}
+\item
+  Boundary value testing is a: \textbf{black-box technique}
+\item
+  Basis path testing is: \textbf{white-box}
+\item
+  Testing at developer\textquotesingle s site by customer: \textbf{alpha testing}
+\item
+  Re-running tests after modification: \textbf{regression testing}
+\item
+  In top-down integration, dummy modules are: \textbf{stubs}
+\item
+  "Are we building the product right?" --- \textbf{Verification}
+\item
+  Mutation testing evaluates: \textbf{the quality of test cases}
+\item
+  Number of test cases in BVA (normal) for 2 variables: 4n + 1 = \textbf{9}
+\item
+  DRE when 90 errors found before release and 10 after: \textbf{0.9}
+\end{enumerate}
+
+\textbf{Maintenance / SCM}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{46}
+\tightlist
+\item
+  Maintenance to accommodate a new OS: \textbf{adaptive}
+\item
+  Largest share of maintenance effort: \textbf{perfective}
+\item
+  Extracting design from source code: \textbf{reverse engineering}
+\item
+  A formally reviewed work product serving as basis for further development: \textbf{baseline}
+\end{enumerate}
+
+\textbf{More practice questions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{50}
+\tightlist
+\item
+  In a DFD, a data store can connect directly to: \textbf{a process only}
+\item
+  Number of test cases in robust BVA for one variable: \textbf{7} (6n + 1 for n variables)
+\item
+  Worst-case BVA for 3 variables: 5³ = \textbf{125}
+\item
+  Intermediate COCOMO coefficient a for embedded mode: \textbf{2.8}
+\item
+  In UML, \texttt{\#} before an attribute means: \textbf{protected}
+\item
+  A hollow triangle arrowhead in a class diagram denotes: \textbf{generalisation (inheritance)}
+\item
+  In Musa\textquotesingle s basic model, failure intensity decreases: \textbf{linearly with the number of failures experienced}
+\item
+  Goel--Okumoto is an example of: \textbf{NHPP (non-homogeneous Poisson process) model}
+\item
+  Risk management process area is introduced at CMMI level: \textbf{3}
+\item
+  A decision table with 3 Boolean conditions has at most: \textbf{8 rules}
+\item
+  Which UML diagram best shows the order of messages between objects? \textbf{Sequence diagram}
+\end{enumerate}
+
+\begin{revbox}
+
+\begin{itemize}
+\tightlist
+\item
+  Unclear req → Prototype · Risk → Spiral · Changing req → Agile
+\item
+  Cohesion: Functional best, Coincidental worst · Coupling: Data best, Content worst
+\item
+  FP: VAF = 0.65 + 0.01ΣF (0.65--1.35), 14 GSCs · COCOMO organic 2.4/1.05/2.5/0.38
+\item
+  V(G) = E − N + 2 = decisions + 1 · BVA 4n+1
+\item
+  Alpha at dev site · Beta at customer site · Perfective maintenance largest
+\end{itemize}
+
+\end{revbox}

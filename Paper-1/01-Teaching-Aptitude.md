@@ -46,13 +46,13 @@ flowchart LR
 
 ```
                  ┌────────────────────────────────────────────┐
-  Level 3        │ REFLECTIVE level  — Hunt (1971)            │  Student-centred, problem solving,
+  Level 3        │ REFLECTIVE level — Hunt (1971)             │  Student-centred, problem solving,
   (highest)      │ "thoughtful" — critical, creative thinking │  highest insight
                  ├────────────────────────────────────────────┤
-  Level 2        │ UNDERSTANDING level — Morrison (1931)      │  Memory + insight; "Memory with
-                 │ Generalisation, principles                  │  understanding"; teacher-centred-ish
+  Level 2        │ UNDERSTANDING level — Morrison (1931)      │  Memory + insight; "memory with
+                 │ Generalisation, principles                 │  understanding"; teacher-centred
                  ├────────────────────────────────────────────┤
-  Level 1        │ MEMORY level — Herbart (Herbartian steps)  │  Rote learning, thoughtless
+  Level 1        │ MEMORY level — Herbart (Herbartian steps)  │  Rote learning, thoughtless,
   (lowest)       │ Recall, recognition                        │  teacher-dominated
                  └────────────────────────────────────────────┘
 ```
@@ -244,6 +244,87 @@ O (10), A+ (9), A (8), B+ (7), B (6), C (5), P (4), F (0), Ab.
 **Computer-based testing & innovations**: CAT (Computer Adaptive Testing — difficulty adapts to answers), open-book
 exams, online proctoring, e-portfolios, rubrics, peer assessment, grading instead of marks, question banks.
 
+## 7. Deeper Dive — Learning Theories, Micro-teaching & Teaching Models
+
+### 7.1 Learning Theories (asked in almost every cycle)
+
+```mermaid
+flowchart TB
+    L[Learning theories] --> B[Behaviourism<br/>learning = observable change in behaviour]
+    L --> C[Cognitivism<br/>learning = mental processing]
+    L --> K[Constructivism<br/>learner builds own knowledge]
+    L --> H[Humanism<br/>self-actualisation, learner's feelings]
+    B --> B1[Pavlov - classical conditioning]
+    B --> B2[Thorndike - trial and error, laws of learning]
+    B --> B3[Skinner - operant conditioning, reinforcement]
+    C --> C1[Kohler - insight learning]
+    C --> C2[Bruner - discovery learning, spiral curriculum]
+    C --> C3[Ausubel - meaningful reception, advance organisers]
+    K --> K1[Piaget - cognitive constructivism]
+    K --> K2[Vygotsky - social constructivism, ZPD]
+    H --> H1[Maslow - hierarchy of needs]
+    H --> H2[Carl Rogers - learner-centred, facilitator]
+```
+
+| Theorist | Key idea | Classroom implication |
+|----------|----------|-----------------------|
+| **Pavlov** | Classical conditioning: neutral stimulus + unconditioned stimulus → conditioned response (dog & bell) | Pleasant classroom associations reduce fear of a subject |
+| **Thorndike** | Connectionism; laws of **readiness, exercise, effect** | Practice, rewards, readiness before teaching |
+| **Skinner** | Operant conditioning; positive/negative reinforcement, punishment, shaping, schedules of reinforcement | Programmed instruction, immediate feedback |
+| **Kohler** | Insight learning (chimpanzee Sultan) — sudden "aha" grasp of relationships | Present whole problems |
+| **Bruner** | Discovery learning; modes: **enactive → iconic → symbolic**; spiral curriculum | Revisit topics with increasing depth |
+| **Ausubel** | Meaningful verbal learning; **advance organisers** | Start a lesson with an overview linking to prior knowledge |
+| **Bandura** | Social learning / observational learning (Bobo doll); modelling; self-efficacy | Teacher as role model |
+| **Gagné** | Conditions of learning; 8 types of learning; **9 events of instruction** | Structured lesson design |
+| **Maslow** | Physiological → safety → love/belonging → esteem → self-actualisation | Basic needs before academic growth |
+
+- **Negative reinforcement** = removing an unpleasant stimulus to *increase* behaviour (not punishment).
+- Gagné's 9 events: gain attention → inform objectives → recall prior learning → present content → provide guidance → elicit performance → give feedback → assess performance → enhance retention and transfer.
+
+### 7.2 Micro-teaching
+
+Developed at **Stanford University (1961–63) by Dwight Allen** and colleagues. A scaled-down teaching encounter: one skill, 5–10 students, 5–10 minutes.
+
+```mermaid
+flowchart LR
+    P[Plan] --> T[Teach<br/>6 min] --> F[Feedback<br/>6 min] --> R[Re-plan<br/>12 min] --> RT[Re-teach<br/>6 min] --> RF[Re-feedback<br/>6 min]
+    RF -.->|repeat until skill mastered| T
+```
+
+- Indian model (NCERT/Passi): total cycle **36 minutes**.
+- Skills: introducing a lesson, questioning (fluency, probing), explaining, illustrating with examples, **reinforcement**, stimulus variation, blackboard writing, closure, using A/V aids.
+- **Simulated teaching** = role play of teaching in a training situation; **team teaching** = two or more teachers plan and teach together.
+
+### 7.3 Models of Teaching
+
+| Model | Proponent | Key steps / idea |
+|-------|-----------|------------------|
+| **Basic Teaching Model** | Robert Glaser (1962) | Instructional objectives → Entering behaviour → Instructional procedures → Performance assessment (with feedback loop) |
+| Concept Attainment | Jerome Bruner | Examples & non-examples → identify concept attributes |
+| Inductive Thinking | Hilda Taba | Concept formation → interpretation of data → application |
+| Advance Organiser | David Ausubel | Organiser presented before content |
+| Inquiry Training | Richard Suchman | Puzzling event → students ask yes/no questions → form theories |
+| Jurisprudential | Oliver & Shaver | Debating public issues |
+| Synectics | William Gordon | Creativity through metaphors & analogies |
+
+Families of teaching models (**Joyce & Weil**): Information processing, Social interaction, Personal, Behavioural systems.
+
+```
+Glaser's Basic Teaching Model
+ ┌──────────────┐   ┌──────────────┐   ┌──────────────┐   ┌──────────────┐
+ │ Instructional├──►│  Entering    ├──►│ Instructional├──►│ Performance  │
+ │ objectives   │   │  behaviour   │   │ procedures   │   │ assessment   │
+ └──────▲───────┘   └──────▲───────┘   └──────▲───────┘   └──────┬───────┘
+        └──────────────────┴──────────────────┴── feedback ───────┘
+```
+
+### 7.4 Questioning & Classroom Management
+- **Convergent** questions (one correct answer, lower order) vs **divergent** (many answers, creativity).
+- **Wait time** (Mary Budd Rowe): waiting 3–5 seconds after a question improves answer quality.
+- **Kounin**: "withitness" (teacher aware of everything), overlapping, momentum, smoothness.
+- Teacher leadership styles (Lewin): **autocratic, democratic, laissez-faire** — democratic is best for learning climate.
+- **Hidden curriculum**: values and norms learnt implicitly from school culture.
+
 ---
 
 ## Previous Year Questions (PYQ pattern)
@@ -254,28 +335,33 @@ exams, online proctoring, e-portfolios, rubrics, peer assessment, grading instea
 3. Arrange the levels from lowest to highest: **Memory → Understanding → Reflective**.
 
 **Bloom's taxonomy**
+
 4. In revised Bloom's taxonomy the highest cognitive level is: (a) Evaluating (b) Creating (c) Analysing (d) Synthesis — **Ans: (b)**
 5. "Characterisation by a value" belongs to which domain? — **Ans: Affective (Krathwohl)**
 6. Match: Remembering–recall; Applying–use; Analysing–differentiate; Evaluating–judge. (Standard match question.)
 
 **Learner characteristics**
+
 7. Andragogy refers to: (a) teaching children (b) teaching adults (c) self-learning (d) group learning — **Ans: (b)**
 8. ZPD is a concept given by: **Vygotsky**
 9. Which is NOT a characteristic of adult learners? (a) self-directed (b) experience-based (c) externally driven (d) problem-centred — **Ans: (c)**
 
 **Methods**
+
 10. Programmed instruction is based on the theory of: (a) Classical conditioning (b) Operant conditioning (c) Insight (d) Constructivism — **Ans: (b) Skinner**
 11. "Learning by doing" is the core of: **Project method (Kilpatrick)**
 12. Which is a learner-centred method? (a) Lecture (b) Demonstration (c) Problem solving (d) Team teaching — **Ans: (c)**
 13. In a flipped classroom, students first encounter new content: **at home (videos/readings)**
 
 **Online initiatives**
+
 14. SWAYAM PRABHA provides: (a) MOOCs (b) 24×7 DTH educational channels (c) Digital library (d) Thesis repository — **Ans: (b)**
 15. How many quadrants does a SWAYAM course have? — **Ans: 4**
 16. Shodhganga is maintained by: **INFLIBNET (Gandhinagar)**
 17. The national coordinator for engineering courses on SWAYAM: **NPTEL**
 
 **Evaluation**
+
 18. Evaluation that takes place during the teaching-learning process is: **Formative**
 19. A test that measures what it intends to measure is: **Valid**
 20. Consistency of test scores refers to: **Reliability**
@@ -284,12 +370,34 @@ exams, online proctoring, e-portfolios, rubrics, peer assessment, grading instea
 23. In CBCS, the grade point for "O" (Outstanding) is: **10**
 
 **Teaching aids**
+
 24. In Edgar Dale's Cone, the most concrete experience is: **Direct purposeful experience**
 25. Which is a non-projected aid? (a) LCD (b) OHP (c) Blackboard (d) Slide — **Ans: (c)**
 
 **Statement-based (common format)**
+
 26. Statement I: Effective teaching is learner-centred. Statement II: The teacher's role is only to transmit content.
     — **I true, II false**
+
+**More practice questions**
+
+27. Learning by insight was demonstrated by: **Wolfgang Kohler**
+28. "Law of effect" is associated with: **E.L. Thorndike**
+29. Advance organisers were proposed by: **David Ausubel**
+30. Bruner's three modes of representation in order: **Enactive, Iconic, Symbolic**
+31. Removing an unpleasant stimulus to increase a desired behaviour is: **negative reinforcement**
+32. Micro-teaching was developed at: **Stanford University**
+33. Duration of one micro-teaching cycle in the Indian model: **36 minutes**
+34. The basic teaching model was given by: **Robert Glaser**
+35. The first component of Glaser's model is: **instructional objectives**
+36. Concept attainment model is associated with: **Jerome Bruner**
+37. A question with several acceptable answers is: **divergent**
+38. Observational (social) learning theory was given by: **Albert Bandura**
+39. In Maslow's hierarchy, the highest need is: **self-actualisation**
+40. Which leadership style creates the most positive classroom climate? **Democratic**
+41. Statement I: Formative evaluation is diagnostic in nature. Statement II: Summative evaluation is used for certification. — **Both true**
+42. Match: Kilpatrick–Project method; Skinner–Programmed learning; Armstrong–Heuristic; Parkhurst–Dalton plan.
+43. Which is NOT a characteristic of effective teaching? (a) learner involvement (b) feedback (c) rote memorisation (d) use of examples — **Ans: (c)**
 
 ## Quick Revision Box
 - Memory–Herbart · Understanding–Morrison · Reflective–Hunt

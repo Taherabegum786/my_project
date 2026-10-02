@@ -1,0 +1,1200 @@
+\unitchapter{Paper 2 · Unit 10}{Artificial Intelligence}{p2-10}
+
+\textbf{Expected questions: 8--10 · Target: 8+ · Type: search traces, alpha-beta, fuzzy operations, perceptron, concepts (Rich \& Knight, Russell \& Norvig)}
+
+\begin{sylbox}
+
+\begin{itemize}
+\tightlist
+\item[$\square$]
+  Approaches to AI: Turing test, rational agents, state-space representation, heuristic search, game playing, minimax, alpha-beta pruning
+\item[$\square$]
+  Knowledge representation: logic, semantic networks, frames, rules, scripts, conceptual dependency, ontologies, expert systems, uncertainty
+\item[$\square$]
+  Planning: components, linear \& non-linear planning, goal stack, hierarchical planning, STRIPS, partial-order planning
+\item[$\square$]
+  NLP: grammars, parsing techniques, semantic analysis, pragmatics
+\item[$\square$]
+  Multi-agent systems: agents vs objects vs expert systems, MAS structure, semantic web, agent communication, ontologies, tools
+\item[$\square$]
+  Fuzzy sets: membership functions, fuzzification/defuzzification, operations, linguistic variables, fuzzy relations, fuzzy inference \& control
+\item[$\square$]
+  Genetic algorithms: encoding, operators, fitness function, GA cycle
+\item[$\square$]
+  Neural networks: supervised, unsupervised, reinforcement learning; perceptron, MLP, SOM, Hopfield
+\end{itemize}
+
+\end{sylbox}
+
+\needspace{135pt}
+
+\hypertarget{p2-10--1-approaches-to-ai}{%
+\section{1. Approaches to AI}\label{p2-10--1-approaches-to-ai}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0791}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4680}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4330}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Human-like}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Rational}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Thinking} & Cognitive modelling (GPS --- Newell \& Simon) & Laws of thought (logic) \\
+\textbf{Acting} & \textbf{Turing test} (1950, "Computing Machinery and Intelligence") & \textbf{Rational agent} (Russell \& Norvig --- the modern approach) \\
+\end{longtable}
+
+\endgroup
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Turing test}: interrogator communicates via text with a human and a machine; machine passes if indistinguishable. Needed capabilities: NLP, knowledge representation, automated reasoning, machine learning (+ vision \& robotics for "total Turing test").
+\item
+  \textbf{Chinese Room} (John Searle): argues passing the test ≠ understanding (strong vs weak AI).
+\item
+  Term "AI" coined by \textbf{John McCarthy} at \textbf{Dartmouth Conference (1956)}.
+\end{itemize}
+
+\needdiagram{figures/p2-10-00}{55pt}
+
+\hypertarget{p2-10--11-agents}{%
+\subsection{1.1 Agents}\label{p2-10--11-agents}}
+
+\diagramhere{figures/p2-10-00}
+
+\textbf{PEAS} description: Performance measure, Environment, Actuators, Sensors.
+(Automated taxi: P = safety, speed, legality; E = roads, traffic; A = steering, brake; S = cameras, GPS, sonar.)
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1472}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4943}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Agent type}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Behaviour}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Simple reflex & condition--action rules on current percept only \\
+Model-based reflex & keeps internal state of the world \\
+Goal-based & chooses actions to reach goals (search/\allowbreak{}planning) \\
+Utility-based & maximises expected utility \\
+Learning agent & performance element + learning element + critic + problem generator \\
+\end{longtable}
+
+\endgroup
+
+Environment properties: fully/partially observable, deterministic/stochastic, episodic/sequential, static/dynamic, discrete/continuous, single/multi-agent, known/unknown.
+(Chess with clock: fully observable, strategic, sequential, semi-dynamic, discrete, multi-agent.)
+
+\needspace{136pt}
+
+\hypertarget{p2-10--2-state-space-search}{%
+\section{2. State Space Search}\label{p2-10--2-state-space-search}}
+
+Problem = initial state, actions, transition model, \textbf{goal test}, path cost.
+Examples: 8-puzzle (9!/2 = 181,440 reachable states), water jug, missionaries \& cannibals, 8-queens, Tower of Hanoi.
+
+\begin{asciiblock}{46pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ Water jug (4 L & 3 L, get 2 L in 4 L jug)
+ (0,0) → (0,3) → (3,0) → (3,3) → (4,2) → (0,2) → (2,0)   ✔
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{170pt}
+
+\hypertarget{p2-10--21-uninformed-search}{%
+\subsection{2.1 Uninformed Search}\label{p2-10--21-uninformed-search}}
+
+b = branching factor, d = depth of shallowest goal, m = max depth, l = depth limit, C* = optimal cost.
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2593}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1634}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1351}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1680}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1057}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Strategy}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Complete}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Optimal}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Time}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Space}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{BFS} & Yes (finite b) & Yes (unit cost) & O(b\^{}d) & \textbf{O(b\^{}d)} \\
+Uniform-cost & Yes & \textbf{Yes} & O(b\^{}(1+⌊C*/\allowbreak{}ε⌋)) & same \\
+\textbf{DFS} & No (infinite paths) & No & O(b\^{}m) & \textbf{O(bm)} \\
+Depth-limited & No & No & O(b\^{}l) & O(bl) \\
+\textbf{Iterative deepening (IDDFS)} & Yes & Yes (unit cost) & O(b\^{}d) & \textbf{O(bd)} \\
+Bidirectional & Yes & Yes & O(b\^{}(d/2)) & O(b\^{}(d/2)) \\
+\end{longtable}
+
+\endgroup
+
+IDDFS combines BFS\textquotesingle s completeness/optimality with DFS\textquotesingle s memory --- preferred uninformed method for large spaces.
+
+\needspace{144pt}
+
+\hypertarget{p2-10--22-heuristic-informed-search}{%
+\subsection{2.2 Heuristic (Informed) Search}\label{p2-10--22-heuristic-informed-search}}
+
+\begin{asciiblock}{89pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Greedy best-first:  f(n) = h(n)                 — fast, not optimal, not complete
+A*:                 f(n) = g(n) + h(n)          — optimal if h is ADMISSIBLE (tree search)
+                                                  or CONSISTENT (graph search)
+Admissible:   h(n) ≤ h*(n)  (never overestimates)
+Consistent:   h(n) ≤ c(n, n') + h(n')    (consistent ⇒ admissible)
+Dominance:    h₂ ≥ h₁ (both admissible) ⇒ h₂ better (expands fewer nodes)
+\end{Verbatim}
+\end{asciiblock}
+
+8-puzzle heuristics: h₁ = misplaced tiles, h₂ = \textbf{Manhattan distance} (h₂ dominates h₁).
+
+\textbf{A* worked} --- h(S)=7, h(A)=6, h(B)=2, h(C)=1, h(G)=0 (all admissible)
+
+\diagram{figures/p2-10-01}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0537}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1266}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5136}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Step}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Expand (g, f)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Open list after expansion (g, f = g + h)}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & S (0, 7) & A (1, 7), B (4, 6) \\
+2 & B (4, 6) & A (1, 7), C (6, 7) \\
+3 & A (1, 7) & \textbf{B (3, 5)} --- cheaper path found, B re-opened; C (6, 7); G (13, 13) \\
+4 & B (3, 5) & \textbf{C (5, 6)}; G (13, 13) \\
+5 & C (5, 6) & \textbf{G (8, 8)} \\
+6 & G (8, 8) & Goal reached: \textbf{S → A → B → C → G, cost 8} (optimal) \\
+\end{longtable}
+
+\endgroup
+
+Note: h here is admissible but \textbf{not consistent} (h(A) = 6 \textgreater{} c(A,B) + h(B) = 4), which is why B had to be re-opened.
+With a consistent heuristic, a node is never re-expanded.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{AO*} --- for AND-OR graphs (problem decomposition).
+\item
+  \textbf{IDA*} --- iterative deepening with f-cost limits (memory O(bd)). \textbf{SMA*} --- memory bounded.
+\item
+  \textbf{Local search}: \textbf{Hill climbing} (steepest ascent) --- problems: \textbf{local maxima, plateaus, ridges}; fixes: random restart, sideways moves. \textbf{Simulated annealing} --- accepts worse moves with probability e\^{}(ΔE/T), T decreases. \textbf{Local beam search}. \textbf{Genetic algorithms} (§8).
+\item
+  \textbf{Constraint satisfaction (CSP)}: variables, domains, constraints; backtracking + MRV (minimum remaining values), degree heuristic, LCV (least constraining value), forward checking, \textbf{arc consistency (AC-3)}.
+\item
+  \textbf{Means--ends analysis} (GPS): reduce the difference between current and goal state.
+\end{itemize}
+
+\needspace{315pt}
+
+\hypertarget{p2-10--3-game-playing}{%
+\section{3. Game Playing}\label{p2-10--3-game-playing}}
+
+\needspace{275pt}
+
+\hypertarget{p2-10--31-minimax}{%
+\subsection{3.1 Minimax}\label{p2-10--31-minimax}}
+
+MAX picks maximum, MIN picks minimum child value; complete \& optimal against an optimal opponent. Time O(b\^{}m), space O(bm).
+
+\needspace{200pt}
+
+\hypertarget{p2-10--32-alphabeta-pruning}{%
+\subsection{3.2 Alpha--Beta Pruning}\label{p2-10--32-alphabeta-pruning}}
+
+α = best value MAX can guarantee so far (lower bound); β = best value MIN can guarantee (upper bound). \textbf{Prune when α ≥ β.}
+
+\begin{asciiblock}{110pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+                         MAX                    A = 3
+                    ┌─────┴─────┬───────────┐
+                   MIN         MIN          MIN
+                   B=3         C≤2          D=2
+                 ┌─┼─┐       ┌─┼─┐        ┌─┼─┐
+                 3 12 8      2  ✂  ✂      14 5 2
+                                (pruned: once C sees 2 < α=3, MAX will never choose C)
+ Minimax value at root = 3 ; 2 leaves pruned
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  Pruning does \textbf{not} change the final result.
+\item
+  With perfect move ordering: time \textbf{O(b\^{}(m/2))} (effectively doubles the searchable depth); random ordering ≈ O(b\^{}(3m/4)).
+\item
+  Stochastic games: \textbf{Expectiminimax} (chance nodes). Imperfect real-time decisions: cutoff test + evaluation function, quiescence search, horizon effect.
+\end{itemize}
+
+\needspace{140pt}
+
+\hypertarget{p2-10--4-knowledge-representation}{%
+\section{4. Knowledge Representation}\label{p2-10--4-knowledge-representation}}
+
+\needspace{100pt}
+
+\hypertarget{p2-10--41-logic}{%
+\subsection{4.1 Logic}\label{p2-10--41-logic}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Propositional logic}; \textbf{First-order predicate logic (FOPL)} --- see \protect\hyperlink{p2-01--1-mathematical-logic}{Unit 1}.
+\item
+  Inference: \textbf{resolution} (refutation --- negate goal, convert to \textbf{CNF/clausal form}, derive empty clause), \textbf{forward chaining} (data-driven; production systems, OPS5), \textbf{backward chaining} (goal-driven; Prolog, MYCIN).
+\item
+  CNF conversion steps: eliminate ↔, → ; move ¬ inward; standardise variables; \textbf{Skolemise} (remove ∃ using Skolem constants/functions); drop ∀; distribute ∨ over ∧.
+\item
+  \textbf{Unification}: find substitution making literals identical (most general unifier, MGU); occurs check.
+\item
+  Horn clause: at most one positive literal --- basis of Prolog.
+\item
+  Monotonic vs \textbf{non-monotonic} reasoning (default logic, closed-world assumption, circumscription, truth-maintenance systems).
+\end{itemize}
+
+\needdiagram{figures/p2-10-02}{55pt}
+
+\hypertarget{p2-10--42-structured-representations}{%
+\subsection{4.2 Structured Representations}\label{p2-10--42-structured-representations}}
+
+\diagramhere{figures/p2-10-02}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Semantic network} (Quillian): nodes = concepts, arcs = relations (is-a, has-a, instance); inheritance.
+\item
+  \textbf{Frames} (Minsky, 1975): slots \& fillers, default values, procedural attachments (if-needed, if-added demons).
+\item
+  \textbf{Scripts} (Schank \& Abelson): stereotyped event sequences --- e.g. restaurant script: entry conditions, roles, props, scenes (entering, ordering, eating, exiting), results.
+\item
+  \textbf{Conceptual Dependency} (Roger Schank): language-independent primitives --- \textbf{ATRANS} (transfer possession: give), \textbf{PTRANS} (physical transfer: go), \textbf{MTRANS} (mental info: tell), \textbf{MBUILD} (build info: decide), \textbf{PROPEL}, \textbf{MOVE}, \textbf{GRASP}, \textbf{INGEST} (eat), \textbf{EXPEL}, \textbf{SPEAK}, \textbf{ATTEND} (11 primitive acts).
+\item
+  \textbf{Production rules}: IF condition THEN action; conflict resolution (refractoriness, recency, specificity).
+\item
+  \textbf{Ontologies}: formal specification of a shared conceptualisation (Gruber); OWL, RDF; upper ontologies.
+\end{itemize}
+
+\needdiagram{figures/p2-10-03}{55pt}
+
+\hypertarget{p2-10--43-expert-systems}{%
+\subsection{4.3 Expert Systems}\label{p2-10--43-expert-systems}}
+
+\diagramhere{figures/p2-10-03}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2486}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4094}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Expert system}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Domain}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{DENDRAL} (first) & Chemical structure (mass spectrometry) \\
+\textbf{MYCIN} & Blood infections --- backward chaining, \textbf{certainty factors} \\
+EMYCIN & Shell from MYCIN \\
+PROSPECTOR & Mineral exploration \\
+XCON / R1 & DEC computer configuration --- forward chaining \\
+INTERNIST / CADUCEUS & Internal medicine \\
+\end{longtable}
+
+\endgroup
+
+\needspace{133pt}
+
+\hypertarget{p2-10--44-uncertainty}{%
+\subsection{4.4 Uncertainty}\label{p2-10--44-uncertainty}}
+
+\begin{asciiblock}{78pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Bayes:   P(H|E) = P(E|H)·P(H) / P(E)
+Certainty factor (MYCIN): CF = MB − MD ∈ [−1, 1]
+  combining two positive CFs: CF = CF1 + CF2(1 − CF1)
+Dempster–Shafer: belief Bel(A) ≤ plausibility Pl(A) ; mass function m over subsets
+Bayesian network: DAG + conditional probability tables; P(x₁…xₙ) = Π P(xᵢ | parents(xᵢ))
+\end{Verbatim}
+\end{asciiblock}
+
+Other: fuzzy logic (vagueness --- §7), Markov models, HMMs.
+
+\needspace{135pt}
+
+\hypertarget{p2-10--5-planning}{%
+\section{5. Planning}\label{p2-10--5-planning}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4223}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5777}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Concept}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Meaning}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{STRIPS} (Fikes \& Nilsson, 1971) & Operators with \textbf{preconditions, add list, delete list}; closed-world assumption \\
+Linear planning (goal stack) & Solve goals one at a time using a stack --- can fail on interacting goals (\textbf{Sussman anomaly}) \\
+Non-linear planning & Goals interleaved; constraint posting \\
+\textbf{Partial-order planning (POP)} & Least-commitment; causal links, ordering constraints; resolves \textbf{threats} by promotion/\allowbreak{}demotion \\
+\textbf{Hierarchical planning (HTN)} & Abstract actions decomposed into sub-tasks (ABSTRIPS) \\
+Graphplan & Planning graph with mutex links \\
+Forward (progression) vs backward (regression) state-space planning & \\
+\end{longtable}
+
+\endgroup
+
+\begin{asciiblock}{121pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+STRIPS operator (Blocks world)
+ PICKUP(x)
+   PRE:  ONTABLE(x) ∧ CLEAR(x) ∧ HANDEMPTY
+   ADD:  HOLDING(x)
+   DEL:  ONTABLE(x), CLEAR(x), HANDEMPTY
+ STACK(x, y)
+   PRE:  HOLDING(x) ∧ CLEAR(y)
+   ADD:  ON(x,y), CLEAR(x), HANDEMPTY
+   DEL:  HOLDING(x), CLEAR(y)
+\end{Verbatim}
+\end{asciiblock}
+
+\textbf{Sussman anomaly}: initial C on A, A and B on table; goal ON(A,B) ∧ ON(B,C) --- goal-stack (linear) planning cannot solve it without undoing a subgoal.
+
+\needdiagram{figures/p2-10-04}{55pt}
+
+\hypertarget{p2-10--6-natural-language-processing}{%
+\section{6. Natural Language Processing}\label{p2-10--6-natural-language-processing}}
+
+\diagramhere{figures/p2-10-04}
+
+\begin{itemize}
+\tightlist
+\item
+  Grammars: CFG, \textbf{Transformational grammar} (Chomsky), \textbf{ATN (Augmented Transition Network} --- Woods), Case grammar (Fillmore), DCG, unification grammars, Systemic grammar.
+\item
+  Parsing: top-down, bottom-up, \textbf{chart parsing} (Earley --- O(n³)), CYK, deterministic parsing.
+\item
+  Ambiguity: lexical ("bank"), syntactic/structural ("I saw a man with a telescope"), semantic, anaphoric/referential ("he"), pragmatic.
+\item
+  Semantic analysis: lexical semantics, word sense disambiguation, semantic grammar, case roles.
+\item
+  \textbf{Pragmatics}: speech acts (Austin, Searle) --- what the speaker intends; \textbf{discourse}: anaphora resolution.
+\item
+  Modern NLP: n-grams, tokenisation, stemming (Porter) vs lemmatisation, POS tagging (HMM), NER, TF-IDF, word embeddings (word2vec), transformers/LLMs.
+\item
+  Early systems: \textbf{ELIZA} (Weizenbaum, pattern matching therapist), SHRDLU (Winograd, blocks world), LUNAR, PARRY.
+\end{itemize}
+
+\needspace{135pt}
+
+\hypertarget{p2-10--7-multi-agent-systems}{%
+\section{7. Multi-Agent Systems}\label{p2-10--7-multi-agent-systems}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1025}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2070}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2350}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1495}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Object}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Agent}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Expert system}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Autonomy & Methods invoked by others & Decides itself whether to act & Advises user \\
+Behaviour & Passive & Proactive, reactive, social & Passive reasoning \\
+Interaction & Method calls & Communication languages & User interface \\
+\end{longtable}
+
+\endgroup
+
+\begin{itemize}
+\tightlist
+\item
+  Agent properties: \textbf{autonomy, reactivity, pro-activeness, social ability} (Wooldridge \& Jennings); BDI architecture (\textbf{Beliefs, Desires, Intentions}).
+\item
+  MAS structure: agents + environment + interactions (cooperation, coordination, negotiation --- contract net protocol, auctions).
+\item
+  \textbf{Agent communication languages}: \textbf{KQML} (performatives: ask, tell, achieve\ldots), \textbf{FIPA-ACL}; content language \textbf{KIF}.
+\item
+  Knowledge sharing via \textbf{ontologies}. \textbf{Semantic web} (Tim Berners-Lee): RDF (triples subject--predicate--object), RDFS, \textbf{OWL}, SPARQL; layered cake.
+\item
+  Tools: \textbf{JADE} (Java, FIPA-compliant), JACK, Jason (AgentSpeak), Zeus, Aglets, NetLogo.
+\end{itemize}
+
+\needspace{179pt}
+
+\hypertarget{p2-10--8-fuzzy-sets--logic-zadeh-1965}{%
+\section{8. Fuzzy Sets \& Logic (Zadeh, 1965)}\label{p2-10--8-fuzzy-sets--logic-zadeh-1965}}
+
+Membership μ\_A(x) ∈ {[}0, 1{]} (vs crisp \{0, 1\}).
+
+\begin{asciiblock}{89pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ μ
+ 1 ┤      ╱‾‾‾‾╲              triangular(a,b,c): peak at b
+   │     ╱      ╲             trapezoidal(a,b,c,d): flat top b..c
+   │    ╱        ╲            Gaussian: e^(−(x−c)²/2σ²)
+ 0 ┼───┴──────────┴───────
+       a   b    c   d         Core: μ = 1 ; Support: μ > 0 ; Crossover: μ = 0.5
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{144pt}
+
+\hypertarget{p2-10--operations-standard-zadeh}{%
+\subsection{Operations (standard Zadeh)}\label{p2-10--operations-standard-zadeh}}
+
+\begin{asciiblock}{89pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Union          μ_{A∪B}(x) = max(μA, μB)
+Intersection   μ_{A∩B}(x) = min(μA, μB)
+Complement     μ_{A'}(x)  = 1 − μA(x)
+Algebraic sum  μA + μB − μA·μB ; Algebraic product μA·μB
+Bounded sum    min(1, μA + μB) ; Bounded difference max(0, μA − μB)
+Concentration (very)   μ²     Dilation (somewhat) √μ
+\end{Verbatim}
+\end{asciiblock}
+
+\textbf{Laws that FAIL in fuzzy sets}: \textbf{law of excluded middle} (A ∪ A\textquotesingle{} ≠ U) and \textbf{law of contradiction} (A ∩ A\textquotesingle{} ≠ ∅). De Morgan, associativity, distributivity still hold.
+
+\textbf{Worked}: A = \{0.2/x₁, 0.7/x₂, 1/x₃\}, B = \{0.5/x₁, 0.3/x₂, 0.8/x₃\}
+
+\begin{asciiblock}{57pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+A ∪ B = {0.5, 0.7, 1}      A ∩ B = {0.2, 0.3, 0.8}     A' = {0.8, 0.3, 0}
+A ∩ A' = {0.2, 0.3, 0} ≠ ∅
+α-cut A₀.₅ = {x₂, x₃}       Height(A) = 1 (normal fuzzy set)
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Fuzzy relations}: max--min composition: (R∘S)(x, z) = max\_y min(R(x,y), S(y,z)). Max-product composition.
+\item
+  \textbf{Linguistic variables}: e.g. Temperature ∈ \{cold, warm, hot\}; hedges: very, somewhat.
+\item
+  \textbf{Fuzzy inference system}:
+\end{itemize}
+
+\diagram{figures/p2-10-05}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Mamdani} (fuzzy output sets, centroid defuzzification --- intuitive) vs \textbf{Sugeno / TSK} (output = linear function/constant, weighted average --- efficient).
+\item
+  Centroid: z* = ∫μ(z)·z dz / ∫μ(z) dz. Weighted average: Σ μᵢ zᵢ / Σ μᵢ.
+\item
+  Applications: washing machines, ABS brakes, air-conditioners, cameras (fuzzy control).
+\end{itemize}
+
+\needdiagram{figures/p2-10-06}{55pt}
+
+\hypertarget{p2-10--9-genetic-algorithms-john-holland-1975}{%
+\section{9. Genetic Algorithms (John Holland, 1975)}\label{p2-10--9-genetic-algorithms-john-holland-1975}}
+
+\diagramhere{figures/p2-10-06}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Encoding}: binary, permutation (TSP), value/real, tree (genetic programming).
+\item
+  \textbf{Fitness function} guides selection. Roulette wheel probability pᵢ = fᵢ / Σf.
+\item
+  \textbf{Crossover} (exploitation of good genes) with probability \textasciitilde0.6--0.9; \textbf{mutation} (exploration, maintains diversity) \textasciitilde0.001--0.01.
+\item
+  Single-point crossover: 1011\textbar010 × 0110\textbar111 → 1011111, 0110010.
+\item
+  \textbf{Schema theorem} (Holland): short, low-order, above-average schemata grow exponentially (building block hypothesis). Order o(H) = fixed positions; defining length δ(H) = distance between first \& last fixed positions. Number of schemata in a string of length l: 3ˡ.
+\item
+  Premature convergence; elitism keeps the best individuals.
+\end{itemize}
+
+\needspace{175pt}
+
+\hypertarget{p2-10--10-artificial-neural-networks}{%
+\section{10. Artificial Neural Networks}\label{p2-10--10-artificial-neural-networks}}
+
+\needspace{135pt}
+
+\hypertarget{p2-10--101-learning-paradigms}{%
+\subsection{10.1 Learning Paradigms}\label{p2-10--101-learning-paradigms}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1209}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2942}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5830}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Type}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Data}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Examples}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Supervised} & Labelled input--output pairs & Perceptron, back-propagation MLP, SVM, decision trees \\
+\textbf{Unsupervised} & Unlabelled & \textbf{SOM (Kohonen)}, k-means, Hebbian, competitive learning, ART \\
+\textbf{Reinforcement} & Rewards / penalties from environment & Q-learning, SARSA, TD learning; MDP (states, actions, rewards, policy) \\
+\end{longtable}
+
+\endgroup
+
+Q-learning: Q(s,a) ← Q(s,a) + α{[}r + γ max\_a′ Q(s′,a′) − Q(s,a){]}.
+
+\needspace{122pt}
+
+\hypertarget{p2-10--102-perceptron-rosenblatt-1958}{%
+\subsection{10.2 Perceptron (Rosenblatt, 1958)}\label{p2-10--102-perceptron-rosenblatt-1958}}
+
+\begin{asciiblock}{67pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ x1 ──w1──╲
+ x2 ──w2───► Σ wᵢxᵢ + b ──► step(·) ──► y
+ x3 ──w3──╱
+ Update rule:  wᵢ ← wᵢ + η (t − y) xᵢ        (t = target, η = learning rate)
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{McCulloch--Pitts neuron (1943)}: first model; binary threshold, fixed weights.
+\item
+  Single-layer perceptron can learn only \textbf{linearly separable} functions --- AND, OR, NAND ✔; \textbf{XOR ✘} (Minsky \& Papert, 1969).
+\item
+  AND with w₁ = w₂ = 1, threshold θ = 1.5 (or bias −1.5); OR with θ = 0.5.
+\item
+  Perceptron convergence theorem: converges in finite steps if data is linearly separable.
+\end{itemize}
+
+\needdiagram{figures/p2-10-07}{55pt}
+
+\hypertarget{p2-10--103-multilayer-perceptron--backpropagation}{%
+\subsection{10.3 Multilayer Perceptron \& Backpropagation}\label{p2-10--103-multilayer-perceptron--backpropagation}}
+
+\diagramhere{figures/p2-10-07}
+
+\begin{itemize}
+\tightlist
+\item
+  Input → hidden → output layers; non-linear activations: \textbf{sigmoid} σ(x) = 1/(1 + e⁻ˣ) with σ′ = σ(1 − σ), \textbf{tanh}, \textbf{ReLU} max(0, x), softmax (output).
+\item
+  \textbf{Backpropagation} (Rumelhart, Hinton, Williams, 1986): forward pass → compute error → propagate gradients backwards (chain rule) → gradient descent: w ← w − η ∂E/∂w. Problems: local minima, vanishing gradients (sigmoid); momentum, learning-rate tuning.
+\item
+  MLP with one hidden layer is a \textbf{universal approximator}; can solve XOR.
+\item
+  Overfitting → regularisation, dropout, early stopping.
+\item
+  \textbf{Delta rule / Widrow--Hoff / LMS} (ADALINE): Δw = η(t − y\_in)x. MADALINE = multiple ADALINEs.
+\end{itemize}
+
+\needspace{100pt}
+
+\hypertarget{p2-10--104-self-organising-map-kohonen}{%
+\subsection{10.4 Self-Organising Map (Kohonen)}\label{p2-10--104-self-organising-map-kohonen}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Unsupervised, competitive} learning; maps high-dimensional input to a low-dimensional (2-D) grid preserving \textbf{topology}.
+\item
+  Steps: find \textbf{Best Matching Unit (BMU)} (min Euclidean distance) → update BMU and neighbours: w ← w + η·h(t)(x − w); neighbourhood and η shrink over time.
+\end{itemize}
+
+\needspace{100pt}
+
+\hypertarget{p2-10--105-hopfield-network-1982}{%
+\subsection{10.5 Hopfield Network (1982)}\label{p2-10--105-hopfield-network-1982}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Recurrent}, fully connected, \textbf{symmetric weights} (wᵢⱼ = wⱼᵢ), \textbf{no self-connections} (wᵢᵢ = 0); binary/bipolar states.
+\item
+  \textbf{Associative (content-addressable) memory}: stores patterns via Hebbian rule W = Σ pᵀp − I (bipolar); retrieves from noisy input.
+\item
+  Energy function E = −½ ΣΣ wᵢⱼ sᵢ sⱼ decreases monotonically → converges to stable state (local minimum).
+\item
+  Capacity ≈ \textbf{0.138 N} patterns for N neurons.
+\item
+  Also: \textbf{Hebbian learning} ("neurons that fire together wire together") Δw = η·x·y; \textbf{BAM} (bidirectional associative memory --- Kosko); \textbf{ART} (Grossberg -- stability--plasticity); RBF networks; Boltzmann machine.
+\end{itemize}
+
+\needspace{194pt}
+
+\hypertarget{p2-10--11-deeper-dive--worked-traces-for-every-numerical-topic}{%
+\section{11. Deeper Dive --- Worked Traces for Every Numerical Topic}\label{p2-10--11-deeper-dive--worked-traces-for-every-numerical-topic}}
+
+\needspace{154pt}
+
+\hypertarget{p2-10--111-alphabeta-trace-depth-3}{%
+\subsection{11.1 Alpha--Beta Trace (depth 3)}\label{p2-10--111-alphabeta-trace-depth-3}}
+
+\begin{asciiblock}{99pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+                         MAX  A
+               ┌──────────┴──────────┐
+              MIN B                 MIN C
+          ┌─────┴─────┐          ┌─────┴─────┐
+        MAX D       MAX E      MAX F       MAX G
+        ┌─┴─┐       ┌─┴─┐      ┌─┴─┐       ┌─┴─┐
+        3   5       6   9      1   2       0  −1
+\end{Verbatim}
+\end{asciiblock}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0553}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0570}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1309}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.4065}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Step}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Node}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{α, β on entry}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{What happens}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & D & −∞, +∞ & sees 3, 5 → D = 5 \\
+2 & B & --- & β = 5 \\
+3 & E & −∞, 5 & sees 6 → α = 6 ≥ β = 5 → \textbf{prune leaf 9}; E returns 6 \\
+4 & B & --- & B = min(5, 6) = 5 → A\textquotesingle s α = 5 \\
+5 & F & 5, +∞ & sees 1, 2 → F = 2 \\
+6 & C & 5, +∞ & β = 2 ≤ α = 5 → \textbf{prune G (leaves 0, −1)} \\
+7 & A & --- & A = max(5, 2) = \textbf{5} \\
+\end{longtable}
+
+\endgroup
+
+3 of 8 leaves pruned; the root value is the same as plain minimax.
+
+\needspace{168pt}
+
+\hypertarget{p2-10--112-resolution-refutation}{%
+\subsection{11.2 Resolution Refutation}\label{p2-10--112-resolution-refutation}}
+
+\textbf{First-order}: "All men are mortal. Socrates is a man. Prove Socrates is mortal."
+
+\begin{asciiblock}{78pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+1. ¬Man(x) ∨ Mortal(x)          (∀x Man(x) → Mortal(x))
+2. Man(Socrates)
+3. ¬Mortal(Socrates)            (negated goal)
+4. ¬Man(Socrates)               resolve 1, 3 with {x / Socrates}
+5. □  (empty clause)            resolve 2, 4  → goal proved
+\end{Verbatim}
+\end{asciiblock}
+
+\textbf{Propositional}: from P → Q, Q → R, P prove R. Clauses ¬P ∨ Q, ¬Q ∨ R, P, ¬R → resolve ¬Q ∨ R with ¬R → ¬Q; with ¬P ∨ Q → ¬P; with P → □.
+
+\needspace{170pt}
+
+\hypertarget{p2-10--113-forward-vs-backward-chaining}{%
+\subsection{11.3 Forward vs Backward Chaining}\label{p2-10--113-forward-vs-backward-chaining}}
+
+Rules: R1: A ∧ B → C; R2: C → D; R3: D ∧ E → F. Facts: A, B, E. Goal: F.
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2635}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2849}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Forward chaining (data-driven)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Backward chaining (goal-driven)}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+A, B ⊢ C (R1) & Goal F ← need D and E (R3) \\
+C ⊢ D (R2) & E is a fact; D ← need C (R2) \\
+D, E ⊢ F (R3) ✔ & C ← need A and B (R1); both facts ✔ \\
+\end{longtable}
+
+\endgroup
+
+\needspace{145pt}
+
+\hypertarget{p2-10--114-bayes--medical-test}{%
+\subsection{11.4 Bayes --- Medical Test}\label{p2-10--114-bayes--medical-test}}
+
+Disease prevalence 1\%, test sensitivity 99\%, false-positive rate 5\%.
+
+\begin{asciiblock}{55pt}
+\begin{Verbatim}[fontsize=\fontsize{8.4}{10.2}\selectfont]
+P(D | +) = P(+ | D)·P(D) / [P(+ | D)·P(D) + P(+ | ¬D)·P(¬D)]
+         = 0.99 × 0.01 / (0.0099 + 0.05 × 0.99)
+         = 0.0099 / 0.0594 ≈ 0.167      → only about 17% of positives actually have the disease
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{165pt}
+
+\hypertarget{p2-10--115-fuzzy-maxmin-composition--inference}{%
+\subsection{11.5 Fuzzy Max--Min Composition \& Inference}\label{p2-10--115-fuzzy-maxmin-composition--inference}}
+
+\begin{asciiblock}{110pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+R = | 0.6  0.3 |      S = | 1.0  0.5 |      T = R ∘ S
+    | 0.2  0.9 |          | 0.8  0.4 |
+T₁₁ = max(min(0.6, 1.0), min(0.3, 0.8)) = max(0.6, 0.3) = 0.6
+T₁₂ = max(min(0.6, 0.5), min(0.3, 0.4)) = max(0.5, 0.3) = 0.5
+T₂₁ = max(min(0.2, 1.0), min(0.9, 0.8)) = max(0.2, 0.8) = 0.8
+T₂₂ = max(min(0.2, 0.5), min(0.9, 0.4)) = max(0.2, 0.4) = 0.4
+T = | 0.6  0.5 |
+    | 0.8  0.4 |
+\end{Verbatim}
+\end{asciiblock}
+
+\textbf{Sugeno-style inference}: temperature 30 °C → μ\_warm = 0.4, μ\_hot = 0.6. Rules: warm → fan 40\%, hot → fan 80\%.
+Output = (0.4 × 40 + 0.6 × 80) / (0.4 + 0.6) = \textbf{64\%}.
+
+\needspace{135pt}
+
+\hypertarget{p2-10--116-genetic-algorithm--one-generation-maximise-fx--xuxb2-5-bit-x}{%
+\subsection{11.6 Genetic Algorithm --- One Generation (maximise f(x) = x², 5-bit x)}\label{p2-10--116-genetic-algorithm--one-generation-maximise-fx--xuxb2-5-bit-x}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0720}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0361}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0897}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1009}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2146}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{String}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{x}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{f(x)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{pᵢ = f/Σf}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Expected copies (4pᵢ)}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+01101 & 13 & 169 & 0.144 & 0.58 \\
+11000 & 24 & 576 & 0.492 & 1.97 \\
+01000 & 8 & 64 & 0.055 & 0.22 \\
+10011 & 19 & 361 & 0.309 & 1.23 \\
+& & Σ = 1170 & & \\
+\end{longtable}
+
+\endgroup
+
+Crossover 0110\textbar1 × 1100\textbar0 at position 4 → \textbf{01100 (12)} and \textbf{11001 (25)} --- the child 25 is fitter than any parent.
+
+\needspace{135pt}
+
+\hypertarget{p2-10--117-perceptron-learning-and-ux3b7--1-w--0-0-b--0-output-1-if-wx--b--0}{%
+\subsection{11.7 Perceptron Learning AND (η = 1, w = (0, 0), b = 0, output 1 if w·x + b \textgreater{} 0)}\label{p2-10--117-perceptron-learning-and-ux3b7--1-w--0-0-b--0-output-1-if-wx--b--0}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1252}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0466}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0466}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0392}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1477}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{End of epoch}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{w₁}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{w₂}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{b}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Errors in epoch}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & 1 & 1 & 1 & 1 \\
+2 & 2 & 1 & 0 & 3 \\
+3 & 2 & 1 & −1 & 3 \\
+4 & 2 & 2 & −1 & 2 \\
+5 & 2 & 1 & −2 & 1 \\
+6 & 2 & 1 & −2 & 0 → converged \\
+\end{longtable}
+
+\endgroup
+
+Check: (0,0) → −2 → 0; (0,1) → −1 → 0; (1,0) → 0 → 0; (1,1) → 1 → 1 ✔ = AND.
+
+\needspace{147pt}
+
+\hypertarget{p2-10--118-one-backpropagation-step-single-sigmoid-neuron}{%
+\subsection{11.8 One Backpropagation Step (single sigmoid neuron)}\label{p2-10--118-one-backpropagation-step-single-sigmoid-neuron}}
+
+x = 1, w = 0.5, b = 0, target t = 1, η = 1, E = ½(t − o)².
+
+\begin{asciiblock}{57pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+net = 0.5 → o = σ(0.5) = 0.6225
+δ = (t − o) · o(1 − o) = 0.3775 × 0.6225 × 0.3775 ≈ 0.0887
+Δw = η δ x = 0.0887 → w_new = 0.5887 (output moves toward the target)
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{147pt}
+
+\hypertarget{p2-10--119-hopfield-storage--recall}{%
+\subsection{11.9 Hopfield Storage \& Recall}\label{p2-10--119-hopfield-storage--recall}}
+
+Store bipolar pattern p = {[}1, −1, 1{]}: W = p pᵀ − I.
+
+\begin{asciiblock}{57pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+W = |  0  −1   1 |      Noisy input x = [1, 1, 1]
+    | −1   0  −1 |      W x = [0, −2, 0] → sign (keep old value on 0) = [1, −1, 1]
+    |  1  −1   0 |      → stored pattern recovered
+\end{Verbatim}
+\end{asciiblock}
+
+\needdiagram{figures/p2-10-08}{55pt}
+
+\hypertarget{p2-10--1110-csp--map-colouring-with-heuristics}{%
+\subsection{11.10 CSP --- Map Colouring with Heuristics}\label{p2-10--1110-csp--map-colouring-with-heuristics}}
+
+\diagramhere{figures/p2-10-08}
+
+Three colours. \textbf{MRV/degree heuristic} picks SA first (degree 5). Assign SA = red → WA, NT, Q, NSW, V lose red; WA = green → NT = blue → Q = green → NSW = blue → V = green. Solution found without backtracking; \textbf{forward checking} removes inconsistent values early.
+
+\needspace{135pt}
+
+\hypertarget{p2-10--previous-year-questions-pyq-pattern}{%
+\section{Previous Year Questions (PYQ pattern)}\label{p2-10--previous-year-questions-pyq-pattern}}
+
+\textbf{Foundations \& agents}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The term "Artificial Intelligence" was coined by: \textbf{John McCarthy (1956)}
+\item
+  Turing test evaluates: \textbf{whether a machine\textquotesingle s behaviour is indistinguishable from a human\textquotesingle s}
+\item
+  PEAS stands for: \textbf{Performance, Environment, Actuators, Sensors}
+\item
+  Agent that acts only on the current percept: \textbf{simple reflex agent}
+\item
+  Chess is: \textbf{fully observable, deterministic (strategic), sequential, discrete, multi-agent}
+\end{enumerate}
+
+\textbf{Search}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{5}
+\tightlist
+\item
+  Space complexity of BFS: \textbf{O(b\^{}d)}; of DFS: \textbf{O(bm)}
+\item
+  Search that combines benefits of BFS and DFS: \textbf{iterative deepening DFS}
+\item
+  A* is optimal if the heuristic is: \textbf{admissible (never overestimates)}
+\item
+  If h(n) = 0 for all n, A* reduces to: \textbf{uniform-cost search} (Dijkstra)
+\item
+  Greedy best-first search uses: \textbf{f(n) = h(n)}
+\item
+  Hill climbing can get stuck due to: \textbf{local maxima, plateau, ridges}
+\item
+  Simulated annealing accepts worse moves with probability: \textbf{e\^{}(ΔE/T)}
+\item
+  Problem reduction (AND-OR graphs) uses: \textbf{AO*}
+\item
+  Means-ends analysis was used in: \textbf{GPS (General Problem Solver)}
+\item
+  For 8-puzzle, Manhattan distance is: \textbf{admissible and dominates misplaced tiles}
+\end{enumerate}
+
+\textbf{Games}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{15}
+\tightlist
+\item
+  Alpha-beta pruning with perfect ordering reduces time to: \textbf{O(b\^{}(m/2))}
+\item
+  Pruning occurs when: \textbf{α ≥ β}
+\item
+  Alpha-beta pruning changes the minimax value? \textbf{No}
+\item
+  Minimax value of tree with MIN nodes having leaves (3,12,8), (2,4,6), (14,5,2): max(3, 2, 2) = \textbf{3}
+\end{enumerate}
+
+\textbf{Knowledge representation}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{19}
+\tightlist
+\item
+  Frames were proposed by: \textbf{Marvin Minsky}
+\item
+  Scripts were proposed by: \textbf{Schank \& Abelson}
+\item
+  "John gave Mary a book" in CD uses primitive: \textbf{ATRANS}
+\item
+  MYCIN used: \textbf{backward chaining with certainty factors}
+\item
+  First expert system: \textbf{DENDRAL}
+\item
+  Skolemisation removes: \textbf{existential quantifiers}
+\item
+  Prolog is based on: \textbf{Horn clauses with backward chaining (SLD resolution)}
+\item
+  Resolution proves a goal by: \textbf{refutation (deriving the empty clause from negated goal)}
+\item
+  Combining CF 0.6 and 0.4 (both positive): 0.6 + 0.4 × 0.4 = \textbf{0.76}
+\item
+  Dempster--Shafer theory uses: \textbf{belief and plausibility}
+\end{enumerate}
+
+\textbf{Planning \& NLP}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{29}
+\tightlist
+\item
+  STRIPS operators contain: \textbf{preconditions, add list, delete list}
+\item
+  Sussman anomaly illustrates a problem with: \textbf{linear (goal-stack) planning}
+\item
+  Partial-order planning follows: \textbf{least-commitment strategy}
+\item
+  ATN stands for: \textbf{Augmented Transition Network}
+\item
+  "I saw the man with the telescope" exhibits: \textbf{structural (syntactic) ambiguity}
+\item
+  Correct NLP pipeline: \textbf{morphological → syntactic → semantic → discourse → pragmatic}
+\item
+  ELIZA was developed by: \textbf{Joseph Weizenbaum}
+\end{enumerate}
+
+\textbf{MAS}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{36}
+\tightlist
+\item
+  BDI stands for: \textbf{Beliefs, Desires, Intentions}
+\item
+  KQML is used for: \textbf{agent communication}
+\item
+  JADE is: \textbf{a Java framework for FIPA-compliant multi-agent systems}
+\item
+  Semantic web ontology language: \textbf{OWL}
+\end{enumerate}
+
+\textbf{Fuzzy}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{40}
+\tightlist
+\item
+  Fuzzy logic was introduced by: \textbf{Lotfi Zadeh (1965)}
+\item
+  μA = 0.6, μB = 0.3: union \textbf{0.6}, intersection \textbf{0.3}, complement of A \textbf{0.4}
+\item
+  Which law does NOT hold in fuzzy sets? \textbf{Law of excluded middle / contradiction}
+\item
+  Defuzzification method computing centre of area: \textbf{centroid}
+\item
+  Sugeno fuzzy model output is: \textbf{a linear function or constant (crisp)}
+\item
+  Max--min composition of R = {[}0.3 0.8{]} and S = {[}0.5; 0.9{]} (column): max(min(0.3,0.5), min(0.8,0.9)) = \textbf{0.8}
+\item
+  "Very" hedge applied to μ = 0.8: \textbf{0.64}
+\end{enumerate}
+
+\textbf{GA}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{47}
+\tightlist
+\item
+  Genetic algorithms were introduced by: \textbf{John Holland}
+\item
+  Operator that maintains diversity: \textbf{mutation}
+\item
+  Roulette wheel: fitness values 10, 20, 30, 40 → probability of 3rd: \textbf{0.3}
+\item
+  Number of schemata in binary string length 5: \textbf{3⁵ = 243}
+\end{enumerate}
+
+\textbf{Neural networks}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{51}
+\tightlist
+\item
+  Single-layer perceptron cannot learn: \textbf{XOR}
+\item
+  Perceptron learning rule: \textbf{Δw = η(t − y)x}
+\item
+  Backpropagation uses: \textbf{gradient descent with chain rule}
+\item
+  Derivative of sigmoid: \textbf{σ(1 − σ)}
+\item
+  Kohonen SOM is: \textbf{unsupervised, competitive learning preserving topology}
+\item
+  Hopfield network weights are: \textbf{symmetric with zero diagonal}; used as \textbf{associative memory}
+\item
+  Hopfield storage capacity: \textbf{≈ 0.138 N}
+\item
+  Learning with reward/penalty: \textbf{reinforcement learning}
+\item
+  Hebbian learning rule: \textbf{Δw = η·x·y}
+\end{enumerate}
+
+\textbf{More practice questions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{60}
+\tightlist
+\item
+  In the tree of §11.1, the number of leaves pruned by alpha--beta: \textbf{3}
+\item
+  Resolution proves a goal by deriving: \textbf{the empty clause from the negated goal}
+\item
+  Backward chaining starts from: \textbf{the goal}
+\item
+  Prevalence 1\%, sensitivity 99\%, false-positive 5\%: P(disease \textbar{} positive) ≈ \textbf{0.17}
+\item
+  Max--min composition entry max(min(0.2, 1.0), min(0.9, 0.8)) = \textbf{0.8}
+\item
+  In a GA with fitness values 169, 576, 64, 361, the selection probability of the fittest: \textbf{≈ 0.49}
+\item
+  Single-point crossover of 01101 and 11000 after bit 4: \textbf{01100 and 11001}
+\item
+  Perceptron weights (w₁, w₂, b) = (2, 1, −2) implement: \textbf{AND}
+\item
+  Derivative of the sigmoid at output 0.5: \textbf{0.25}
+\item
+  Hopfield weight matrix for one stored pattern p: \textbf{p pᵀ − I}
+\item
+  In map colouring, choosing the variable with the fewest legal values is the: \textbf{MRV heuristic}
+\item
+  Degree heuristic chooses the variable: \textbf{involved in the most constraints with unassigned variables}
+\end{enumerate}
+
+\begin{revbox}
+
+\begin{itemize}
+\tightlist
+\item
+  BFS O(b\^{}d) space · DFS O(bm) · IDDFS best uninformed · A* optimal if admissible
+\item
+  α--β: prune when α ≥ β · best ordering O(b\^{}(m/2))
+\item
+  Minsky frames · Schank scripts \& CD (ATRANS, PTRANS, MTRANS) · MYCIN backward + CF
+\item
+  STRIPS: pre/add/delete · Sussman anomaly → linear planning fails
+\item
+  Fuzzy: ∪ max, ∩ min, \textquotesingle{} = 1 − μ; excluded middle fails
+\item
+  Perceptron no XOR · SOM unsupervised · Hopfield symmetric, recurrent, 0.138N
+\end{itemize}
+
+\end{revbox}

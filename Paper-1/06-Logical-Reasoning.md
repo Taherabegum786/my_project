@@ -188,6 +188,69 @@ Kinds of anumana:
 | **Asiddha** (Sadhyasama) | Unproved — hetu itself not established |
 | **Badhita** (Kalatita) | Contradicted by other pramana (e.g. "fire is cold because it is a substance") |
 
+## 8. Deeper Dive — Venn Diagram Practice, Conditionals & More Indian Logic
+
+### 8.1 Six Standard Venn Situations
+
+```
+ All A are B        No A is B          Some A are B
+ ┌───────────┐      ┌─────┐ ┌─────┐    ┌──────┬──┬──────┐
+ │ B  ┌───┐  │      │  A  │ │  B  │    │  A   │AB│   B  │
+ │    │ A │  │      └─────┘ └─────┘    └──────┴──┴──────┘
+ │    └───┘  │
+ └───────────┘
+ Some A are not B: the part of A outside B is non-empty (shade / mark with x)
+```
+
+**Method for "Statements → Conclusions"**:
+1. Draw the **minimum** case allowed by each statement.
+2. A conclusion follows only if it holds in **every** possible diagram.
+3. "Some A are not B" from "All A are B"? No. "Some B are A" from "All A are B"? Yes (conversion by limitation).
+
+**Worked**: Statements: All pens are books. Some books are bags.
+- Conclusion I: Some pens are bags — **does not follow** (bags may touch only the books outside pens).
+- Conclusion II: Some bags are books — **follows** (conversion of "Some books are bags").
+- "Either I or II" type options apply only when two conclusions form a complementary pair (e.g. Some A are B / No A is B).
+
+### 8.2 Immediate Inference
+| Operation | From | To |
+|-----------|------|----|
+| Conversion | E: No S is P / I: Some S are P | No P is S / Some P are S (valid) |
+| Conversion by limitation | A: All S are P | Some P are S |
+| Obversion | All S are P | No S is non-P (change quality, negate predicate) |
+| Contraposition | All S are P | All non-P are non-S |
+
+O-propositions cannot be converted.
+
+### 8.3 Conditional (Hypothetical) Statements
+```
+Valid:    If P then Q; P; ∴ Q          (Modus ponens)
+Valid:    If P then Q; not Q; ∴ not P  (Modus tollens)
+Invalid:  If P then Q; Q; ∴ P          (Affirming the consequent)
+Invalid:  If P then Q; not P; ∴ not Q  (Denying the antecedent)
+"P only if Q" ≡ If P then Q    "P unless Q" ≡ If not Q then P
+```
+
+### 8.4 Truth & Validity Combinations
+
+| Premises | Conclusion | Can the argument be valid? |
+|----------|-----------|----------------------------|
+| True | True | Yes |
+| True | False | **No** — impossible for a valid argument |
+| False | True | Yes |
+| False | False | Yes |
+
+### 8.5 More Indian Logic
+
+- **Prama** = valid knowledge; **Aprama** = invalid knowledge (doubt — samshaya, error — viparyaya, hypothetical — tarka).
+- **Pratyaksha** types (Nyaya): **Nirvikalpaka** (indeterminate) and **Savikalpaka** (determinate); also laukika (ordinary) and alaukika (extraordinary).
+- **Upamana**: knowledge of a word–object relation through similarity (learning that a gavaya resembles a cow).
+- **Shabda**: testimony of a reliable person (**apta vakya**); Vedic and secular.
+- **Jain logic**: **Anekantavada** (many-sidedness), **Syadvada** — 7 modes of predication (**Saptabhangi naya**): syad asti, syad nasti, syad asti-nasti, syad avaktavya, …
+- **Buddhist logic**: Dignaga and Dharmakirti; accept only perception and inference.
+- **Vyapti** is established through **anvaya** (agreement in presence: where smoke, there fire) and **vyatireka** (agreement in absence: where no fire, no smoke).
+- Nyaya Sutra author: **Gautama (Akshapada)**; 16 categories (padarthas) beginning with pramana and prameya.
+
 ---
 
 ## Previous Year Questions (PYQ pattern)
@@ -200,25 +263,30 @@ Kinds of anumana:
 5. Which proposition distributes only the predicate? **O**
 
 **Syllogism**
+
 6. Premises: All cats are animals. Some animals are dogs. Conclusion "Some cats are dogs" → **Does not follow** (undistributed middle)
 7. Statements: No A is B. All C are B. Conclusion: **No C is A** — follows.
 8. Mood and figure of: "All M are P; All S are M; ∴ All S are P" → **AAA-1 (Barbara)**
 
 **Deductive/inductive**
+
 9. In a deductive argument, the conclusion: **follows necessarily**
 10. An argument which is valid and has true premises is: **Sound**
 11. Inductive arguments are evaluated as: **strong/weak**
 
 **Fallacies**
+
 12. "He is a criminal, so his argument about taxes is wrong" — **Ad hominem**
 13. "No one has proved ghosts don't exist, so they exist" — **Ad ignorantiam**
 14. "I wore a lucky shirt and won — so the shirt causes wins" — **Post hoc (false cause)**
 
 **Language**
+
 15. Denotation of a term refers to: **the objects to which it applies**
 16. "Close the door" serves which function? **Directive**
 
 **Indian logic**
+
 17. Number of pramanas accepted by Nyaya: **4**
 18. Charvakas accept only: **Perception**
 19. Advaita Vedanta accepts how many pramanas? **6**
@@ -231,7 +299,24 @@ Kinds of anumana:
 26. Arthapatti is accepted by: **Mimamsa (Prabhakara & Bhatta) and Advaita**
 
 **Analogy**
+
 27. Book : Author :: Statue : **Sculptor**
+
+**More practice questions**
+
+28. Obverse of "All S are P": **No S is non-P**
+29. Which proposition cannot be converted? **O**
+30. Converse of "All doctors are graduates" by limitation: **Some graduates are doctors**
+31. A valid argument cannot have: **true premises and a false conclusion**
+32. "If it rains, the match is cancelled. The match is cancelled. So it rained." — **affirming the consequent**
+33. Statements: No cat is a dog. All dogs are animals. Conclusion "Some animals are not cats" — **follows**
+34. Syadvada is associated with: **Jainism**
+35. Number of modes in Saptabhangi: **7**
+36. Determinate perception in Nyaya: **Savikalpaka**
+37. Vyapti by agreement in absence: **Vyatireka**
+38. Author of Nyaya Sutras: **Gautama (Akshapada)**
+39. Knowledge from similarity (gavaya–cow): **Upamana**
+40. Analogy: Doctor : Hospital :: Teacher : **School**
 
 ## Quick Revision Box
 - A(S) E(S,P) I(none) O(P) — distribution

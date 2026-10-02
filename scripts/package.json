@@ -1,12 +1,11 @@
 {
-  "name": "ugc-net-cs-pdf-builder",
+  "name": "ugc-net-cs-book-builder",
   "private": true,
-  "description": "Builds UGC-NET-CS-Study-Material.pdf from the Markdown notes",
+  "description": "Builds the LaTeX book and PDF from the Markdown notes",
   "scripts": {
-    "build": "node build-pdf.cjs"
+    "build": "bash build.sh"
   },
   "dependencies": {
-    "marked": "^4.3.0",
     "mermaid": "^11.4.0",
     "puppeteer": "^25.0.0"
   }

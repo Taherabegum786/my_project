@@ -508,6 +508,124 @@ flowchart LR
 - **SLA** (Service Level Agreement): availability (e.g. 99.9% → ~8.76 h downtime/year), response time, penalties.
 - **IoT**: things with sensors + connectivity. Architecture (3-layer): **Perception (sensing) → Network → Application** (5-layer adds processing/middleware & business). Protocols: **MQTT** (publish–subscribe over TCP), **CoAP** (REST over UDP), 6LoWPAN, Zigbee (802.15.4), BLE, LoRaWAN, NB-IoT, RFID/NFC. Edge/fog computing reduces latency.
 
+## 14. Deeper Dive — VLSM, Routing Tables, TCP Numbers, Hamming & Ciphers
+
+### 14.1 VLSM — Worked
+
+Split **192.168.1.0/24** for LANs needing 100, 50, 25 and 10 hosts (allocate largest first):
+
+| LAN | Hosts needed | Prefix (usable) | Subnet | Range | Broadcast |
+|-----|-------------|-----------------|--------|-------|-----------|
+| A | 100 | /25 (126) | 192.168.1.0 | .1 – .126 | .127 |
+| B | 50 | /26 (62) | 192.168.1.128 | .129 – .190 | .191 |
+| C | 25 | /27 (30) | 192.168.1.192 | .193 – .222 | .223 |
+| D | 10 | /28 (14) | 192.168.1.224 | .225 – .238 | .239 |
+| Free | — | /28 | 192.168.1.240 | — | — |
+
+### 14.2 Distance-Vector Update — Worked
+
+```mermaid
+flowchart LR
+    A((A)) ---|1| B((B))
+    B ---|2| C((C))
+    A ---|5| C
+```
+
+| A's table | Initially | After receiving B's vector (B: A 1, B 0, C 2) |
+|-----------|-----------|---------------------------------------------|
+| to A | 0 | 0 |
+| to B | 1 (direct) | 1 (direct) |
+| to C | 5 (direct) | min(5, 1 + 2) = **3 via B** |
+
+Bellman–Ford equation: Dₓ(y) = minᵥ { c(x, v) + Dᵥ(y) }.
+
+**Count-to-infinity**: suppose link B–C fails. B may then believe A's stale advertisement "C at cost 3" (which was itself via B) and set C = 1 + 3 = 4 via A; A then updates to 1 + 4 = 5 via B, and the two keep raising each other's cost one step at a time. Here the climb stops once it exceeds A's direct link (cost 5), but with no alternative path it would continue until "infinity" (16 in RIP). **Split horizon** (never advertise a route back to the neighbour it was learned from) and **poison reverse** (advertise it as ∞) cure this two-node loop.
+
+### 14.3 TCP Sequence and Acknowledgement Numbers
+
+```mermaid
+sequenceDiagram
+    participant C as Client (ISN 1000)
+    participant S as Server (ISN 5000)
+    C->>S: SYN seq=1000
+    S->>C: SYN+ACK seq=5000 ack=1001
+    C->>S: ACK seq=1001 ack=5001
+    C->>S: Data seq=1001 (200 bytes)
+    C->>S: Data seq=1201 (300 bytes)
+    S->>C: ACK ack=1501 (cumulative)
+```
+Next expected byte = last seq + length; SYN and FIN consume one number each.
+
+**Go-Back-N count**: window 4, frames 0–6, frame 2 lost once (no other losses). Assume frames 0–4 have been sent when frame 2's timer expires (ACKs for 0 and 1 slid the window to 2–5).
+Sent 0, 1, 2 (lost), 3, 4 → on timeout resend 2, 3, 4, then send 5, 6. Total transmissions = 5 + 3 + 2 = **10**. Selective Repeat resends only frame 2: 7 + 1 = **8**.
+
+### 14.4 Hamming (7, 4) — Encode and Correct
+
+Data 1011 → positions: 1 p1, 2 p2, 3 d1, 4 p4, 5 d2, 6 d3, 7 d4 (even parity).
+```
+d1 d2 d3 d4 = 1 0 1 1
+p1 covers 1,3,5,7 → d1 d2 d4 = 1 0 1 → p1 = 0
+p2 covers 2,3,6,7 → d1 d3 d4 = 1 1 1 → p2 = 1
+p4 covers 4,5,6,7 → d2 d3 d4 = 0 1 1 → p4 = 0
+Codeword (positions 1..7) = 0 1 1 0 0 1 1
+
+Received 0 1 1 0 0 0 1 (bit 6 flipped):
+c1 = b1 b3 b5 b7 = 0 1 0 1 → 0
+c2 = b2 b3 b6 b7 = 1 1 0 1 → 1
+c4 = b4 b5 b6 b7 = 0 0 0 1 → 1
+Syndrome c4 c2 c1 = 110₂ = 6 → flip bit 6 → corrected
+```
+
+### 14.5 Delay Calculations
+- Store-and-forward: a 1000-byte packet over 3 links of 1 Mbps (propagation ignored) → 3 × 8 ms = **24 ms**.
+- Message of 3 packets over the same path (pipelining): (3 + 3 − 1) × 8 = **40 ms**.
+- Circuit switching instead: setup time + message/bandwidth + propagation.
+
+### 14.6 IPv6 Address Compression
+
+| Full | Compressed |
+|------|-----------|
+| 2001:0db8:0000:0000:0000:ff00:0042:8329 | 2001:db8::ff00:42:8329 |
+| fe80:0000:0000:0000:0202:b3ff:fe1e:8329 | fe80::202:b3ff:fe1e:8329 |
+| 0000:0000:0000:0000:0000:0000:0000:0001 | ::1 (loopback) |
+Rules: drop leading zeros in each group; replace **one** longest run of all-zero groups with `::`.
+
+### 14.7 DNS Resolution
+
+```mermaid
+sequenceDiagram
+    participant H as Host
+    participant L as Local resolver
+    participant R as Root server
+    participant T as .in TLD server
+    participant A as ac.in authoritative
+    H->>L: www.example.ac.in? (recursive)
+    L->>R: query (iterative)
+    R-->>L: refer to .in TLD
+    L->>T: query
+    T-->>L: refer to ac.in servers
+    L->>A: query
+    A-->>L: A record 203.0.113.10
+    L-->>H: 203.0.113.10 (cached with TTL)
+```
+
+### 14.8 Classical Ciphers — Worked
+- **Caesar (k = 3)**: NET → **QHW**.
+- **Vigenère**, key LEMON: ATTACK → A+L = L, T+E = X, T+M = F, A+O = O, C+N = P, K+L = V → **LXFOPV**.
+- **Rail fence (2 rails)**: HELLOWORLD → rails HLOOL / ELWRD → **HLOOLELWRD**.
+- **Columnar transposition** rearranges letters by a key order; **substitution** replaces letters. Product ciphers (DES, AES) combine both (confusion + diffusion — Shannon).
+
+### 14.9 HTTP Exchange (what a request looks like)
+
+```
+GET /index.html HTTP/1.1                 HTTP/1.1 200 OK
+Host: www.ugcnet.example                 Content-Type: text/html
+User-Agent: Mozilla/5.0                  Content-Length: 3421
+Accept: text/html                        Set-Cookie: sid=abc123
+Connection: keep-alive
+                                         <html> … </html>
+```
+
 ---
 
 ## Previous Year Questions (PYQ pattern)
@@ -521,6 +639,7 @@ flowchart LR
 6. Number of collision domains with a 24-port switch: **24**; broadcast domains: **1**
 
 **Physical layer**
+
 7. Channel B = 4 kHz, SNR = 63: C = 4000 × log₂ 64 = **24 kbps**
 8. Noiseless 3 kHz channel with 8 levels: 2 × 3000 × 3 = **18 kbps**
 9. Manchester encoding needs bandwidth: **twice that of NRZ** (it is self-clocking)
@@ -530,6 +649,7 @@ flowchart LR
 13. Medium immune to electromagnetic interference: **optical fibre**
 
 **Data link**
+
 14. Bit stuffing after five consecutive 1s inserts: **a 0**
 15. CRC with generator of degree 4 appends how many bits? **4**
 16. Min Hamming distance to correct 2-bit errors: **5**
@@ -540,6 +660,7 @@ flowchart LR
 21. PPP authentication protocol using a challenge: **CHAP**
 
 **MAC**
+
 22. Max throughput of slotted ALOHA: **36.8%**; pure ALOHA: **18.4%**
 23. CSMA/CD: 1 Gbps, 2 km cable, signal speed 2×10⁸ m/s → Tp = 10 µs → L_min = 2 × 10 µs × 10⁹ = **20,000 bits**
 24. Hidden terminal problem is solved by: **RTS/CTS (CSMA/CA)**
@@ -547,6 +668,7 @@ flowchart LR
 26. Binary exponential backoff is used in: **CSMA/CD Ethernet**
 
 **Network layer**
+
 27. Class of 191.10.20.1: **Class B**
 28. Usable hosts in a /27 subnet: **30**
 29. Network address of 172.16.45.14/20: 45 = 0010 1101 → /20 keeps 0010 → **172.16.32.0**
@@ -564,6 +686,7 @@ flowchart LR
 41. DHCP message sequence: **Discover, Offer, Request, Acknowledge**
 
 **Transport & application**
+
 42. UDP header size: **8 bytes**
 43. TCP 3-way handshake segments: **SYN, SYN-ACK, ACK**
 44. After a timeout with cwnd = 32, new ssthresh: **16**, cwnd: **1**
@@ -575,6 +698,7 @@ flowchart LR
 50. Token bucket: capacity C = 1 MB, token rate ρ = 2 MBps, max rate M = 10 MBps → max burst time = C/(M − ρ) = **0.125 s**
 
 **Security**
+
 51. DES key length: **56 bits**; rounds: **16**
 52. AES-128 rounds: **10**
 53. RSA with p = 5, q = 11, e = 3 → φ = 40, d = **27**
@@ -586,6 +710,7 @@ flowchart LR
 59. A firewall that examines application-layer data: **proxy (application-level gateway)**
 
 **Mobile, cloud, IoT**
+
 60. GSM database holding permanent subscriber information: **HLR**; temporary visitor data: **VLR**
 61. GPRS is a: **packet-switched 2.5G service**
 62. In Mobile IP, the address used at the foreign network: **care-of address**
@@ -595,6 +720,21 @@ flowchart LR
 66. Rapid elasticity is a characteristic of: **cloud computing (NIST)**
 67. MQTT follows: **publish–subscribe model**
 68. Bluetooth piconet can have at most __ active secondaries: **7**
+
+**More practice questions**
+
+69. Using VLSM on 192.168.1.0/24, the prefix for a LAN with 50 hosts: **/26**
+70. Broadcast address of 192.168.1.192/27: **192.168.1.223**
+71. Split horizon is a remedy for: **count-to-infinity**
+72. Client ISN 1000; after the handshake it sends 200 bytes. Sequence number of the next segment: **1201**
+73. In the GBN scenario of §14.3 (frames 0–4 sent before the timeout), total transmissions: **10**; with Selective Repeat: **8**
+74. Hamming (7, 4) codeword for data 1011 (even parity): **0110011**
+75. Syndrome 101 in Hamming (7, 4) means the error is in bit: **5**
+76. Compressed form of 2001:0db8:0000:0000:0000:0000:0000:0001: **2001:db8::1**
+77. `::` may appear in an IPv6 address: **only once**
+78. Vigenère encryption of "ATTACK" with key "LEMON": **LXFOPV**
+79. Caesar cipher with key 3 encrypts "NET" as: **QHW**
+80. Store-and-forward delay of a 1000-byte packet over 3 links of 1 Mbps: **24 ms**
 
 ## Quick Revision Box
 - Shannon C = B log₂(1+SNR) · Nyquist 2B log₂L

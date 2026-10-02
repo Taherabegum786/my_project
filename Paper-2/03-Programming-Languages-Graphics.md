@@ -397,6 +397,145 @@ flowchart TB
 - Cavalier (receding lines full length, 45°) vs Cabinet (half length, 63.4°).
 - Hidden surface removal: **Z-buffer (depth buffer)**, painter's (depth sort), scan-line, BSP tree, back-face detection (N·V > 0 → back face), Warnock (area subdivision), ray casting.
 
+## 7. Deeper Dive — Scoping, More C Traps, Java Essentials & Graphics Traces
+
+### 7.1 Static vs Dynamic Scoping — Classic Question
+
+```c
+int x = 1;
+void f()  { printf("%d", x); }
+void g()  { int x = 2; f(); }
+int main() { g(); }
+```
+- **Static (lexical) scoping**: f's free variable x refers to the global x → prints **1** (C, Java, Pascal).
+- **Dynamic scoping**: x is looked up in the most recent active frame (g's) → prints **2**.
+
+### 7.2 Recursion Trace
+
+```c
+int fun(int n) { if (n <= 1) return 1; return n * fun(n - 2); }
+fun(7) = 7 × fun(5) = 7 × 5 × fun(3) = 7 × 5 × 3 × fun(1) = 105
+```
+
+```
+Call stack (grows downward)       Returns (unwinding)
+ fun(7)                            fun(1) → 1
+   fun(5)                          fun(3) → 3 × 1  = 3
+     fun(3)                        fun(5) → 5 × 3  = 15
+       fun(1)                      fun(7) → 7 × 15 = 105
+```
+
+### 7.3 More C Output Questions (with reasons)
+
+```c
+// 1. switch fall-through
+int k = 2;
+switch (k) { case 1: printf("A"); case 2: printf("B"); case 3: printf("C"); break; default: printf("D"); }
+// Output: BC   (no break after case 2)
+
+// 2. bitwise
+printf("%d %d %d", 5 & 3, 5 | 3, 5 ^ 3);      // 1 7 6
+printf("%d", ~5);                               // -6  (2's complement: ~x = -x - 1)
+
+// 3. pointer to string
+char *s = "UGCNET";
+printf("%s", s + 3);                            // NET
+printf("%c", *s + 1);                           // V   ('U' + 1)
+
+// 4. post-increment in loop condition
+int i = 0; while (i++ < 3); printf("%d", i);    // 4
+
+// 5. integer division & casting
+printf("%.2f", (float)7 / 2);                   // 3.50
+printf("%d", 7 / 2 * 2);                        // 6
+
+// 6. comma operator
+int a = (1, 2, 3); printf("%d", a);             // 3
+
+// 7. short-circuit
+int p = 0, q = 5;
+if (p && (q = 10)) {}  printf("%d", q);         // 5 (second operand never evaluated)
+
+// 8. 2-D array pointer arithmetic
+int m[2][3] = {{1,2,3},{4,5,6}};
+printf("%d", *(*(m + 1) + 2));                  // 6  (m[1][2])
+```
+
+### 7.4 Java Essentials
+
+| Modifier | Same class | Same package | Subclass (other pkg) | World |
+|----------|-----------|--------------|----------------------|-------|
+| private | ✔ | ✘ | ✘ | ✘ |
+| default (none) | ✔ | ✔ | ✘ | ✘ |
+| protected | ✔ | ✔ | ✔ | ✘ |
+| public | ✔ | ✔ | ✔ | ✔ |
+
+| Abstract class | Interface |
+|----------------|-----------|
+| Can have constructors, state (fields), concrete methods | Constants + abstract methods (default/static methods since Java 8) |
+| Single inheritance (`extends`) | A class can `implements` many interfaces |
+| Use for "is-a" with shared code | Use for capability contracts |
+
+- `final` variable = constant; `final` method = cannot be overridden; `final` class = cannot be inherited (String).
+- `static` members belong to the class. `super` refers to the parent; `this` to the current object.
+- JVM components: **class loader → bytecode verifier → interpreter / JIT compiler**; runtime areas: heap, method area, stack, PC registers.
+- Exceptions: **checked** (IOException — must be handled or declared) vs **unchecked** (RuntimeException, e.g. NullPointerException, ArithmeticException).
+- `String` is immutable; `StringBuffer` (synchronised) and `StringBuilder` (faster) are mutable.
+
+### 7.5 Graphics Traces
+
+**DDA**: (2, 3) → (8, 6); dx = 6, dy = 3, steps = 6, x-inc = 1, y-inc = 0.5.
+```
+x : 2   3    4   5    6   7    8
+y : 3   3.5  4   4.5  5   5.5  6
+plotted (round half up): (2,3) (3,4) (4,4) (5,5) (6,5) (7,6) (8,6)
+```
+
+**Mid-point circle, r = 10** (first octant, start (0, 10), p₀ = 1 − r = −9):
+
+| k | pₖ | Next pixel | pₖ₊₁ |
+|---|----|-----------|------|
+| 0 | −9 | (1, 10) | −6 |
+| 1 | −6 | (2, 10) | −1 |
+| 2 | −1 | (3, 10) | 6 |
+| 3 | 6 | (4, 9) | −3 |
+| 4 | −3 | (5, 9) | 8 |
+| 5 | 8 | (6, 8) | 5 |
+| 6 | 5 | (7, 7) | stop (x ≥ y) |
+
+**Composite transformation**: rotate P(4, 2) by 90° anticlockwise about pivot (2, 2).
+```
+1. Translate by (−2, −2):  (2, 0)
+2. Rotate 90°: (x cos90 − y sin90, x sin90 + y cos90) = (0, 2)
+3. Translate by (+2, +2):  (2, 4)        → P' = (2, 4)
+```
+Scaling about fixed point (xf, yf): T(xf, yf) · S(sx, sy) · T(−xf, −yf) → x' = xf + (x − xf)·sx.
+
+**Cohen–Sutherland**: window (0, 0)–(10, 10); line (−5, 5) → (15, 5). Codes 0001 and 0010; AND = 0000 → not trivially rejected; clip at x = 0 → (0, 5) and at x = 10 → (10, 5).
+
+**Liang–Barsky**: same window; line (−5, 3) → (15, 9); Δx = 20, Δy = 6.
+```
+p₁ = −Δx = −20, q₁ = x₁ − xmin = −5   → r₁ = 0.25    (entering)
+p₂ =  Δx =  20, q₂ = xmax − x₁ = 15   → r₂ = 0.75    (leaving)
+p₃ = −Δy = −6,  q₃ = y₁ − ymin = 3    → r₃ = −0.5    (entering)
+p₄ =  Δy =  6,  q₄ = ymax − y₁ = 7    → r₄ ≈ 1.17    (leaving)
+u₁ = max(0, 0.25, −0.5) = 0.25 ;  u₂ = min(1, 0.75, 1.17) = 0.75
+Clipped line: (−5 + 0.25·20, 3 + 0.25·6) = (0, 4.5)  to  (−5 + 0.75·20, 3 + 0.75·6) = (10, 7.5)
+```
+
+### 7.6 3-D Transformation Matrices (homogeneous 4 × 4)
+
+```
+Translation           Scaling              Rotation about z-axis
+| 1 0 0 tx |          | sx 0  0  0 |       | cosθ −sinθ 0 0 |
+| 0 1 0 ty |          | 0  sy 0  0 |       | sinθ  cosθ 0 0 |
+| 0 0 1 tz |          | 0  0  sz 0 |       |  0     0   1 0 |
+| 0 0 0 1  |          | 0  0  0  1 |       |  0     0   0 1 |
+Rotation about x: y' = y cosθ − z sinθ, z' = y sinθ + z cosθ
+Rotation about y: z' = z cosθ − x sinθ, x' = z sinθ + x cosθ
+Perspective (centre of projection at origin, plane z = d): x' = x·d/z, y' = y·d/z
+```
+
 ---
 
 ## Previous Year Questions (PYQ pattern)
@@ -410,6 +549,7 @@ flowchart TB
 6. LISP is primarily used for: **list processing / AI (functional)**
 
 **C**
+
 7. `int a = 5; a = a++ + ++a;` → **undefined behaviour** (option often given as 12 or 13; correct per standard: UB)
 8. Output of `printf("%d", sizeof('A'))` in C: **4** (char constant is int in C; 1 in C++)
 9. `#define MUL(a,b) a*b`; `MUL(2+3, 4)` → 2+3*4 = **14**
@@ -420,6 +560,7 @@ flowchart TB
 14. Which function allocates zero-initialised memory? **calloc**
 
 **OOP/C++**
+
 15. Run-time polymorphism is achieved via: **virtual functions**
 16. A class with at least one pure virtual function is: **abstract class**
 17. Which operator cannot be overloaded? **:: (scope resolution)** (also `.`, `?:`, `sizeof`)
@@ -430,12 +571,14 @@ flowchart TB
 22. Java does not support multiple inheritance of classes; achieved via: **interfaces**
 
 **Web**
+
 23. Applet life cycle method called first: **init()**
 24. Servlet method handling each request: **service()**
 25. XML document conforming to DTD is called: **valid**; following syntax rules: **well-formed**
 26. DHTML combines: **HTML, CSS, JavaScript, DOM**
 
 **Graphics**
+
 27. Frame buffer for 640×480 with 8 bits per pixel: **300 KB** (307200 bytes)
 28. Bresenham's line algorithm uses: **only integer arithmetic**
 29. Initial decision parameter for mid-point circle with r = 10: **1 − 10 = −9**
@@ -452,6 +595,21 @@ flowchart TB
 40. Isometric projection is a type of: **axonometric orthographic projection**
 41. Scaling matrix with sx = sy = −1 is equivalent to: **reflection about origin (rotation by 180°)**
 42. Translating (2,3) by (4,−1): **(6,2)**
+
+**More practice questions**
+
+43. Under dynamic scoping, the code in §7.1 prints: **2**
+44. Output of `printf("%d", ~0);` in C: **−1**
+45. Output of `printf("%d", 10 >> 1 << 2);`: (10 >> 1) << 2 = **20**
+46. In Java, a member visible only within its package has: **default (package-private) access**
+47. A Java class that cannot be subclassed is declared: **final**
+48. NullPointerException is a: **unchecked (runtime) exception**
+49. Number of steps in DDA for line (1, 1) to (9, 4): **8**
+50. Rotating point (1, 0) by 90° anticlockwise about origin gives: **(0, 1)**
+51. Reflection of (3, −2) about the line y = x: **(−2, 3)**
+52. In Liang–Barsky, pₖ < 0 means the line is: **entering** the clip boundary
+53. Shear in x with shx = 2 applied to (1, 3): **(7, 3)**
+54. Homogeneous coordinates for 3-D points use: **4-element vectors / 4 × 4 matrices**
 
 ## Quick Revision Box
 - Simula 67 first OO · ALGOL call-by-name · C static scope

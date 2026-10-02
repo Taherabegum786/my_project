@@ -47,17 +47,21 @@ Quick design → build prototype → customer evaluation → refine → (throwaw
 ### 1.4 Spiral Model (Barry Boehm, 1986) — **risk-driven**
 
 ```
-                 Determine objectives,  │  Evaluate alternatives,
-                 alternatives, constraints │ IDENTIFY & RESOLVE RISKS
-                       ┌────────────────┼────────────────┐
-                       │      ┌─────────┼────────┐       │
-                       │      │    ┌────┼───┐    │       │
-               ────────┼──────┼────┼── START ──┼──┼───────┼──────
-                       │      │    └────┼───┘    │       │
-                       │      └─────────┼────────┘       │
-                       └────────────────┼────────────────┘
-                 Plan next phase       │  Develop & verify next-level product
-  Radius = cumulative cost ; angular dimension = progress
+            1. Determine objectives,      │      2. Evaluate alternatives,
+               alternatives, constraints  │         IDENTIFY & RESOLVE RISKS
+                                          │
+             ┌────────────────────────────┼────────────────────────────┐
+             │       ┌────────────────────┼────────────────────┐       │
+             │       │       ┌────────────┼────────────┐       │       │
+             │       │       │          START          │       │       │
+  ───────────┼───────┼───────┼────────────┼────────────┼───────┼───────┼──────────
+             │       │       └────────────┼────────────┘       │       │
+             │       └────────────────────┼────────────────────┘       │
+             └────────────────────────────┼────────────────────────────┘
+                                          │
+            4. Plan the next phase        │      3. Develop & verify the
+                                          │         next-level product
+  Each loop = one phase; radius = cumulative cost; angle = progress through the quadrants
 ```
 - 4 quadrants: Planning (objectives) → **Risk analysis** → Engineering → Evaluation. Meta-model; suits large, high-risk projects.
 
@@ -366,6 +370,138 @@ DRE (Defect Removal Efficiency) = E / (E + D)   E = errors before delivery, D = 
 CK (OO) metrics: WMC, DIT, NOC, CBO, RFC, LCOM
 ```
 
+## 9. Deeper Dive — Modelling Examples, Test Design, Estimation & Reliability Models
+
+### 9.1 Level-1 DFD — Library System
+
+```mermaid
+flowchart LR
+    M[Member] -->|request book| P1((1.0 Issue book))
+    P1 -->|issue slip| M
+    P1 <-->|book status| D1[(D1 Books)]
+    P1 -->|loan record| D2[(D2 Loans)]
+    M -->|return book| P2((2.0 Return book))
+    P2 <--> D2
+    P2 -->|fine details| P3((3.0 Calculate fine))
+    P3 -->|fine notice| M
+    L[Librarian] -->|new books| P4((4.0 Maintain catalogue))
+    P4 --> D1
+```
+Rules: every process has at least one input and one output; data stores connect only through processes; external entities never connect directly to data stores.
+
+### 9.2 UML Class Diagram
+
+```mermaid
+classDiagram
+    class Member {
+        -int memberId
+        -String name
+        +borrow(Book b) Loan
+    }
+    class Book {
+        -String isbn
+        -String title
+        +isAvailable() bool
+    }
+    class Loan {
+        -Date issueDate
+        -Date dueDate
+        +fine() double
+    }
+    class StudentMember
+    class FacultyMember
+    Member <|-- StudentMember
+    Member <|-- FacultyMember
+    Member "1" --> "0..*" Loan : has
+    Loan "0..*" --> "1" Book : for
+```
+Visibility: `+` public, `-` private, `#` protected, `~` package. Multiplicity: 1, 0..1, 0..*, 1..*.
+
+### 9.3 UML Sequence Diagram — ATM Withdrawal
+
+```mermaid
+sequenceDiagram
+    actor U as Customer
+    participant A as ATM
+    participant B as Bank server
+    U->>A: Insert card, enter PIN
+    A->>B: verifyPIN(card, pin)
+    B-->>A: OK
+    U->>A: Withdraw 2000
+    A->>B: debit(account, 2000)
+    alt sufficient balance
+        B-->>A: approved
+        A-->>U: Dispense cash, print receipt
+    else insufficient
+        B-->>A: declined
+        A-->>U: Show error
+    end
+```
+
+### 9.4 Black-box Test Design — Worked
+
+Function: `eligible(age, grade)` where age ∈ [18, 60] and grade ∈ {A, B, C}.
+
+| Technique | Test values |
+|-----------|-------------|
+| Equivalence classes (age) | valid 18–60 (e.g. 35); invalid < 18 (e.g. 10); invalid > 60 (e.g. 70) |
+| Equivalence classes (grade) | valid {A, B, C}; invalid (e.g. D) |
+| BVA (age, normal) | 18, 19, 39, 59, 60 |
+| Robust BVA (age) | 17, 18, 19, 39, 59, 60, 61 |
+| Worst-case BVA (2 variables) | 5² = 25 combinations; robust worst-case 7² = 49 |
+
+**Decision table** (login):
+
+| Conditions / Actions | R1 | R2 | R3 | R4 |
+|----------------------|----|----|----|----|
+| Valid user ID? | T | T | F | F |
+| Valid password? | T | F | T | F |
+| Grant access | ✔ | | | |
+| Show "wrong password" | | ✔ | | |
+| Show "unknown user" | | | ✔ | ✔ |
+
+### 9.5 Intermediate COCOMO — Worked
+
+Semi-detached project, 50 KLOC, EAF = 1.2 (product of the 15 cost-driver multipliers).
+```
+Intermediate coefficients a: organic 3.2, semi-detached 3.0, embedded 2.8 (b as in basic)
+E = 3.0 × 50^1.12 × 1.2 ≈ 3.0 × 80 × 1.2 ≈ 288 person-months
+D = 2.5 × 288^0.35 ≈ 2.5 × 7.26 ≈ 18 months
+Average staff ≈ 288 / 18 = 16 persons
+```
+Cost drivers include RELY (reliability), CPLX (complexity), ACAP (analyst capability), PCAP, TOOL, SCED (schedule constraint), etc.
+
+### 9.6 Software Reliability Models
+
+| Model | Idea |
+|-------|------|
+| **Jelinski–Moranda** (1972) | N initial faults; each fix reduces failure rate by a constant φ: λᵢ = φ(N − i + 1) |
+| **Musa basic execution time** | λ(μ) = λ₀ (1 − μ/ν₀): failure intensity falls linearly with failures experienced |
+| Musa–Okumoto logarithmic | Failure intensity decreases exponentially with failures experienced |
+| Goel–Okumoto (NHPP) | Expected failures m(t) = a(1 − e^(−bt)) |
+| Littlewood–Verrall | Bayesian; failure rates random |
+
+**Worked (Musa basic)**: λ₀ = 10 failures/CPU-hr, ν₀ = 100 total failures. After 50 failures: λ = 10(1 − 50/100) = **5 failures/CPU-hr**.
+
+### 9.7 Risk Table — Example
+
+| Risk | Category | Probability | Impact (1–4) | Exposure (₹) | RMMM response |
+|------|----------|-------------|--------------|-------------|---------------|
+| Key developer leaves | Project | 0.3 | 2 | 0.3 × 4 L = 1.2 L | Cross-training, documentation |
+| Requirements change late | Business | 0.6 | 2 | 0.6 × 2 L = 1.2 L | Agile iterations, change control |
+| New tool unreliable | Technical | 0.2 | 3 | 0.2 × 1 L = 0.2 L | Prototype tool early |
+
+Risks are sorted by probability × impact; a **cut-off line** decides which get full RMMM plans.
+
+### 9.8 CMMI Process Areas by Level (examples)
+
+| Level | Focus | Example process areas |
+|-------|-------|----------------------|
+| 2 Managed | Basic project management | Requirements management, project planning, configuration management, measurement & analysis, QA |
+| 3 Defined | Organisation-wide standard process | Requirements development, technical solution, verification, validation, risk management |
+| 4 Quantitatively managed | Statistical control | Organisational process performance, quantitative project management |
+| 5 Optimising | Continuous improvement | Causal analysis & resolution, organisational performance management |
+
 ---
 
 ## Previous Year Questions (PYQ pattern)
@@ -382,6 +518,7 @@ CK (OO) metrics: WMC, DIT, NOC, CBO, RFC, LCOM
 9. V-model emphasises: **verification and validation at each phase**
 
 **Requirements & design**
+
 10. A level-0 DFD is also called: **context diagram**
 11. "The system shall respond within 2 seconds" is a: **non-functional requirement**
 12. SRS should specify: **what the system should do, not how**
@@ -396,6 +533,7 @@ CK (OO) metrics: WMC, DIT, NOC, CBO, RFC, LCOM
 21. Filled diamond in UML indicates: **composition**
 
 **Quality**
+
 22. Which is NOT a McCall product-operation factor? (a) correctness (b) reliability (c) portability (d) usability — **Ans: (c)**
 23. ISO 9126 quality characteristics count: **6**
 24. CMMI level 5 is: **Optimising**
@@ -405,6 +543,7 @@ CK (OO) metrics: WMC, DIT, NOC, CBO, RFC, LCOM
 28. QA is ____-oriented while QC is ____-oriented: **process; product**
 
 **Estimation**
+
 29. Value adjustment factor range: **0.65 to 1.35**
 30. Number of general system characteristics in FP: **14**
 31. Basic COCOMO organic effort constants: **a = 2.4, b = 1.05**
@@ -414,6 +553,7 @@ CK (OO) metrics: WMC, DIT, NOC, CBO, RFC, LCOM
 35. SPI = 0.8 indicates the project is: **behind schedule**
 
 **Testing**
+
 36. Cyclomatic complexity of a graph with 10 edges, 8 nodes: 10 − 8 + 2 = **4**
 37. A program has 3 `if` and 1 `while`: V(G) = 4 + 1 = **5**
 38. Boundary value testing is a: **black-box technique**
@@ -427,10 +567,25 @@ CK (OO) metrics: WMC, DIT, NOC, CBO, RFC, LCOM
 46. DRE when 90 errors found before release and 10 after: **0.9**
 
 **Maintenance / SCM**
+
 47. Maintenance to accommodate a new OS: **adaptive**
 48. Largest share of maintenance effort: **perfective**
 49. Extracting design from source code: **reverse engineering**
 50. A formally reviewed work product serving as basis for further development: **baseline**
+
+**More practice questions**
+
+51. In a DFD, a data store can connect directly to: **a process only**
+52. Number of test cases in robust BVA for one variable: **7** (6n + 1 for n variables)
+53. Worst-case BVA for 3 variables: 5³ = **125**
+54. Intermediate COCOMO coefficient a for embedded mode: **2.8**
+55. In UML, `#` before an attribute means: **protected**
+56. A hollow triangle arrowhead in a class diagram denotes: **generalisation (inheritance)**
+57. In Musa's basic model, failure intensity decreases: **linearly with the number of failures experienced**
+58. Goel–Okumoto is an example of: **NHPP (non-homogeneous Poisson process) model**
+59. Risk management process area is introduced at CMMI level: **3**
+60. A decision table with 3 Boolean conditions has at most: **8 rules**
+61. Which UML diagram best shows the order of messages between objects? **Sequence diagram**
 
 ## Quick Revision Box
 - Unclear req → Prototype · Risk → Spiral · Changing req → Agile

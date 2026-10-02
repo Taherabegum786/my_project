@@ -27,16 +27,12 @@ flowchart LR
 
 ### Memory hierarchy (fast/costly at top)
 ```
-          ┌──────────┐  Registers
-          │          │
-        ┌─┴──────────┴─┐  Cache (SRAM)
-        │              │
-      ┌─┴──────────────┴─┐  Main memory (DRAM)
-      │                  │
-    ┌─┴──────────────────┴─┐  SSD / HDD
-    │                      │
-  ┌─┴──────────────────────┴─┐  Optical / Tape
-  └──────────────────────────┘  slowest, cheapest, largest
+          ┌──────────┐            Registers       ▲ fastest, costliest, smallest
+        ┌─┴──────────┴─┐          Cache (SRAM)    │
+      ┌─┴──────────────┴─┐        Main memory     │
+    ┌─┴──────────────────┴─┐      SSD / HDD       │
+  ┌─┴──────────────────────┴─┐    Optical / Tape  ▼ slowest, cheapest, largest
+  └──────────────────────────┘
 ```
 
 ### Units
@@ -162,6 +158,79 @@ flowchart LR
 - **IT Act 2000** (amended 2008) — legal recognition of e-records & digital signatures; Sec 66A struck down (Shreya Singhal, 2015). **DPDP Act 2023**.
 - Cyber security: firewall, antivirus, encryption, 2FA. Malware: virus (needs host), worm (self-replicating), Trojan (disguised), ransomware, spyware.
 
+## 8. Deeper Dive — Generations, Software, File Types & Emerging Tech
+
+### 8.1 Generations of Computers
+
+| Generation | Period | Technology | Example |
+|-----------|--------|-----------|---------|
+| 1st | 1940–56 | Vacuum tubes; machine language | ENIAC, UNIVAC |
+| 2nd | 1956–63 | Transistors; assembly, FORTRAN, COBOL | IBM 1401 |
+| 3rd | 1964–71 | Integrated circuits; OS, multiprogramming | IBM 360 |
+| 4th | 1971–present | Microprocessors (VLSI); PCs, GUI | Intel 4004 (first microprocessor) |
+| 5th | Present & beyond | AI, ULSI, parallel processing, quantum | — |
+
+India: **PARAM 8000 (1991)** by C-DAC (first Indian supercomputer); **National Supercomputing Mission (2015)**; AIRAWAT (AI supercomputer).
+
+### 8.2 Software
+
+```mermaid
+flowchart TB
+    S[Software] --> SY[System software]
+    S --> AP[Application software]
+    SY --> OS[Operating systems: Windows, Linux, macOS, Android]
+    SY --> UT[Utilities: antivirus, disk cleanup, compression]
+    SY --> TR[Translators: compiler, interpreter, assembler]
+    SY --> DR[Device drivers, firmware]
+    AP --> G[General purpose: word processor, spreadsheet, browser]
+    AP --> SP[Special purpose: Tally, payroll, CAD]
+```
+
+- **Open source** (source available, free to modify: Linux, LibreOffice, Moodle) vs **proprietary** (MS Office).
+- **Freeware** (free, closed), **shareware** (trial), **firmware** (software in ROM/flash).
+
+### 8.3 File Extensions & Office Shortcuts
+
+| Extension | Type | Extension | Type |
+|-----------|------|-----------|------|
+| .docx | Word document | .xlsx | Spreadsheet |
+| .pptx | Presentation | .pdf | Portable document |
+| .txt | Plain text | .csv | Comma-separated values |
+| .jpg/.png/.gif | Images | .mp3/.wav | Audio |
+| .mp4/.avi | Video | .zip/.rar | Compressed |
+| .exe | Executable (Windows) | .html | Web page |
+
+| Shortcut | Action | Shortcut | Action |
+|----------|--------|----------|--------|
+| Ctrl + C / X / V | Copy / cut / paste | Ctrl + Z / Y | Undo / redo |
+| Ctrl + S | Save | Ctrl + P | Print |
+| Ctrl + F | Find | Ctrl + H | Replace |
+| Ctrl + A | Select all | F7 | Spell check (Word) |
+| F5 | Slideshow / refresh | Alt + F4 | Close window |
+
+Spreadsheet: cell address = column letter + row number (B3); **absolute reference** $B$3; functions SUM, AVERAGE, COUNT, IF, VLOOKUP.
+
+### 8.4 Emerging Technologies (frequently asked one-liners)
+
+| Term | Meaning |
+|------|---------|
+| Cloud computing | On-demand computing over the internet: SaaS, PaaS, IaaS |
+| IoT | Physical devices with sensors connected to the internet |
+| Artificial Intelligence | Machines performing tasks needing human intelligence; ChatGPT, Bhashini |
+| Machine learning | Systems that learn patterns from data |
+| Blockchain | Distributed, tamper-evident ledger (Bitcoin) |
+| Big data | Volume, velocity, variety (+ veracity, value) |
+| AR / VR | Augmented reality overlays digital on real; virtual reality is fully immersive |
+| 5G | Fifth-generation mobile; launched in India on 1 Oct 2022 |
+| Quantum computing | Qubits, superposition; India's National Quantum Mission (2023) |
+| Open educational resources (OER) | Free, openly licensed learning materials (Creative Commons) |
+
+### 8.5 Internet Basics Extended
+- Web 1.0 (read-only) → Web 2.0 (read-write, social media) → Web 3.0 (semantic, decentralised).
+- **Search operators**: "exact phrase", `site:ac.in`, `filetype:pdf`, minus sign to exclude.
+- **Bandwidth** measured in bps; **latency** in ms. Wired (Ethernet, fibre) vs wireless (Wi-Fi, 4G/5G, satellite).
+- **IP address** identifies a device; **MAC address** identifies a network card (48 bits).
+
 ---
 
 ## Previous Year Questions (PYQ pattern)
@@ -189,6 +258,20 @@ flowchart LR
 21. Video conferencing protocol: **H.323 / SIP**
 22. The Information Technology Act was passed in: **2000**
 23. Arrange in increasing order of capacity: **KB < MB < GB < TB < PB**
+
+**More practice questions**
+
+24. The first Indian supercomputer: **PARAM 8000**
+25. Integrated circuits were used in: **third-generation computers**
+26. Which is open-source software? (a) MS Word (b) LibreOffice Writer (c) Photoshop (d) Windows — **Ans: (b)**
+27. Absolute cell reference in a spreadsheet: **$A$1**
+28. Shortcut to undo: **Ctrl + Z**
+29. A .csv file stores: **tabular data as comma-separated text**
+30. Web 2.0 is characterised by: **user-generated content and interactivity**
+31. Software stored permanently in ROM: **firmware**
+32. Which is NOT system software? (a) OS (b) compiler (c) spreadsheet (d) device driver — **Ans: (c)**
+33. 5G services were launched in India in: **October 2022**
+34. Search operator to restrict results to a website: **site:**
 
 ## Quick Revision Box
 - SMTP send · POP3 download · IMAP sync

@@ -377,6 +377,121 @@ KMP prefix function for pattern **"ababaca"**: π = [0, 0, 1, 2, 3, 0, 1].
 - **Approximation algorithms**: Vertex cover — 2-approximation (pick both ends of uncovered edge); Metric TSP — 2-approx (MST doubling), **1.5-approx (Christofides)**; Set cover — ln n approx (greedy). Approximation ratio ρ(n).
 - **Randomised**: **Las Vegas** (always correct, random time — randomised quicksort) vs **Monte Carlo** (fixed time, may be wrong — Miller–Rabin, Karger's min-cut).
 
+## 13. Deeper Dive — Traces You Must Be Able to Do by Hand
+
+### 13.1 Recursion Tree for T(n) = 2T(n/2) + n
+
+```
+Level 0:                 n                         cost n
+Level 1:          n/2         n/2                  cost n
+Level 2:      n/4    n/4   n/4    n/4              cost n
+  …                      …                          …
+Level log n:  1  1  1  …  (n leaves)               cost n
+Total = n × (log₂ n + 1) = Θ(n log n)
+```
+For T(n) = T(n − 1) + n: unrolling gives n + (n − 1) + … + 1 = n(n + 1)/2 = **Θ(n²)**.
+
+### 13.2 AVL Insertion Trace: 10, 20, 30, 40, 50, 25
+
+```
+Insert 10, 20, 30 → RR imbalance at 10 → left rotation
+      20
+     ╱  ╲
+   10    30
+Insert 40, 50 → RR imbalance at 30 → left rotation at 30
+      20
+     ╱  ╲
+   10    40
+        ╱  ╲
+      30    50
+Insert 25 → goes left of 30; node 20 has balance −2 with right child 40 left-heavy → RL case
+Step 1: right-rotate 40        Step 2: left-rotate 20
+      20                               30
+     ╱  ╲                            ╱    ╲
+   10    30                        20      40
+        ╱  ╲                      ╱  ╲       ╲
+      25    40                  10    25      50
+              ╲
+               50
+```
+
+### 13.3 Heap Sort Trace: [4, 10, 3, 5, 1]
+
+| Step | Array | Note |
+|------|-------|------|
+| Build heap | [4, 10, 3, 5, 1] → [10, 4, 3, 5, 1] → [10, 5, 3, 4, 1] | heapify index 1, then 0 |
+| Swap 10 ↔ 1, heapify | [5, 4, 3, 1 \| 10] | |
+| Swap 5 ↔ 1, heapify | [4, 1, 3 \| 5, 10] | |
+| Swap 4 ↔ 3, heapify | [3, 1 \| 4, 5, 10] | |
+| Swap 3 ↔ 1 | [1 \| 3, 4, 5, 10] | sorted |
+
+### 13.4 Kruskal vs Prim on the Same Graph
+
+```mermaid
+flowchart LR
+    A((A)) ---|4| B((B))
+    A ---|1| C((C))
+    B ---|2| C
+    B ---|5| D((D))
+    C ---|8| D
+    D ---|3| E((E))
+    C ---|9| E
+```
+
+| Kruskal (sorted edges) | Decision | Prim (start A) | Edge added |
+|------------------------|----------|----------------|-----------|
+| A–C 1 | take | {A} | A–C 1 |
+| B–C 2 | take | {A, C} | B–C 2 |
+| D–E 3 | take | {A, B, C} | B–D 5 |
+| A–B 4 | skip (cycle) | {A, B, C, D} | D–E 3 |
+| B–D 5 | take → done | | |
+
+Both give MST weight **1 + 2 + 3 + 5 = 11**.
+
+### 13.5 Floyd–Warshall Trace
+
+Directed graph: 1→2 (4), 1→3 (11), 2→1 (6), 2→3 (2), 3→1 (3).
+```
+D⁰            D¹ (via 1)      D² (via 2)      D³ (via 3) = final
+0  4  11      0  4  11        0  4  6         0  4  6
+6  0  2       6  0  2         6  0  2         5  0  2
+3  ∞  0       3  7  0         3  7  0         3  7  0
+```
+Updates: D¹[3][2] = 3 + 4 = 7; D²[1][3] = 4 + 2 = 6; D³[2][1] = 2 + 3 = 5.
+
+### 13.6 0/1 Knapsack DP Table
+
+Capacity W = 5; items (weight, value): (2, 3), (3, 4), (4, 5), (5, 6).
+
+| i \ w | 0 | 1 | 2 | 3 | 4 | 5 |
+|-------|---|---|---|---|---|---|
+| 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| 1 (2, 3) | 0 | 0 | 3 | 3 | 3 | 3 |
+| 2 (3, 4) | 0 | 0 | 3 | 4 | 4 | **7** |
+| 3 (4, 5) | 0 | 0 | 3 | 4 | 5 | 7 |
+| 4 (5, 6) | 0 | 0 | 3 | 4 | 5 | 7 |
+
+Answer **7** (items 1 and 2). Traceback: K[4][5] = K[3][5] = K[2][5] ≠ K[1][5] → item 2 taken; remaining capacity 2 → item 1 taken.
+
+### 13.7 Topological Sort (Kahn's algorithm)
+
+```mermaid
+flowchart LR
+    A[A] --> C[C]
+    B[B] --> C
+    B --> D[D]
+    C --> E[E]
+    D --> E
+```
+In-degrees: A 0, B 0, C 2, D 1, E 2. Queue A, B → remove A (C: 1) → remove B (C: 0, D: 0) → C → D (E: 0) → E.
+One valid order: **A, B, C, D, E** (B, A, D, C, E is also valid — topological orders are not unique).
+
+### 13.8 Double Hashing
+
+m = 11, h₁(k) = k mod 11, h₂(k) = 7 − (k mod 7), probe i: (h₁ + i·h₂) mod 11. Insert 22, 33 (22 already at 0):
+22 → 0. 33 → h₁ = 0 (occupied); h₂ = 7 − 5 = 2 → (0 + 2) mod 11 = **2**.
+h₂ must never be 0 and should be co-prime with m (choose m prime).
+
 ---
 
 ## Previous Year Questions (PYQ pattern)
@@ -391,6 +506,7 @@ KMP prefix function for pattern **"ababaca"**: π = [0, 0, 1, 2, 3, 0, 1].
 7. Nested `for(i=1;i<=n;i++) for(j=1;j<=n;j+=i)`: **O(n log n)** (harmonic series)
 
 **Arrays, stacks, queues**
+
 8. A[1..10][1..15], row-major, base 100, 4 bytes/element. Address of A[5][7]: 100 + 4[(4)(15) + 6] = **364**
 9. Postfix of (A + B) * (C − D): **AB+CD−\***
 10. Prefix of A + B * C: **+A\*BC**
@@ -398,6 +514,7 @@ KMP prefix function for pattern **"ababaca"**: π = [0, 0, 1, 2, 3, 0, 1].
 12. Circular queue of size n holds at most: **n − 1** elements (one-slot-empty convention)
 
 **Trees**
+
 13. A binary tree with 20 leaves has how many nodes of degree 2? **19**
 14. Maximum nodes in a binary tree of height 5 (root at height 0): 2⁶ − 1 = **63**
 15. Number of distinct binary trees with 4 nodes: **14**
@@ -408,6 +525,7 @@ KMP prefix function for pattern **"ababaca"**: π = [0, 0, 1, 2, 3, 0, 1].
 20. Worst-case height of BST with n nodes: **n − 1**
 
 **Heaps & hashing**
+
 21. Time to build a heap of n elements: **O(n)**
 22. Array 89, 19, 50, 17, 12, 15, 2, 5, 7, 11, 6, 9, 100 — after inserting 100 into max-heap, root = **100**
 23. Linear probing suffers from: **primary clustering**
@@ -415,6 +533,7 @@ KMP prefix function for pattern **"ababaca"**: π = [0, 0, 1, 2, 3, 0, 1].
 25. Keys 43, 36, 92, 87, 11, 4, 71, 13, 14 hashed with h(k) = k mod 11 using chaining. Keys in slot 3: **36 and 14** (43→10, 36→3, 92→4, 87→10, 11→0, 4→4, 71→5, 13→2, 14→3)
 
 **Sorting & searching**
+
 26. Which sorting algorithm has worst case O(n log n) and is in-place? **Heap sort**
 27. Best algorithm for nearly sorted data: **Insertion sort**
 28. Quick sort worst case occurs when: **array is already sorted (pivot = first/last)**
@@ -424,6 +543,7 @@ KMP prefix function for pattern **"ababaca"**: π = [0, 0, 1, 2, 3, 0, 1].
 32. Min and max of n elements need at least: **⌈3n/2⌉ − 2 comparisons**
 
 **Design techniques**
+
 33. Matrix chain 10×20, 20×30, 30×40: min multiplications = (AB)C = 6000 + 12000 = **18000**
 34. LCS of "ABCD" and "ACBD": **3**
 35. 0/1 knapsack using DP: **O(nW)** (pseudo-polynomial)
@@ -433,6 +553,7 @@ KMP prefix function for pattern **"ababaca"**: π = [0, 0, 1, 2, 3, 0, 1].
 39. Which needs both optimal substructure & overlapping subproblems? **Dynamic programming**
 
 **Graphs**
+
 40. Dijkstra fails with: **negative edge weights**
 41. Bellman-Ford time complexity: **O(VE)**
 42. Kruskal's time complexity: **O(E log E)**
@@ -443,6 +564,7 @@ KMP prefix function for pattern **"ababaca"**: π = [0, 0, 1, 2, 3, 0, 1].
 47. Max-flow equals: **min-cut capacity**
 
 **Complexity theory**
+
 48. First problem proved NP-complete: **SAT (Cook–Levin)**
 49. Which is in P? (a) 3-SAT (b) 2-SAT (c) Clique (d) Hamiltonian cycle — **(b)**
 50. If A ≤ₚ B and B ∈ P then: **A ∈ P**
@@ -450,10 +572,24 @@ KMP prefix function for pattern **"ababaca"**: π = [0, 0, 1, 2, 3, 0, 1].
 52. Halting problem is: **undecidable, NP-hard but not in NP**
 
 **Selected topics**
+
 53. KMP string matching time: **O(n + m)**
 54. FFT multiplies two polynomials of degree n in: **O(n log n)**
 55. Randomised quicksort is a: **Las Vegas algorithm**
 56. Christofides algorithm gives approximation ratio: **1.5** (metric TSP)
+
+**More practice questions**
+
+57. After inserting 10, 20, 30 into an empty AVL tree, the root is: **20**
+58. Number of rotations needed for the RL case: **2**
+59. Build max-heap from [4, 10, 3, 5, 1]; the resulting array: **[10, 5, 3, 4, 1]**
+60. MST weight for the graph in §13.4: **11**
+61. Floyd–Warshall final distance from 2 to 1 in §13.5: **5**
+62. 0/1 knapsack W = 5 with items (2, 3), (3, 4), (4, 5), (5, 6): **7**
+63. Which is NOT a valid topological order of §13.7? (a) A B C D E (b) B A D C E (c) A C B D E (d) B D A C E — **Ans: (c)** (C before B violates B → C)
+64. T(n) = T(n − 1) + n solves to: **Θ(n²)**
+65. In double hashing, h₂(k) must never evaluate to: **0**
+66. Kruskal's algorithm uses which data structure to detect cycles? **Disjoint-set (union–find)**
 
 ## Quick Revision Box
 - Master theorem: compare f(n) with n^(log_b a)

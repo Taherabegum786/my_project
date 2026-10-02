@@ -1,0 +1,1405 @@
+\unitchapter{Paper 2 · Unit 8}{Theory of Computation \& Compilers}{p2-08}
+
+\textbf{Expected questions: 10--12 · Target: 9+ · Type: closure/decidability facts, automata construction, parsing tables --- the differentiator unit for 250+}
+
+\begin{sylbox}
+
+\begin{itemize}
+\tightlist
+\item[$\square$]
+  Formal languages, non-computational problems, diagonal argument, Russell\textquotesingle s paradox
+\item[$\square$]
+  Regular languages: DFA, NFA, ε-NFA, equivalence, regular expressions, regular grammars, pumping lemma, closure \& decision properties, Mealy \& Moore machines, minimisation
+\item[$\square$]
+  Context-free languages: CFG, derivations, parse trees, ambiguity, CNF, GNF, PDA (DPDA/NPDA), pumping lemma, closure \& decision properties, CYK
+\item[$\square$]
+  Turing machines: variants, universal TM, Church--Turing thesis, recursive \& RE languages, CSL \& LBA, unrestricted grammars, Chomsky hierarchy
+\item[$\square$]
+  Undecidability: halting problem, PCP, undecidable CFL problems, Rice\textquotesingle s theorem, complexity classes
+\item[$\square$]
+  Syntax analysis: precedence, associativity, left recursion \& factoring, recursive descent, LL(1), LR(0), SLR(1), LALR(1), CLR(1)
+\item[$\square$]
+  Semantic analysis: SDD, synthesized \& inherited attributes, S- and L-attributed, dependency graphs, type checking
+\item[$\square$]
+  Run-time environment: storage organisation, activation records, parameter passing, symbol table
+\item[$\square$]
+  Intermediate code: three-address code, quadruples, triples, DAG, translation of expressions, Booleans, control flow
+\item[$\square$]
+  Code generation \& optimisation: basic blocks, flow graphs, data-flow analysis, local/global/loop/peephole optimisation, register allocation, instruction scheduling
+\end{itemize}
+
+\end{sylbox}
+
+\needspace{140pt}
+
+\hypertarget{p2-08--part-a--theory-of-computation}{%
+\section{Part A --- Theory of Computation}\label{p2-08--part-a--theory-of-computation}}
+
+\needspace{100pt}
+
+\hypertarget{p2-08--1-basics}{%
+\section{1. Basics}\label{p2-08--1-basics}}
+
+\begin{itemize}
+\tightlist
+\item
+  Alphabet Σ (finite set of symbols), string, language L ⊆ Σ*. \textbar Σ*\textbar{} is countably infinite; the set of all languages 2\^{}(Σ*) is \textbf{uncountable}.
+\item
+  \textbf{Diagonal argument (Cantor)}: proves uncountability of reals / power sets; used to show existence of non-RE languages (L\_d = diagonal language).
+\item
+  Since TMs are countable but languages are uncountable, \textbf{most languages are not even recursively enumerable}.
+\item
+  \textbf{Russell\textquotesingle s paradox}: the set of all sets that do not contain themselves --- self-reference leads to contradiction (basis of diagonalisation).
+\end{itemize}
+
+\needdiagram{figures/p2-08-00}{55pt}
+
+\hypertarget{p2-08--2-chomsky-hierarchy}{%
+\section{2. Chomsky Hierarchy}\label{p2-08--2-chomsky-hierarchy}}
+
+\diagramhere{figures/p2-08-00}
+
+\begin{asciiblock}{249pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ ┌──────────────────────────────────────────────────┐
+ │ All languages (uncountable)                      │
+ │ ┌──────────────────────────────────────────────┐ │
+ │ │ RE — Turing machine (may loop on rejection)  │ │
+ │ │ ┌──────────────────────────────────────────┐ │ │
+ │ │ │ Recursive / decidable (TM always halts)  │ │ │
+ │ │ │ ┌──────────────────────────────────────┐ │ │ │
+ │ │ │ │ CSL — linear bounded automaton       │ │ │ │
+ │ │ │ │ ┌──────────────────────────────────┐ │ │ │ │
+ │ │ │ │ │ CFL — non-deterministic PDA      │ │ │ │ │
+ │ │ │ │ │ ┌──────────────────────────────┐ │ │ │ │ │
+ │ │ │ │ │ │ DCFL — deterministic PDA     │ │ │ │ │ │
+ │ │ │ │ │ │ ┌──────────────────────────┐ │ │ │ │ │ │
+ │ │ │ │ │ │ │ Regular — finite automata│ │ │ │ │ │ │
+ │ │ │ │ │ │ └──────────────────────────┘ │ │ │ │ │ │
+ │ │ │ │ │ └──────────────────────────────┘ │ │ │ │ │
+ │ │ │ │ └──────────────────────────────────┘ │ │ │ │
+ │ │ │ └──────────────────────────────────────┘ │ │ │
+ │ │ └──────────────────────────────────────────┘ │ │
+ │ └──────────────────────────────────────────────┘ │
+ └──────────────────────────────────────────────────┘
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{140pt}
+
+\hypertarget{p2-08--3-finite-automata}{%
+\section{3. Finite Automata}\label{p2-08--3-finite-automata}}
+
+\needspace{100pt}
+
+\hypertarget{p2-08--31-dfa-vs-nfa}{%
+\subsection{3.1 DFA vs NFA}\label{p2-08--31-dfa-vs-nfa}}
+
+\begin{itemize}
+\tightlist
+\item
+  DFA: δ: Q × Σ → Q. NFA: δ: Q × (Σ ∪ \{ε\}) → 2\^{}Q.
+\item
+  \textbf{DFA ≡ NFA ≡ ε-NFA ≡ Regular expressions ≡ Regular grammars} in power.
+\item
+  Subset construction: n-state NFA → DFA with up to \textbf{2ⁿ} states.
+\end{itemize}
+
+\textbf{Example}: DFA for binary strings ending in "01".
+
+\diagram{figures/p2-08-01}
+
+\textbf{Example}: DFA for binary numbers divisible by 3 (state = remainder so far; reading bit b takes remainder i to (2i + b) mod 3).
+
+\diagram{figures/p2-08-02}
+
+\needspace{135pt}
+
+\hypertarget{p2-08--32-counting-minimum-dfa-states-common-shortcuts}{%
+\subsection{3.2 Counting minimum DFA states (common shortcuts)}\label{p2-08--32-counting-minimum-dfa-states-common-shortcuts}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3491}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1457}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Language over \{a, b\}}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Min DFA states}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Strings of length exactly n & n + 2 \\
+Length ≥ n & n + 1 \\
+Length ≤ n & n + 2 \\
+Strings where length ≡ 0 mod k & k \\
+Strings ending with a given string of length n & n + 1 \\
+Strings containing a given substring of length n & n + 1 \\
+Strings starting with a given string of length n & n + 2 \\
+Number of a\textquotesingle s ≡ 0 mod m AND b\textquotesingle s ≡ 0 mod n & m·n \\
+Binary numbers divisible by n (n odd) & n \\
+n-th symbol from the end is \textquotesingle a\textquotesingle{} (DFA) & 2ⁿ (NFA: n + 1) \\
+\end{longtable}
+
+\endgroup
+
+\needspace{100pt}
+
+\hypertarget{p2-08--33-minimisation-myhillnerode--partition-method}{%
+\subsection{3.3 Minimisation (Myhill--Nerode / partition method)}\label{p2-08--33-minimisation-myhillnerode--partition-method}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Remove unreachable states. 2. Partition into \{final\}, \{non-final\}. 3. Repeatedly split groups whose members go to different groups on some symbol. 4. Merge equivalent states.
+  \textbf{Myhill--Nerode}: L is regular ⇔ the number of equivalence classes of ≡\_L is finite; that number = states of minimal DFA.
+\end{enumerate}
+
+\needspace{135pt}
+
+\hypertarget{p2-08--34-mealy--moore}{%
+\subsection{3.4 Mealy \& Moore}\label{p2-08--34-mealy--moore}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2406}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2330}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Moore}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Mealy}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Output depends on \textbf{state} only & Output depends on \textbf{state + input} \\
+Output length = input length + 1 & Output length = input length \\
+More states usually & Fewer states \\
+- Mealy → Moore may need up to & Q \\
+\end{longtable}
+
+\endgroup
+
+\needspace{100pt}
+
+\hypertarget{p2-08--4-regular-expressions}{%
+\section{4. Regular Expressions}\label{p2-08--4-regular-expressions}}
+
+\begin{itemize}
+\tightlist
+\item
+  Operators: union (+), concatenation, Kleene star (*). Precedence: * \textgreater{} concatenation \textgreater{} +.
+\item
+  \textbf{Arden\textquotesingle s theorem}: R = Q + RP ⇒ R = QP* (if P doesn\textquotesingle t contain ε).
+\item
+  Identities: (a + b)* = (a\emph{b})* = (a* + b*)\emph{; (ab)\emph{a = a(ba)}; ε} = ε; ∅* = ε; R + R* = R*; (R*)* = R*.
+\end{itemize}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2575}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2038}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Language}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{RE}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+All strings over \{a,b\} & (a + b)* \\
+Contains "aa" & (a + b)\emph{aa(a + b)} \\
+Even length & ((a + b)(a + b))* \\
+Starts and ends with same symbol & a(a+b)*a + b(a+b)*b + a + b \\
+No two consecutive a\textquotesingle s & (b + ab)*(ε + a) \\
+Exactly one \textquotesingle a\textquotesingle{} & b\emph{ab} \\
+\end{longtable}
+
+\endgroup
+
+\needspace{215pt}
+
+\hypertarget{p2-08--pumping-lemma-regular}{%
+\subsection{Pumping Lemma (Regular)}\label{p2-08--pumping-lemma-regular}}
+
+If L is regular, ∃ p such that every w ∈ L with \textbar w\textbar{} ≥ p can be split w = xyz with \textbar xy\textbar{} ≤ p, \textbar y\textbar{} ≥ 1, and \textbf{xyⁱz ∈ L for all i ≥ 0}. Used to prove \textbf{non-regularity} (it is a necessary, not sufficient condition).
+Non-regular: aⁿbⁿ, ww\^{}R, palindromes, a\^{}(n²), a\^{}p (p prime), balanced parentheses, aⁿbᵐ (n \textless{} m).
+Regular: aⁿbᵐ (n, m ≥ 0), (ab)ⁿ, a\^{}(2n), strings with equal number of "ab" and "ba" substrings, aⁿbⁿ for n ≤ 100 (finite).
+
+\needspace{140pt}
+
+\hypertarget{p2-08--5-context-free-languages}{%
+\section{5. Context-Free Languages}\label{p2-08--5-context-free-languages}}
+
+\needspace{100pt}
+
+\hypertarget{p2-08--51-grammars--ambiguity}{%
+\subsection{5.1 Grammars \& Ambiguity}\label{p2-08--51-grammars--ambiguity}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Ambiguous} grammar: some string has ≥ 2 parse trees (leftmost derivations). E → E + E \textbar{} E * E \textbar{} id is ambiguous.
+\item
+  \textbf{Inherently ambiguous language}: every grammar ambiguous, e.g. \{aⁱbʲcᵏ \textbar{} i = j or j = k\}.
+\item
+  Checking ambiguity of a CFG is \textbf{undecidable}.
+\item
+  Remove ambiguity by encoding precedence \& associativity:
+\end{itemize}
+
+\begin{asciiblock}{57pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+E → E + T | T        (+ left-assoc, lower precedence)
+T → T * F | F        (* higher precedence)
+F → (E) | id
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{100pt}
+
+\hypertarget{p2-08--52-normal-forms}{%
+\subsection{5.2 Normal Forms}\label{p2-08--52-normal-forms}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{CNF}: A → BC \textbar{} a. A string of length n needs exactly \textbf{2n − 1} derivation steps; parse tree height ≥ ⌈log₂ n⌉ + 1.
+\item
+  \textbf{GNF}: A → aα (α ∈ V*). Derivation of length-n string takes exactly \textbf{n} steps.
+\item
+  Simplification order: remove ε-productions → unit productions → useless symbols.
+\end{itemize}
+
+\needspace{100pt}
+
+\hypertarget{p2-08--53-pda}{%
+\subsection{5.3 PDA}\label{p2-08--53-pda}}
+
+\begin{itemize}
+\tightlist
+\item
+  PDA = FA + stack. Acceptance by final state ≡ by empty stack (for NPDA).
+\item
+  \textbf{NPDA ⊋ DPDA} (unlike FA). ww\^{}R needs NPDA; wcw\^{}R is DCFL.
+\item
+  DCFLs are unambiguous; every LR(k) grammar generates a DCFL.
+\end{itemize}
+
+\begin{asciiblock}{89pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+PDA for aⁿbⁿ
+ δ(q0, a, Z) = (q0, aZ)       push a
+ δ(q0, a, a) = (q0, aa)       push a
+ δ(q0, b, a) = (q1, ε)        pop on b
+ δ(q1, b, a) = (q1, ε)
+ δ(q1, ε, Z) = (qf, Z)        accept
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{285pt}
+
+\hypertarget{p2-08--54-pumping-lemma-cfl}{%
+\subsection{5.4 Pumping Lemma (CFL)}\label{p2-08--54-pumping-lemma-cfl}}
+
+w = uvxyz, \textbar vxy\textbar{} ≤ p, \textbar vy\textbar{} ≥ 1, uvⁱxyⁱz ∈ L ∀ i ≥ 0.
+Non-CFL: aⁿbⁿcⁿ, ww, a\^{}(n²), a\^{}p (prime), aⁿbᵐcⁿdᵐ.
+CFL (non-regular): aⁿbⁿ, ww\^{}R, aⁿbᵐcᵐ, aⁿbⁿcᵐ, aⁱbʲcᵏ with i = j or j = k.
+
+\needspace{210pt}
+
+\hypertarget{p2-08--55-cyk-algorithm}{%
+\subsection{5.5 CYK Algorithm}\label{p2-08--55-cyk-algorithm}}
+
+Membership for CNF grammar in \textbf{O(n³·\textbar G\textbar)}; dynamic programming over substrings.
+
+\needspace{135pt}
+
+\hypertarget{p2-08--6-closure--decision-properties-most-asked-table}{%
+\section{6. Closure \& Decision Properties (MOST ASKED TABLE)}\label{p2-08--6-closure--decision-properties-most-asked-table}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.2286}}
+  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0885}}
+  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0829}}
+  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0663}}
+  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0663}}
+  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1082}}
+  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0497}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Operation}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{Regular}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{DCFL}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{CFL}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{CSL}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{Recursive}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{RE}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Union & ✔ & ✘ & ✔ & ✔ & ✔ & ✔ \\
+Intersection & ✔ & ✘ & ✘ & ✔ & ✔ & ✔ \\
+Complement & ✔ & \textbf{✔} & \textbf{✘} & ✔ & ✔ & \textbf{✘} \\
+Concatenation & ✔ & ✘ & ✔ & ✔ & ✔ & ✔ \\
+Kleene star & ✔ & ✘ & ✔ & ✔ & ✔ & ✔ \\
+Reversal & ✔ & ✘ & ✔ & ✔ & ✔ & ✔ \\
+Homomorphism & ✔ & ✘ & ✔ & ✘ & ✘ & ✔ \\
+Inverse homomorphism & ✔ & ✔ & ✔ & ✔ & ✔ & ✔ \\
+Intersection with regular & ✔ & ✔ & ✔ & ✔ & ✔ & ✔ \\
+Difference & ✔ & ✘ & ✘ & ✔ & ✔ & ✘ \\
+\end{longtable}
+
+\endgroup
+
+Notes: CFL ∩ Regular = CFL. DCFL ∪ Regular, DCFL ∩ Regular = DCFL. If L and L\textquotesingle{} are both RE ⇒ L is recursive.
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1793}}
+  >{\centering\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0857}}
+  >{\centering\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1394}}
+  >{\centering\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0642}}
+  >{\centering\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1047}}
+  >{\centering\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1739}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Decision problem}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{Regular}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{CFL}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{CSL}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{Recursive}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{RE}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Membership & D & D & D & D & \textbf{U} (semi-decidable) \\
+Emptiness & D & D & U & U & U \\
+Finiteness & D & D & U & U & U \\
+Equivalence & D & \textbf{U} (DCFL: D) & U & U & U \\
+Ambiguity & --- & U & --- & --- & --- \\
+L = Σ* & D & U & U & U & U \\
+Subset (L₁ ⊆ L₂) & D & U & U & U & U \\
+Intersection empty? & D & U & U & U & U \\
+\end{longtable}
+
+\endgroup
+
+D = decidable, U = undecidable.
+
+\needspace{100pt}
+
+\hypertarget{p2-08--7-turing-machines}{%
+\section{7. Turing Machines}\label{p2-08--7-turing-machines}}
+
+\begin{itemize}
+\tightlist
+\item
+  TM = (Q, Σ, Γ, δ, q₀, B, F); infinite tape, read/write head moves L/R.
+\item
+  \textbf{Variants equivalent in power}: multi-tape, multi-track, two-way infinite tape, non-deterministic TM, multi-head, TM with stay option, 2-stack PDA, queue automaton, counter machine with 2 counters.
+\item
+  \textbf{PDA with 2 stacks = TM}. FA with a queue = TM.
+\item
+  \textbf{Universal TM}: simulates any TM given its encoding ⟨M, w⟩.
+\item
+  \textbf{Church--Turing thesis}: every effectively computable function is computable by a TM (a hypothesis, not a theorem).
+\item
+  \textbf{Recursive (decidable)}: TM halts on all inputs. \textbf{RE (semi-decidable)}: TM halts \& accepts on members; may loop otherwise.
+\item
+  \textbf{LBA} (tape bounded by input length) accepts CSLs. Membership for CSL is decidable; emptiness for CSL is undecidable.
+\item
+  \textbf{Unrestricted grammar} (α → β) ≡ TM.
+\end{itemize}
+
+\begin{asciiblock}{46pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+TM for aⁿbⁿ: repeatedly mark leftmost a as X, move right to leftmost b, mark as Y,
+return left; when no a's left, check no b's remain → accept.
+\end{Verbatim}
+\end{asciiblock}
+
+\needdiagram{figures/p2-08-03}{55pt}
+
+\hypertarget{p2-08--8-undecidability}{%
+\section{8. Undecidability}\label{p2-08--8-undecidability}}
+
+\diagramhere{figures/p2-08-03}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Halting problem} HALT\_TM = \{⟨M, w⟩ \textbar{} M halts on w\}: \textbf{RE but not recursive}; its complement is \textbf{not RE}.
+\item
+  A\_TM (acceptance) is RE, undecidable. Complement of A\_TM is not RE.
+\item
+  \textbf{Rice\textquotesingle s theorem}: any non-trivial property of the \textbf{language} of a TM is undecidable (e.g. "L(M) is empty", "L(M) is regular", "L(M) is finite").
+\item
+  \textbf{PCP}: undecidable in general; decidable for single-letter alphabet. Bounded PCP is NP-complete.
+\item
+  E\_TM (emptiness) --- not RE (its complement is RE). EQ\_TM --- neither RE nor co-RE.
+\item
+  Decidable examples: whether a DFA accepts any string; whether a CFG generates the empty language; whether a TM makes more than k steps on input w (simulate k steps).
+\item
+  Complexity: P, NP, PSPACE, EXPTIME; tractable (polynomial) vs intractable. See \protect\hyperlink{p2-07--10-complexity-classes}{Unit 7 §10}.
+\end{itemize}
+
+\needdiagram{figures/p2-08-04}{95pt}
+
+\hypertarget{p2-08--part-b--compiler-design}{%
+\section{Part B --- Compiler Design}\label{p2-08--part-b--compiler-design}}
+
+\needspace{100pt}
+
+\hypertarget{p2-08--9-phases-of-a-compiler}{%
+\section{9. Phases of a Compiler}\label{p2-08--9-phases-of-a-compiler}}
+
+\diagramhere{figures/p2-08-04}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Front end} (analysis): lexical, syntax, semantic, ICG --- language-dependent, machine-independent.
+\item
+  \textbf{Back end} (synthesis): optimisation, code generation --- machine-dependent.
+\item
+  \textbf{Lexical analysis}: regular expressions → DFA (tools: \textbf{LEX/Flex}). Token, lexeme, pattern. Errors: illegal characters.
+\item
+  \textbf{Count tokens}: \texttt{printf("i\ =\ \%d",\ i);} → printf, (, "i = \%d", ",", i, ), ; = \textbf{7 tokens}.
+\item
+  Parser generator: \textbf{YACC/Bison} (LALR(1)).
+\item
+  Compiler passes: single-pass vs multi-pass. \textbf{Cross compiler}: runs on one machine, generates code for another. \textbf{Bootstrapping}: writing a compiler in its own language (T-diagrams).
+\end{itemize}
+
+\needdiagram{figures/p2-08-05}{55pt}
+
+\hypertarget{p2-08--10-syntax-analysis-parsing}{%
+\section{10. Syntax Analysis (Parsing)}\label{p2-08--10-syntax-analysis-parsing}}
+
+\diagramhere{figures/p2-08-05}
+
+\textbf{Power}: LR(0) ⊂ SLR(1) ⊂ LALR(1) ⊂ CLR(1); LL(1) ⊂ LR(1). Number of states: \textbf{LR(0) = SLR = LALR ≤ CLR}.
+
+\needspace{100pt}
+
+\hypertarget{p2-08--101-grammar-transformations-for-top-down}{%
+\subsection{10.1 Grammar Transformations for Top-down}\label{p2-08--101-grammar-transformations-for-top-down}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Left recursion removal}: A → Aα \textbar{} β ⇒ A → βA′, A′ → αA′ \textbar{} ε.
+\item
+  \textbf{Left factoring}: A → αβ₁ \textbar{} αβ₂ ⇒ A → αA′, A′ → β₁ \textbar{} β₂.
+\end{itemize}
+
+\needspace{168pt}
+
+\hypertarget{p2-08--102-first-and-follow}{%
+\subsection{10.2 FIRST and FOLLOW}\label{p2-08--102-first-and-follow}}
+
+Grammar:
+
+\begin{asciiblock}{78pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+E  → T E'
+E' → + T E' | ε
+T  → F T'
+T' → * F T' | ε
+F  → ( E ) | id
+\end{Verbatim}
+\end{asciiblock}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0439}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0880}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1112}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{NT}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{FIRST}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{FOLLOW}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+E & \{ (, id \} & \{ ), \$ \} \\
+E\textquotesingle{} & \{ +, ε \} & \{ ), \$ \} \\
+T & \{ (, id \} & \{ +, ), \$ \} \\
+T\textquotesingle{} & \{ *, ε \} & \{ +, ), \$ \} \\
+F & \{ (, id \} & \{ *, +, ), \$ \} \\
+\end{longtable}
+
+\endgroup
+
+\textbf{LL(1) parsing table}:
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0401}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0841}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1016}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1016}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0841}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0687}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0687}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{id}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{+}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{*}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{(}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{\$}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+E & E→TE\textquotesingle{} & & & E→TE\textquotesingle{} & & \\
+E\textquotesingle{} & & E\textquotesingle→+TE\textquotesingle{} & & & E\textquotesingle→ε & E\textquotesingle→ε \\
+T & T→FT\textquotesingle{} & & & T→FT\textquotesingle{} & & \\
+T\textquotesingle{} & & T\textquotesingle→ε & T\textquotesingle→*FT\textquotesingle{} & & T\textquotesingle→ε & T\textquotesingle→ε \\
+F & F→id & & & F→(E) & & \\
+\end{longtable}
+
+\endgroup
+
+\textbf{LL(1) condition}: for A → α \textbar{} β: FIRST(α) ∩ FIRST(β) = ∅; if β ⇒* ε then FIRST(α) ∩ FOLLOW(A) = ∅. A left-recursive or ambiguous grammar is \textbf{never} LL(1).
+
+\needspace{133pt}
+
+\hypertarget{p2-08--103-lr-parsing}{%
+\subsection{10.3 LR Parsing}\label{p2-08--103-lr-parsing}}
+
+\begin{asciiblock}{78pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ LR parser model
+ input:  a1 a2 ... an $
+           ▲
+ stack:  s0 X1 s1 X2 s2 ... Xm sm     ACTION[s, a]: shift / reduce / accept / error
+                                     GOTO[s, A]: next state after reduce
+\end{Verbatim}
+\end{asciiblock}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0922}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2859}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2261}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Parser}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Items}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Reduce A → α· placed in}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+LR(0) & {[}A → α·β{]} & \textbf{all} terminals \\
+SLR(1) & LR(0) items & \textbf{FOLLOW(A)} \\
+LALR(1) & LR(1) items with same core merged & lookaheads \\
+CLR(1) & {[}A → α·β, a{]} & lookahead a only \\
+\end{longtable}
+
+\endgroup
+
+Conflicts: \textbf{shift-reduce (S/R)} and \textbf{reduce-reduce (R/R)}.
+
+\begin{itemize}
+\tightlist
+\item
+  Merging CLR states into LALR can introduce \textbf{R/R conflicts} but \textbf{never new S/R conflicts}.
+\item
+  An unambiguous grammar can still have conflicts; every ambiguous grammar has conflicts in every LR table.
+\end{itemize}
+
+\textbf{Operator precedence parsing}: for operator grammars (no ε, no two adjacent non-terminals); relations ⋖, ≐, ⋗.
+
+\textbf{Handle}: substring matching RHS whose reduction is a step of reverse rightmost derivation. \textbf{Viable prefixes} are recognised by a DFA (LR(0) automaton).
+
+\needspace{135pt}
+
+\hypertarget{p2-08--11-syntax-directed-translation}{%
+\section{11. Syntax-Directed Translation}\label{p2-08--11-syntax-directed-translation}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1024}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2092}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3068}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Attribute}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Computed from}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Example}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Synthesized} & Children (bottom-up) & E.val = E1.val + T.val \\
+\textbf{Inherited} & Parent and/or left siblings & type info in declarations: L.in = T.type \\
+\end{longtable}
+
+\endgroup
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{S-attributed SDD}: only synthesized attributes → evaluate in \textbf{bottom-up (postorder)}, natural for LR parsers.
+\item
+  \textbf{L-attributed SDD}: inherited attributes depend only on parent \& \textbf{left} siblings → evaluated in one \textbf{depth-first left-to-right} pass (LL parsers). \textbf{Every S-attributed is L-attributed.}
+\item
+  \textbf{Dependency graph}: evaluation order = any \textbf{topological sort}; a cycle → no valid order.
+\item
+  \textbf{Annotated parse tree}: shows attribute values.
+\item
+  \textbf{Type checking}: static vs dynamic; type expressions; coercion; overloading resolution; strongly typed language.
+\end{itemize}
+
+\begin{asciiblock}{89pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+SDT for desk calculator: input 3 * 5 + 4
+L → E n      { print(E.val) }
+E → E1 + T   { E.val = E1.val + T.val }
+T → T1 * F   { T.val = T1.val * F.val }
+F → digit    { F.val = digit.lexval }
+Annotated root value: 19
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{197pt}
+
+\hypertarget{p2-08--12-run-time-environment}{%
+\section{12. Run-Time Environment}\label{p2-08--12-run-time-environment}}
+
+\begin{asciiblock}{142pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ Memory layout
+ ┌──────────────┐ high address
+ │    Stack     │  activation records (grows ↓)
+ │      ↓       │
+ │      ↑       │
+ │    Heap      │  dynamic allocation (grows ↑)
+ ├──────────────┤
+ │ Static data  │  globals, static
+ ├──────────────┤
+ │    Code      │  text
+ └──────────────┘ low address
+\end{Verbatim}
+\end{asciiblock}
+
+\textbf{Activation record (stack frame)}:
+
+\begin{asciiblock}{121pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ ┌──────────────────────────┐
+ │ Actual parameters        │
+ │ Returned value           │
+ │ Control link (dynamic)   │ → caller's AR
+ │ Access link (static)     │ → AR of lexically enclosing procedure
+ │ Saved machine status     │ (return address, registers)
+ │ Local data               │
+ │ Temporaries              │
+ └──────────────────────────┘
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Activation tree}: each node = a procedure activation; the stack holds the path from root to the current node.
+\item
+  Static allocation (FORTRAN --- no recursion), stack allocation (C, recursion), heap allocation (closures, dynamic data).
+\item
+  \textbf{Display}: array of pointers for fast non-local access in nested scopes.
+\item
+  Parameter passing: see \protect\hyperlink{p2-03--13-parameter-passing}{Unit 3 §1.3}.
+\item
+  \textbf{Symbol table}: implemented with linear list, \textbf{hash table} (most common), BST; stores name, type, scope, offset. Scope handling via a stack of tables.
+\end{itemize}
+
+\needspace{214pt}
+
+\hypertarget{p2-08--13-intermediate-code}{%
+\section{13. Intermediate Code}\label{p2-08--13-intermediate-code}}
+
+Expression: \textbf{a = b * −c + b * −c}
+
+\textbf{Three-address code}:
+
+\begin{asciiblock}{89pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+t1 = minus c
+t2 = b * t1
+t3 = minus c
+t4 = b * t3
+t5 = t2 + t4
+a  = t5
+\end{Verbatim}
+\end{asciiblock}
+
+\textbf{Quadruples} (op, arg1, arg2, result) · \textbf{Triples} (op, arg1, arg2 --- results referred by position) · \textbf{Indirect triples} (list of pointers to triples, easy to reorder).
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0309}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0613}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0530}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0530}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0657}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{\#}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{op}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{arg1}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{arg2}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{result}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & minus & c & & t1 \\
+1 & * & b & t1 & t2 \\
+2 & minus & c & & t3 \\
+3 & * & b & t3 & t4 \\
+4 & + & t2 & t4 & t5 \\
+5 & = & t5 & & a \\
+\end{longtable}
+
+\endgroup
+
+\textbf{DAG} for the same expression shares the common subexpression b * −c:
+
+\begin{asciiblock}{131pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+        =
+       ╱ ╲
+      a   +
+         ╱ ╲
+         ╲ ╱      (both operands point to the same * node)
+          *
+         ╱ ╲
+        b   minus
+             │
+             c
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  Other IRs: syntax tree, postfix, \textbf{SSA (static single assignment)} --- each variable assigned once, φ-functions at joins.
+\item
+  Boolean expressions: numerical vs \textbf{short-circuit (jumping) code}; \textbf{backpatching} for one-pass generation of jumps (makelist, merge, backpatch).
+\end{itemize}
+
+\needdiagram{figures/p2-08-06}{130pt}
+
+\hypertarget{p2-08--14-code-optimisation--generation}{%
+\section{14. Code Optimisation \& Generation}\label{p2-08--14-code-optimisation--generation}}
+
+\needspace{135pt}
+
+\hypertarget{p2-08--141-basic-blocks--flow-graphs}{%
+\subsection{14.1 Basic Blocks \& Flow Graphs}\label{p2-08--141-basic-blocks--flow-graphs}}
+
+\textbf{Leaders}: (1) first statement; (2) target of any jump; (3) statement immediately after a jump. A basic block runs from a leader up to (not including) the next leader.
+
+\diagramhere{figures/p2-08-06}
+
+\needspace{135pt}
+
+\hypertarget{p2-08--142-optimisations}{%
+\subsection{14.2 Optimisations}\label{p2-08--142-optimisations}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0806}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.6587}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2607}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Level}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Technique}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Example}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Local & Common subexpression elimination & \texttt{t1\ =\ b*c;\ t2\ =\ b*c} → reuse t1 \\
+Local & Constant folding & \texttt{x\ =\ 2\ *\ 3.14} → \texttt{x\ =\ 6.28} \\
+Local & Constant/\allowbreak{}copy propagation & \texttt{x\ =\ y;\ z\ =\ x\ +\ 1} → \texttt{z\ =\ y\ +\ 1} \\
+Local & Dead code elimination & Remove assignments never used \\
+Loop & \textbf{Code motion (loop-invariant)} & Move \texttt{t\ =\ x*y} out of the loop \\
+Loop & \textbf{Induction variable elimination} & Replace \texttt{i} with pointer arithmetic \\
+Loop & \textbf{Strength reduction} & \texttt{i*4} → \texttt{t\ =\ t\ +\ 4} ; \texttt{x²} → \texttt{x*x} \\
+Loop & Loop unrolling, loop fusion (jamming), loop fission & \\
+Global & Data-flow analysis based & \\
+Peephole & Redundant load/store, unreachable code, flow-of-control (jump to jump), algebraic simplification, use of machine idioms (INC) & Window over target code \\
+\end{longtable}
+
+\endgroup
+
+\needspace{135pt}
+
+\hypertarget{p2-08--143-data-flow-analysis}{%
+\subsection{14.3 Data-Flow Analysis}\label{p2-08--143-data-flow-analysis}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1790}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0951}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0553}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2425}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Analysis}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Direction}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Meet}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Use}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Reaching definitions & Forward & ∪ & Constant propagation \\
+\textbf{Live variables} & \textbf{Backward} & ∪ & Register allocation, dead code \\
+Available expressions & Forward & ∩ & Global CSE \\
+Very busy expressions & Backward & ∩ & Code hoisting \\
+\end{longtable}
+
+\endgroup
+
+\begin{asciiblock}{46pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Reaching definitions:  OUT[B] = gen[B] ∪ (IN[B] − kill[B]) ;  IN[B] = ∪ OUT[pred]
+Live variables:        IN[B]  = use[B] ∪ (OUT[B] − def[B]) ;  OUT[B] = ∪ IN[succ]
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Loops} detected using \textbf{dominators} and back edges (n → d where d dom n). Natural loop. Reducible flow graphs.
+\end{itemize}
+
+\needspace{100pt}
+
+\hypertarget{p2-08--144-code-generation}{%
+\subsection{14.4 Code Generation}\label{p2-08--144-code-generation}}
+
+\begin{itemize}
+\tightlist
+\item
+  Issues: instruction selection, \textbf{register allocation} (graph colouring --- interference graph; spilling), evaluation order.
+\item
+  \textbf{Sethi--Ullman} numbering gives the minimum registers for an expression tree.
+\item
+  \texttt{getreg}, register \& address descriptors. Next-use information.
+\item
+  \textbf{Instruction scheduling}: reorder to avoid pipeline stalls (list scheduling); respects data dependences.
+\end{itemize}
+
+\needspace{210pt}
+
+\hypertarget{p2-08--15-deeper-dive--constructions--parsing-traces}{%
+\section{15. Deeper Dive --- Constructions \& Parsing Traces}\label{p2-08--15-deeper-dive--constructions--parsing-traces}}
+
+\needspace{170pt}
+
+\hypertarget{p2-08--151-nfa--dfa-subset-construction}{%
+\subsection{15.1 NFA → DFA (Subset Construction)}\label{p2-08--151-nfa--dfa-subset-construction}}
+
+NFA for strings over \{0, 1\} ending in "01": q0 ---0,1→ q0, q0 ---0→ q1, q1 ---1→ q2 (final).
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1080}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0805}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0805}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0716}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{DFA state}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{on 0}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{on 1}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Final?}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+→ \{q0\} & \{q0, q1\} & \{q0\} & \\
+\{q0, q1\} & \{q0, q1\} & \{q0, q2\} & \\
+\{q0, q2\} & \{q0, q1\} & \{q0\} & ✔ \\
+\end{longtable}
+
+\endgroup
+
+Only 3 of the 2³ = 8 subsets are reachable --- this is the same DFA drawn in §3.1.
+
+\needspace{135pt}
+
+\hypertarget{p2-08--152-dfa-minimisation-partition-refinement}{%
+\subsection{15.2 DFA Minimisation (partition refinement)}\label{p2-08--152-dfa-minimisation-partition-refinement}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0626}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0503}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0503}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0716}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{State}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{on 0}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{on 1}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Final?}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+→ A & B & C & \\
+B & A & D & \\
+C & E & F & ✔ \\
+D & E & F & ✔ \\
+E & E & F & ✔ \\
+F & F & F & \\
+\end{longtable}
+
+\endgroup
+
+\begin{asciiblock}{99pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+P0 = { C D E } { A B F }                       (final / non-final)
+P1: in {A B F}, F goes to non-final on 1 while A, B go to final → split
+    = { C D E } { A B } { F }
+P2: {A B}: both go to {A B} on 0 and {C D E} on 1 → no split
+    {C D E}: all go to {C D E} on 0 and {F} on 1 → no split   → stable
+Minimal DFA: 3 states  [AB] —1→ [CDE] —1→ [F] (dead), 0-loops on each
+Language: strings over {0,1} containing exactly one 1
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{157pt}
+
+\hypertarget{p2-08--153-cfg--cnf}{%
+\subsection{15.3 CFG → CNF}\label{p2-08--153-cfg--cnf}}
+
+S → aSb \textbar{} ab
+
+\begin{asciiblock}{67pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+1. Replace terminals in long bodies:  A → a, B → b
+   S → A S B | A B
+2. Break bodies longer than 2:        S → A X,  X → S B
+CNF:  S → AX | AB,   X → SB,   A → a,   B → b
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{100pt}
+
+\hypertarget{p2-08--154-pumping-lemma-proof-template-l---aux207fbux207f--n--0--is-not-regular}{%
+\subsection{15.4 Pumping-Lemma Proof Template (L = \{ aⁿbⁿ \textbar{} n ≥ 0 \} is not regular)}\label{p2-08--154-pumping-lemma-proof-template-l---aux207fbux207f--n--0--is-not-regular}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Assume L is regular with pumping length p.
+\item
+  Choose w = aᵖbᵖ ∈ L, \textbar w\textbar{} ≥ p.
+\item
+  Any split w = xyz with \textbar xy\textbar{} ≤ p, \textbar y\textbar{} ≥ 1 forces y = aᵏ (k ≥ 1).
+\item
+  Pump i = 2: xy²z = a\^{}(p+k) bᵖ ∉ L --- contradiction. Hence L is not regular.
+\end{enumerate}
+
+\needdiagram{figures/p2-08-07}{90pt}
+
+\hypertarget{p2-08--155-lr0-automaton-and-parse--worked}{%
+\subsection{15.5 LR(0) Automaton and Parse --- Worked}\label{p2-08--155-lr0-automaton-and-parse--worked}}
+
+Grammar: (0) S′ → S (1) S → AA (2) A → aA (3) A → b
+
+\diagramhere{figures/p2-08-07}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0666}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0351}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0351}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0415}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0320}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0320}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{State}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{a}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{b}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{\$}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{A}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{S}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & s3 & s4 & & 2 & 1 \\
+1 & & & \textbf{acc} & & \\
+2 & s3 & s4 & & 5 & \\
+3 & s3 & s4 & & 6 & \\
+4 & r3 & r3 & r3 & & \\
+5 & r1 & r1 & r1 & & \\
+6 & r2 & r2 & r2 & & \\
+\end{longtable}
+
+\endgroup
+
+No state contains both a shift and a complete item → the grammar is \textbf{LR(0)} (hence also SLR, LALR, CLR).
+
+Parse of \textbf{abb\$}:
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0913}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0624}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Stack}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Input}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Action}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & abb\$ & shift 3 \\
+0 a 3 & bb\$ & shift 4 \\
+0 a 3 b 4 & b\$ & reduce A → b, goto(3, A) = 6 \\
+0 a 3 A 6 & b\$ & reduce A → aA, goto(0, A) = 2 \\
+0 A 2 & b\$ & shift 4 \\
+0 A 2 b 4 & \$ & reduce A → b, goto(2, A) = 5 \\
+0 A 2 A 5 & \$ & reduce S → AA, goto(0, S) = 1 \\
+0 S 1 & \$ & \textbf{accept} \\
+\end{longtable}
+
+\endgroup
+
+\textbf{A grammar that is LALR(1) but not SLR(1)}: S → L = R \textbar{} R, L → *R \textbar{} id, R → L. In the state containing S → L·= R and R → L·, \textquotesingle=\textquotesingle{} ∈ FOLLOW(R), so SLR has a shift/reduce conflict on \textquotesingle=\textquotesingle; LR(1) lookaheads resolve it.
+
+\needspace{261pt}
+
+\hypertarget{p2-08--156-basic-blocks--worked}{%
+\subsection{15.6 Basic Blocks --- Worked}\label{p2-08--156-basic-blocks--worked}}
+
+\begin{asciiblock}{206pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ 1  i = 1                      Leaders: 1 (first), 2 & 3 & 13 (jump targets),
+ 2  j = 1                               10 & 12 (follow a conditional jump)
+ 3  t1 = 10 * i
+ 4  t2 = t1 + j                Blocks:  B1 = {1}      B2 = {2}
+ 5  t3 = 8 * t2                         B3 = {3–9}    B4 = {10–11}
+ 6  t4 = t3 - 88                        B5 = {12}     B6 = {13–17}
+ 7  a[t4] = 0.0
+ 8  j = j + 1                  Loops: B3 (inner, back edge B3→B3),
+ 9  if j <= 10 goto 3                 B2–B4 (outer), B6 (self loop)
+10  i = i + 1
+11  if i <= 10 goto 2
+12  i = 1
+13  t5 = i - 1
+14  t6 = 88 * t5
+15  a[t6] = 1.0
+16  i = i + 1
+17  if i <= 10 goto 13
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{133pt}
+
+\hypertarget{p2-08--157-dag-based-local-optimisation}{%
+\subsection{15.7 DAG-Based Local Optimisation}\label{p2-08--157-dag-based-local-optimisation}}
+
+\begin{asciiblock}{78pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ Block                       DAG nodes built                         Optimised block
+ a = b + c                   n1 = + (b0, c0)        label a          a = b + c
+ b = a - d                   n2 = − (n1, d0)        label b          b = a - d
+ c = b + c                   n3 = + (n2, c0)        label c          c = b + c
+ d = a - d                   − (n1, d0) exists = n2 → label d too    d = b
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{d\ =\ a\ −\ d} recomputes node n2 (same operator, same operands, nothing changed in between) → replaced by the copy \texttt{d\ =\ b}.
+\item
+  \texttt{c\ =\ b\ +\ c} is \textbf{not} a repeat of \texttt{a\ =\ b\ +\ c}, because b was reassigned in between (its operand is n2, not b0).
+\end{itemize}
+
+\needspace{135pt}
+
+\hypertarget{p2-08--previous-year-questions-pyq-pattern}{%
+\section{Previous Year Questions (PYQ pattern)}\label{p2-08--previous-year-questions-pyq-pattern}}
+
+\textbf{Finite automata \& regular languages}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Minimum states in DFA accepting strings over \{0,1\} where the number of 0s is divisible by 3 and number of 1s divisible by 2: \textbf{6}
+\item
+  Minimum DFA states for binary strings whose 3rd symbol from the right is 1: \textbf{8}
+\item
+  Minimum DFA states for strings over \{a,b\} of length exactly 3: \textbf{5}
+\item
+  An NFA with n states can be converted to a DFA with at most: \textbf{2ⁿ states}
+\item
+  Which is NOT regular? (a) a\emph{b} (b) aⁿbⁿ (c) (ab)* (d) a\^{}(2n) --- \textbf{(b)}
+\item
+  (a + b)* is equivalent to: \textbf{(a\emph{b})*}
+\item
+  Regular languages are NOT closed under: (a) union (b) complement (c) infinite union (d) intersection --- \textbf{(c)} (infinite union can give any language)
+\item
+  Moore vs Mealy: in Moore the output depends on: \textbf{present state only}
+\item
+  Arden\textquotesingle s theorem solution of R = Q + RP: \textbf{R = QP*}
+\item
+  Pumping lemma for regular languages is used to prove a language is: \textbf{not regular}
+\end{enumerate}
+
+\textbf{CFLs \& PDAs}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{10}
+\tightlist
+\item
+  Which language is context-free but not regular? \textbf{aⁿbⁿ}
+\item
+  Which is not context-free? \textbf{aⁿbⁿcⁿ}
+\item
+  CFLs are NOT closed under: \textbf{intersection and complement}
+\item
+  DCFLs are closed under: \textbf{complement} (not union/intersection)
+\item
+  In CNF, a string of length n is derived in: \textbf{2n − 1 steps}
+\item
+  Which is undecidable for CFGs? \textbf{ambiguity / equivalence / L = Σ*}
+\item
+  Membership of a string in a CFL can be decided by: \textbf{CYK algorithm (O(n³))}
+\item
+  ww\^{}R is accepted by: \textbf{NPDA, not DPDA}
+\item
+  CFL ∩ regular is: \textbf{context-free}
+\item
+  Grammar S → aSb \textbar{} ab generates: \textbf{aⁿbⁿ, n ≥ 1}
+\end{enumerate}
+
+\textbf{TMs \& decidability}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{20}
+\tightlist
+\item
+  A language accepted by an LBA is: \textbf{context-sensitive}
+\item
+  Halting problem is: \textbf{recursively enumerable but not recursive}
+\item
+  Complement of an RE but non-recursive language is: \textbf{not RE}
+\item
+  If L and its complement are both RE then L is: \textbf{recursive}
+\item
+  Rice\textquotesingle s theorem applies to: \textbf{non-trivial properties of the languages of TMs}
+\item
+  PCP is: \textbf{undecidable}
+\item
+  Which is equivalent in power to a TM? \textbf{PDA with two stacks}
+\item
+  Which is decidable? (a) whether a TM halts on all inputs (b) whether a CFG is ambiguous (c) whether a DFA accepts an infinite language (d) PCP --- \textbf{(c)}
+\item
+  Recursive languages are closed under: \textbf{complement} (RE are not)
+\item
+  Type-1 grammars are: \textbf{context-sensitive}
+\end{enumerate}
+
+\textbf{Compilers}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{30}
+\tightlist
+\item
+  Number of tokens in \texttt{int\ a\ =\ b\ +\ 10;}: int, a, =, b, +, 10, ; = \textbf{7}
+\item
+  Lexical analysis is based on: \textbf{regular expressions / finite automata}
+\item
+  YACC generates: \textbf{LALR(1) parsers}
+\item
+  Which parser is most powerful? \textbf{Canonical LR(1)}
+\item
+  Number of states: SLR vs LALR for the same grammar: \textbf{equal}
+\item
+  Left-recursive grammar cannot be parsed by: \textbf{top-down (LL / recursive descent) parsers}
+\item
+  Merging CLR(1) states to LALR(1) may introduce: \textbf{reduce-reduce conflicts}
+\item
+  FOLLOW of the start symbol always contains: \textbf{\$}
+\item
+  A bottom-up parser produces: \textbf{reverse of the rightmost derivation}
+\item
+  S-attributed definitions use only: \textbf{synthesized attributes}
+\item
+  Inherited attributes from parent and left siblings: \textbf{L-attributed}
+\item
+  Access link in an activation record points to: \textbf{the AR of the lexically enclosing procedure}
+\item
+  Representation where results are referenced by position: \textbf{triples}
+\item
+  Replacing x * 2 by x + x (or x \textless\textless{} 1): \textbf{strength reduction}
+\item
+  Moving a loop-invariant computation outside the loop: \textbf{code motion}
+\item
+  Live variable analysis is a: \textbf{backward data-flow problem}
+\item
+  Peephole optimisation is applied to: \textbf{target (or intermediate) code over a small window}
+\item
+  Register allocation is commonly modelled as: \textbf{graph colouring}
+\item
+  A DAG for a basic block helps to detect: \textbf{common subexpressions}
+\item
+  Number of basic blocks in a flow graph --- first find \textbf{leaders}: first statement, jump targets, statements after jumps
+\end{enumerate}
+
+\textbf{More practice questions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{50}
+\tightlist
+\item
+  Subset construction for the "ends in 01" NFA yields how many reachable DFA states? \textbf{3}
+\item
+  Minimal DFA for "exactly one 1" over \{0, 1\} (with dead state): \textbf{3 states}
+\item
+  CNF of S → aSb \textbar{} ab needs how many non-terminals? \textbf{4} (S, X, A, B)
+\item
+  In the pumping-lemma proof for aⁿbⁿ, pumping y changes: \textbf{only the number of a\textquotesingle s}
+\item
+  Number of LR(0) item sets for S → AA, A → aA \textbar{} b: \textbf{7}
+\item
+  The grammar S → L = R \textbar{} R, L → *R \textbar{} id, R → L is: \textbf{LALR(1) but not SLR(1)}
+\item
+  Number of basic blocks in the code of §15.6: \textbf{6}
+\item
+  In \texttt{a\ =\ b\ +\ c;\ b\ =\ a\ −\ d;\ c\ =\ b\ +\ c;\ d\ =\ a\ −\ d}, the redundant computation is: \textbf{d = a − d} (equals b)
+\item
+  A shift/reduce conflict in SLR arises when a terminal in FOLLOW(A) also: \textbf{labels a shift from the same state}
+\item
+  The handle in a right-sentential form is reduced by: \textbf{a bottom-up (shift-reduce) parser}
+\end{enumerate}
+
+\begin{revbox}
+
+\begin{itemize}
+\tightlist
+\item
+  Regular closed under everything basic · CFL ✘ ∩, ✘ complement · DCFL ✔ complement · RE ✘ complement
+\item
+  CNF 2n−1 steps · GNF n steps · CYK O(n³)
+\item
+  Halting: RE not recursive · L \& L̄ RE ⇒ recursive · Rice: non-trivial language properties undecidable
+\item
+  LR(0) ⊂ SLR ⊂ LALR ⊂ CLR · SLR = LALR states · LALR merge → R/R only
+\item
+  S-attributed ⊂ L-attributed · Live variables backward · Reaching definitions forward
+\end{itemize}
+
+\end{revbox}

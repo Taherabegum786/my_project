@@ -177,6 +177,78 @@ timeline
 | Minamata Convention (2013) | Mercury |
 | **ISA** | International Solar Alliance — launched by India & France at COP21 (2015); HQ **Gurugram**; "One Sun One World One Grid" |
 
+## 7. Deeper Dive — Climate Science, COP Timeline, Indian Programmes & Disasters
+
+### 7.1 Greenhouse Effect & Climate Change
+
+```mermaid
+flowchart LR
+    S[Sun: short-wave radiation] --> E[Earth's surface absorbs and warms]
+    E --> L[Earth emits long-wave infrared]
+    L --> G[Greenhouse gases absorb and re-emit IR]
+    G --> W[Lower atmosphere warms]
+    G -.->|more GHGs from fossil fuels, deforestation, agriculture| W
+```
+
+- Pre-industrial CO₂ ≈ 280 ppm; now > 420 ppm. Largest anthropogenic GHG by volume: **CO₂**; methane is far more potent per molecule over 20 years.
+- **IPCC** (1988, UNEP + WMO) assessment reports; AR6 (2021–23): warming about 1.1 °C above pre-industrial.
+- Impacts: sea-level rise, glacier retreat, heatwaves, extreme rainfall, ocean acidification, coral bleaching, crop yield changes, vector-borne diseases.
+- **Socio-economic & political dimensions**: climate justice; **CBDR-RC** (Common But Differentiated Responsibilities and Respective Capabilities) — principle from Rio 1992; loss and damage fund (COP27, Sharm el-Sheikh 2022); climate finance (USD 100 billion goal; NCQG at COP29 Baku 2024).
+- Mitigation (reduce emissions) vs **adaptation** (adjust to impacts).
+- **Carbon credit** = 1 tonne CO₂-equivalent reduced. India's Carbon Credit Trading Scheme (2023). **LiFE** (Lifestyle for Environment) mission launched by India at COP26.
+
+### 7.2 Conference of Parties (COP) — Key Milestones
+
+| COP | Year & place | Outcome |
+|-----|-------------|---------|
+| COP1 | 1995 Berlin | Berlin Mandate |
+| COP3 | 1997 Kyoto | Kyoto Protocol |
+| COP8 | 2002 New Delhi | Delhi Declaration |
+| COP13 | 2007 Bali | Bali Action Plan |
+| COP15 | 2009 Copenhagen | Copenhagen Accord |
+| COP16 | 2010 Cancun | Green Climate Fund |
+| COP21 | 2015 Paris | Paris Agreement; ISA launched |
+| COP26 | 2021 Glasgow | Glasgow Climate Pact; India Panchamrit, net zero 2070 |
+| COP27 | 2022 Sharm el-Sheikh | Loss & damage fund |
+| COP28 | 2023 Dubai | First global stocktake; "transition away from fossil fuels" |
+| COP29 | 2024 Baku | New climate finance goal (NCQG) |
+
+### 7.3 Indian Environmental Programmes
+
+| Programme | Year | Aim |
+|-----------|------|-----|
+| Ganga Action Plan | 1985 | River cleaning → Namami Gange (2014) |
+| National Clean Air Programme (NCAP) | 2019 | Cut PM by 20–30% (revised 40%) in non-attainment cities |
+| Swachh Bharat Mission | 2014 | Sanitation, ODF |
+| Pradhan Mantri Ujjwala Yojana | 2016 | LPG to poor households (reduces indoor air pollution) |
+| UJALA | 2015 | LED bulbs — energy efficiency |
+| National Green Hydrogen Mission | 2023 | Green hydrogen production |
+| Nagar Van Yojana | 2020 | Urban forests |
+| Green India Mission | NAPCC | Increase forest/tree cover |
+| Bharat Stage VI emission norms | 2020 | Leapfrogged from BS-IV |
+
+Environmental movements: **Chipko** (1973, Uttarakhand — Sunderlal Bahuguna, Gaura Devi), **Appiko** (1983, Karnataka), **Silent Valley** (Kerala), **Narmada Bachao Andolan** (Medha Patkar), **Bishnoi** sacrifice (Khejarli, 1730, Amrita Devi).
+
+### 7.4 Disasters — Scales & Facts
+
+| Hazard | Measure / fact |
+|--------|---------------|
+| Earthquake | Magnitude (Richter / moment magnitude — logarithmic); intensity (Modified Mercalli, I–XII); India has seismic zones II–V (Zone V highest: NE, J&K, Kutch) |
+| Cyclone | IMD categories; named by WMO/ESCAP panel; Bay of Bengal more cyclone-prone than Arabian Sea |
+| Tsunami | Caused by undersea earthquakes; INCOIS Hyderabad runs the warning centre |
+| Flood | Most frequent disaster in India; Assam, Bihar most affected |
+| Drought | Meteorological, hydrological, agricultural |
+| Landslide | Himalayas and Western Ghats |
+| Heat wave | Declared by IMD when max temp ≥ 40 °C (plains) and departure ≥ 4.5 °C |
+
+Disaster management cycle: **Mitigation → Preparedness → Response → Recovery**.
+
+### 7.5 Renewable Energy — India Snapshot
+- Installed renewable capacity crossed **200 GW** (2024); solar is the largest renewable source.
+- Largest solar park: **Bhadla (Rajasthan)**; large hybrid park: **Khavda (Gujarat)**.
+- **PM-KUSUM** (solar pumps for farmers), **PM Surya Ghar Muft Bijli Yojana** (2024, rooftop solar).
+- Hydro: Tehri dam (tallest in India); nuclear plants: Kudankulam (largest), Tarapur (oldest).
+
 ---
 
 ## Previous Year Questions (PYQ pattern)
@@ -204,6 +276,21 @@ timeline
 21. Which is a renewable resource? **Geothermal**
 22. E-waste rules make producers responsible through: **Extended Producer Responsibility (EPR)**
 23. CBD was opened for signature at: **Rio Earth Summit 1992**
+
+**More practice questions**
+
+24. The IPCC was established in: **1988 by UNEP and WMO**
+25. The principle of CBDR originated at: **Rio Earth Summit 1992**
+26. The loss and damage fund was agreed at: **COP27, Sharm el-Sheikh**
+27. COP28 was held in: **Dubai (2023)**
+28. National Clean Air Programme was launched in: **2019**
+29. Chipko movement began in: **1973 (Uttarakhand)**
+30. India's highest seismic zone: **Zone V**
+31. Tsunami early-warning centre of India is at: **INCOIS, Hyderabad**
+32. The most frequent natural disaster in India: **floods**
+33. The LiFE mission was announced by India at: **COP26 Glasgow**
+34. Bhadla solar park is in: **Rajasthan**
+35. Arrange COPs chronologically: Kyoto (COP3) → Copenhagen (COP15) → Paris (COP21) → Glasgow (COP26)
 
 ## Quick Revision Box
 - MDG 8 (2000–15) · SDG 17/169 (2015–30)

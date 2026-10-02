@@ -405,6 +405,137 @@ FP-growth: no candidate generation (FP-tree)
 | Column-family | Cassandra, HBase, Bigtable |
 | Graph | Neo4j, JanusGraph |
 
+## 12. Deeper Dive — SQL on Real Tables, Minimal Cover, Full Normalisation & Schedules
+
+### 12.1 SQL Worked on Sample Data
+
+**EMP**
+
+| eid | name | dept | salary |
+|-----|------|------|--------|
+| 1 | Asha | CS | 50000 |
+| 2 | Ravi | CS | 40000 |
+| 3 | Meena | EE | 45000 |
+| 4 | John | EE | 30000 |
+| 5 | Priya | ME | 60000 |
+| 6 | Kiran | NULL | 35000 |
+
+**DEPT**
+
+| dept | building |
+|------|----------|
+| CS | B1 |
+| EE | B2 |
+| CE | B3 |
+
+| # | Query | Result |
+|---|-------|--------|
+| 1 | `SELECT dept, COUNT(*), AVG(salary) FROM EMP GROUP BY dept HAVING COUNT(*) > 1` | (CS, 2, 45000), (EE, 2, 37500) |
+| 2 | `SELECT name FROM EMP WHERE salary > (SELECT AVG(salary) FROM EMP)` | avg = 43333.33 → Asha, Meena, Priya |
+| 3 | `SELECT COUNT(dept), COUNT(DISTINCT dept) FROM EMP` | 5, 3 (NULL ignored) |
+| 4 | `EMP JOIN DEPT ON EMP.dept = DEPT.dept` | 4 rows (Asha, Ravi, Meena, John) |
+| 5 | `EMP LEFT JOIN DEPT …` | 6 rows (Priya & Kiran get NULL building) |
+| 6 | `EMP RIGHT JOIN DEPT …` | 5 rows (CE appears with NULL employee) |
+| 7 | `EMP FULL OUTER JOIN DEPT …` | 7 rows |
+| 8 | Correlated: `SELECT name FROM EMP e1 WHERE salary = (SELECT MAX(salary) FROM EMP e2 WHERE e2.dept = e1.dept)` | Asha, Meena, Priya (Kiran excluded: NULL = NULL is UNKNOWN) |
+| 9 | `SELECT dept FROM DEPT WHERE dept NOT IN (SELECT dept FROM EMP)` | **Empty!** The subquery contains NULL, so every NOT IN test is UNKNOWN |
+| 10 | Same with `NOT EXISTS (SELECT * FROM EMP WHERE EMP.dept = DEPT.dept)` | CE ✔ — NOT EXISTS is NULL-safe |
+
+### 12.2 Minimal (Canonical) Cover — Worked
+
+F = {A → BC, B → C, A → B, AB → C}
+```
+1. Split RHS:            A → B, A → C, B → C, A → B, AB → C
+2. Remove duplicates:    A → B, A → C, B → C, AB → C
+3. Extraneous LHS attr:  in AB → C, B is extraneous since A⁺ = {A, B, C} ∋ C  → A → C (duplicate)
+4. Redundant FDs:        A → C follows from A → B and B → C → remove
+Minimal cover Fc = { A → B, B → C }
+```
+
+### 12.3 Normalisation — From 1NF to BCNF
+
+R(S, C, I, P, G) — Student, Course, Instructor, instructor Phone, Grade.
+F = { SC → G, C → I, I → P }. S and C never appear on the right → **candidate key = SC**.
+
+```mermaid
+flowchart TD
+    R["R(S, C, I, P, G)<br/>key SC — 1NF"] -->|"partial dependency C → I, P"| A["R1(S, C, G)"]
+    R --> B["R2(C, I, P)<br/>2NF, transitive C → I → P"]
+    B -->|"remove transitive dependency"| B1["R21(C, I)"]
+    B --> B2["R22(I, P)"]
+```
+Final schema: **(S, C, G), (C, I), (I, P)** — every determinant is a key → BCNF; decomposition is lossless (common attributes C and I are keys of a side) and preserves all three FDs.
+
+### 12.4 Recoverability Examples (W = write, R = read, C = commit)
+
+| Schedule | Classification |
+|----------|---------------|
+| W1(A) R2(A) C2 C1 | **Not recoverable** — T2 commits after reading T1's uncommitted data, before T1 commits |
+| W1(A) R2(A) C1 C2 | Recoverable, but not cascadeless (abort of T1 forces abort of T2) |
+| W1(A) C1 R2(A) C2 | Cascadeless (reads only committed data) |
+| W1(A) W2(A) C1 C2 | Cascadeless but **not strict** (T2 overwrote uncommitted A) |
+
+### 12.5 Precedence Graphs
+
+Schedule S: R1(A) W1(A) R2(A) W2(A) R1(B) W1(B) R2(B) W2(B)
+```mermaid
+flowchart LR
+    T1((T1)) -->|"W1(A) before R2(A); W1(B) before R2(B)"| T2((T2))
+```
+Acyclic → conflict serializable, equivalent to serial order **T1 → T2**.
+
+Schedule S′: R1(X) R2(Y) W2(X) W1(Y)
+```mermaid
+flowchart LR
+    T1((T1)) -->|"R1(X) before W2(X)"| T2((T2))
+    T2 -->|"R2(Y) before W1(Y)"| T1
+```
+Cycle → **not** conflict serializable.
+
+### 12.6 Two-Phase Locking — Lock Point
+
+```
+ locks held
+   │        ╱‾‾‾‾╲
+   │      ╱        ╲
+   │    ╱  growing   ╲  shrinking
+   │  ╱    phase      ╲   phase
+   └──────────●──────────────────── time
+          lock point (last lock acquired)
+ Serializability order of 2PL transactions = order of their lock points
+```
+
+### 12.7 Extendible Hashing (sketch)
+
+```
+ Global depth 2                     Buckets (local depth)
+ directory
+  00 ──────────────►  [ 4, 12, 32 ]   (d = 2)
+  01 ──────┐
+  11 ──────┴───────►  [ 1, 5, 21 ]    (d = 1)  ← two directory entries share it
+  10 ──────────────►  [ 10, 6 ]       (d = 2)
+ Overflow of a bucket with local depth = global depth → directory doubles
+ Overflow with local depth < global depth → split bucket only
+```
+
+### 12.8 Data Cube Lattice (3 dimensions → 2³ = 8 cuboids)
+
+```mermaid
+flowchart TB
+    A["(time, item, location)<br/>base cuboid"] --> B["(time, item)"]
+    A --> C["(time, location)"]
+    A --> D["(item, location)"]
+    B --> E["(time)"]
+    B --> F["(item)"]
+    C --> E
+    C --> G["(location)"]
+    D --> F
+    D --> G
+    E --> H["( ) apex cuboid"]
+    F --> H
+    G --> H
+```
+
 ---
 
 ## Previous Year Questions (PYQ pattern)
@@ -419,11 +550,13 @@ FP-growth: no candidate generation (FP-tree)
 7. TRUNCATE is a: **DDL command**
 
 **Keys**
+
 8. R(A,B,C,D) with only candidate key A — number of super keys: 2³ = **8**
 9. R(A,B,C,D) with candidate keys A and B: 8 + 8 − 4 = **12**
 10. Which key cannot be NULL? **Primary key**
 
 **Relational algebra / SQL**
+
 11. R has 10 tuples, S has 5; R × S has: **50**
 12. Which RA operation answers "for all" queries? **Division**
 13. Which is not a fundamental RA operation? (a) σ (b) π (c) ∩ (d) − — **Ans: (c)**
@@ -435,6 +568,7 @@ FP-growth: no candidate generation (FP-tree)
 19. Best protection against SQL injection: **parameterised/prepared statements**
 
 **Normalisation**
+
 20. R(A,B,C,D), F = {A→B, B→C, C→D}. Candidate key? **A**; Normal form? **2NF** (transitive dependencies exist)
 21. R(A,B,C,D), F = {AB→C, C→D}. Key AB; C→D is transitive → **2NF**, not 3NF
 22. R(A,B,C), F = {AB→C, C→A}. Keys AB, CB. Highest NF: **3NF** (C→A, A is prime)
@@ -445,6 +579,7 @@ FP-growth: no candidate generation (FP-tree)
 27. Closure of {A} under {A→B, B→C, C→D, D→E}: **ABCDE**
 
 **Transactions**
+
 28. Which ACID property is ensured by the concurrency control manager? **Isolation**
 29. A schedule is conflict serializable iff its precedence graph is: **acyclic**
 30. 2PL ensures: **conflict serializability** (not freedom from deadlock)
@@ -458,12 +593,14 @@ FP-growth: no candidate generation (FP-tree)
 38. After a crash, a transaction that has <start> and <commit> in log is: **redone**
 
 **Indexing**
+
 39. B+ tree leaves are linked to support: **range queries / sequential access**
 40. Max number of primary indexes on a file: **1**
 41. Order of B+ tree internal node: block 512 B, key 10 B, pointer 6 B: p·6 + (p−1)·10 ≤ 512 → 16p ≤ 522 → **p = 32**
 42. Secondary index is usually: **dense**
 
 **Warehousing / mining / big data**
+
 43. Data warehouse is NOT: (a) subject-oriented (b) volatile (c) time-variant (d) integrated — **Ans: (b)**
 44. OLAP operation that rotates the axes: **pivot**
 45. Star schema has: **one fact table, denormalised dimension tables**
@@ -473,6 +610,20 @@ FP-growth: no candidate generation (FP-tree)
 49. MongoDB is a: **document store**; Cassandra: **column-family**; Neo4j: **graph**
 50. In Hadoop, metadata is stored by: **NameNode**
 51. K-means is a: **partitioning clustering** algorithm
+
+**More practice questions**
+
+52. A NOT IN subquery whose result contains NULL returns: **no rows**
+53. COUNT(DISTINCT dept) on values {CS, CS, EE, NULL}: **2**
+54. Minimal cover of {A → B, B → C, A → C}: **{A → B, B → C}**
+55. R(A, B, C, D), F = {A → B, C → D}. Candidate key: **AC**; highest normal form: **1NF** (partial dependencies)
+56. A schedule in which transactions read only committed data is: **cascadeless**
+57. Schedule R1(X) R2(Y) W2(X) W1(Y) is: **not conflict serializable**
+58. In 2PL, the equivalent serial order follows the: **lock points**
+59. In extendible hashing, the directory doubles when an overflowing bucket's local depth: **equals the global depth**
+60. Number of cuboids for 4 dimensions without hierarchies: **16**
+61. Apex cuboid represents: **the grand total (all dimensions aggregated)**
+62. Full outer join of R (5 tuples) and S (3 tuples) with 2 matching pairs (one-to-one): 2 + 3 + 1 = **6 tuples**
 
 ## Quick Revision Box
 - 3NF: X superkey OR A prime · BCNF: X superkey

@@ -156,6 +156,76 @@ flowchart TB
 - Entry 66, Union List — coordination & determination of standards in higher education.
 - **Ministry of Education** (renamed from MHRD in 2020). **RUSA (2013)** — funding to state HEIs.
 
+## 9. Deeper Dive — NEP 2020 Details, Quality Frameworks & Key Regulations
+
+### 9.1 NEP 2020 — Multiple Entry/Exit & Credit System
+
+```mermaid
+flowchart LR
+    E[Enter UG] --> Y1[After Year 1<br/>UG Certificate<br/>40 credits]
+    Y1 --> Y2[After Year 2<br/>UG Diploma<br/>80 credits]
+    Y2 --> Y3[After Year 3<br/>Bachelor's degree<br/>120 credits]
+    Y3 --> Y4[After Year 4<br/>Honours / Honours with Research<br/>160 credits]
+    Y4 --> PG1[1-year Master's]
+    Y3 --> PG2[2-year Master's]
+    Y4 --> PhD[PhD directly with 7.5 CGPA in Honours with Research]
+```
+
+- **UGC Curriculum & Credit Framework for UG Programmes (CCFUP, 2022)**; credits stored in **Academic Bank of Credits (ABC)**, ID via DigiLocker / APAAR ID (One Nation One Student ID).
+- Students may earn up to **40% of credits** through SWAYAM/online courses per semester (UGC Credit Framework for Online Learning Courses through SWAYAM, 2021).
+- Course categories: Major (core), Minor, Multidisciplinary, Ability Enhancement (AEC), Skill Enhancement (SEC), Value-Added (VAC), internships, research project.
+- **UGC (Minimum Standards and Procedures for Award of PhD) Regulations 2022**: 4-year UG (with 7.5 CGPA) eligible for PhD; M.Phil not required; 2-year coursework rule relaxed; publication requirement removed.
+- **Professor of Practice** scheme (2022): industry experts can teach (up to 10% of sanctioned posts).
+- Foreign university campuses permitted (UGC Regulations 2023); GIFT City.
+- **Light but tight** regulation; graded autonomy; Board of Governors for institutions.
+
+### 9.2 NIRF — Parameters (since 2016)
+
+| Parameter | Weight (overall category) |
+|-----------|---------------------------|
+| Teaching, Learning & Resources (TLR) | 30% |
+| Research & Professional Practice (RP) | 30% |
+| Graduation Outcomes (GO) | 20% |
+| Outreach & Inclusivity (OI) | 10% |
+| Perception (PR) | 10% |
+
+### 9.3 NAAC Grading (cumulative GPA on a 4-point scale)
+
+| CGPA range | Grade | Status |
+|-----------|-------|--------|
+| 3.51–4.00 | A++ | Accredited |
+| 3.26–3.50 | A+ | Accredited |
+| 3.01–3.25 | A | Accredited |
+| 2.76–3.00 | B++ | Accredited |
+| 2.51–2.75 | B+ | Accredited |
+| 2.01–2.50 | B | Accredited |
+| 1.51–2.00 | C | Accredited |
+| ≤ 1.50 | D | Not accredited |
+
+NAAC is moving to **binary accreditation** (accredited / not accredited) and **Maturity-Based Graded Levels (1–5)** following the Radhakrishnan Committee (2022–24) recommendations.
+
+### 9.4 Constitutional & Legal Provisions on Education
+
+| Provision | Content |
+|-----------|---------|
+| Article 21A | Free & compulsory education 6–14 years (86th Amendment, 2002) |
+| Article 28 | No religious instruction in fully state-funded institutions |
+| Article 29 | Protection of minorities' cultural & educational interests |
+| Article 30 | Minorities' right to establish & administer institutions |
+| Article 45 | Early childhood care & education below 6 years (DPSP) |
+| Article 46 | Promote education of SC/ST & weaker sections |
+| Article 51A(k) | Parent's duty to provide education to child 6–14 |
+| Article 350A | Instruction in mother tongue at primary stage |
+| Union List entry 63–66 | Institutions of national importance; standards in higher education |
+| Concurrent List entry 25 | Education (since 42nd Amendment) |
+
+### 9.5 Value Education & Indian Knowledge Systems
+- **IKS division** at AICTE (2020); Bharatiya Bhasha Samiti; courses on Indian philosophy, mathematics, astronomy, Ayurveda.
+- Value frameworks: Delors Commission (UNESCO, 1996) "**Learning: The Treasure Within**" — **four pillars**: learning to know, to do, to live together, to be.
+- **Mulya Pravah** (UGC, 2019, revised 2.0 in 2023): guidelines for human values & professional ethics in HEIs.
+- **Deeksharambh**: student induction programme (UGC).
+- **Paramarsh** (mentoring for NAAC accreditation), **STRIDE** (research), **LOCF** (learning outcomes-based curriculum framework).
+
 ---
 
 ## Previous Year Questions (PYQ pattern)
@@ -183,6 +253,21 @@ flowchart TB
 21. Number of NAAC criteria: **7**
 22. The Tbilisi conference (1977) dealt with: **Environmental education**
 23. Arrange chronologically: Macaulay's Minute (1835), Wood's Despatch (1854), Hunter (1882), Sadler (1917), Radhakrishnan (1948), Kothari (1964–66)
+
+**More practice questions**
+
+24. Credits required for a UG certificate under NEP's multiple exit: **40**
+25. Maximum credits that can be earned through SWAYAM per semester (UGC 2021): **40%**
+26. "Learning: The Treasure Within" is the report of the: **Delors Commission (UNESCO, 1996)**
+27. Four pillars of learning do NOT include: (a) to know (b) to do (c) to compete (d) to be — **Ans: (c)**
+28. Weight of Teaching, Learning & Resources in NIRF overall ranking: **30%**
+29. NAAC grade for CGPA 3.30: **A+**
+30. Article 30 deals with: **right of minorities to establish educational institutions**
+31. Article 350A provides for: **instruction in mother tongue at the primary stage**
+32. Mulya Pravah guidelines relate to: **human values and professional ethics in HEIs**
+33. Student induction programme of UGC: **Deeksharambh**
+34. UGC scheme for mentoring institutions towards accreditation: **Paramarsh**
+35. Under UGC PhD Regulations 2022, a 4-year UG graduate needs a minimum CGPA of: **7.5**
 
 ## Quick Revision Box
 - Nalanda–Kumaragupta I · Vikramashila–Dharmapala · Destroyer–Khalji

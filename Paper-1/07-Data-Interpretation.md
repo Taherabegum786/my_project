@@ -107,6 +107,76 @@ Bar view of P across years
 - Data governance principles: quality, privacy, security, accountability, transparency, interoperability.
 - Census of India — every 10 years (Registrar General & Census Commissioner, MHA); NSO (merged NSSO + CSO, 2019) under MoSPI.
 
+## 7. Deeper Dive — Pie Chart & Line Graph Sets, Common Pitfalls
+
+### 7.1 Pie-Chart Set (worked)
+
+A university's annual expenditure of **₹80 crore** is distributed as follows:
+
+```mermaid
+pie title Expenditure share (%)
+    "Salaries" : 45
+    "Research" : 20
+    "Infrastructure" : 15
+    "Library & ICT" : 10
+    "Scholarships" : 10
+```
+
+| Head | % | Amount (₹ crore) | Central angle |
+|------|---|------------------|---------------|
+| Salaries | 45 | 36 | 162° |
+| Research | 20 | 16 | 72° |
+| Infrastructure | 15 | 12 | 54° |
+| Library & ICT | 10 | 8 | 36° |
+| Scholarships | 10 | 8 | 36° |
+
+1. Research exceeds Library & ICT by: 16 − 8 = **₹8 crore** (= 100% more).
+2. If salaries rise by 10% and total stays the same, salaries' new share = 39.6/80 = **49.5%**.
+3. Ratio of infrastructure to scholarships = **3 : 2**.
+4. Angle for research + scholarships = **108°**.
+5. If research grants come only from a ₹12 crore grant plus internal funds, internal funds = 16 − 12 = **₹4 crore**.
+
+### 7.2 Two-Series Set (worked)
+
+Number of PhD scholars admitted (two departments):
+
+```
+ Scholars admitted (each ▇ = 5 scholars)
+ 2021  CS    ▇▇▇▇▇▇            30
+       Maths ▇▇▇▇              20
+ 2022  CS    ▇▇▇▇▇▇▇▇          40
+       Maths ▇▇▇▇▇▇            30
+ 2023  CS    ▇▇▇▇▇▇▇▇▇▇        50
+       Maths ▇▇▇▇▇▇▇           35
+ 2024  CS    ▇▇▇▇▇▇▇▇▇▇▇▇      60
+       Maths ▇▇▇▇▇▇▇▇▇         45
+```
+
+| Year | CS | Maths | Total |
+|------|----|-------|-------|
+| 2021 | 30 | 20 | 50 |
+| 2022 | 40 | 30 | 70 |
+| 2023 | 50 | 35 | 85 |
+| 2024 | 60 | 45 | 105 |
+
+1. Year with the highest % growth for Maths: 2022 (50%), 2023 (16.7%), 2024 (28.6%) → **2022**.
+2. Average CS admissions = 180/4 = **45**.
+3. Total growth 2021→2024 = (105 − 50)/50 = **110%**.
+4. Ratio CS : Maths over four years = 180 : 130 = **18 : 13**.
+5. CAGR of CS (2021→2024, 3 years) = (60/30)^(1/3) − 1 ≈ **26%**.
+
+### 7.3 Pitfalls Examiners Exploit
+- **Percentage vs percentage points**: 20% → 25% is a rise of 5 percentage points but 25%.
+- **Base year confusion**: "% increase from 2022 to 2023" uses 2022 as the base.
+- **Average of percentages** ≠ overall percentage (weights differ).
+- **Units**: lakhs vs crores (1 crore = 100 lakh); thousands in the table header.
+- Read the **question first**, then compute only what is asked.
+
+### 7.4 Data Mapping & Governance Extras
+- **GIS** layers data on maps; **choropleth** uses shading per region; **isopleth** lines join equal values (isotherms, isobars).
+- **Data lifecycle**: collection → storage → processing → analysis → sharing → archival/deletion.
+- **Metadata** = data about data. **Open data** principles: accessible, machine-readable, licence-free.
+
 ---
 
 ## Previous Year Questions (PYQ pattern)
@@ -120,6 +190,7 @@ DI questions always come as a set of 5 on one table/graph. Typical stems:
 6. "For how many years was X above its average?"
 
 Concept questions:
+
 7. A histogram is used for: **continuous frequency distribution**
 8. The median can be obtained graphically from: **Ogives (intersection of less-than and more-than)**
 9. Data collected by the researcher for the first time: **Primary data**
@@ -129,6 +200,15 @@ Concept questions:
 13. Which measure is best for ordinal data? **Median**
 14. Which portal provides open government data in India? **data.gov.in**
 15. Coefficient of variation is used to compare: **consistency/variability of two series**
+
+**More practice questions**
+
+16. A pie-chart sector of 54° represents what %? **15%**
+17. If total = ₹500 crore and a sector is 18%, amount = **₹90 crore**
+18. Rise from 40% to 50% is how many percentage points? **10**, and what % increase? **25%**
+19. Average of 20, 30, 40 with frequencies 2, 3, 5 = (40 + 90 + 200)/10 = **33**
+20. Lines joining places of equal rainfall on a map: **isohyets** (a type of isopleth)
+21. A map using colour shades by state for literacy rate: **choropleth map**
 
 ## Quick Revision Box
 - 1% = 3.6° · Mode = 3Median − 2Mean · CV = SD/Mean × 100

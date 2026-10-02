@@ -5,9 +5,9 @@ with diagrams (Mermaid + ASCII) and **previous-year-pattern questions (PYQs) for
 
 > Mermaid diagrams render automatically on GitHub. In VS Code, install "Markdown Preview Mermaid Support".
 
-📄 **Printable version:** [UGC-NET-CS-Study-Material.pdf](UGC-NET-CS-Study-Material.pdf) — all units in one A4 PDF
-(177 pages, clickable contents, diagrams rendered). After editing the notes, rebuild it with
-`cd scripts && npm install && npm run build`.
+📄 **Printable book (LaTeX):** [UGC-NET-CS-Study-Material.pdf](UGC-NET-CS-Study-Material.pdf) — all units typeset as one
+A4 book (≈ 210 pages, clickable contents, per-unit mini contents, vector diagrams). The LaTeX source is in
+[`latex/`](latex/) — see [Building the LaTeX book](#7-building-the-latex-book).
 
 ---
 
@@ -113,7 +113,8 @@ flowchart TD
     B --> C[Concept notes<br/>simple language]
     C --> D[Diagrams<br/>Mermaid + ASCII]
     D --> E[Solved examples / tricks]
-    E --> F[PYQs topic-wise<br/>with answers + reasons]
+    E --> DD[Deeper Dive<br/>full worked traces]
+    DD --> F[PYQs topic-wise<br/>with answers + reasons]
     F --> G[Quick revision box]
 ```
 
@@ -133,3 +134,25 @@ last 5–6 cycles — solve them fully timed at least twice.
 4. **PYQs repeat** — concepts recur cycle after cycle. Solve every PYQ in these files twice.
 5. **Mocks**: at least 25 full-length mocks in the last 6 weeks; analyse every wrong answer.
 6. **Attempt all 150** — no negative marking.
+
+## 7. Building the LaTeX Book
+
+The Markdown files are the single source of truth; the LaTeX book is generated from them.
+
+```
+latex/
+├── main.tex          ← hand-written: layout, fonts, colours, boxes, cover, part structure
+├── chapters/*.tex    ← generated, one per unit (intro, p1-01 … p1-10, p2-01 … p2-10, rev-*)
+└── figures/*.pdf     ← generated vector diagrams (from the Mermaid blocks)
+scripts/
+├── build.sh          ← runs everything below and copies the PDF to the repo root
+├── md2latex.py       ← Markdown → LaTeX via pandoc
+├── latex-filter.lua  ← tables, diagram blocks, boxes, cross-links, page-break rules
+└── render-diagrams.cjs ← Mermaid → PDF figures (headless Chromium)
+```
+
+- **Just compile the LaTeX** (e.g. on Overleaf or local TeX Live): upload/open `latex/`, choose **LuaLaTeX**, compile `main.tex` twice.
+  Fonts used: TeX Gyre Pagella & Heros, DejaVu Sans Mono, with DejaVu / GNU FreeFont as fallbacks for symbols.
+- **Rebuild after editing the notes**: install `pandoc` (≥ 3), Node ≥ 18 and TeX Live (LuaLaTeX), then
+  `cd scripts && npm install && npm run build`.
+

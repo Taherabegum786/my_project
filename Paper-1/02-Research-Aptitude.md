@@ -169,6 +169,78 @@ Main body (Introduction, Review of Literature, Methodology, Results, Discussion,
 - **Salami slicing**: splitting one study into many papers. **Duplicate publication** is unethical.
 - **COPE**: Committee on Publication Ethics.
 
+## 9. Deeper Dive — Research Designs, Reliability, Validity & Statistics
+
+### 9.1 Experimental Designs (Campbell & Stanley notation: R = random assignment, O = observation, X = treatment)
+
+| Design | Notation | Notes |
+|--------|----------|-------|
+| One-shot case study (pre-experimental) | X O | No comparison; weakest |
+| One-group pre-test post-test | O X O | No control group |
+| Static group comparison | X O / — O | Non-random groups |
+| **Pre-test post-test control group** (true) | R O X O / R O — O | Classic true experiment |
+| **Post-test only control group** | R X O / R — O | Avoids testing effect |
+| **Solomon four-group** | Combines both above (4 groups) | Controls pre-test sensitisation; strongest |
+| Quasi-experimental: non-equivalent control group | O X O / O — O | Intact groups (e.g. two existing classes) |
+| Time-series | O O O X O O O | Repeated observations |
+| Factorial design | 2 × 2, 2 × 3 … | Two or more IVs and their interaction |
+
+**Threats to internal validity**: history, maturation, testing, instrumentation, statistical regression, selection bias, experimental mortality (attrition).
+**External validity** = generalisability; threats: reactive effects (Hawthorne effect), interaction of selection and treatment.
+
+### 9.2 Reliability & Validity
+
+```mermaid
+flowchart TB
+    Q[Quality of a research tool] --> R[Reliability<br/>consistency]
+    Q --> V[Validity<br/>accuracy - measures what it should]
+    R --> R1[Test-retest - stability over time]
+    R --> R2[Parallel / alternate forms - equivalence]
+    R --> R3[Split-half - Spearman-Brown]
+    R --> R4[Internal consistency - Cronbach alpha, KR-20]
+    R --> R5[Inter-rater - Cohen kappa]
+    V --> V1[Content / face validity]
+    V --> V2[Criterion: concurrent and predictive]
+    V --> V3[Construct: convergent and discriminant]
+```
+
+- Reliability is necessary but **not sufficient** for validity. A valid test must be reliable.
+- **Spearman–Brown**: full-test reliability r_full = 2r_half / (1 + r_half).
+- Cronbach's α ≥ 0.7 is usually acceptable.
+
+```
+ Target analogy
+  Reliable, not valid      Valid & reliable        Neither
+   ┌─────────────┐         ┌─────────────┐        ┌─────────────┐
+   │   ○         │         │      ○      │        │ x        x  │
+   │ xxx         │         │     xxx     │        │      ○      │
+   │ xx          │         │     xx      │        │  x     x    │
+   └─────────────┘         └─────────────┘        └─────────────┘
+   (tight cluster off-centre) (cluster on centre)  (scattered)
+```
+
+### 9.3 Statistics for Researchers
+
+| Concept | Key point |
+|---------|----------|
+| Correlation r (Pearson) | −1 ≤ r ≤ +1; r = 0 → no linear relation; correlation ≠ causation |
+| Spearman rank ρ | ρ = 1 − 6Σd² / (n(n² − 1)) for ordinal data |
+| Coefficient of determination | r² = proportion of variance explained |
+| Regression | Predicts Y from X: Y = a + bX |
+| Level of significance | α = 0.05 or 0.01 (probability of Type I error) |
+| Degrees of freedom | t-test (one sample) n − 1; chi-square (r − 1)(c − 1) |
+| Normal curve | Mean = median = mode; 68.26% within ±1σ, 95.44% within ±2σ, 99.74% within ±3σ |
+| Skewness | Positive: mean > median > mode; Negative: mean < median < mode |
+| Kurtosis | Leptokurtic (peaked), Mesokurtic (normal), Platykurtic (flat) |
+
+**Worked (Spearman ρ)**: n = 5, Σd² = 4 → ρ = 1 − (6 × 4)/(5 × 24) = 1 − 0.2 = **0.8**.
+
+### 9.4 Research Proposal (Synopsis) Structure
+Title → Introduction & background → Review of literature & research gap → Statement of the problem → Objectives → Hypotheses → Methodology (design, population, sample, tools, analysis) → Delimitations → Significance → Chapterisation → Time-frame → References.
+
+- **Delimitations** = boundaries set by the researcher; **Limitations** = constraints beyond the researcher's control.
+- **Operational definition** = defining a variable in terms of how it is measured.
+
 ---
 
 ## Previous Year Questions (PYQ pattern)
@@ -181,36 +253,59 @@ Main body (Introduction, Review of Literature, Methodology, Results, Discussion,
 5. In historical research, testing authenticity of a source is: **External criticism**
 
 **Positivism**
+
 6. Positivism was proposed by: **Auguste Comte**
 7. Which is associated with qualitative research? (a) generalisation (b) hypothesis testing (c) thick description (d) large samples — **Ans: (c)**
 
 **Hypothesis & errors**
+
 8. Rejecting a true null hypothesis is: **Type I error**
 9. Hypothesis that states "no difference" is: **Null hypothesis**
 10. The variable manipulated by the researcher: **Independent variable**
 
 **Sampling**
+
 11. Studying drug users via referral chains: **Snowball sampling**
 12. Population divided into homogeneous subgroups then randomly sampled: **Stratified random**
 13. Which is a non-probability method? (a) cluster (b) systematic (c) quota (d) stratified — **Ans: (c)**
 
 **Scales & tools**
+
 14. Temperature in °C is measured on which scale? **Interval**
 15. A 5-point agree–disagree scale is: **Likert scale**
 16. Chi-square test is: **Non-parametric**
 
 **Writing & referencing**
+
 17. "Ibid." is used when: **citing the same source as the immediately preceding citation**
 18. APA style follows: **author–date system**
 19. The abstract of a thesis is written: **at the end, placed at the beginning**
 20. Correct sequence of research steps: **Problem → Literature → Hypothesis → Design → Data → Analysis → Report**
 
 **ICT & Ethics**
+
 21. UGC's plagiarism software made available to universities: **Shodhshuddhi (URKUND/Ouriginal, later DrillBit)**
 22. As per UGC 2018 regulations, similarity up to 10% is: **Level 0 (no penalty)**
 23. h-index was proposed by: **J.E. Hirsch (2005)**
 24. Which identifier uniquely identifies a researcher? **ORCID**
 25. Reference management software: **Mendeley / Zotero**
+
+**More practice questions**
+
+26. The design that controls the effect of pre-testing using four groups: **Solomon four-group design**
+27. Using two intact classes without random assignment is a: **quasi-experimental design**
+28. Improvement in performance because subjects know they are being observed: **Hawthorne effect**
+29. Consistency of scores over time is measured by: **test-retest reliability**
+30. Cronbach's alpha measures: **internal consistency**
+31. Split-half reliability is corrected by: **Spearman–Brown formula**
+32. A test predicting future job performance has: **predictive validity**
+33. In a normal distribution, the percentage of cases within ±1σ: **68.26%**
+34. When mean > median > mode, distribution is: **positively skewed**
+35. Degrees of freedom for a 3 × 4 contingency table chi-square: **6**
+36. Boundaries set by the researcher on the scope of study: **delimitations**
+37. r = −0.9 indicates: **strong negative correlation**
+38. Which is NOT a threat to internal validity? (a) history (b) maturation (c) generalisability (d) attrition — **Ans: (c)**
+39. Defining "academic achievement" as "marks obtained in the annual exam" is an: **operational definition**
 
 ## Quick Revision Box
 - Action research → practitioner, local, immediate · Ex-post facto → no manipulation

@@ -322,6 +322,127 @@ Paths: A-C-E = 3+5+3 = **11** (critical), B-D-E = 4+2+3 = 9. Project duration = 
 - **Crashing**: reducing duration by adding resources; crash cost slope = (crash cost − normal cost)/(normal time − crash time).
 - **Resource levelling**: smooth resource usage without changing project duration (use floats).
 
+## 8. Deeper Dive — Worked Simplex, Transportation, Assignment, Groups & Recurrences
+
+### 8.1 Simplex Method — Full Worked Example
+
+Max Z = 3x₁ + 5x₂ subject to x₁ ≤ 4, 2x₂ ≤ 12, 3x₁ + 2x₂ ≤ 18, x₁, x₂ ≥ 0.
+Add slacks s₁, s₂, s₃.
+
+**Tableau 0** (Z row written as Z − 3x₁ − 5x₂ = 0)
+
+| Basic | x₁ | x₂ | s₁ | s₂ | s₃ | RHS | Ratio |
+|-------|----|----|----|----|----|-----|-------|
+| s₁ | 1 | 0 | 1 | 0 | 0 | 4 | — |
+| s₂ | 0 | **2** | 0 | 1 | 0 | 12 | 12/2 = **6** ← |
+| s₃ | 3 | 2 | 0 | 0 | 1 | 18 | 18/2 = 9 |
+| Z | −3 | **−5** ↑ | 0 | 0 | 0 | 0 | |
+
+x₂ enters (most negative), s₂ leaves (minimum ratio). Pivot = 2.
+
+**Tableau 1**
+
+| Basic | x₁ | x₂ | s₁ | s₂ | s₃ | RHS | Ratio |
+|-------|----|----|----|----|----|-----|-------|
+| s₁ | 1 | 0 | 1 | 0 | 0 | 4 | 4 |
+| x₂ | 0 | 1 | 0 | 1/2 | 0 | 6 | — |
+| s₃ | **3** | 0 | 0 | −1 | 1 | 6 | 6/3 = **2** ← |
+| Z | **−3** ↑ | 0 | 0 | 5/2 | 0 | 30 | |
+
+x₁ enters, s₃ leaves.
+
+**Tableau 2 (optimal — no negative entries in Z row)**
+
+| Basic | x₁ | x₂ | s₁ | s₂ | s₃ | RHS |
+|-------|----|----|----|----|----|-----|
+| s₁ | 0 | 0 | 1 | 1/3 | −1/3 | 2 |
+| x₂ | 0 | 1 | 0 | 1/2 | 0 | 6 |
+| x₁ | 1 | 0 | 0 | −1/3 | 1/3 | 2 |
+| Z | 0 | 0 | 0 | 3/2 | 1 | **36** |
+
+**Optimal: x₁ = 2, x₂ = 6, Z = 36.** Shadow prices (dual solution) are read from the Z row under the slacks: y₁ = 0, y₂ = 3/2, y₃ = 1 — and 4(0) + 12(3/2) + 18(1) = 36 confirms strong duality.
+
+### 8.2 Transportation Problem — NWC + MODI
+
+| | D1 | D2 | D3 | Supply |
+|-|----|----|----|--------|
+| S1 | 4 | 6 | 8 | 20 |
+| S2 | 5 | 8 | 7 | 30 |
+| S3 | 6 | 9 | 5 | 25 |
+| Demand | 10 | 25 | 40 | 75 (balanced) |
+
+**North-West Corner**: S1D1 = 10, S1D2 = 10, S2D2 = 15, S2D3 = 15, S3D3 = 25 → 5 allocations = m + n − 1 ✓.
+Cost = 40 + 60 + 120 + 105 + 125 = **450**.
+
+**MODI test** (set u₁ = 0; for basic cells uᵢ + vⱼ = cᵢⱼ): v₁ = 4, v₂ = 6, u₂ = 2, v₃ = 5, u₃ = 0.
+Reduced cost of non-basic cell = cᵢⱼ − uᵢ − vⱼ: S1D3 = 3, **S2D1 = 5 − 2 − 4 = −1** (negative → improve), S3D1 = 2, S3D2 = 3.
+
+Closed loop for S2D1: S2D1(+) → S1D1(−) → S1D2(+) → S2D2(−); θ = min(10, 15) = 10.
+New allocation: S1D2 = 20, S2D1 = 10, S2D2 = 5, S2D3 = 15, S3D3 = 25 → cost = 120 + 50 + 40 + 105 + 125 = **440**.
+Recomputing u, v gives all reduced costs ≥ 0 → **optimal cost 440**.
+
+### 8.3 Assignment Problem — Hungarian Method
+
+| | J1 | J2 | J3 |
+|-|----|----|----|
+| A | 9 | 2 | 7 |
+| B | 6 | 4 | 3 |
+| C | 5 | 8 | 1 |
+
+```
+Row reduction (subtract row minima 2, 3, 1)     Column reduction (col minima 3, 0, 0)
+   A  7  0  5                                       A  4  0  5
+   B  3  1  0                                       B  0  1  0
+   C  4  7  0                                       C  1  7  0
+Zeros can be covered by 3 lines = n ⇒ optimal: A→J2, B→J1, C→J3
+Minimum cost = 2 + 6 + 1 = 9
+```
+
+### 8.4 Groups — Cayley Tables
+
+```
+(Z₄, +₄)                        Klein four-group V₄ = {e, a, b, c}
+ +  │ 0 1 2 3                     ·  │ e a b c
+ ───┼────────                     ───┼────────
+ 0  │ 0 1 2 3                     e  │ e a b c
+ 1  │ 1 2 3 0                     a  │ a e c b
+ 2  │ 2 3 0 1                     b  │ b c e a
+ 3  │ 3 0 1 2                     c  │ c b a e
+ cyclic (generators 1, 3)        not cyclic; every element has order 2
+```
+- Both have order 4 and are abelian, but are **not isomorphic** (Z₄ has an element of order 4; V₄ does not).
+- Subgroups of Z₄: {0}, {0, 2}, Z₄. Cosets of H = {0, 2}: H and {1, 3} → Z₄/H ≅ Z₂.
+- Every group of order 4 is isomorphic to Z₄ or V₄; every group of order 6 is Z₆ or S₃.
+
+### 8.5 Solving a Recurrence
+
+aₙ = 5aₙ₋₁ − 6aₙ₋₂, a₀ = 1, a₁ = 0.
+```
+Characteristic equation: r² − 5r + 6 = 0 → r = 2, 3
+General: aₙ = α·2ⁿ + β·3ⁿ
+a₀: α + β = 1 ;  a₁: 2α + 3β = 0  ⇒ β = −2, α = 3
+aₙ = 3·2ⁿ − 2·3ⁿ          check: a₂ = 12 − 18 = −6 = 5(0) − 6(1) ✔
+```
+Non-homogeneous: aₙ = 2aₙ₋₁ + 1 (Hanoi) → particular solution constant c = 2c + 1 ⇒ c = −1; aₙ = A·2ⁿ − 1; a₁ = 1 ⇒ aₙ = 2ⁿ − 1.
+
+**Generating functions**: the sequence 1, 1, 1, … ↔ 1/(1 − x); aₙ = C(n + k − 1, k − 1) ↔ 1/(1 − x)ᵏ. Used to count integer solutions and to solve recurrences.
+
+### 8.6 Graph Isomorphism & Colouring Checks
+
+```
+ G1: square a-b-c-d with diagonal a–c      G2: vertices p, q, r, s with edges
+     a ───── b                                 p–q, q–r, r–s, s–p, q–s
+     │ ╲     │
+     │   ╲   │                              Degrees: p 2, q 3, r 2, s 3
+     │     ╲ │
+     d ───── c                              Degrees: a 3, b 2, c 3, d 2
+```
+- Both graphs have 4 vertices, 5 edges and degree sequence (3, 3, 2, 2) — each is K₄ minus one edge.
+- Mapping a→q, c→s, b→p, d→r preserves every edge → **isomorphic**.
+- χ(G1) = 3, because the triangle a–b–c needs three colours.
+
+Quick invariant checklist for isomorphism: number of vertices and edges, degree sequence, number of cycles of each length, connectivity, bipartiteness. Matching invariants are necessary, not sufficient — finish by exhibiting a mapping.
+
 ---
 
 ## Previous Year Questions (PYQ pattern)
@@ -336,6 +457,7 @@ Paths: A-C-E = 3+5+3 = **11** (critical), B-D-E = 4+2+3 = 9. Project duration = 
 7. From p→q and ¬q we infer ¬p — this is: **Modus Tollens**
 
 **Sets, relations, functions**
+
 8. Number of reflexive relations on a set of 4 elements: 2¹² = **4096**
 9. Number of symmetric relations on 3 elements: 2⁶ = **64**
 10. Number of equivalence relations on {1,2,3,4}: **15**
@@ -345,6 +467,7 @@ Paths: A-C-E = 3+5+3 = **11** (critical), B-D-E = 4+2+3 = 9. Project duration = 
 14. D₃₀ (divisors of 30) is a Boolean algebra because 30 is: **square-free** (D₁₂ is not)
 
 **Counting**
+
 15. Minimum students so that at least 3 share birthday month: 2×12 + 1 = **25**
 16. Number of derangements of 4 letters: **9**
 17. Number of ways to arrange letters of "MISSISSIPPI": 11!/(4!4!2!) = **34650**
@@ -353,11 +476,13 @@ Paths: A-C-E = 3+5+3 = **11** (critical), B-D-E = 4+2+3 = 9. Project duration = 
 20. Number of distinct BSTs with 3 keys: **5** (Catalan)
 
 **Probability**
+
 21. Two dice thrown; probability sum = 7: **1/6**
 22. A box: 3 defective of 10. Probability of picking 2 non-defective without replacement: (7/10)(6/9) = **7/15**
 23. Bayes problem: Machines A, B produce 60%, 40%; defect rates 2%, 3%. P(A | defective) = 0.012/0.024 = **1/2**
 
 **Groups**
+
 24. Which is NOT a group? (a) (Z,+) (b) (Q−{0},×) (c) (Z,×) (d) (R,+) — **Ans: (c)** (no inverses)
 25. A group of order 7 is: **cyclic (prime order)**
 26. Number of generators of cyclic group of order 12: φ(12) = **4**
@@ -366,6 +491,7 @@ Paths: A-C-E = 3+5+3 = **11** (critical), B-D-E = 4+2+3 = 9. Project duration = 
 29. Every finite integral domain is a: **field**
 
 **Graphs**
+
 30. Sum of degrees of a graph with 15 edges: **30**
 31. A connected planar graph has 10 vertices and 15 edges. Number of faces: 15 − 10 + 2 = **7**
 32. Max edges in simple planar graph with 8 vertices: 3×8 − 6 = **18**
@@ -377,6 +503,7 @@ Paths: A-C-E = 3+5+3 = **11** (critical), B-D-E = 4+2+3 = 9. Project duration = 
 38. Chromatic number of bipartite graph: **2**
 
 **Optimization**
+
 39. In a transportation problem with 4 sources and 5 destinations, a non-degenerate BFS has: **8** allocations
 40. The best initial basic feasible solution method: **Vogel's approximation**
 41. Assignment problems are solved by: **Hungarian method**
@@ -385,6 +512,23 @@ Paths: A-C-E = 3+5+3 = **11** (critical), B-D-E = 4+2+3 = 9. Project duration = 
 44. Activities on the critical path have total float: **zero**
 45. Simplex leaving variable is chosen by: **minimum ratio test**
 46. If the objective function is parallel to a binding constraint: **multiple optimal solutions**
+
+**More practice questions**
+
+47. In simplex, if all entries in the pivot column are ≤ 0, the LPP has: **an unbounded solution**
+48. If an artificial variable remains in the basis at a positive level in the optimal tableau: **the problem is infeasible**
+49. Shadow price of a constraint equals the optimal value of the corresponding: **dual variable**
+50. A transportation solution with fewer than m + n − 1 positive allocations is: **degenerate**
+51. In MODI, a negative reduced cost (cᵢⱼ − uᵢ − vⱼ) for an unoccupied cell means: **the solution can be improved**
+52. Unbalanced assignment problems are balanced by adding: **dummy rows or columns with zero cost**
+53. Number of subgroups of Z₄: **3**
+54. Klein four-group is: **abelian but not cyclic**
+55. Solution of aₙ = 4aₙ₋₁ − 4aₙ₋₂ has the form: **(α + βn)2ⁿ**
+56. Coefficient of x⁵ in 1/(1 − x)³: C(7, 2) = **21**
+57. The number of edges in a graph with degree sequence (3, 3, 2, 2): **5**
+58. Which statement is true? (a) every abelian group is cyclic (b) every cyclic group is abelian (c) every group of order 4 is cyclic (d) S₃ is abelian — **Ans: (b)**
+59. Order of element 2 in (Z₆, +₆): **3**
+60. Number of perfect matchings in K₄: **3**
 
 ## Quick Revision Box
 - p→q ≡ ¬p∨q ≡ ¬q→¬p · Relations on n: 2^(n²)

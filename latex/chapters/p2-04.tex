@@ -1,0 +1,1190 @@
+\unitchapter{Paper 2 · Unit 4}{Database Management Systems}{p2-04}
+
+\textbf{Expected questions: 10--12 · Target: 10+ · Type: normalisation, keys, SQL output, transactions, concepts --- very scoring}
+
+\begin{sylbox}
+
+\begin{itemize}
+\tightlist
+\item[$\square$]
+  Database system concepts \& architecture: data models, schemas, instances, three-schema architecture, data independence, database languages \& interfaces, centralised \& client/server architecture
+\item[$\square$]
+  Data modelling: ER diagram, relational model (constraints, languages, design, programming), relational algebra \& calculus, codd rules
+\item[$\square$]
+  SQL: data definition, types, constraints, queries, insert, delete, update, views, stored procedures, functions, triggers, SQL injection
+\item[$\square$]
+  Normalisation: functional dependencies, 1NF, 2NF, 3NF, BCNF, multivalued dependencies \& 4NF, join dependencies \& 5NF, inclusion dependencies
+\item[$\square$]
+  Transaction processing, concurrency control \& recovery
+\item[$\square$]
+  Physical database design: file organisation, indexing (single-level, multilevel, B-tree, B+-tree), query processing \& optimisation
+\item[$\square$]
+  Object \& object-relational databases; database security
+\item[$\square$]
+  Enhanced data models: temporal, multimedia, deductive, XML \& internet databases, mobile, GIS, genome, distributed databases
+\item[$\square$]
+  Data warehousing \& data mining: OLAP, data cube, association rules, classification, clustering
+\item[$\square$]
+  Big data systems: characteristics, types, architecture, MapReduce, Hadoop, NoSQL (CAP theorem, document, key-value, column, graph)
+\end{itemize}
+
+\end{sylbox}
+
+\needdiagram{figures/p2-04-00}{95pt}
+
+\hypertarget{p2-04--1-architecture}{%
+\section{1. Architecture}\label{p2-04--1-architecture}}
+
+\needspace{100pt}
+
+\hypertarget{p2-04--11-three-schema-ansisparc-architecture}{%
+\subsection{1.1 Three-Schema (ANSI/SPARC) Architecture}\label{p2-04--11-three-schema-ansisparc-architecture}}
+
+\diagramhere{figures/p2-04-00}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Logical data independence}: change conceptual schema without changing external views (harder to achieve).
+\item
+  \textbf{Physical data independence}: change internal schema without changing conceptual schema.
+\item
+  \textbf{Schema} = structure (intension, changes rarely); \textbf{Instance} = data at a moment (extension).
+\item
+  Languages: \textbf{DDL} (CREATE, ALTER, DROP, TRUNCATE), \textbf{DML} (SELECT, INSERT, UPDATE, DELETE), \textbf{DCL} (GRANT, REVOKE), \textbf{TCL} (COMMIT, ROLLBACK, SAVEPOINT).
+\item
+  Data models: hierarchical (IMS, tree), network (CODASYL, graph), relational (Codd 1970), object-oriented, object-relational.
+\item
+  Architectures: centralised, \textbf{2-tier} client/server, \textbf{3-tier} (client -- application server -- DB server).
+\end{itemize}
+
+\needspace{229pt}
+
+\hypertarget{p2-04--12-dbms-components}{%
+\subsection{1.2 DBMS Components}\label{p2-04--12-dbms-components}}
+
+Query processor (DDL interpreter, DML compiler, query evaluation engine), storage manager (authorisation, transaction manager, file manager, buffer manager), data dictionary (metadata).
+
+\needspace{154pt}
+
+\hypertarget{p2-04--2-er-model}{%
+\section{2. ER Model}\label{p2-04--2-er-model}}
+
+\begin{asciiblock}{99pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ ER notation (Chen)
+ ┌────────┐   Entity              ╔════════╗  Weak entity
+ └────────┘                       ╚════════╝
+ (  attr  )   Attribute           (( multi ))  Multivalued
+ ( _key_ )    Key (underlined)    (  - - -  )  Derived (dashed)
+  ◇           Relationship        ◈            Identifying relationship (double diamond)
+ ═══          Total participation  ───         Partial participation
+\end{Verbatim}
+\end{asciiblock}
+
+\diagram{figures/p2-04-01}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Cardinality}: 1:1, 1:N, M:N. \textbf{Participation}: total (every entity participates --- double line) or partial.
+\item
+  \textbf{Weak entity}: no key of its own; identified via owner entity + partial key (discriminator).
+\item
+  \textbf{Specialisation} (top-down), \textbf{generalisation} (bottom-up), \textbf{aggregation} (relationship as entity). Disjoint/overlapping, total/partial constraints.
+\end{itemize}
+
+\needspace{135pt}
+
+\hypertarget{p2-04--er--relational-mapping-minimum-tables}{%
+\subsection{ER → Relational mapping (minimum tables)}\label{p2-04--er--relational-mapping-minimum-tables}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1627}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4184}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Case}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Tables}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Strong entity & 1 table each \\
+1:1 relationship & Merge into either side (total participation side preferred) \\
+1:N relationship & FK on N-side; no separate table \\
+\textbf{M:N relationship} & \textbf{Separate table} with both PKs \\
+Multivalued attribute & Separate table \\
+Weak entity & Table with owner\textquotesingle s PK + partial key \\
+\end{longtable}
+
+\endgroup
+
+Classic: E1 ---M:N--- E2 ---1:N--- E3 → minimum tables = 3 entities + 1 (for M:N) = \textbf{4}.
+
+\needdiagram{figures/p2-04-02}{55pt}
+
+\hypertarget{p2-04--3-keys--integrity}{%
+\section{3. Keys \& Integrity}\label{p2-04--3-keys--integrity}}
+
+\diagramhere{figures/p2-04-02}
+
+\begin{itemize}
+\tightlist
+\item
+  Number of super keys of R(A1\ldots An) with single candidate key A1: \textbf{2ⁿ⁻¹}.
+\item
+  With candidate keys A1 and A2: 2ⁿ⁻¹ + 2ⁿ⁻¹ − 2ⁿ⁻² = \textbf{3·2ⁿ⁻²}.
+\item
+  \textbf{Entity integrity}: PK cannot be NULL. \textbf{Referential integrity}: FK value must match an existing PK or be NULL.
+\item
+  ON DELETE CASCADE / SET NULL / RESTRICT.
+\end{itemize}
+
+\textbf{Codd\textquotesingle s 12 rules (13 with Rule 0)}: Rule 0 foundation; 1 information; 2 guaranteed access; 3 systematic NULLs; 4 active online catalog; 5 comprehensive data sublanguage; 6 view updating; 7 high-level insert/update/delete; 8 physical data independence; 9 logical data independence; 10 integrity independence; 11 distribution independence; 12 non-subversion.
+
+\needspace{135pt}
+
+\hypertarget{p2-04--4-relational-algebra--calculus}{%
+\section{4. Relational Algebra \& Calculus}\label{p2-04--4-relational-algebra--calculus}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1422}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1840}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2354}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Operation}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Symbol}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Notes}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Selection & σ\_cond(R) & Rows; commutative \\
+Projection & π\_attrs(R) & Columns; removes duplicates \\
+Union & R ∪ S & Union-compatible \\
+Difference & R − S & \\
+Cartesian product & R × S & \\
+Rename & ρ & \\
+Intersection & R ∩ S = R − (R − S) & Derived \\
+Natural join & R ⋈ S & Equal common attrs \\
+Theta join & R ⋈\_θ S & σ\_θ(R × S) \\
+Division & R ÷ S & "for all" queries \\
+Outer joins & ⟕ ⟖ ⟗ & Keep unmatched with NULLs \\
+\end{longtable}
+
+\endgroup
+
+Fundamental: \textbf{σ, π, ∪, −, ×, ρ}. Relational algebra is \textbf{procedural}; relational calculus (TRC/DRC) is \textbf{non-procedural}. Safe calculus = relational algebra in power (relational completeness).
+
+\begin{asciiblock}{99pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Tuple sizes: R has m tuples, S has n tuples
+R × S            → m·n
+R ⋈ S            → 0 … m·n
+R ∪ S            → max(m,n) … m+n
+R ∩ S            → 0 … min(m,n)
+R − S            → 0 … m
+R ⟕ S (left outer) → at least m
+\end{Verbatim}
+\end{asciiblock}
+
+Division example: "students who took \textbf{all} courses": π\_\{sid,cid\}(Enrolled) ÷ π\_\{cid\}(Course).
+
+TRC: \texttt{\{\ t\ \textbar{}\ t\ ∈\ Student\ ∧\ t.age\ \textgreater{}\ 20\ \}} · DRC: \texttt{\{\ \textless{}n\textgreater{}\ \textbar{}\ ∃a\ (\textless{}n,a\textgreater{}\ ∈\ Student\ ∧\ a\ \textgreater{}\ 20)\ \}}.
+
+\needspace{144pt}
+
+\hypertarget{p2-04--5-sql}{%
+\section{5. SQL}\label{p2-04--5-sql}}
+
+\begin{asciiblock}{89pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+SELECT dept, COUNT(*) AS n, AVG(salary)
+FROM   employee
+WHERE  salary > 20000          -- filters rows (before grouping)
+GROUP  BY dept
+HAVING COUNT(*) > 2            -- filters groups
+ORDER  BY n DESC;
+\end{Verbatim}
+\end{asciiblock}
+
+Logical order of execution: \textbf{FROM → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → LIMIT}.
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{COUNT(*)} counts all rows; \texttt{COUNT(col)} ignores NULLs; aggregates (SUM/AVG/MAX/MIN) ignore NULLs.
+\item
+  NULL comparisons give UNKNOWN; use \texttt{IS\ NULL}. \texttt{NULL\ =\ NULL} → UNKNOWN.
+\item
+  \texttt{DELETE} (DML, row-wise, rollback possible, WHERE allowed) vs \texttt{TRUNCATE} (DDL, all rows, faster) vs \texttt{DROP} (removes table structure).
+\item
+  \texttt{IN}, \texttt{EXISTS}, \texttt{ANY/SOME}, \texttt{ALL}: \texttt{x\ \textgreater{}\ ALL\ (subquery)} = greater than max; \texttt{x\ \textgreater{}\ ANY} = greater than min.
+\item
+  \texttt{UNION} removes duplicates; \texttt{UNION\ ALL} keeps them.
+\item
+  Correlated subquery: inner query refers to outer --- evaluated per outer row.
+\item
+  Constraints: PRIMARY KEY, FOREIGN KEY, UNIQUE (allows NULL), NOT NULL, CHECK, DEFAULT.
+\item
+  \textbf{View}: virtual table (stored query); updatable if based on single table without aggregates/DISTINCT/GROUP BY. \textbf{Materialised view} stores results.
+\item
+  \textbf{Trigger}: ECA (Event--Condition--Action) rule; BEFORE/AFTER, row-level/statement-level.
+\item
+  \textbf{Stored procedure} (CALL, may not return value) vs \textbf{function} (returns value, usable in SELECT).
+\item
+  \textbf{SQL injection}: attacker inserts SQL via input, e.g. \texttt{\textquotesingle{}\ OR\ \textquotesingle{}1\textquotesingle{}=\textquotesingle{}1}. Prevent with \textbf{prepared statements/parameterised queries}, input validation, least privilege.
+\end{itemize}
+
+\textbf{Nth highest salary}:
+
+\begin{asciiblock}{35pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+SELECT MAX(salary) FROM emp WHERE salary < (SELECT MAX(salary) FROM emp);   -- 2nd highest
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{140pt}
+
+\hypertarget{p2-04--6-functional-dependencies--normalisation}{%
+\section{6. Functional Dependencies \& Normalisation}\label{p2-04--6-functional-dependencies--normalisation}}
+
+\needspace{100pt}
+
+\hypertarget{p2-04--61-armstrongs-axioms}{%
+\subsection{6.1 Armstrong\textquotesingle s Axioms}\label{p2-04--61-armstrongs-axioms}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Reflexivity}: Y ⊆ X ⇒ X → Y · \textbf{Augmentation}: X → Y ⇒ XZ → YZ · \textbf{Transitivity}: X → Y, Y → Z ⇒ X → Z
+\item
+  Derived: Union, Decomposition, Pseudo-transitivity (X → Y, WY → Z ⇒ WX → Z).
+\item
+  Sound and complete.
+\end{itemize}
+
+\needspace{146pt}
+
+\hypertarget{p2-04--62-attribute-closure--finding-candidate-keys}{%
+\subsection{6.2 Attribute Closure --- Finding Candidate Keys}\label{p2-04--62-attribute-closure--finding-candidate-keys}}
+
+R(A, B, C, D, E), F = \{A → B, B → C, CD → E\}
+
+\begin{asciiblock}{56pt}
+\begin{Verbatim}[fontsize=\fontsize{8.7}{10.6}\selectfont]
+A⁺   = {A, B, C}
+AD⁺  = {A, D, B, C, E}  = all → AD is a key
+A and D never appear on the RHS → every key must contain both → AD is the ONLY candidate key
+\end{Verbatim}
+\end{asciiblock}
+
+Trick: attributes not on any RHS must be in every key; attributes only on RHS are never in a key.
+
+\textbf{Minimal (canonical) cover}: single attribute on RHS → remove extraneous LHS attributes → remove redundant FDs.
+
+\needdiagram{figures/p2-04-03}{55pt}
+
+\hypertarget{p2-04--63-normal-forms}{%
+\subsection{6.3 Normal Forms}\label{p2-04--63-normal-forms}}
+
+\diagramhere{figures/p2-04-03}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.0651}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.6127}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{NF}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Condition (for every non-trivial FD X → A)}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1NF & All attributes atomic (no repeating groups / multivalued) \\
+2NF & 1NF + no \textbf{partial} dependency (non-prime attribute depends on part of a candidate key) \\
+3NF & X is a super key \textbf{OR} A is a \textbf{prime} attribute \\
+BCNF & X is a \textbf{super key} \\
+4NF & For every non-trivial MVD X →→ Y, X is a super key \\
+5NF & Every join dependency is implied by candidate keys \\
+\end{longtable}
+
+\endgroup
+
+\begin{itemize}
+\tightlist
+\item
+  Relation with \textbf{only two attributes is always in BCNF}.
+\item
+  If all candidate keys are single attributes ⇒ automatically 2NF.
+\item
+  If all attributes are prime ⇒ automatically 3NF.
+\end{itemize}
+
+\needspace{135pt}
+
+\hypertarget{p2-04--64-decomposition-properties}{%
+\subsection{6.4 Decomposition Properties}\label{p2-04--64-decomposition-properties}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2552}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5099}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Property}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Test}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Lossless join} (must) & R into R1, R2 is lossless iff (R1 ∩ R2) → R1 or (R1 ∩ R2) → R2 \\
+\textbf{Dependency preserving} (desirable) & (F1 ∪ F2)⁺ = F⁺ \\
+\end{longtable}
+
+\endgroup
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{3NF} decomposition: always lossless \textbf{and} dependency-preserving (synthesis algorithm).
+\item
+  \textbf{BCNF} decomposition: always lossless but \textbf{not always} dependency-preserving.
+\end{itemize}
+
+\textbf{Worked}: R(A,B,C), F = \{AB → C, C → B\}. Keys: AB, AC. C → B: C not super key but B is prime → \textbf{3NF, not BCNF}. BCNF decomposition (C,B), (A,C) loses AB → C.
+
+\needspace{175pt}
+
+\hypertarget{p2-04--7-transactions}{%
+\section{7. Transactions}\label{p2-04--7-transactions}}
+
+\needspace{135pt}
+
+\hypertarget{p2-04--acid}{%
+\subsection{ACID}\label{p2-04--acid}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2014}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2632}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Property}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Ensured by}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{A}tomicity (all or nothing) & Recovery manager (undo log) \\
+\textbf{C}onsistency & Programmer + integrity constraints \\
+\textbf{I}solation & Concurrency control manager \\
+\textbf{D}urability & Recovery manager (redo log) \\
+\end{longtable}
+
+\endgroup
+
+\needdiagram{figures/p2-04-04}{55pt}
+
+\hypertarget{p2-04--transaction-states}{%
+\subsection{Transaction States}\label{p2-04--transaction-states}}
+
+\diagramhere{figures/p2-04-04}
+
+\needspace{100pt}
+
+\hypertarget{p2-04--schedules--serializability}{%
+\subsection{Schedules \& Serializability}\label{p2-04--schedules--serializability}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Conflicting operations}: same data item, different transactions, at least one write (RW, WR, WW).
+\item
+  \textbf{Conflict serializable} ⇔ \textbf{precedence graph is acyclic} (edge Ti → Tj if Ti\textquotesingle s op conflicts with and precedes Tj\textquotesingle s).
+\item
+  \textbf{View serializable}: same initial reads, same reads-from, same final writes. Every conflict-serializable schedule is view serializable; a view-serializable schedule that is not conflict-serializable has \textbf{blind writes}.
+\item
+  Number of serial schedules of n transactions: \textbf{n!}.
+\end{itemize}
+
+\begin{asciiblock}{46pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Example schedule:  r1(A) w2(A) w1(A) r3(A)
+Conflicts: r1(A)→w2(A): T1→T2 ; w2(A)→w1(A): T2→T1 ⇒ cycle ⇒ NOT conflict serializable
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{90pt}
+
+\hypertarget{p2-04--recoverability-hierarchy}{%
+\subsection{Recoverability hierarchy}\label{p2-04--recoverability-hierarchy}}
+
+\begin{asciiblock}{35pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ Serial ⊂ Strict ⊂ Cascadeless (ACA) ⊂ Recoverable ⊂ All schedules
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Recoverable}: if Tj reads from Ti, Ti commits before Tj commits.
+\item
+  \textbf{Cascadeless}: read only committed data.
+\item
+  \textbf{Strict}: no read/write of item until the last writer commits/aborts.
+\end{itemize}
+
+\needspace{210pt}
+
+\hypertarget{p2-04--concurrency-problems}{%
+\subsection{Concurrency problems}\label{p2-04--concurrency-problems}}
+
+Lost update (WW), dirty read (WR --- uncommitted dependency), unrepeatable read (RW), phantom read (insertions).
+SQL isolation levels: READ UNCOMMITTED \textless{} READ COMMITTED \textless{} REPEATABLE READ \textless{} SERIALIZABLE.
+
+\needspace{135pt}
+
+\hypertarget{p2-04--concurrency-control-protocols}{%
+\subsection{Concurrency Control Protocols}\label{p2-04--concurrency-control-protocols}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1835}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.8165}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Protocol}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Key points}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Lock-based (S/X) & S compatible with S only \\
+\textbf{Basic 2PL} & Growing phase then shrinking phase; ensures conflict serializability; \textbf{deadlock possible}, cascading rollback possible \\
+\textbf{Strict 2PL} & Hold \textbf{X locks} till commit → cascadeless, strict \\
+\textbf{Rigorous 2PL} & Hold \textbf{all locks} till commit; serial order = commit order \\
+Conservative 2PL & Acquire all locks before starting → \textbf{deadlock-free} \\
+\textbf{Timestamp ordering} & Older first; Read: if TS(T) \textless{} W-TS(X) → rollback; Write: if TS(T) \textless{} R-TS(X) or \textless{} W-TS(X) → rollback. Deadlock-free, may starve \\
+\textbf{Thomas\textquotesingle{} write rule} & Ignore obsolete write instead of rollback → allows some view-serializable schedules \\
+Validation (optimistic) & Read → validate → write phases \\
+Multiversion (MVCC) & Readers don\textquotesingle t block writers \\
+Multiple granularity & Intention locks IS, IX, SIX \\
+\end{longtable}
+
+\endgroup
+
+Deadlock prevention with timestamps:
+
+\begin{asciiblock}{45pt}
+\begin{Verbatim}[fontsize=\fontsize{8.3}{10.1}\selectfont]
+ Wait–Die  (non-preemptive): older requests → WAITS;   younger requests → DIES (rolled back)
+ Wound–Wait (preemptive):    older requests → WOUNDS (aborts) younger;  younger requests → WAITS
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{100pt}
+
+\hypertarget{p2-04--recovery}{%
+\subsection{Recovery}\label{p2-04--recovery}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Log-based}: , \textless T, X, old, new\textgreater, .
+\item
+  \textbf{Deferred update} (NO-UNDO/REDO), \textbf{Immediate update} (UNDO/REDO).
+\item
+  \textbf{Checkpoint} reduces log scanning. After crash: transactions committed after checkpoint → REDO; uncommitted → UNDO.
+\item
+  \textbf{ARIES} (WAL, LSN, repeating history): Analysis → Redo → Undo.
+\item
+  \textbf{WAL (Write-Ahead Logging)}: log record written to stable storage before data page.
+\item
+  Shadow paging: no log needed; copy-on-write page table.
+\end{itemize}
+
+\needspace{135pt}
+
+\hypertarget{p2-04--8-file-organisation--indexing}{%
+\section{8. File Organisation \& Indexing}\label{p2-04--8-file-organisation--indexing}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.0892}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3698}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Index}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Description}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Primary & On ordering \textbf{key} field; sparse (one entry per block) \\
+Clustering & On ordering \textbf{non-key} field \\
+Secondary & On non-ordering field; \textbf{dense} \\
+Dense & Entry for every record \\
+Sparse & Entry for some records (needs sorted file) \\
+Multilevel & Index on index --- log\_fo(blocks) levels \\
+\end{longtable}
+
+\endgroup
+
+\begin{itemize}
+\tightlist
+\item
+  A file can have \textbf{at most one primary or clustering index} but many secondary indexes.
+\end{itemize}
+
+\needspace{133pt}
+
+\hypertarget{p2-04--b-tree-vs-b-tree}{%
+\subsection{B-Tree vs B+ Tree}\label{p2-04--b-tree-vs-b-tree}}
+
+\begin{asciiblock}{78pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ B+ tree of order 3 (internal: keys only, leaves linked)
+                 [ 30 | 60 ]
+               /      |      \
+        [10|20]    [30|40]   [60|70|80]   ← leaves contain all keys,
+           └──────►───┘──────►────┘          linked for range queries
+\end{Verbatim}
+\end{asciiblock}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1962}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4052}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{B-Tree}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{B+ Tree}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Data pointers in all nodes & Data pointers only at leaves \\
+No duplicate keys & Internal keys repeated in leaves \\
+Leaves not linked & Leaves linked → efficient range/\allowbreak{}sequential access \\
+Lower fan-out & Higher fan-out (internal nodes smaller) → fewer levels \\
+\end{longtable}
+
+\endgroup
+
+Order p (max children): every node ≤ p children; non-root internal ≥ ⌈p/2⌉ children; root ≥ 2.
+\textbf{Order calculation}: block 1024 B, key 9 B, block pointer 6 B, record pointer 7 B.
+
+\begin{itemize}
+\tightlist
+\item
+  B+ internal: p·6 + (p−1)·9 ≤ 1024 → 15p ≤ 1033 → \textbf{p = 68}.
+\item
+  B+ leaf: q(9 + 7) + 6 ≤ 1024 → \textbf{q = 63}.
+\item
+  B-tree node: p·6 + (p−1)(9 + 7) ≤ 1024 → 22p ≤ 1040 → \textbf{p = 47}.
+\end{itemize}
+
+\textbf{Hashing}: static (overflow chains), dynamic --- extendible hashing (directory doubles, global/local depth), linear hashing.
+
+\needspace{100pt}
+
+\hypertarget{p2-04--query-optimisation}{%
+\subsection{Query Optimisation}\label{p2-04--query-optimisation}}
+
+\begin{itemize}
+\tightlist
+\item
+  Heuristics: perform \textbf{selection early}, projection early, most restrictive selection first, avoid Cartesian products, replace × + σ with joins.
+\item
+  Cost-based: estimate block transfers \& seeks. Join algorithms: nested-loop (nr·bs + br), block nested-loop (br·bs + br), indexed, sort-merge, hash join.
+\item
+  Query tree; equivalence rules (σ commutes, cascade of π, joins associative/commutative).
+\end{itemize}
+
+\needspace{135pt}
+
+\hypertarget{p2-04--9-advanced--enhanced-databases}{%
+\section{9. Advanced \& Enhanced Databases}\label{p2-04--9-advanced--enhanced-databases}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1259}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.8741}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Model}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Notes}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+OODBMS & Objects, OID, inheritance; ODMG standard, OQL \\
+ORDBMS & Relational + UDTs, inheritance (PostgreSQL, Oracle) \\
+Temporal & Valid time \& transaction time \\
+Multimedia & Images, audio, video; content-based retrieval \\
+Deductive & Facts + rules; \textbf{Datalog} (Prolog-like) \\
+XML DB & XPath, XQuery; native XML DBs \\
+Mobile & Intermittent connectivity, caching \\
+GIS & Spatial data: raster/\allowbreak{}vector; R-trees, quad-trees \\
+Genome & Biological sequence data \\
+\textbf{Distributed DB} & Fragmentation (horizontal, vertical, mixed), replication, transparency; \textbf{2PC} (two-phase commit: prepare → commit) --- blocking; 3PC non-blocking \\
+\end{longtable}
+
+\endgroup
+
+\textbf{Security}: discretionary (GRANT/REVOKE, \texttt{WITH\ GRANT\ OPTION}), mandatory (Bell-LaPadula: no read up, no write down), role-based access control, statistical DB inference control, encryption.
+
+\needdiagram{figures/p2-04-05}{55pt}
+
+\hypertarget{p2-04--10-data-warehousing--mining}{%
+\section{10. Data Warehousing \& Mining}\label{p2-04--10-data-warehousing--mining}}
+
+\diagramhere{figures/p2-04-05}
+
+\begin{itemize}
+\tightlist
+\item
+  Definition by \textbf{W.H. Inmon}: subject-oriented, integrated, time-variant, non-volatile. Kimball: dimensional modelling (bottom-up data marts).
+\item
+  Schemas: \textbf{Star} (one fact table + denormalised dimensions), \textbf{Snowflake} (normalised dimensions), \textbf{Fact constellation / Galaxy} (multiple fact tables).
+\item
+  OLAP operations: \textbf{roll-up} (aggregate up / drill-up), \textbf{drill-down}, \textbf{slice} (fix one dimension), \textbf{dice} (sub-cube on multiple), \textbf{pivot} (rotate).
+\item
+  ROLAP (relational), MOLAP (multidimensional arrays), HOLAP (hybrid).
+\item
+  Number of cuboids in n-dimensional cube without hierarchies: \textbf{2ⁿ}; with Lᵢ levels: Π(Lᵢ + 1).
+\item
+  OLTP (current, detailed, many short transactions, normalised) vs OLAP (historical, summarised, complex queries, denormalised).
+\end{itemize}
+
+\needspace{203pt}
+
+\hypertarget{p2-04--data-mining-kdd-process}{%
+\subsection{Data mining (KDD process)}\label{p2-04--data-mining-kdd-process}}
+
+Selection → Pre-processing → Transformation → \textbf{Data mining} → Interpretation/Evaluation.
+
+\textbf{Association rules} (Apriori):
+
+\begin{asciiblock}{78pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Support(A→B)    = count(A ∪ B) / N
+Confidence(A→B) = support(A ∪ B) / support(A)
+Lift            = confidence(A→B) / support(B)    (>1 positive correlation)
+Apriori property: every subset of a frequent itemset is frequent (anti-monotone)
+FP-growth: no candidate generation (FP-tree)
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  Classification (supervised): decision tree (ID3 -- information gain, C4.5 -- gain ratio, CART -- Gini), Naive Bayes, k-NN, SVM.
+\item
+  Clustering (unsupervised): k-means (partitioning), k-medoids (PAM), hierarchical (agglomerative/divisive), DBSCAN (density).
+\item
+  Outlier detection, regression.
+\end{itemize}
+
+\needspace{100pt}
+
+\hypertarget{p2-04--11-big-data--nosql}{%
+\section{11. Big Data \& NoSQL}\label{p2-04--11-big-data--nosql}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{5 Vs}: Volume, Velocity, Variety, Veracity, Value (3 Vs originally --- Doug Laney).
+\item
+  Types: structured, semi-structured (JSON, XML), unstructured (text, video).
+\item
+  \textbf{Hadoop}: HDFS (NameNode = master/metadata, DataNode = storage; default block 128 MB, replication 3) + \textbf{MapReduce} (Map → Shuffle \& Sort → Reduce) + \textbf{YARN} (ResourceManager, NodeManager). Ecosystem: Hive (SQL-like), Pig (Pig Latin), HBase (column store), Sqoop (RDBMS ↔ HDFS), Flume (logs), ZooKeeper (coordination), Oozie (workflow), Spark (in-memory, RDDs).
+\item
+  \textbf{CAP theorem} (Brewer): a distributed system can guarantee only \textbf{2 of 3}: Consistency, Availability, Partition tolerance. (CP: HBase, MongoDB; AP: Cassandra, CouchDB, DynamoDB.)
+\item
+  \textbf{BASE}: Basically Available, Soft state, Eventual consistency (vs ACID).
+\end{itemize}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1231}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2208}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{NoSQL type}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Examples}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Key--value & Redis, DynamoDB, Riak \\
+Document & MongoDB, CouchDB \\
+Column-family & Cassandra, HBase, Bigtable \\
+Graph & Neo4j, JanusGraph \\
+\end{longtable}
+
+\endgroup
+
+\needspace{210pt}
+
+\hypertarget{p2-04--12-deeper-dive--sql-on-real-tables-minimal-cover-full-normalisation--schedules}{%
+\section{12. Deeper Dive --- SQL on Real Tables, Minimal Cover, Full Normalisation \& Schedules}\label{p2-04--12-deeper-dive--sql-on-real-tables-minimal-cover-full-normalisation--schedules}}
+
+\needspace{170pt}
+
+\hypertarget{p2-04--121-sql-worked-on-sample-data}{%
+\subsection{12.1 SQL Worked on Sample Data}\label{p2-04--121-sql-worked-on-sample-data}}
+
+\textbf{EMP}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0402}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0605}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0690}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0654}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{eid}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{name}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{dept}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{salary}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & Asha & CS & 50000 \\
+2 & Ravi & CS & 40000 \\
+3 & Meena & EE & 45000 \\
+4 & John & EE & 30000 \\
+5 & Priya & ME & 60000 \\
+6 & Kiran & NULL & 35000 \\
+\end{longtable}
+
+\endgroup
+
+\textbf{DEPT}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.0464}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.0770}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{dept}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{building}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+CS & B1 \\
+EE & B2 \\
+CE & B3 \\
+\end{longtable}
+
+\endgroup
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0340}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.6111}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3550}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{\#}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Query}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Result}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & \texttt{SELECT\ dept,\ COUNT(*),\ AVG(salary)\ FROM\ EMP\ GROUP\ BY\ dept\ HAVING\ COUNT(*)\ \textgreater{}\ 1} & (CS, 2, 45000), (EE, 2, 37500) \\
+2 & \texttt{SELECT\ name\ FROM\ EMP\ WHERE\ salary\ \textgreater{}\ (SELECT\ AVG(salary)\ FROM\ EMP)} & avg = 43333.33 → Asha, Meena, Priya \\
+3 & \texttt{SELECT\ COUNT(dept),\ COUNT(DISTINCT\ dept)\ FROM\ EMP} & 5, 3 (NULL ignored) \\
+4 & \texttt{EMP\ JOIN\ DEPT\ ON\ EMP.dept\ =\ DEPT.dept} & 4 rows (Asha, Ravi, Meena, John) \\
+5 & \texttt{EMP\ LEFT\ JOIN\ DEPT\ …} & 6 rows (Priya \& Kiran get NULL building) \\
+6 & \texttt{EMP\ RIGHT\ JOIN\ DEPT\ …} & 5 rows (CE appears with NULL employee) \\
+7 & \texttt{EMP\ FULL\ OUTER\ JOIN\ DEPT\ …} & 7 rows \\
+8 & Correlated: \texttt{SELECT\ name\ FROM\ EMP\ e1\ WHERE\ salary\ =\ (SELECT\ MAX(salary)\ FROM\ EMP\ e2\ WHERE\ e2.dept\ =\ e1.dept)} & Asha, Meena, Priya (Kiran excluded: NULL = NULL is UNKNOWN) \\
+9 & \texttt{SELECT\ dept\ FROM\ DEPT\ WHERE\ dept\ NOT\ IN\ (SELECT\ dept\ FROM\ EMP)} & \textbf{Empty!} The subquery contains NULL, so every NOT IN test is UNKNOWN \\
+10 & Same with \texttt{NOT\ EXISTS\ (SELECT\ *\ FROM\ EMP\ WHERE\ EMP.dept\ =\ DEPT.dept)} & CE ✔ --- NOT EXISTS is NULL-safe \\
+\end{longtable}
+
+\endgroup
+
+\needspace{164pt}
+
+\hypertarget{p2-04--122-minimal-canonical-cover--worked}{%
+\subsection{12.2 Minimal (Canonical) Cover --- Worked}\label{p2-04--122-minimal-canonical-cover--worked}}
+
+F = \{A → BC, B → C, A → B, AB → C\}
+
+\begin{asciiblock}{74pt}
+\begin{Verbatim}[fontsize=\fontsize{8.2}{10.0}\selectfont]
+1. Split RHS:            A → B, A → C, B → C, A → B, AB → C
+2. Remove duplicates:    A → B, A → C, B → C, AB → C
+3. Extraneous LHS attr:  in AB → C, B is extraneous since A⁺ = {A, B, C} ∋ C  → A → C (duplicate)
+4. Redundant FDs:        A → C follows from A → B and B → C → remove
+Minimal cover Fc = { A → B, B → C }
+\end{Verbatim}
+\end{asciiblock}
+
+\needdiagram{figures/p2-04-06}{90pt}
+
+\hypertarget{p2-04--123-normalisation--from-1nf-to-bcnf}{%
+\subsection{12.3 Normalisation --- From 1NF to BCNF}\label{p2-04--123-normalisation--from-1nf-to-bcnf}}
+
+R(S, C, I, P, G) --- Student, Course, Instructor, instructor Phone, Grade.
+F = \{ SC → G, C → I, I → P \}. S and C never appear on the right → \textbf{candidate key = SC}.
+
+\diagramhere{figures/p2-04-06}
+
+Final schema: \textbf{(S, C, G), (C, I), (I, P)} --- every determinant is a key → BCNF; decomposition is lossless (common attributes C and I are keys of a side) and preserves all three FDs.
+
+\needspace{135pt}
+
+\hypertarget{p2-04--124-recoverability-examples-w--write-r--read-c--commit}{%
+\subsection{12.4 Recoverability Examples (W = write, R = read, C = commit)}\label{p2-04--124-recoverability-examples-w--write-r--read-c--commit}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1741}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.6505}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Schedule}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Classification}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+W1(A) R2(A) C2 C1 & \textbf{Not recoverable} --- T2 commits after reading T1\textquotesingle s uncommitted data, before T1 commits \\
+W1(A) R2(A) C1 C2 & Recoverable, but not cascadeless (abort of T1 forces abort of T2) \\
+W1(A) C1 R2(A) C2 & Cascadeless (reads only committed data) \\
+W1(A) W2(A) C1 C2 & Cascadeless but \textbf{not strict} (T2 overwrote uncommitted A) \\
+\end{longtable}
+
+\endgroup
+
+\needdiagram{figures/p2-04-07}{90pt}
+
+\hypertarget{p2-04--125-precedence-graphs}{%
+\subsection{12.5 Precedence Graphs}\label{p2-04--125-precedence-graphs}}
+
+Schedule S: R1(A) W1(A) R2(A) W2(A) R1(B) W1(B) R2(B) W2(B)
+
+\diagramhere{figures/p2-04-07}
+
+Acyclic → conflict serializable, equivalent to serial order \textbf{T1 → T2}.
+
+Schedule S′: R1(X) R2(Y) W2(X) W1(Y)
+
+\diagram{figures/p2-04-08}
+
+Cycle → \textbf{not} conflict serializable.
+
+\needspace{165pt}
+
+\hypertarget{p2-04--126-two-phase-locking--lock-point}{%
+\subsection{12.6 Two-Phase Locking --- Lock Point}\label{p2-04--126-two-phase-locking--lock-point}}
+
+\begin{asciiblock}{110pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ locks held
+   │        ╱‾‾‾‾╲
+   │      ╱        ╲
+   │    ╱  growing   ╲  shrinking
+   │  ╱    phase      ╲   phase
+   └──────────●──────────────────── time
+          lock point (last lock acquired)
+ Serializability order of 2PL transactions = order of their lock points
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{165pt}
+
+\hypertarget{p2-04--127-extendible-hashing-sketch}{%
+\subsection{12.7 Extendible Hashing (sketch)}\label{p2-04--127-extendible-hashing-sketch}}
+
+\begin{asciiblock}{110pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ Global depth 2                     Buckets (local depth)
+ directory
+  00 ──────────────►  [ 4, 12, 32 ]   (d = 2)
+  01 ──────┐
+  11 ──────┴───────►  [ 1, 5, 21 ]    (d = 1)  ← two directory entries share it
+  10 ──────────────►  [ 10, 6 ]       (d = 2)
+ Overflow of a bucket with local depth = global depth → directory doubles
+ Overflow with local depth < global depth → split bucket only
+\end{Verbatim}
+\end{asciiblock}
+
+\needdiagram{figures/p2-04-09}{55pt}
+
+\hypertarget{p2-04--128-data-cube-lattice-3-dimensions--2uxb3--8-cuboids}{%
+\subsection{12.8 Data Cube Lattice (3 dimensions → 2³ = 8 cuboids)}\label{p2-04--128-data-cube-lattice-3-dimensions--2uxb3--8-cuboids}}
+
+\diagramhere{figures/p2-04-09}
+
+\needspace{135pt}
+
+\hypertarget{p2-04--previous-year-questions-pyq-pattern}{%
+\section{Previous Year Questions (PYQ pattern)}\label{p2-04--previous-year-questions-pyq-pattern}}
+
+\textbf{Architecture \& ER}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Ability to change the conceptual schema without changing application programs: \textbf{logical data independence}
+\item
+  The overall design of the database is called: \textbf{schema}
+\item
+  A weak entity set is represented by: \textbf{double rectangle}
+\item
+  Minimum number of tables for E1 (1)--R--(N) E2 with no attributes on R: \textbf{2}
+\item
+  Minimum tables for M:N relationship between two entities: \textbf{3}
+\item
+  Which is a DCL command? \textbf{GRANT}
+\item
+  TRUNCATE is a: \textbf{DDL command}
+\end{enumerate}
+
+\textbf{Keys}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{7}
+\tightlist
+\item
+  R(A,B,C,D) with only candidate key A --- number of super keys: 2³ = \textbf{8}
+\item
+  R(A,B,C,D) with candidate keys A and B: 8 + 8 − 4 = \textbf{12}
+\item
+  Which key cannot be NULL? \textbf{Primary key}
+\end{enumerate}
+
+\textbf{Relational algebra / SQL}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{10}
+\tightlist
+\item
+  R has 10 tuples, S has 5; R × S has: \textbf{50}
+\item
+  Which RA operation answers "for all" queries? \textbf{Division}
+\item
+  Which is not a fundamental RA operation? (a) σ (b) π (c) ∩ (d) − --- \textbf{Ans: (c)}
+\item
+  \texttt{SELECT\ COUNT(*)} vs \texttt{COUNT(salary)} on a table with 10 rows and 2 NULL salaries: \textbf{10 and 8}
+\item
+  HAVING is applied: \textbf{after GROUP BY on groups}
+\item
+  \texttt{salary\ \textgreater{}\ ALL\ (SELECT\ salary\ FROM\ emp\ WHERE\ dept\ =\ 5)} means: \textbf{greater than the maximum salary of dept 5}
+\item
+  Which set operator retains duplicates? \textbf{UNION ALL}
+\item
+  A trigger follows which model? \textbf{Event--Condition--Action}
+\item
+  Best protection against SQL injection: \textbf{parameterised/prepared statements}
+\end{enumerate}
+
+\textbf{Normalisation}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{19}
+\tightlist
+\item
+  R(A,B,C,D), F = \{A→B, B→C, C→D\}. Candidate key? \textbf{A}; Normal form? \textbf{2NF} (transitive dependencies exist)
+\item
+  R(A,B,C,D), F = \{AB→C, C→D\}. Key AB; C→D is transitive → \textbf{2NF}, not 3NF
+\item
+  R(A,B,C), F = \{AB→C, C→A\}. Keys AB, CB. Highest NF: \textbf{3NF} (C→A, A is prime)
+\item
+  Every relation with two attributes is in: \textbf{BCNF}
+\item
+  Decomposition of R(A,B,C) with A→B into (A,B),(A,C) is: \textbf{lossless} (common A → AB)
+\item
+  Which NF deals with multivalued dependency? \textbf{4NF}; join dependency? \textbf{5NF}
+\item
+  BCNF decomposition always guarantees: \textbf{lossless join} (not dependency preservation)
+\item
+  Closure of \{A\} under \{A→B, B→C, C→D, D→E\}: \textbf{ABCDE}
+\end{enumerate}
+
+\textbf{Transactions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{27}
+\tightlist
+\item
+  Which ACID property is ensured by the concurrency control manager? \textbf{Isolation}
+\item
+  A schedule is conflict serializable iff its precedence graph is: \textbf{acyclic}
+\item
+  2PL ensures: \textbf{conflict serializability} (not freedom from deadlock)
+\item
+  Strict 2PL avoids: \textbf{cascading rollbacks}
+\item
+  In wait-die, if an older transaction requests a lock held by a younger: \textbf{older waits}
+\item
+  In wound-wait, if an older transaction requests: \textbf{younger is aborted (wounded)}
+\item
+  Thomas\textquotesingle{} write rule modifies: \textbf{timestamp ordering protocol}
+\item
+  Number of serial schedules for 4 transactions: \textbf{24}
+\item
+  Reading uncommitted data is: \textbf{dirty read}
+\item
+  Write-ahead logging ensures: \textbf{log record on stable storage before data item}
+\item
+  After a crash, a transaction that has and in log is: \textbf{redone}
+\end{enumerate}
+
+\textbf{Indexing}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{38}
+\tightlist
+\item
+  B+ tree leaves are linked to support: \textbf{range queries / sequential access}
+\item
+  Max number of primary indexes on a file: \textbf{1}
+\item
+  Order of B+ tree internal node: block 512 B, key 10 B, pointer 6 B: p·6 + (p−1)·10 ≤ 512 → 16p ≤ 522 → \textbf{p = 32}
+\item
+  Secondary index is usually: \textbf{dense}
+\end{enumerate}
+
+\textbf{Warehousing / mining / big data}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{42}
+\tightlist
+\item
+  Data warehouse is NOT: (a) subject-oriented (b) volatile (c) time-variant (d) integrated --- \textbf{Ans: (b)}
+\item
+  OLAP operation that rotates the axes: \textbf{pivot}
+\item
+  Star schema has: \textbf{one fact table, denormalised dimension tables}
+\item
+  Support of \{bread, butter\} in 5 of 20 transactions: \textbf{25\%}; if bread in 10 → confidence(bread→butter) = \textbf{50\%}
+\item
+  Apriori uses the property: \textbf{all subsets of a frequent itemset are frequent}
+\item
+  CAP theorem: choose \textbf{2 of Consistency, Availability, Partition tolerance}
+\item
+  MongoDB is a: \textbf{document store}; Cassandra: \textbf{column-family}; Neo4j: \textbf{graph}
+\item
+  In Hadoop, metadata is stored by: \textbf{NameNode}
+\item
+  K-means is a: \textbf{partitioning clustering} algorithm
+\end{enumerate}
+
+\textbf{More practice questions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{51}
+\tightlist
+\item
+  A NOT IN subquery whose result contains NULL returns: \textbf{no rows}
+\item
+  COUNT(DISTINCT dept) on values \{CS, CS, EE, NULL\}: \textbf{2}
+\item
+  Minimal cover of \{A → B, B → C, A → C\}: \textbf{\{A → B, B → C\}}
+\item
+  R(A, B, C, D), F = \{A → B, C → D\}. Candidate key: \textbf{AC}; highest normal form: \textbf{1NF} (partial dependencies)
+\item
+  A schedule in which transactions read only committed data is: \textbf{cascadeless}
+\item
+  Schedule R1(X) R2(Y) W2(X) W1(Y) is: \textbf{not conflict serializable}
+\item
+  In 2PL, the equivalent serial order follows the: \textbf{lock points}
+\item
+  In extendible hashing, the directory doubles when an overflowing bucket\textquotesingle s local depth: \textbf{equals the global depth}
+\item
+  Number of cuboids for 4 dimensions without hierarchies: \textbf{16}
+\item
+  Apex cuboid represents: \textbf{the grand total (all dimensions aggregated)}
+\item
+  Full outer join of R (5 tuples) and S (3 tuples) with 2 matching pairs (one-to-one): 2 + 3 + 1 = \textbf{6 tuples}
+\end{enumerate}
+
+\begin{revbox}
+
+\begin{itemize}
+\tightlist
+\item
+  3NF: X superkey OR A prime · BCNF: X superkey
+\item
+  Lossless: (R1∩R2) → R1 or R2 · 3NF = lossless + dep. preserving
+\item
+  Conflict serializable ⇔ acyclic precedence graph · 2PL → serializable but deadlock possible
+\item
+  Wait-die: old waits, young dies · Wound-wait: old wounds, young waits
+\item
+  CAP: pick 2 · HDFS NameNode/DataNode · MapReduce Map→Shuffle→Reduce
+\end{itemize}
+
+\end{revbox}

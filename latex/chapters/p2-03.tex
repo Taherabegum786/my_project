@@ -1,0 +1,1174 @@
+\unitchapter{Paper 2 · Unit 3}{Programming Languages \& Computer Graphics}{p2-03}
+
+\textbf{Expected questions: 8--10 · Target: 8+ · Type: C/C++ output prediction, OOP concepts, graphics algorithms \& transforms}
+
+\begin{sylbox}
+
+\begin{itemize}
+\tightlist
+\item[$\square$]
+  Language design \& translation: paradigms, binding times, virtual computers, syntax, stages of translation
+\item[$\square$]
+  Elementary data types: scalar \& composite
+\item[$\square$]
+  Programming in C: tokens, data types, control, arrays, structures, unions, strings, pointers, functions, files, command-line args, preprocessor
+\item[$\square$]
+  OOP: class, object, inheritance, encapsulation, abstract class, polymorphism
+\item[$\square$]
+  C++: constructors/destructors, overloading, virtual functions, templates, exceptions, streams \& files
+\item[$\square$]
+  Web programming: HTML, DHTML, XML, scripting, Java, servlets, applets
+\item[$\square$]
+  Graphics: display devices, raster/random scan, line (DDA, Bresenham), circle \& ellipse (mid-point), polygon fill, boundary/flood fill
+\item[$\square$]
+  2-D transforms \& viewing: homogeneous coordinates, composite transforms, window-to-viewport, clipping (Cohen-Sutherland, Liang-Barsky, Sutherland-Hodgman)
+\item[$\square$]
+  3-D: polygon/quadric surfaces, splines, Bezier \& B-spline, illumination, shading, projections
+\end{itemize}
+
+\end{sylbox}
+
+\needdiagram{figures/p2-03-00}{95pt}
+
+\hypertarget{p2-03--1-language-concepts}{%
+\section{1. Language Concepts}\label{p2-03--1-language-concepts}}
+
+\needspace{100pt}
+
+\hypertarget{p2-03--11-paradigms}{%
+\subsection{1.1 Paradigms}\label{p2-03--11-paradigms}}
+
+\diagramhere{figures/p2-03-00}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1063}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2777}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2539}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Language}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Year/\allowbreak{}creator}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Paradigm}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+FORTRAN & 1957, John Backus & First high-level, scientific \\
+LISP & 1958, John McCarthy & Functional, AI \\
+COBOL & 1959, Grace Hopper (CODASYL) & Business \\
+ALGOL & 1958/60 & Block structure, BNF first used \\
+Simula 67 & Dahl \& Nygaard & \textbf{First OO language} (classes) \\
+Smalltalk & Alan Kay & Pure OO \\
+C & 1972, Dennis Ritchie & Procedural \\
+Prolog & 1972, Colmerauer & Logic \\
+C++ & 1979--83, Bjarne Stroustrup & OO + procedural \\
+Ada & 1980, US DoD & Concurrency (tasks, rendezvous) \\
+Java & 1995, James Gosling (Sun) & OO, platform independent \\
+Python & 1991, Guido van Rossum & Multi-paradigm \\
+\end{longtable}
+
+\endgroup
+
+\needspace{132pt}
+
+\hypertarget{p2-03--12-binding-time}{%
+\subsection{1.2 Binding Time}\label{p2-03--12-binding-time}}
+
+Binding = association of an attribute with an entity.
+
+\begin{asciiblock}{42pt}
+\begin{Verbatim}[fontsize=\fontsize{7.4}{9.0}\selectfont]
+Language design time → Language implementation time → Compile time → Link time → Load time → Run time
+  (meaning of *)          (size of int)                 (type of var)   (library code)  (address)    (value)
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Static binding} (early) before run time; \textbf{dynamic binding} (late) at run time.
+\item
+  \textbf{Static scoping (lexical)}: binding by program text (C, Java). \textbf{Dynamic scoping}: by calling sequence (early LISP, Perl \texttt{local}).
+\item
+  Storage: static (globals), stack-dynamic (locals), explicit heap-dynamic (new/malloc), implicit heap-dynamic.
+\end{itemize}
+
+\needspace{135pt}
+
+\hypertarget{p2-03--13-parameter-passing}{%
+\subsection{1.3 Parameter Passing}\label{p2-03--13-parameter-passing}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3039}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4466}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1471}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Method}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Behaviour}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Language}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Call by value & Copy of value & C (default) \\
+Call by reference & Address passed; changes visible & C++ \texttt{\&}, Pascal \texttt{var} \\
+Call by value-result (copy-in/\allowbreak{}copy-out) & Copy in, copy back at return & Ada \texttt{in\ out} \\
+Call by name & Textual substitution, evaluated each use (Jensen\textquotesingle s device) & ALGOL 60 \\
+Call by need & Lazy evaluation, memoised & Haskell \\
+\end{longtable}
+
+\endgroup
+
+\textbf{Classic question}:
+
+\begin{asciiblock}{35pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+void swap(int x, int y) { int t = x; x = y; y = t; }   // by value: caller unchanged
+\end{Verbatim}
+\end{asciiblock}
+
+With \texttt{a\ =\ 1,\ i\ =\ 1,\ A{[}1{]}\ =\ 5}, call \texttt{f(i,\ A{[}i{]})} where f does \texttt{x\ =\ x\ +\ 1;\ y\ =\ y\ +\ 1;}:
+by name → \texttt{A{[}2{]}} incremented (since i changed first); by reference → \texttt{A{[}1{]}} incremented.
+
+\needspace{100pt}
+
+\hypertarget{p2-03--14-data-types}{%
+\subsection{1.4 Data Types}\label{p2-03--14-data-types}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Scalar}: integer, real, character, Boolean, enumeration, pointer.
+\item
+  \textbf{Composite}: array, record/struct, union, string, set, list, file.
+\item
+  Strong typing (Java, Ada), weak typing (C). Type equivalence: \textbf{name} vs \textbf{structural}.
+\item
+  Type checking static (compile) vs dynamic (run time). Coercion = implicit type conversion.
+\end{itemize}
+
+\needspace{248pt}
+
+\hypertarget{p2-03--2-c-programming--exam-traps}{%
+\section{2. C Programming --- Exam Traps}\label{p2-03--2-c-programming--exam-traps}}
+
+\needspace{208pt}
+
+\hypertarget{p2-03--21-operator-precedence-high--low}{%
+\subsection{2.1 Operator precedence (high → low)}\label{p2-03--21-operator-precedence-high--low}}
+
+\begin{asciiblock}{153pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+() [] -> .     ++ -- (postfix)
+! ~ ++ -- + - * & (type) sizeof   (unary, right-to-left)
+* / %
++ -
+<< >>
+< <= > >=
+== !=
+&   ^   |
+&&  ||
+?:              (right-to-left)
+= += -= ...     (right-to-left)
+,
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{336pt}
+
+\hypertarget{p2-03--22-output-prediction-examples}{%
+\subsection{2.2 Output-prediction examples}\label{p2-03--22-output-prediction-examples}}
+
+\begin{asciiblock}{281pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+int i = 5;
+printf("%d %d", i++, ++i);   // UNDEFINED behaviour (unsequenced modification)
+
+int a = 10, b = 3;
+printf("%d %d", a / b, a % b);   // 3 1
+printf("%d", -7 % 3);            // -1 (sign follows dividend in C99)
+
+int x = 0;
+if (x = 5) printf("yes");        // prints yes (assignment, value 5)
+
+char s[] = "NET";
+printf("%zu %zu", sizeof(s), strlen(s));   // 4 3
+
+int arr[] = {10, 20, 30};
+int *p = arr;
+printf("%d", *(p + 2));          // 30 ; arr[i] == *(arr + i) == i[arr]
+
+int k = 3;
+printf("%d", k << 2);            // 12 (multiply by 4)
+
+static int counter() { static int c = 0; return ++c; }   // retains value: 1, 2, 3 ...
+
+#define SQ(x) x*x
+printf("%d", SQ(2+3));           // 2+3*2+3 = 11 (macro pitfall)
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{144pt}
+
+\hypertarget{p2-03--23-pointers}{%
+\subsection{2.3 Pointers}\label{p2-03--23-pointers}}
+
+\begin{asciiblock}{89pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+int *p;          pointer to int
+int **pp;        pointer to pointer
+int *a[10];      array of 10 pointers to int
+int (*a)[10];    pointer to an array of 10 ints
+int *f();        function returning pointer to int
+int (*f)();      pointer to function returning int
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  Pointer arithmetic scales by \texttt{sizeof(type)}. \texttt{p\ +\ 1} on \texttt{int*} (4 bytes) adds 4.
+\item
+  \texttt{void*} generic pointer; dangling pointer (freed memory); NULL pointer; wild pointer (uninitialised).
+\item
+  Memory: \texttt{malloc} (uninitialised), \texttt{calloc} (zeroed, n × size), \texttt{realloc}, \texttt{free}.
+\end{itemize}
+
+\needspace{101pt}
+
+\hypertarget{p2-03--24-structures-vs-unions}{%
+\subsection{2.4 Structures vs Unions}\label{p2-03--24-structures-vs-unions}}
+
+\begin{asciiblock}{46pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+struct S { int i; char c; double d; };  // size = sum + padding (typically 16)
+union  U { int i; char c; double d; };  // size = largest member (8) — members share memory
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{135pt}
+
+\hypertarget{p2-03--25-storage-classes}{%
+\subsection{2.5 Storage Classes}\label{p2-03--25-storage-classes}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0753}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0974}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1273}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0813}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1753}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Class}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Scope}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Lifetime}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Default}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Storage}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+auto & Block & Block & Garbage & Stack \\
+register & Block & Block & Garbage & CPU register (no \texttt{\&}) \\
+static & Block/file & Whole program & 0 & Data segment \\
+extern & Global & Whole program & 0 & Data segment \\
+\end{longtable}
+
+\endgroup
+
+\needspace{100pt}
+
+\hypertarget{p2-03--26-files-command-line-preprocessor}{%
+\subsection{2.6 Files, Command line, Preprocessor}\label{p2-03--26-files-command-line-preprocessor}}
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{FILE\ *fp\ =\ fopen("a.txt",\ "r")}; modes r, w, a, r+, w+, a+, rb. \texttt{fgetc}, \texttt{fputc}, \texttt{fgets}, \texttt{fprintf}, \texttt{fscanf}, \texttt{fread}, \texttt{fwrite}, \texttt{fseek}, \texttt{ftell}, \texttt{rewind}.
+\item
+  \texttt{int\ main(int\ argc,\ char\ *argv{[}{]})} --- \texttt{argv{[}0{]}} is the program name; \texttt{argc\ ≥\ 1}.
+\item
+  Preprocessor: \texttt{\#include}, \texttt{\#define}, \texttt{\#ifdef}, \texttt{\#ifndef}, \texttt{\#if}, \texttt{\#pragma}, \texttt{\#undef}; runs \textbf{before compilation}.
+\end{itemize}
+
+\needdiagram{figures/p2-03-01}{55pt}
+
+\hypertarget{p2-03--3-oop-concepts}{%
+\section{3. OOP Concepts}\label{p2-03--3-oop-concepts}}
+
+\diagramhere{figures/p2-03-01}
+
+\begin{asciiblock}{99pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ Inheritance types
+ Single      Multiple      Multilevel     Hierarchical      Hybrid (diamond)
+   A         A     B          A               A                  A
+   │          ╲   ╱           │             ╱ │ ╲               ╱ ╲
+   B            C             B            B  C  D             B   C
+                              │                                 ╲ ╱
+                              C                                  D
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  Diamond problem in C++ solved by \textbf{virtual base class}. Java avoids multiple class inheritance (uses interfaces).
+\end{itemize}
+
+\needspace{135pt}
+
+\hypertarget{p2-03--4-c-specifics}{%
+\section{4. C++ Specifics}\label{p2-03--4-c-specifics}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1660}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.8340}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Topic}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Key point}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Constructor & Same name as class, no return type; default, parameterised, \textbf{copy constructor} \texttt{X(const\ X\&)} \\
+Destructor & \texttt{\textasciitilde{}X()}, no args, cannot be overloaded; called in reverse order of construction \\
+Order of construction & Base → member objects → derived; destruction reverse \\
+\texttt{this} pointer & Hidden pointer to invoking object; not available in static functions \\
+Friend function & Not a member but accesses private data; not inherited \\
+Static member & Shared by all objects; static function accesses only static members \\
+Inline function & Expanded at call site \\
+Function overloading & Same name, different parameter lists (return type alone not enough) \\
+Operator overloading & Cannot overload \texttt{::}, \texttt{.}, \texttt{.*}, \texttt{?:}, \texttt{sizeof} \\
+Virtual function & Run-time polymorphism via \textbf{vtable/vptr}; call through base pointer/\allowbreak{}reference \\
+Pure virtual & \texttt{virtual\ void\ f()\ =\ 0;} → class becomes \textbf{abstract} (cannot be instantiated) \\
+Virtual destructor & Needed when deleting derived object via base pointer \\
+Templates & Generic programming: function \& class templates (compile-time polymorphism) \\
+Exceptions & \texttt{try}, \texttt{throw}, \texttt{catch(...)} catches all \\
+Streams & \texttt{cin} (istream), \texttt{cout} (ostream), \texttt{cerr} (unbuffered), \texttt{clog}; \texttt{ifstream}, \texttt{ofstream}, \texttt{fstream} \\
+Access in inheritance & public base: public→\allowbreak{}public, protected→\allowbreak{}protected; protected base: both→\allowbreak{}protected; private base: both→\allowbreak{}private; private members never accessible \\
+\end{longtable}
+
+\endgroup
+
+\begin{asciiblock}{67pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+class Base { public: virtual void show() { cout << "Base"; } };
+class Der : public Base { public: void show() { cout << "Derived"; } };
+Base *b = new Der();
+b->show();    // "Derived" (virtual)  — without virtual: "Base"
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{135pt}
+
+\hypertarget{p2-03--5-web-programming}{%
+\section{5. Web Programming}\label{p2-03--5-web-programming}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1274}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.8726}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Technology}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Key facts}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+HTML & Markup; tags \texttt{\textless{}a\ href\textgreater{}}, \texttt{\textless{}img\ src\ alt\textgreater{}}, \texttt{\textless{}table\textgreater{}\textless{}tr\textgreater{}\textless{}td\textgreater{}}, \texttt{\textless{}form\ action\ method\textgreater{}}; HTML5 adds \texttt{\textless{}canvas\textgreater{}}, \texttt{\textless{}video\textgreater{}}, \texttt{\textless{}audio\textgreater{}}, \texttt{\textless{}section\textgreater{}}, \texttt{\textless{}article\textgreater{}} \\
+DHTML & HTML + CSS + JavaScript + DOM → dynamic pages \\
+CSS & Inline \textgreater{} internal \textgreater{} external (priority); selectors \texttt{.class}, \texttt{\#id} \\
+XML & User-defined tags, data description, must be well-formed (single root, closed tags, case-sensitive); validated by \textbf{DTD/XSD}; XSLT for transformation, XPath for navigation \\
+JavaScript & Client-side scripting; \texttt{document.getElementById} \\
+Server-side & PHP, JSP, ASP.NET, Servlets \\
+Java Applet & Runs in browser; life cycle: \texttt{init()\ →\ start()\ →\ paint()\ →\ stop()\ →\ destroy()}; no \texttt{main()} (now obsolete) \\
+Servlet & Runs on server; life cycle: \texttt{init()\ →\ service()\ (doGet/doPost)\ →\ destroy()}; container e.g. Tomcat \\
+Java & Bytecode on JVM ("write once run anywhere"); garbage collection; no pointers; \texttt{final}, \texttt{abstract}, \texttt{interface} \\
+HTTP methods & GET (in URL, idempotent), POST (in body), PUT, DELETE \\
+\end{longtable}
+
+\endgroup
+
+\needspace{175pt}
+
+\hypertarget{p2-03--6-computer-graphics}{%
+\section{6. Computer Graphics}\label{p2-03--6-computer-graphics}}
+
+\needspace{135pt}
+
+\hypertarget{p2-03--61-display-devices}{%
+\subsection{6.1 Display Devices}\label{p2-03--61-display-devices}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2986}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3019}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Raster scan}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Random (vector) scan}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Beam sweeps every row (top to bottom) & Beam draws only the lines of the picture \\
+Uses frame buffer (refresh buffer) & Uses display file (display list) \\
+Realistic images, shading & Line drawings only, smooth lines \\
+Aliasing (jaggies) & No aliasing \\
+TV, monitors & Pen plotters, early CAD \\
+\end{longtable}
+
+\endgroup
+
+\begin{asciiblock}{78pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Frame buffer size = Resolution × bits per pixel / 8   bytes
+e.g. 1024 × 768, 24-bit colour → 1024×768×3 = 2.25 MB
+Number of colours = 2^(bits per pixel)
+Refresh: interlaced (odd/even lines alternately) vs non-interlaced
+Aspect ratio = width : height
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  CRT parts: electron gun, focusing \& deflection system, phosphor coated screen. \textbf{Persistence} = time phosphor glows. Shadow-mask (RGB) and beam-penetration (limited colours) colour CRTs.
+\item
+  LCD, LED, plasma (flat panel); DVST (Direct View Storage Tube). Colour lookup table saves memory.
+\end{itemize}
+
+\needspace{157pt}
+
+\hypertarget{p2-03--62-line-drawing}{%
+\subsection{6.2 Line Drawing}\label{p2-03--62-line-drawing}}
+
+\textbf{DDA (Digital Differential Analyzer)}
+
+\begin{asciiblock}{67pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+dx = x2 − x1, dy = y2 − y1, steps = max(|dx|, |dy|)
+xinc = dx/steps, yinc = dy/steps
+repeat steps times: x += xinc, y += yinc, plot(round(x), round(y))
+→ uses floating point and rounding (slower)
+\end{Verbatim}
+\end{asciiblock}
+
+\textbf{Bresenham (\textbar m\textbar{} \textless{} 1)} --- integer only:
+
+\begin{asciiblock}{57pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+p0 = 2dy − dx
+if pk < 0:  next = (xk+1, yk),     pk+1 = pk + 2dy
+else:       next = (xk+1, yk+1),   pk+1 = pk + 2dy − 2dx
+\end{Verbatim}
+\end{asciiblock}
+
+Example (20,10)→(30,18): dx=10, dy=8, p0 = 6, 2dy = 16, 2dy−2dx = −4.
+
+\begin{asciiblock}{110pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ k  pk   plot
+ 0   6   (21,11)
+ 1   2   (22,12)
+ 2  −2   (23,12)
+ 3  14   (24,13)
+ 4  10   (25,14)
+ 5   6   (26,15)
+ ...
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{100pt}
+
+\hypertarget{p2-03--63-mid-point-circle}{%
+\subsection{6.3 Mid-point Circle}\label{p2-03--63-mid-point-circle}}
+
+\begin{itemize}
+\tightlist
+\item
+  8-way symmetry: compute one octant (x from 0 to x = y), reflect to 8.
+\end{itemize}
+
+\begin{asciiblock}{57pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+p0 = 1 − r     (5/4 − r)
+if pk < 0:  (xk+1, yk),     pk+1 = pk + 2xk+1 + 1
+else:       (xk+1, yk−1),   pk+1 = pk + 2xk+1 + 1 − 2yk+1
+\end{Verbatim}
+\end{asciiblock}
+
+Ellipse: \textbf{4-way symmetry}, two regions (slope −1 boundary).
+
+\needspace{100pt}
+
+\hypertarget{p2-03--64-filling}{%
+\subsection{6.4 Filling}\label{p2-03--64-filling}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Scan-line polygon fill}: intersect each scan line with edges, sort x, fill pairs; uses edge table \& active edge table.
+\item
+  \textbf{Boundary fill}: fills until boundary colour found. \textbf{Flood fill}: replaces a specific interior colour.
+\item
+  4-connected vs 8-connected (8-connected may leak through diagonal gaps).
+\item
+  Inside test: \textbf{odd-even (even-odd) rule}, \textbf{non-zero winding number rule}.
+\end{itemize}
+
+\needspace{161pt}
+
+\hypertarget{p2-03--65-2-d-transformations-homogeneous-coordinates}{%
+\subsection{6.5 2-D Transformations (Homogeneous coordinates)}\label{p2-03--65-2-d-transformations-homogeneous-coordinates}}
+
+\begin{asciiblock}{106pt}
+\begin{Verbatim}[fontsize=\fontsize{8.4}{10.2}\selectfont]
+Translation        Scaling            Rotation (anticlockwise θ)
+| 1  0  tx |       | sx 0  0 |        | cosθ  −sinθ  0 |
+| 0  1  ty |       | 0  sy 0 |        | sinθ   cosθ  0 |
+| 0  0  1  |       | 0  0  1 |        |  0      0    1 |
+
+Reflection about x-axis: diag(1, −1, 1)      about y-axis: diag(−1, 1, 1)
+about origin: diag(−1, −1, 1)                about y = x: swap x and y  [[0 1 0][1 0 0][0 0 1]]
+X-shear: x' = x + shx·y                      Y-shear: y' = y + shy·x
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  Homogeneous coordinates allow \textbf{translation as matrix multiplication} → composite transforms.
+\item
+  Rotation about arbitrary point (xr, yr): \textbf{T(xr, yr) · R(θ) · T(−xr, −yr)} (applied right-to-left).
+\item
+  Successive translations add; successive rotations add angles; successive scalings multiply.
+\item
+  Matrix multiplication is generally \textbf{not commutative} (except e.g. two rotations, two scalings, rotation \& uniform scaling).
+\end{itemize}
+
+\needdiagram{figures/p2-03-02}{55pt}
+
+\hypertarget{p2-03--66-viewing--window-to-viewport}{%
+\subsection{6.6 Viewing \& Window-to-Viewport}\label{p2-03--66-viewing--window-to-viewport}}
+
+\diagramhere{figures/p2-03-02}
+
+\begin{asciiblock}{46pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+xv = xvmin + (xw − xwmin) · sx      sx = (xvmax − xvmin)/(xwmax − xwmin)
+yv = yvmin + (yw − ywmin) · sy      sy = (yvmax − yvmin)/(ywmax − ywmin)
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{168pt}
+
+\hypertarget{p2-03--67-clipping}{%
+\subsection{6.7 Clipping}\label{p2-03--67-clipping}}
+
+\textbf{Cohen--Sutherland line clipping} --- 4-bit region code \textbf{TBRL} (Top, Bottom, Right, Left):
+
+\begin{asciiblock}{78pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+        1001 │ 1000 │ 1010
+       ──────┼──────┼──────
+        0001 │ 0000 │ 0010        window = 0000
+       ──────┼──────┼──────
+        0101 │ 0100 │ 0110
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  Both codes 0000 → trivially accept. (code1 AND code2) ≠ 0 → trivially reject. Else clip against an edge and repeat.
+\end{itemize}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1741}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3566}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Algorithm}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{For}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Cohen--Sutherland & Lines (region codes) \\
+\textbf{Liang--Barsky} & Lines (parametric, faster) \\
+Cyrus--Beck & Lines vs convex polygon window \\
+Nicholl--Lee--Nicholl & Lines (fewest comparisons) \\
+Mid-point subdivision & Lines (binary search) \\
+\textbf{Sutherland--Hodgman} & Polygon clipping (convex window; edge by edge) \\
+Weiler--Atherton & Polygon clipping (concave too) \\
+\end{longtable}
+
+\endgroup
+
+\needspace{100pt}
+
+\hypertarget{p2-03--68-3-d-graphics}{%
+\subsection{6.8 3-D Graphics}\label{p2-03--68-3-d-graphics}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Polygon surfaces}: vertex, edge, polygon tables; plane equation Ax + By + Cz + D = 0.
+\item
+  \textbf{Quadric surfaces}: sphere, ellipsoid, torus.
+\item
+  \textbf{Splines}: interpolation (passes through control points) vs approximation (near them).
+\end{itemize}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4024}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3750}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Bezier curve}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{B-spline curve}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Degree = n − 1 for n control points & Degree independent of number of points \\
+Passes through first \& last control points & Generally doesn\textquotesingle t pass through endpoints (uniform) \\
+\textbf{Global control} --- moving one point changes whole curve & \textbf{Local control} \\
+Lies within convex hull of control points & Lies within convex hull \\
+Bernstein basis polynomials & B-spline basis functions \\
+\end{longtable}
+
+\endgroup
+
+Cubic Bezier: P(t) = (1−t)³P₀ + 3t(1−t)²P₁ + 3t²(1−t)P₂ + t³P₃, 0 ≤ t ≤ 1.
+
+\needspace{101pt}
+
+\hypertarget{p2-03--69-illumination--shading}{%
+\subsection{6.9 Illumination \& Shading}\label{p2-03--69-illumination--shading}}
+
+\begin{asciiblock}{46pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+I = Ia·ka  +  Il·kd·(N·L)  +  Il·ks·(R·V)ⁿ
+    ambient     diffuse (Lambert)   specular (Phong, n = shininess)
+\end{Verbatim}
+\end{asciiblock}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1282}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2655}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3893}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Shading}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Method}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Quality}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Flat (constant) & One intensity per polygon & Faceted \\
+\textbf{Gouraud} & Interpolate \textbf{intensities} at vertices & Smooth, may miss specular highlights, Mach bands \\
+\textbf{Phong} & Interpolate \textbf{normals} & Best quality, costlier \\
+\end{longtable}
+
+\endgroup
+
+\needdiagram{figures/p2-03-03}{55pt}
+
+\hypertarget{p2-03--610-projections}{%
+\subsection{6.10 Projections}\label{p2-03--610-projections}}
+
+\diagramhere{figures/p2-03-03}
+
+\begin{itemize}
+\tightlist
+\item
+  Perspective: realistic, foreshortening, parallel lines meet at \textbf{vanishing points}; does not preserve parallelism/size.
+\item
+  Cavalier (receding lines full length, 45°) vs Cabinet (half length, 63.4°).
+\item
+  Hidden surface removal: \textbf{Z-buffer (depth buffer)}, painter\textquotesingle s (depth sort), scan-line, BSP tree, back-face detection (N·V \textgreater{} 0 → back face), Warnock (area subdivision), ray casting.
+\end{itemize}
+
+\needspace{162pt}
+
+\hypertarget{p2-03--7-deeper-dive--scoping-more-c-traps-java-essentials--graphics-traces}{%
+\section{7. Deeper Dive --- Scoping, More C Traps, Java Essentials \& Graphics Traces}\label{p2-03--7-deeper-dive--scoping-more-c-traps-java-essentials--graphics-traces}}
+
+\needspace{122pt}
+
+\hypertarget{p2-03--71-static-vs-dynamic-scoping--classic-question}{%
+\subsection{7.1 Static vs Dynamic Scoping --- Classic Question}\label{p2-03--71-static-vs-dynamic-scoping--classic-question}}
+
+\begin{asciiblock}{67pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+int x = 1;
+void f()  { printf("%d", x); }
+void g()  { int x = 2; f(); }
+int main() { g(); }
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Static (lexical) scoping}: f\textquotesingle s free variable x refers to the global x → prints \textbf{1} (C, Java, Pascal).
+\item
+  \textbf{Dynamic scoping}: x is looked up in the most recent active frame (g\textquotesingle s) → prints \textbf{2}.
+\end{itemize}
+
+\needspace{101pt}
+
+\hypertarget{p2-03--72-recursion-trace}{%
+\subsection{7.2 Recursion Trace}\label{p2-03--72-recursion-trace}}
+
+\begin{asciiblock}{46pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+int fun(int n) { if (n <= 1) return 1; return n * fun(n - 2); }
+fun(7) = 7 × fun(5) = 7 × 5 × fun(3) = 7 × 5 × 3 × fun(1) = 105
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{asciiblock}{78pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Call stack (grows downward)       Returns (unwinding)
+ fun(7)                            fun(1) → 1
+   fun(5)                          fun(3) → 3 × 1  = 3
+     fun(3)                        fun(5) → 5 × 3  = 15
+       fun(1)                      fun(7) → 7 × 15 = 105
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{362pt}
+
+\hypertarget{p2-03--73-more-c-output-questions-with-reasons}{%
+\subsection{7.3 More C Output Questions (with reasons)}\label{p2-03--73-more-c-output-questions-with-reasons}}
+
+\begin{asciiblock}{307pt}
+\begin{Verbatim}[fontsize=\fontsize{7.5}{9.1}\selectfont]
+// 1. switch fall-through
+int k = 2;
+switch (k) { case 1: printf("A"); case 2: printf("B"); case 3: printf("C"); break; default: printf("D"); }
+// Output: BC   (no break after case 2)
+
+// 2. bitwise
+printf("%d %d %d", 5 & 3, 5 | 3, 5 ^ 3);      // 1 7 6
+printf("%d", ~5);                               // -6  (2's complement: ~x = -x - 1)
+
+// 3. pointer to string
+char *s = "UGCNET";
+printf("%s", s + 3);                            // NET
+printf("%c", *s + 1);                           // V   ('U' + 1)
+
+// 4. post-increment in loop condition
+int i = 0; while (i++ < 3); printf("%d", i);    // 4
+
+// 5. integer division & casting
+printf("%.2f", (float)7 / 2);                   // 3.50
+printf("%d", 7 / 2 * 2);                        // 6
+
+// 6. comma operator
+int a = (1, 2, 3); printf("%d", a);             // 3
+
+// 7. short-circuit
+int p = 0, q = 5;
+if (p && (q = 10)) {}  printf("%d", q);         // 5 (second operand never evaluated)
+
+// 8. 2-D array pointer arithmetic
+int m[2][3] = {{1,2,3},{4,5,6}};
+printf("%d", *(*(m + 1) + 2));                  // 6  (m[1][2])
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{135pt}
+
+\hypertarget{p2-03--74-java-essentials}{%
+\subsection{7.4 Java Essentials}\label{p2-03--74-java-essentials}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1237}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1165}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1367}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1956}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0645}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Modifier}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Same class}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Same package}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Subclass (other pkg)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{World}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+private & ✔ & ✘ & ✘ & ✘ \\
+default (none) & ✔ & ✔ & ✘ & ✘ \\
+protected & ✔ & ✔ & ✔ & ✘ \\
+public & ✔ & ✔ & ✔ & ✔ \\
+\end{longtable}
+
+\endgroup
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4090}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4972}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Abstract class}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Interface}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Can have constructors, state (fields), concrete methods & Constants + abstract methods (default/\allowbreak{}static methods since Java 8) \\
+Single inheritance (\texttt{extends}) & A class can \texttt{implements} many interfaces \\
+Use for "is-a" with shared code & Use for capability contracts \\
+\end{longtable}
+
+\endgroup
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{final} variable = constant; \texttt{final} method = cannot be overridden; \texttt{final} class = cannot be inherited (String).
+\item
+  \texttt{static} members belong to the class. \texttt{super} refers to the parent; \texttt{this} to the current object.
+\item
+  JVM components: \textbf{class loader → bytecode verifier → interpreter / JIT compiler}; runtime areas: heap, method area, stack, PC registers.
+\item
+  Exceptions: \textbf{checked} (IOException --- must be handled or declared) vs \textbf{unchecked} (RuntimeException, e.g. NullPointerException, ArithmeticException).
+\item
+  \texttt{String} is immutable; \texttt{StringBuffer} (synchronised) and \texttt{StringBuilder} (faster) are mutable.
+\end{itemize}
+
+\needspace{147pt}
+
+\hypertarget{p2-03--75-graphics-traces}{%
+\subsection{7.5 Graphics Traces}\label{p2-03--75-graphics-traces}}
+
+\textbf{DDA}: (2, 3) → (8, 6); dx = 6, dy = 3, steps = 6, x-inc = 1, y-inc = 0.5.
+
+\begin{asciiblock}{57pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+x : 2   3    4   5    6   7    8
+y : 3   3.5  4   4.5  5   5.5  6
+plotted (round half up): (2,3) (3,4) (4,4) (5,5) (6,5) (7,6) (8,6)
+\end{Verbatim}
+\end{asciiblock}
+
+\textbf{Mid-point circle, r = 10} (first octant, start (0, 10), p₀ = 1 − r = −9):
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0300}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0385}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1029}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1070}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{k}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{pₖ}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Next pixel}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{pₖ₊₁}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & −9 & (1, 10) & −6 \\
+1 & −6 & (2, 10) & −1 \\
+2 & −1 & (3, 10) & 6 \\
+3 & 6 & (4, 9) & −3 \\
+4 & −3 & (5, 9) & 8 \\
+5 & 8 & (6, 8) & 5 \\
+6 & 5 & (7, 7) & stop (x ≥ y) \\
+\end{longtable}
+
+\endgroup
+
+\textbf{Composite transformation}: rotate P(4, 2) by 90° anticlockwise about pivot (2, 2).
+
+\begin{asciiblock}{57pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+1. Translate by (−2, −2):  (2, 0)
+2. Rotate 90°: (x cos90 − y sin90, x sin90 + y cos90) = (0, 2)
+3. Translate by (+2, +2):  (2, 4)        → P' = (2, 4)
+\end{Verbatim}
+\end{asciiblock}
+
+Scaling about fixed point (xf, yf): T(xf, yf) · S(sx, sy) · T(−xf, −yf) → x\textquotesingle{} = xf + (x − xf)·sx.
+
+\textbf{Cohen--Sutherland}: window (0, 0)--(10, 10); line (−5, 5) → (15, 5). Codes 0001 and 0010; AND = 0000 → not trivially rejected; clip at x = 0 → (0, 5) and at x = 10 → (10, 5).
+
+\textbf{Liang--Barsky}: same window; line (−5, 3) → (15, 9); Δx = 20, Δy = 6.
+
+\begin{asciiblock}{86pt}
+\begin{Verbatim}[fontsize=\fontsize{8.4}{10.2}\selectfont]
+p₁ = −Δx = −20, q₁ = x₁ − xmin = −5   → r₁ = 0.25    (entering)
+p₂ =  Δx =  20, q₂ = xmax − x₁ = 15   → r₂ = 0.75    (leaving)
+p₃ = −Δy = −6,  q₃ = y₁ − ymin = 3    → r₃ = −0.5    (entering)
+p₄ =  Δy =  6,  q₄ = ymax − y₁ = 7    → r₄ ≈ 1.17    (leaving)
+u₁ = max(0, 0.25, −0.5) = 0.25 ;  u₂ = min(1, 0.75, 1.17) = 0.75
+Clipped line: (−5 + 0.25·20, 3 + 0.25·6) = (0, 4.5)  to  (−5 + 0.75·20, 3 + 0.75·6) = (10, 7.5)
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{165pt}
+
+\hypertarget{p2-03--76-3-d-transformation-matrices-homogeneous-4--4}{%
+\subsection{7.6 3-D Transformation Matrices (homogeneous 4 × 4)}\label{p2-03--76-3-d-transformation-matrices-homogeneous-4--4}}
+
+\begin{asciiblock}{110pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Translation           Scaling              Rotation about z-axis
+| 1 0 0 tx |          | sx 0  0  0 |       | cosθ −sinθ 0 0 |
+| 0 1 0 ty |          | 0  sy 0  0 |       | sinθ  cosθ 0 0 |
+| 0 0 1 tz |          | 0  0  sz 0 |       |  0     0   1 0 |
+| 0 0 0 1  |          | 0  0  0  1 |       |  0     0   0 1 |
+Rotation about x: y' = y cosθ − z sinθ, z' = y sinθ + z cosθ
+Rotation about y: z' = z cosθ − x sinθ, x' = z sinθ + x cosθ
+Perspective (centre of projection at origin, plane z = d): x' = x·d/z, y' = y·d/z
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{135pt}
+
+\hypertarget{p2-03--previous-year-questions-pyq-pattern}{%
+\section{Previous Year Questions (PYQ pattern)}\label{p2-03--previous-year-questions-pyq-pattern}}
+
+\textbf{Language concepts}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  First object-oriented language: \textbf{Simula 67}
+\item
+  Which uses call by name? \textbf{ALGOL 60}
+\item
+  Binding of a variable to its type in C occurs at: \textbf{compile time}
+\item
+  Dynamic scoping resolves a non-local name using: \textbf{the calling sequence (most recent active binding)}
+\item
+  Prolog is a: \textbf{logic programming language}
+\item
+  LISP is primarily used for: \textbf{list processing / AI (functional)}
+\end{enumerate}
+
+\textbf{C}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{6}
+\tightlist
+\item
+  \texttt{int\ a\ =\ 5;\ a\ =\ a++\ +\ ++a;} → \textbf{undefined behaviour} (option often given as 12 or 13; correct per standard: UB)
+\item
+  Output of \texttt{printf("\%d",\ sizeof(\textquotesingle{}A\textquotesingle{}))} in C: \textbf{4} (char constant is int in C; 1 in C++)
+\item
+  \texttt{\#define\ MUL(a,b)\ a*b}; \texttt{MUL(2+3,\ 4)} → 2+3*4 = \textbf{14}
+\item
+  Size of union \texttt{\{int\ a;\ char\ b{[}10{]};\}} (int=4): \textbf{12} with alignment (largest member 10, padded to multiple of 4)
+\item
+  Which storage class retains value between function calls? \textbf{static}
+\item
+  \texttt{char\ *p\ =\ "hello";\ printf("\%c",\ *(p+1));} → \textbf{e}
+\item
+  \texttt{int\ (*p){[}5{]};} declares: \textbf{pointer to an array of 5 integers}
+\item
+  Which function allocates zero-initialised memory? \textbf{calloc}
+\end{enumerate}
+
+\textbf{OOP/C++}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{14}
+\tightlist
+\item
+  Run-time polymorphism is achieved via: \textbf{virtual functions}
+\item
+  A class with at least one pure virtual function is: \textbf{abstract class}
+\item
+  Which operator cannot be overloaded? \textbf{:: (scope resolution)} (also \texttt{.}, \texttt{?:}, \texttt{sizeof})
+\item
+  The copy constructor takes argument by: \textbf{reference} (by value would cause infinite recursion)
+\item
+  Diamond problem is resolved by: \textbf{virtual base class}
+\item
+  Templates support: \textbf{generic programming (compile-time polymorphism)}
+\item
+  Order of destructor calls: \textbf{reverse of constructor calls}
+\item
+  Java does not support multiple inheritance of classes; achieved via: \textbf{interfaces}
+\end{enumerate}
+
+\textbf{Web}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{22}
+\tightlist
+\item
+  Applet life cycle method called first: \textbf{init()}
+\item
+  Servlet method handling each request: \textbf{service()}
+\item
+  XML document conforming to DTD is called: \textbf{valid}; following syntax rules: \textbf{well-formed}
+\item
+  DHTML combines: \textbf{HTML, CSS, JavaScript, DOM}
+\end{enumerate}
+
+\textbf{Graphics}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{26}
+\tightlist
+\item
+  Frame buffer for 640×480 with 8 bits per pixel: \textbf{300 KB} (307200 bytes)
+\item
+  Bresenham\textquotesingle s line algorithm uses: \textbf{only integer arithmetic}
+\item
+  Initial decision parameter for mid-point circle with r = 10: \textbf{1 − 10 = −9}
+\item
+  Circle uses \_\_-way symmetry, ellipse \_\_-way: \textbf{8, 4}
+\item
+  Composite transformation for rotation about point P: \textbf{T(P)·R(θ)·T(−P)}
+\item
+  Region code of a point above-left of window (TBRL): \textbf{1001}
+\item
+  Line endpoints codes 0101 and 0110: AND = 0100 ≠ 0 → \textbf{trivially rejected}
+\item
+  Polygon clipping algorithm: \textbf{Sutherland--Hodgman}
+\item
+  Shading that interpolates normal vectors: \textbf{Phong}
+\item
+  Z-buffer algorithm is a: \textbf{image-space hidden surface method}
+\item
+  Bezier curve with 4 control points has degree: \textbf{3}
+\item
+  Which curve has local control? \textbf{B-spline}
+\item
+  Projection in which parallel lines converge: \textbf{Perspective}
+\item
+  Isometric projection is a type of: \textbf{axonometric orthographic projection}
+\item
+  Scaling matrix with sx = sy = −1 is equivalent to: \textbf{reflection about origin (rotation by 180°)}
+\item
+  Translating (2,3) by (4,−1): \textbf{(6,2)}
+\end{enumerate}
+
+\textbf{More practice questions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{42}
+\tightlist
+\item
+  Under dynamic scoping, the code in §7.1 prints: \textbf{2}
+\item
+  Output of \texttt{printf("\%d",\ \textasciitilde{}0);} in C: \textbf{−1}
+\item
+  Output of \texttt{printf("\%d",\ 10\ \textgreater{}\textgreater{}\ 1\ \textless{}\textless{}\ 2);}: (10 \textgreater\textgreater{} 1) \textless\textless{} 2 = \textbf{20}
+\item
+  In Java, a member visible only within its package has: \textbf{default (package-private) access}
+\item
+  A Java class that cannot be subclassed is declared: \textbf{final}
+\item
+  NullPointerException is a: \textbf{unchecked (runtime) exception}
+\item
+  Number of steps in DDA for line (1, 1) to (9, 4): \textbf{8}
+\item
+  Rotating point (1, 0) by 90° anticlockwise about origin gives: \textbf{(0, 1)}
+\item
+  Reflection of (3, −2) about the line y = x: \textbf{(−2, 3)}
+\item
+  In Liang--Barsky, pₖ \textless{} 0 means the line is: \textbf{entering} the clip boundary
+\item
+  Shear in x with shx = 2 applied to (1, 3): \textbf{(7, 3)}
+\item
+  Homogeneous coordinates for 3-D points use: \textbf{4-element vectors / 4 × 4 matrices}
+\end{enumerate}
+
+\begin{revbox}
+
+\begin{itemize}
+\tightlist
+\item
+  Simula 67 first OO · ALGOL call-by-name · C static scope
+\item
+  \texttt{::}, \texttt{.}, \texttt{?:}, \texttt{sizeof} can\textquotesingle t be overloaded · Pure virtual → abstract
+\item
+  Bresenham p0 = 2dy − dx · Mid-point circle p0 = 1 − r
+\item
+  TBRL codes; AND ≠ 0 reject; both 0 accept
+\item
+  Gouraud = intensity interpolation · Phong = normal interpolation
+\item
+  Bezier global control, passes endpoints · B-spline local control
+\end{itemize}
+
+\end{revbox}

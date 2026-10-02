@@ -1,0 +1,1251 @@
+\unitchapter{Paper 2 · Unit 7}{Data Structures \& Algorithms}{p2-07}
+
+\textbf{Expected questions: 10--12 · Target: 9+ · Type: complexity, recurrences, tree/heap/hash numericals, algorithm traces}
+
+\begin{sylbox}
+
+\begin{itemize}
+\tightlist
+\item[$\square$]
+  Data structures: arrays, sparse matrices, stacks, queues, priority queues, linked lists, trees, binary trees, threaded trees, BST, AVL, B/B+/B* trees, sets (union-find), graphs, sorting, searching, hashing
+\item[$\square$]
+  Performance analysis: time \& space complexity, asymptotic notation, recurrence relations
+\item[$\square$]
+  Design techniques: divide \& conquer, dynamic programming, greedy, backtracking, branch \& bound
+\item[$\square$]
+  Lower bound theory: comparison trees, reductions
+\item[$\square$]
+  Graph algorithms: BFS, DFS, shortest paths, maximum flow, MST
+\item[$\square$]
+  Complexity theory: P, NP, NP-complete, NP-hard, reducibility
+\item[$\square$]
+  Selected topics: number-theoretic algorithms, polynomial arithmetic, FFT, string matching
+\item[$\square$]
+  Advanced: parallel algorithms (sorting, searching, merging), approximation \& randomised algorithms
+\end{itemize}
+
+\end{sylbox}
+
+\needspace{133pt}
+
+\hypertarget{p2-07--1-asymptotic-analysis}{%
+\section{1. Asymptotic Analysis}\label{p2-07--1-asymptotic-analysis}}
+
+\begin{asciiblock}{78pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+O  (upper bound)      f(n) ≤ c·g(n)        for n ≥ n₀
+Ω  (lower bound)      f(n) ≥ c·g(n)
+Θ  (tight bound)      c₁g(n) ≤ f(n) ≤ c₂g(n)
+o  (strict upper)     lim f/g = 0
+ω  (strict lower)     lim f/g = ∞
+\end{Verbatim}
+\end{asciiblock}
+
+Growth order (memorise):
+
+\begin{asciiblock}{45pt}
+\begin{Verbatim}[fontsize=\fontsize{8.4}{10.2}\selectfont]
+1 < log log n < log n < (log n)^k < √n < n < n log n < n² < n³ < 2ⁿ < 3ⁿ < n! < nⁿ
+Note: log(n!) = Θ(n log n) ; n^(1/log n) = Θ(1) ; 2^(log n) = n ; n^(log n) is super-polynomial
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{170pt}
+
+\hypertarget{p2-07--recurrences--master-theorem}{%
+\subsection{Recurrences --- Master Theorem}\label{p2-07--recurrences--master-theorem}}
+
+T(n) = a·T(n/b) + f(n), a ≥ 1, b \textgreater{} 1. Compare f(n) with \textbf{n\^{}(log\_b a)}:
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0553}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3078}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2204}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Case}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Condition}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Result}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & f(n) = O(n\^{}(log\_b a − ε)) & Θ(n\^{}(log\_b a)) \\
+2 & f(n) = Θ(n\^{}(log\_b a) · logᵏ n) & Θ(n\^{}(log\_b a) · logᵏ⁺¹ n) \\
+3 & f(n) = Ω(n\^{}(log\_b a + ε)) and regularity & Θ(f(n)) \\
+\end{longtable}
+
+\endgroup
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2316}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1631}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2175}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Recurrence}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Solution}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Algorithm}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+T(n) = T(n/2) + 1 & Θ(log n) & Binary search \\
+T(n) = 2T(n/2) + n & Θ(n log n) & Merge sort \\
+T(n) = 2T(n/2) + 1 & Θ(n) & Tree traversal, max-min \\
+T(n) = T(n−1) + n & Θ(n²) & Quick sort worst, selection \\
+T(n) = T(n−1) + 1 & Θ(n) & Linear recursion \\
+T(n) = 2T(n−1) + 1 & Θ(2ⁿ) & Tower of Hanoi \\
+T(n) = 7T(n/2) + n² & Θ(n\^{}2.81) & Strassen \\
+T(n) = 8T(n/2) + n² & Θ(n³) & Naive D\&C matrix multiply \\
+T(n) = 3T(n/2) + n & Θ(n\^{}1.585) & Karatsuba \\
+T(n) = T(√n) + 1 & Θ(log log n) & --- \\
+T(n) = 2T(√n) + log n & Θ(log n · log log n) & --- \\
+T(n) = T(n/3) + T(2n/3) + n & Θ(n log n) & Recursion tree \\
+\end{longtable}
+
+\endgroup
+
+\needspace{140pt}
+
+\hypertarget{p2-07--2-linear-data-structures}{%
+\section{2. Linear Data Structures}\label{p2-07--2-linear-data-structures}}
+
+\needspace{100pt}
+
+\hypertarget{p2-07--21-arrays}{%
+\subsection{2.1 Arrays}\label{p2-07--21-arrays}}
+
+\begin{itemize}
+\tightlist
+\item
+  Row-major address: \textbf{A{[}i{]}{[}j{]} = B + w·{[}(i − L₁)·N + (j − L₂){]}} where N = number of columns.
+\item
+  Column-major: \textbf{B + w·{[}(j − L₂)·M + (i − L₁){]}}, M = rows.
+\item
+  Lower triangular n×n stored row-wise: index of (i, j) = i(i−1)/2 + j (1-based). Total elements = n(n+1)/2.
+\item
+  \textbf{Sparse matrix}: triplet (row, col, value) representation; or linked lists.
+\end{itemize}
+
+\needspace{100pt}
+
+\hypertarget{p2-07--22-stack-lifo}{%
+\subsection{2.2 Stack (LIFO)}\label{p2-07--22-stack-lifo}}
+
+\begin{itemize}
+\tightlist
+\item
+  Applications: expression conversion/evaluation, recursion, backtracking, parenthesis matching, undo.
+\item
+  \textbf{Infix → Postfix} example: \texttt{A\ +\ B\ *\ C\ −\ D\ /\ E} → \textbf{\texttt{A\ B\ C\ *\ +\ D\ E\ /\ −}}.
+\item
+  Postfix evaluation \texttt{6\ 2\ 3\ +\ −\ 3\ 8\ 2\ /\ +\ *} → 6 − 5 = 1; 8/2 = 4; 3 + 4 = 7; 1 × 7 = \textbf{7}.
+\item
+  Number of stack permutations of n elements = Catalan number Cₙ.
+\end{itemize}
+
+\needspace{100pt}
+
+\hypertarget{p2-07--23-queue-fifo}{%
+\subsection{2.3 Queue (FIFO)}\label{p2-07--23-queue-fifo}}
+
+\begin{itemize}
+\tightlist
+\item
+  Circular queue: full when (rear + 1) \% n == front (one slot wasted). Deque, priority queue.
+\item
+  Queue using two stacks: amortised O(1).
+\end{itemize}
+
+\needspace{280pt}
+
+\hypertarget{p2-07--24-linked-lists}{%
+\subsection{2.4 Linked Lists}\label{p2-07--24-linked-lists}}
+
+Singly, doubly, circular. Insert at head O(1); search O(n). Reverse a list: three pointers. Detect cycle: Floyd\textquotesingle s tortoise-hare. Middle: slow/fast pointers.
+
+\needspace{205pt}
+
+\hypertarget{p2-07--3-trees}{%
+\section{3. Trees}\label{p2-07--3-trees}}
+
+\needspace{165pt}
+
+\hypertarget{p2-07--31-binary-tree-facts}{%
+\subsection{3.1 Binary Tree Facts}\label{p2-07--31-binary-tree-facts}}
+
+\begin{asciiblock}{110pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Max nodes at level i (root level 0)          = 2^i
+Max nodes in tree of height h (root h = 0)   = 2^(h+1) − 1
+Min height with n nodes                      = ⌈log₂(n+1)⌉ − 1
+n₀ = n₂ + 1          (leaves = nodes with 2 children + 1)
+Null pointers in n-node binary tree          = n + 1
+Number of unlabelled binary trees with n nodes = Catalan Cₙ = C(2n,n)/(n+1)
+Number of labelled binary trees = n! · Cₙ
+Full k-ary tree with i internal nodes: n = k·i + 1 nodes, leaves L = (k−1)i + 1
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{176pt}
+
+\hypertarget{p2-07--32-traversals}{%
+\subsection{3.2 Traversals}\label{p2-07--32-traversals}}
+
+\begin{asciiblock}{121pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+          A
+        ╱   ╲
+       B     C
+      ╱ ╲     ╲
+     D   E     F
+ Preorder  (NLR): A B D E C F
+ Inorder   (LNR): D B E A C F
+ Postorder (LRN): D E B F C A
+ Level order    : A B C D E F
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  Unique tree reconstruction needs \textbf{inorder + (preorder or postorder or level-order)}. Preorder + postorder is unique only for full binary trees.
+\item
+  \textbf{Threaded binary tree}: null right pointers point to inorder successor, null left to predecessor → traversal without stack.
+\end{itemize}
+
+\needspace{100pt}
+
+\hypertarget{p2-07--33-binary-search-tree}{%
+\subsection{3.3 Binary Search Tree}\label{p2-07--33-binary-search-tree}}
+
+\begin{itemize}
+\tightlist
+\item
+  Search/insert/delete: O(h); h = O(log n) average, O(n) worst (skewed).
+\item
+  Delete node with 2 children: replace with \textbf{inorder successor} (min of right subtree) or predecessor.
+\item
+  Inorder traversal of BST = \textbf{sorted order}.
+\end{itemize}
+
+\needspace{200pt}
+
+\hypertarget{p2-07--34-avl-tree}{%
+\subsection{3.4 AVL Tree}\label{p2-07--34-avl-tree}}
+
+Balance factor = height(left) − height(right) ∈ \{−1, 0, 1\}.
+
+\begin{asciiblock}{110pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ LL case → single right rotation        RR case → single left rotation
+       30                20                 10                 20
+      ╱                 ╱  ╲                  ╲               ╱  ╲
+     20       ──►      10   30                 20    ──►     10   30
+    ╱                                            ╲
+   10                                             30
+ LR case → left rotate child, then right rotate parent (double rotation)
+ RL case → right rotate child, then left rotate parent
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  Min nodes in AVL of height h: \textbf{N(h) = N(h−1) + N(h−2) + 1}, N(0)=1, N(1)=2 → 1, 2, 4, 7, 12, 20, 33\ldots{}
+\item
+  Max height ≈ 1.44 log₂ n. All operations O(log n).
+\item
+  \textbf{Red-Black tree}: root black, no two consecutive reds, same black-height on every path; height ≤ 2 log₂(n+1).
+\end{itemize}
+
+\needspace{100pt}
+
+\hypertarget{p2-07--35-b-trees-multi-way-disk-based}{%
+\subsection{3.5 B-Trees (multi-way, disk-based)}\label{p2-07--35-b-trees-multi-way-disk-based}}
+
+\begin{itemize}
+\tightlist
+\item
+  Order m: each node ≤ m children, ≤ m−1 keys; non-root ≥ ⌈m/2⌉ children; all leaves same level.
+\item
+  Insertion splits a full node and pushes the median up; tree grows at root.
+\item
+  \textbf{B+ tree}: all data at leaves, leaves linked. \textbf{B* tree}: nodes at least 2/3 full (redistribution before split).
+\item
+  Details and order calculations: see \protect\hyperlink{p2-04--8-file-organisation--indexing}{DBMS unit}.
+\end{itemize}
+
+\needspace{154pt}
+
+\hypertarget{p2-07--36-heaps}{%
+\subsection{3.6 Heaps}\label{p2-07--36-heaps}}
+
+\begin{asciiblock}{99pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ Max-heap (array: 90 70 80 30 60 50)
+          90
+        ╱    ╲
+      70      80
+     ╱  ╲    ╱
+   30   60  50
+ Parent(i) = ⌊(i−1)/2⌋, Left = 2i+1, Right = 2i+2  (0-based)
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  Insert O(log n); delete-max O(log n); \textbf{build-heap O(n)}; find-max O(1); search O(n).
+\item
+  In a max-heap, the minimum is among the leaves (⌈n/2⌉ candidates).
+\item
+  \textbf{Binomial heap} (union O(log n)), \textbf{Fibonacci heap} (decrease-key O(1) amortised → Dijkstra O(E + V log V)).
+\end{itemize}
+
+\needspace{187pt}
+
+\hypertarget{p2-07--37-disjoint-sets-unionfind}{%
+\subsection{3.7 Disjoint Sets (Union--Find)}\label{p2-07--37-disjoint-sets-unionfind}}
+
+Union by rank + path compression → nearly O(1) amortised: \textbf{O(α(n))} (inverse Ackermann). Used in Kruskal.
+
+\needspace{112pt}
+
+\hypertarget{p2-07--4-hashing}{%
+\section{4. Hashing}\label{p2-07--4-hashing}}
+
+\begin{asciiblock}{57pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Division:       h(k) = k mod m  (m prime, not close to power of 2)
+Multiplication: h(k) = ⌊m·(k·A mod 1)⌋, A ≈ 0.618 (Knuth)
+Load factor α = n/m
+\end{Verbatim}
+\end{asciiblock}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1788}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1578}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1854}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Collision resolution}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Probe sequence}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Issues}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Chaining & Linked list per slot & Expected search 1 + α \\
+Linear probing & h(k) + i & \textbf{Primary clustering} \\
+Quadratic probing & h(k) + c₁i + c₂i² & \textbf{Secondary clustering} \\
+Double hashing & h₁(k) + i·h₂(k) & Best of open addressing \\
+\end{longtable}
+
+\endgroup
+
+Open addressing expected probes: unsuccessful ≤ 1/(1 − α); successful ≤ (1/α) ln(1/(1−α)).
+
+\textbf{Worked (linear probing, m = 10, h(k) = k mod 10)}: insert 12, 18, 13, 2, 3, 23, 5, 15
+
+\begin{asciiblock}{99pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+12 → 2        18 → 8        13 → 3
+ 2 → 2 ✗ 3 ✗ → 4               3 → 3 ✗ 4 ✗ → 5
+23 → 3 ✗ 4 ✗ 5 ✗ → 6           5 → 5 ✗ 6 ✗ → 7
+15 → 5 ✗ 6 ✗ 7 ✗ 8 ✗ → 9
+
+Index: 0   1   2   3   4   5   6   7   8   9
+       -   -   12  13  2   3   23  5   18  15
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{135pt}
+
+\hypertarget{p2-07--5-sorting}{%
+\section{5. Sorting}\label{p2-07--5-sorting}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1119}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1253}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0903}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1758}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0725}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0786}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1002}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Algorithm}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Best}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Average}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Worst}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Space}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Stable}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{In-place}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Bubble & n (with flag) & n² & n² & 1 & ✔ & ✔ \\
+Selection & n² & n² & n² & 1 & ✘ & ✔ \\
+Insertion & n & n² & n² & 1 & ✔ & ✔ \\
+Merge & n log n & n log n & n log n & n & ✔ & ✘ \\
+\textbf{Quick} & n log n & n log n & \textbf{n²} & log n & ✘ & ✔ \\
+Heap & n log n & n log n & n log n & 1 & ✘ & ✔ \\
+Shell & n log n & \textasciitilde n\^{}1.3 & n² (gap-dependent) & 1 & ✘ & ✔ \\
+Counting & n + k & n + k & n + k & k & ✔ & ✘ \\
+Radix & d(n + k) & d(n + k) & d(n + k) & n + k & ✔ & ✘ \\
+Bucket & n + k & n + k & n² & n & ✔ & ✘ \\
+\end{longtable}
+
+\endgroup
+
+\begin{itemize}
+\tightlist
+\item
+  Selection sort makes the \textbf{minimum number of swaps} (n − 1).
+\item
+  Insertion sort is best for \textbf{nearly sorted} data; number of comparisons ≈ number of inversions.
+\item
+  Quick sort worst case on sorted input with first/last element as pivot. Randomised pivot → expected O(n log n).
+\item
+  \textbf{Comparison-sort lower bound: Ω(n log n)} (decision tree with n! leaves has height ≥ log₂ n!).
+\item
+  Merging k sorted lists of total n: O(n log k) with min-heap.
+\end{itemize}
+
+\begin{asciiblock}{57pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Quick sort partition (Lomuto, pivot = last)
+[ 7  2  1  6  8  5  3  4 ]  pivot 4
+→ [ 2  1  3 | 4 | 8  5  7  6 ]
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{100pt}
+
+\hypertarget{p2-07--6-searching}{%
+\section{6. Searching}\label{p2-07--6-searching}}
+
+\begin{itemize}
+\tightlist
+\item
+  Linear O(n); \textbf{Binary} O(log n) on sorted array --- max comparisons ⌊log₂ n⌋ + 1.
+\item
+  Interpolation search O(log log n) average on uniform data.
+\item
+  Selection (k-th smallest): Quickselect O(n) average; \textbf{median of medians O(n) worst}.
+\item
+  Min \& max together: \textbf{3n/2 − 2} comparisons. Second largest: n + ⌈log₂ n⌉ − 2.
+\end{itemize}
+
+\needdiagram{figures/p2-07-00}{55pt}
+
+\hypertarget{p2-07--7-algorithm-design-techniques}{%
+\section{7. Algorithm Design Techniques}\label{p2-07--7-algorithm-design-techniques}}
+
+\diagramhere{figures/p2-07-00}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3382}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3514}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Greedy}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Dynamic programming}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Locally optimal choice, never reconsidered & Solves overlapping subproblems, stores results \\
+\textbf{Greedy-choice property} + optimal substructure & \textbf{Optimal substructure + overlapping subproblems} \\
+Faster, not always optimal & Always optimal (if formulated correctly) \\
+Fractional knapsack ✔ ; 0/1 knapsack ✘ & 0/1 knapsack ✔ O(nW) --- pseudo-polynomial \\
+\end{longtable}
+
+\endgroup
+
+\needspace{136pt}
+
+\hypertarget{p2-07--71-key-dp-problems}{%
+\subsection{7.1 Key DP Problems}\label{p2-07--71-key-dp-problems}}
+
+\textbf{LCS} of X = ABCBDAB, Y = BDCABA → length \textbf{4} (e.g. BCBA). Time O(mn).
+
+\begin{asciiblock}{46pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+LCS[i][j] = LCS[i−1][j−1] + 1                if xᵢ = yⱼ
+          = max(LCS[i−1][j], LCS[i][j−1])    otherwise
+\end{Verbatim}
+\end{asciiblock}
+
+\textbf{Matrix chain multiplication}: dims 10×30, 30×5, 5×60.
+
+\begin{asciiblock}{67pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+(AB)C = 10·30·5 + 10·5·60 = 1500 + 3000 = 4500  ✔ optimal
+A(BC) = 30·5·60 + 10·30·60 = 9000 + 18000 = 27000
+m[i][j] = min over k of m[i][k] + m[k+1][j] + p(i−1)·p(k)·p(j)    O(n³)
+Number of parenthesisations of n matrices = Catalan C(n−1)
+\end{Verbatim}
+\end{asciiblock}
+
+\textbf{0/1 Knapsack}: K{[}i{]}{[}w{]} = max(K{[}i−1{]}{[}w{]}, vᵢ + K{[}i−1{]}{[}w − wᵢ{]}).
+
+\needspace{100pt}
+
+\hypertarget{p2-07--72-greedy-problems}{%
+\subsection{7.2 Greedy Problems}\label{p2-07--72-greedy-problems}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Huffman coding}: repeatedly merge two least-frequent nodes. O(n log n).
+  Frequencies a:5, b:9, c:12, d:13, e:16, f:45 → codes f:0, c:100, d:101, a:1100, b:1101, e:111. Average bits = 2.24.
+\item
+  \textbf{Activity selection}: sort by finish time, pick compatible.
+\item
+  \textbf{Job sequencing with deadlines}: sort by profit, place in latest free slot.
+\item
+  \textbf{Fractional knapsack}: sort by value/weight.
+\item
+  \textbf{Optimal merge pattern}: like Huffman.
+\end{itemize}
+
+\needspace{100pt}
+
+\hypertarget{p2-07--73-backtracking}{%
+\subsection{7.3 Backtracking}\label{p2-07--73-backtracking}}
+
+\begin{itemize}
+\tightlist
+\item
+  N-Queens: 4-Queens has \textbf{2} solutions; 8-Queens has \textbf{92}.
+\item
+  State-space tree; prune when constraint violated (bounding function).
+\item
+  Graph m-colouring, sum of subsets, Hamiltonian cycles.
+\end{itemize}
+
+\needspace{100pt}
+
+\hypertarget{p2-07--74-branch--bound}{%
+\subsection{7.4 Branch \& Bound}\label{p2-07--74-branch--bound}}
+
+\begin{itemize}
+\tightlist
+\item
+  Uses BFS / \textbf{least-cost (LC) search} with bounds; FIFO B\&B, LIFO B\&B, LC B\&B. Used for optimisation (TSP, 0/1 knapsack, assignment).
+\end{itemize}
+
+\needspace{259pt}
+
+\hypertarget{p2-07--8-graph-algorithms}{%
+\section{8. Graph Algorithms}\label{p2-07--8-graph-algorithms}}
+
+\needspace{219pt}
+
+\hypertarget{p2-07--81-representations}{%
+\subsection{8.1 Representations}\label{p2-07--81-representations}}
+
+Adjacency matrix: O(V²) space, O(1) edge check. Adjacency list: O(V + E).
+
+\needspace{144pt}
+
+\hypertarget{p2-07--82-bfs--dfs}{%
+\subsection{8.2 BFS \& DFS}\label{p2-07--82-bfs--dfs}}
+
+\begin{asciiblock}{89pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ Graph:  A ── B ── E
+         │    │
+         C ── D
+ BFS from A: A B C E D   (queue; shortest path in unweighted graph)
+ DFS from A: A B E D C   (stack/recursion; topological sort, SCC, cycle detection)
+ Both O(V + E) with adjacency list, O(V²) with matrix
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  DFS edge types: tree, back (→ cycle), forward, cross. Undirected DFS has only tree and back edges.
+\item
+  \textbf{Topological sort} (DAG only): DFS finishing order reversed, or Kahn\textquotesingle s algorithm (in-degree 0).
+\item
+  \textbf{Strongly connected components}: Kosaraju (2 DFS), Tarjan (1 DFS). O(V + E).
+\item
+  Articulation points \& bridges: DFS with low values.
+\end{itemize}
+
+\needspace{135pt}
+
+\hypertarget{p2-07--83-shortest-paths}{%
+\subsection{8.3 Shortest Paths}\label{p2-07--83-shortest-paths}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1565}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2165}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2295}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3975}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Algorithm}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Type}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Negative edges?}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Complexity}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+BFS & Single-source, unweighted & --- & O(V + E) \\
+\textbf{Dijkstra} & Single-source & \textbf{No} & O((V + E) log V) binary heap; O(V²) array; O(E + V log V) Fibonacci \\
+\textbf{Bellman--Ford} & Single-source & Yes; detects negative cycles & O(VE) \\
+DAG shortest path & Single-source & Yes & O(V + E) \\
+\textbf{Floyd--Warshall} & All-pairs (DP) & Yes (no neg. cycles) & O(V³) \\
+Johnson & All-pairs, sparse & Yes & O(V² log V + VE) \\
+\end{longtable}
+
+\endgroup
+
+\textbf{Dijkstra worked} (directed edges: A→B 4, A→C 1, C→B 2, C→D 5, B→D 1; source A)
+
+\begin{asciiblock}{174pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+        4
+   A ────────► B
+   │           ▲ │
+  1│         2 │ │1
+   ▼           │ ▼
+   C ──────────┘ D
+   └─────5──────►┘   (C→D weight 5)
+
+Step  Visited     dist(A, B, C, D)
+0     {}          0, ∞, ∞, ∞
+1     {A}         0, 4, 1, ∞
+2     {A,C}       0, 3, 1, 6      B via C = 1+2 ; D via C = 1+5
+3     {A,C,B}     0, 3, 1, 4      D via B = 3+1
+4     {A,C,B,D}   final: A=0, B=3, C=1, D=4
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{135pt}
+
+\hypertarget{p2-07--84-minimum-spanning-tree}{%
+\subsection{8.4 Minimum Spanning Tree}\label{p2-07--84-minimum-spanning-tree}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4651}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4075}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Kruskal}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Prim}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Sort edges, add smallest that doesn\textquotesingle t form a cycle (union-find) & Grow tree from a vertex, add cheapest edge leaving tree \\
+O(E log E) & O(E log V) heap; O(V²) matrix \\
+Better for sparse graphs & Better for dense graphs \\
+Forest during execution & Always a single tree \\
+\end{longtable}
+
+\endgroup
+
+\begin{itemize}
+\tightlist
+\item
+  MST is unique if all edge weights are distinct.
+\item
+  \textbf{Cut property}: lightest edge across any cut belongs to some MST. \textbf{Cycle property}: heaviest edge in a cycle is not in any MST.
+\item
+  Number of spanning trees of Kₙ: nⁿ⁻².
+\end{itemize}
+
+\needspace{100pt}
+
+\hypertarget{p2-07--85-maximum-flow}{%
+\subsection{8.5 Maximum Flow}\label{p2-07--85-maximum-flow}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Ford--Fulkerson} (augmenting paths): O(E · f*). \textbf{Edmonds--Karp} (BFS augmenting paths): O(VE²).
+\item
+  \textbf{Max-flow min-cut theorem}: value of max flow = capacity of min s--t cut.
+\item
+  Bipartite matching reduces to max flow.
+\end{itemize}
+
+\needspace{100pt}
+
+\hypertarget{p2-07--9-lower-bound-theory}{%
+\section{9. Lower Bound Theory}\label{p2-07--9-lower-bound-theory}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Comparison tree (decision tree)}: sorting needs ≥ ⌈log₂ n!⌉ = Ω(n log n) comparisons; searching sorted array Ω(log n).
+\item
+  Merging two sorted lists of size n: 2n − 1 comparisons (worst). Finding max: n − 1 (tournament argument).
+\item
+  \textbf{Reductions}: if A reduces to B and A has lower bound L, B has lower bound L (e.g. sorting ≤ convex hull → convex hull Ω(n log n)).
+\end{itemize}
+
+\needdiagram{figures/p2-07-01}{55pt}
+
+\hypertarget{p2-07--10-complexity-classes}{%
+\section{10. Complexity Classes}\label{p2-07--10-complexity-classes}}
+
+\diagramhere{figures/p2-07-01}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{P ⊆ NP} (P = NP? is open). NP-Complete = NP ∩ NP-Hard.
+\item
+  To prove X is NP-complete: (1) X ∈ NP; (2) reduce a known NP-complete problem \textbf{to X} (Y ≤ₚ X).
+\item
+  \textbf{Cook--Levin theorem}: \textbf{SAT} is the first NP-complete problem.
+\item
+  NP-complete: SAT, 3-SAT, CLIQUE, Vertex Cover, Independent Set, Hamiltonian cycle, TSP (decision), Subset sum, 0/1 Knapsack (decision), Graph colouring (k ≥ 3), Set cover, Partition.
+\item
+  In P: 2-SAT, shortest path, MST, 2-colouring (bipartite test), Euler circuit, sorting, matching, linear programming, primality (AKS 2002).
+\item
+  \textbf{NP-Hard but not in NP}: Halting problem; optimisation TSP.
+\item
+  Reductions chain: SAT → 3-SAT → CLIQUE → Vertex Cover → Hamiltonian cycle → TSP.
+\end{itemize}
+
+\needspace{135pt}
+
+\hypertarget{p2-07--11-selected-topics}{%
+\section{11. Selected Topics}\label{p2-07--11-selected-topics}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2028}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.6887}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Topic}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Key result}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+GCD (Euclid) & gcd(a, b) = gcd(b, a mod b); O(log min(a,b)); extended Euclid gives x, y with ax + by = gcd \\
+Modular exponentiation & Repeated squaring O(log e) \\
+RSA & n = pq, φ = (p−1)(q−1), ed ≡ 1 mod φ \\
+Primality & Miller--Rabin (randomised), AKS (deterministic polynomial) \\
+Polynomial multiplication & Naive O(n²); \textbf{FFT O(n log n)} (evaluate at roots of unity, pointwise multiply, inverse FFT) \\
+Naive string match & O((n − m + 1)m) \\
+\textbf{Rabin--Karp} & Rolling hash; average O(n + m), worst O(nm) \\
+\textbf{KMP} & Prefix (failure) function; \textbf{O(n + m)} \\
+Boyer--Moore & Bad-character \& good-suffix; sub-linear in practice \\
+Finite automaton matcher & O(n) matching after O(m· \\
+\end{longtable}
+
+\endgroup
+
+KMP prefix function for pattern \textbf{"ababaca"}: π = {[}0, 0, 1, 2, 3, 0, 1{]}.
+
+\needspace{100pt}
+
+\hypertarget{p2-07--12-advanced-algorithms}{%
+\section{12. Advanced Algorithms}\label{p2-07--12-advanced-algorithms}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Parallel algorithms} (PRAM models: EREW, CREW, CRCW). Parallel prefix sum O(log n) with n processors. Odd-even transposition sort O(n) with n processors; bitonic sort O(log² n). Parallel merge O(log n). Brent\textquotesingle s theorem.
+\item
+  \textbf{Approximation algorithms}: Vertex cover --- 2-approximation (pick both ends of uncovered edge); Metric TSP --- 2-approx (MST doubling), \textbf{1.5-approx (Christofides)}; Set cover --- ln n approx (greedy). Approximation ratio ρ(n).
+\item
+  \textbf{Randomised}: \textbf{Las Vegas} (always correct, random time --- randomised quicksort) vs \textbf{Monte Carlo} (fixed time, may be wrong --- Miller--Rabin, Karger\textquotesingle s min-cut).
+\end{itemize}
+
+\needspace{184pt}
+
+\hypertarget{p2-07--13-deeper-dive--traces-you-must-be-able-to-do-by-hand}{%
+\section{13. Deeper Dive --- Traces You Must Be Able to Do by Hand}\label{p2-07--13-deeper-dive--traces-you-must-be-able-to-do-by-hand}}
+
+\needspace{144pt}
+
+\hypertarget{p2-07--131-recursion-tree-for-tn--2tn2--n}{%
+\subsection{13.1 Recursion Tree for T(n) = 2T(n/2) + n}\label{p2-07--131-recursion-tree-for-tn--2tn2--n}}
+
+\begin{asciiblock}{89pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Level 0:                 n                         cost n
+Level 1:          n/2         n/2                  cost n
+Level 2:      n/4    n/4   n/4    n/4              cost n
+  …                      …                          …
+Level log n:  1  1  1  …  (n leaves)               cost n
+Total = n × (log₂ n + 1) = Θ(n log n)
+\end{Verbatim}
+\end{asciiblock}
+
+For T(n) = T(n − 1) + n: unrolling gives n + (n − 1) + \ldots{} + 1 = n(n + 1)/2 = \textbf{Θ(n²)}.
+
+\needspace{281pt}
+
+\hypertarget{p2-07--132-avl-insertion-trace-10-20-30-40-50-25}{%
+\subsection{13.2 AVL Insertion Trace: 10, 20, 30, 40, 50, 25}\label{p2-07--132-avl-insertion-trace-10-20-30-40-50-25}}
+
+\begin{asciiblock}{226pt}
+\begin{Verbatim}[fontsize=\fontsize{8.7}{10.6}\selectfont]
+Insert 10, 20, 30 → RR imbalance at 10 → left rotation
+      20
+     ╱  ╲
+   10    30
+Insert 40, 50 → RR imbalance at 30 → left rotation at 30
+      20
+     ╱  ╲
+   10    40
+        ╱  ╲
+      30    50
+Insert 25 → goes left of 30; node 20 has balance −2 with right child 40 left-heavy → RL case
+Step 1: right-rotate 40        Step 2: left-rotate 20
+      20                               30
+     ╱  ╲                            ╱    ╲
+   10    30                        20      40
+        ╱  ╲                      ╱  ╲       ╲
+      25    40                  10    25      50
+              ╲
+               50
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{135pt}
+
+\hypertarget{p2-07--133-heap-sort-trace-4-10-3-5-1}{%
+\subsection{13.3 Heap Sort Trace: {[}4, 10, 3, 5, 1{]}}\label{p2-07--133-heap-sort-trace-4-10-3-5-1}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1791}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4398}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1816}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Step}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Array}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Note}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Build heap & {[}4, 10, 3, 5, 1{]} → {[}10, 4, 3, 5, 1{]} → {[}10, 5, 3, 4, 1{]} & heapify index 1, then 0 \\
+Swap 10 ↔ 1, heapify & {[}5, 4, 3, 1 \textbar{} 10{]} & \\
+Swap 5 ↔ 1, heapify & {[}4, 1, 3 \textbar{} 5, 10{]} & \\
+Swap 4 ↔ 3, heapify & {[}3, 1 \textbar{} 4, 5, 10{]} & \\
+Swap 3 ↔ 1 & {[}1 \textbar{} 3, 4, 5, 10{]} & sorted \\
+\end{longtable}
+
+\endgroup
+
+\needdiagram{figures/p2-07-02}{55pt}
+
+\hypertarget{p2-07--134-kruskal-vs-prim-on-the-same-graph}{%
+\subsection{13.4 Kruskal vs Prim on the Same Graph}\label{p2-07--134-kruskal-vs-prim-on-the-same-graph}}
+
+\diagramhere{figures/p2-07-02}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2060}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1055}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1455}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1080}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Kruskal (sorted edges)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Decision}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Prim (start A)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Edge added}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+A--C 1 & take & \{A\} & A--C 1 \\
+B--C 2 & take & \{A, C\} & B--C 2 \\
+D--E 3 & take & \{A, B, C\} & B--D 5 \\
+A--B 4 & skip (cycle) & \{A, B, C, D\} & D--E 3 \\
+B--D 5 & take → done & & \\
+\end{longtable}
+
+\endgroup
+
+Both give MST weight \textbf{1 + 2 + 3 + 5 = 11}.
+
+\needspace{157pt}
+
+\hypertarget{p2-07--135-floydwarshall-trace}{%
+\subsection{13.5 Floyd--Warshall Trace}\label{p2-07--135-floydwarshall-trace}}
+
+Directed graph: 1→2 (4), 1→3 (11), 2→1 (6), 2→3 (2), 3→1 (3).
+
+\begin{asciiblock}{67pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+D⁰            D¹ (via 1)      D² (via 2)      D³ (via 3) = final
+0  4  11      0  4  11        0  4  6         0  4  6
+6  0  2       6  0  2         6  0  2         5  0  2
+3  ∞  0       3  7  0         3  7  0         3  7  0
+\end{Verbatim}
+\end{asciiblock}
+
+Updates: D¹{[}3{]}{[}2{]} = 3 + 4 = 7; D²{[}1{]}{[}3{]} = 4 + 2 = 6; D³{[}2{]}{[}1{]} = 2 + 3 = 5.
+
+\needspace{170pt}
+
+\hypertarget{p2-07--136-01-knapsack-dp-table}{%
+\subsection{13.6 0/1 Knapsack DP Table}\label{p2-07--136-01-knapsack-dp-table}}
+
+Capacity W = 5; items (weight, value): (2, 3), (3, 4), (4, 5), (5, 6).
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0879}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0330}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0330}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0330}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0330}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0330}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0330}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{i \textbackslash{} w}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{0}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{1}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{2}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{3}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{4}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{5}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+1 (2, 3) & 0 & 0 & 3 & 3 & 3 & 3 \\
+2 (3, 4) & 0 & 0 & 3 & 4 & 4 & \textbf{7} \\
+3 (4, 5) & 0 & 0 & 3 & 4 & 5 & 7 \\
+4 (5, 6) & 0 & 0 & 3 & 4 & 5 & 7 \\
+\end{longtable}
+
+\endgroup
+
+Answer \textbf{7} (items 1 and 2). Traceback: K{[}4{]}{[}5{]} = K{[}3{]}{[}5{]} = K{[}2{]}{[}5{]} ≠ K{[}1{]}{[}5{]} → item 2 taken; remaining capacity 2 → item 1 taken.
+
+\needdiagram{figures/p2-07-03}{55pt}
+
+\hypertarget{p2-07--137-topological-sort-kahns-algorithm}{%
+\subsection{13.7 Topological Sort (Kahn\textquotesingle s algorithm)}\label{p2-07--137-topological-sort-kahns-algorithm}}
+
+\diagramhere{figures/p2-07-03}
+
+In-degrees: A 0, B 0, C 2, D 1, E 2. Queue A, B → remove A (C: 1) → remove B (C: 0, D: 0) → C → D (E: 0) → E.
+One valid order: \textbf{A, B, C, D, E} (B, A, D, C, E is also valid --- topological orders are not unique).
+
+\needspace{210pt}
+
+\hypertarget{p2-07--138-double-hashing}{%
+\subsection{13.8 Double Hashing}\label{p2-07--138-double-hashing}}
+
+m = 11, h₁(k) = k mod 11, h₂(k) = 7 − (k mod 7), probe i: (h₁ + i·h₂) mod 11. Insert 22, 33 (22 already at 0):
+22 → 0. 33 → h₁ = 0 (occupied); h₂ = 7 − 5 = 2 → (0 + 2) mod 11 = \textbf{2}.
+h₂ must never be 0 and should be co-prime with m (choose m prime).
+
+\needspace{135pt}
+
+\hypertarget{p2-07--previous-year-questions-pyq-pattern}{%
+\section{Previous Year Questions (PYQ pattern)}\label{p2-07--previous-year-questions-pyq-pattern}}
+
+\textbf{Complexity \& recurrences}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Solution of T(n) = 2T(n/2) + n log n: \textbf{Θ(n log² n)}
+\item
+  T(n) = 4T(n/2) + n: \textbf{Θ(n²)}
+\item
+  T(n) = T(n/2) + n: \textbf{Θ(n)}
+\item
+  T(n) = 3T(n/4) + n log n: \textbf{Θ(n log n)} (case 3)
+\item
+  Which is the slowest-growing? (a) n log n (b) n\^{}1.01 (c) n/log n (d) √n log n --- \textbf{(d)}
+\item
+  Time complexity of the loop \texttt{for(i=1;i\textless{}n;i*=2)}: \textbf{O(log n)}
+\item
+  Nested \texttt{for(i=1;i\textless{}=n;i++)\ for(j=1;j\textless{}=n;j+=i)}: \textbf{O(n log n)} (harmonic series)
+\end{enumerate}
+
+\textbf{Arrays, stacks, queues}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{7}
+\tightlist
+\item
+  A{[}1..10{]}{[}1..15{]}, row-major, base 100, 4 bytes/element. Address of A{[}5{]}{[}7{]}: 100 + 4{[}(4)(15) + 6{]} = \textbf{364}
+\item
+  Postfix of (A + B) * (C − D): \textbf{AB+CD−*}
+\item
+  Prefix of A + B * C: \textbf{+A*BC}
+\item
+  Minimum stacks to implement a queue: \textbf{2}
+\item
+  Circular queue of size n holds at most: \textbf{n − 1} elements (one-slot-empty convention)
+\end{enumerate}
+
+\textbf{Trees}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{12}
+\tightlist
+\item
+  A binary tree with 20 leaves has how many nodes of degree 2? \textbf{19}
+\item
+  Maximum nodes in a binary tree of height 5 (root at height 0): 2⁶ − 1 = \textbf{63}
+\item
+  Number of distinct binary trees with 4 nodes: \textbf{14}
+\item
+  Inorder: D B E A F C; Preorder: A B D E C F → Postorder: \textbf{D E B F C A}
+\item
+  Minimum nodes in an AVL tree of height 4: \textbf{12}
+\item
+  In a complete ternary tree with 10 internal nodes, leaves = 2×10 + 1 = \textbf{21}
+\item
+  Inorder traversal of BST gives: \textbf{sorted order}
+\item
+  Worst-case height of BST with n nodes: \textbf{n − 1}
+\end{enumerate}
+
+\textbf{Heaps \& hashing}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{20}
+\tightlist
+\item
+  Time to build a heap of n elements: \textbf{O(n)}
+\item
+  Array 89, 19, 50, 17, 12, 15, 2, 5, 7, 11, 6, 9, 100 --- after inserting 100 into max-heap, root = \textbf{100}
+\item
+  Linear probing suffers from: \textbf{primary clustering}
+\item
+  With chaining and load factor α, expected unsuccessful search: \textbf{Θ(1 + α)}
+\item
+  Keys 43, 36, 92, 87, 11, 4, 71, 13, 14 hashed with h(k) = k mod 11 using chaining. Keys in slot 3: \textbf{36 and 14} (43→10, 36→3, 92→4, 87→10, 11→0, 4→4, 71→5, 13→2, 14→3)
+\end{enumerate}
+
+\textbf{Sorting \& searching}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{25}
+\tightlist
+\item
+  Which sorting algorithm has worst case O(n log n) and is in-place? \textbf{Heap sort}
+\item
+  Best algorithm for nearly sorted data: \textbf{Insertion sort}
+\item
+  Quick sort worst case occurs when: \textbf{array is already sorted (pivot = first/last)}
+\item
+  Which sorts are stable? \textbf{Merge, insertion, bubble, counting, radix}
+\item
+  Lower bound for comparison sorting: \textbf{Ω(n log n)}
+\item
+  Maximum comparisons in binary search on 1000 elements: ⌊log₂1000⌋ + 1 = \textbf{10}
+\item
+  Min and max of n elements need at least: \textbf{⌈3n/2⌉ − 2 comparisons}
+\end{enumerate}
+
+\textbf{Design techniques}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{32}
+\tightlist
+\item
+  Matrix chain 10×20, 20×30, 30×40: min multiplications = (AB)C = 6000 + 12000 = \textbf{18000}
+\item
+  LCS of "ABCD" and "ACBD": \textbf{3}
+\item
+  0/1 knapsack using DP: \textbf{O(nW)} (pseudo-polynomial)
+\item
+  Huffman coding is an example of: \textbf{greedy}
+\item
+  Floyd--Warshall uses: \textbf{dynamic programming}
+\item
+  N-Queens problem is solved by: \textbf{backtracking}
+\item
+  Which needs both optimal substructure \& overlapping subproblems? \textbf{Dynamic programming}
+\end{enumerate}
+
+\textbf{Graphs}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{39}
+\tightlist
+\item
+  Dijkstra fails with: \textbf{negative edge weights}
+\item
+  Bellman-Ford time complexity: \textbf{O(VE)}
+\item
+  Kruskal\textquotesingle s time complexity: \textbf{O(E log E)}
+\item
+  BFS is used to find: \textbf{shortest path in unweighted graph}
+\item
+  Topological sort is possible only for: \textbf{DAG}
+\item
+  Number of edges in the MST of a connected graph with n vertices: \textbf{n − 1}
+\item
+  Back edge in DFS of a directed graph indicates: \textbf{a cycle}
+\item
+  Max-flow equals: \textbf{min-cut capacity}
+\end{enumerate}
+
+\textbf{Complexity theory}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{47}
+\tightlist
+\item
+  First problem proved NP-complete: \textbf{SAT (Cook--Levin)}
+\item
+  Which is in P? (a) 3-SAT (b) 2-SAT (c) Clique (d) Hamiltonian cycle --- \textbf{(b)}
+\item
+  If A ≤ₚ B and B ∈ P then: \textbf{A ∈ P}
+\item
+  If an NP-complete problem is solved in polynomial time: \textbf{P = NP}
+\item
+  Halting problem is: \textbf{undecidable, NP-hard but not in NP}
+\end{enumerate}
+
+\textbf{Selected topics}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{52}
+\tightlist
+\item
+  KMP string matching time: \textbf{O(n + m)}
+\item
+  FFT multiplies two polynomials of degree n in: \textbf{O(n log n)}
+\item
+  Randomised quicksort is a: \textbf{Las Vegas algorithm}
+\item
+  Christofides algorithm gives approximation ratio: \textbf{1.5} (metric TSP)
+\end{enumerate}
+
+\textbf{More practice questions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{56}
+\tightlist
+\item
+  After inserting 10, 20, 30 into an empty AVL tree, the root is: \textbf{20}
+\item
+  Number of rotations needed for the RL case: \textbf{2}
+\item
+  Build max-heap from {[}4, 10, 3, 5, 1{]}; the resulting array: \textbf{{[}10, 5, 3, 4, 1{]}}
+\item
+  MST weight for the graph in §13.4: \textbf{11}
+\item
+  Floyd--Warshall final distance from 2 to 1 in §13.5: \textbf{5}
+\item
+  0/1 knapsack W = 5 with items (2, 3), (3, 4), (4, 5), (5, 6): \textbf{7}
+\item
+  Which is NOT a valid topological order of §13.7? (a) A B C D E (b) B A D C E (c) A C B D E (d) B D A C E --- \textbf{Ans: (c)} (C before B violates B → C)
+\item
+  T(n) = T(n − 1) + n solves to: \textbf{Θ(n²)}
+\item
+  In double hashing, h₂(k) must never evaluate to: \textbf{0}
+\item
+  Kruskal\textquotesingle s algorithm uses which data structure to detect cycles? \textbf{Disjoint-set (union--find)}
+\end{enumerate}
+
+\begin{revbox}
+
+\begin{itemize}
+\tightlist
+\item
+  Master theorem: compare f(n) with n\^{}(log\_b a)
+\item
+  n₀ = n₂ + 1 · Catalan 1, 1, 2, 5, 14, 42 · AVL min nodes 1, 2, 4, 7, 12, 20
+\item
+  Build-heap O(n) · Comparison sort Ω(n log n)
+\item
+  Dijkstra no negatives · Bellman--Ford O(VE) · Floyd O(V³)
+\item
+  SAT first NPC · 2-SAT in P · KMP O(n + m)
+\end{itemize}
+
+\end{revbox}

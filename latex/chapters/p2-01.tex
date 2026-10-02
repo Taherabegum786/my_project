@@ -1,0 +1,1120 @@
+\unitchapter{Paper 2 · Unit 1}{Discrete Structures \& Optimization}{p2-01}
+
+\textbf{Expected questions: 10--12 · Target: 9+ · Type: numerical + concept}
+
+\begin{sylbox}
+
+\begin{itemize}
+\tightlist
+\item[$\square$]
+  Mathematical logic: propositional \& predicate logic, propositional equivalences, normal forms, predicates \& quantifiers, nested quantifiers, rules of inference
+\item[$\square$]
+  Sets \& relations: set operations, representation \& properties of relations, equivalence relations, partially ordering
+\item[$\square$]
+  Counting, mathematical induction \& discrete probability: basics of counting, pigeonhole principle, permutations \& combinations, inclusion-exclusion, mathematical induction, probability, Bayes\textquotesingle{} theorem
+\item[$\square$]
+  Group theory: groups, subgroups, semigroups, product \& quotients of algebraic structures, isomorphism, homomorphism, automorphism, rings, integral domains, fields, applications of group theory
+\item[$\square$]
+  Graph theory: simple graph, multigraph, weighted graph, paths \& circuits, shortest paths, Eulerian \& Hamiltonian, planar graph, graph colouring, bipartite graphs, trees \& rooted trees, prefix codes, tree traversals, spanning trees \& cut-sets
+\item[$\square$]
+  Boolean algebra: Boolean functions \& representation, simplification
+\item[$\square$]
+  Optimization: linear programming (graphical, simplex, duality), integer programming, transportation \& assignment, PERT-CPM
+\end{itemize}
+
+\end{sylbox}
+
+\needspace{175pt}
+
+\hypertarget{p2-01--1-mathematical-logic}{%
+\section{1. Mathematical Logic}\label{p2-01--1-mathematical-logic}}
+
+\needspace{135pt}
+
+\hypertarget{p2-01--11-connectives--truth-table}{%
+\subsection{1.1 Connectives \& Truth Table}\label{p2-01--11-connectives--truth-table}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0341}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0341}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0438}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0540}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0540}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0540}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0540}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0540}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{p}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{q}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{¬p}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{p∧q}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{p∨q}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{p→q}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{p↔q}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{p⊕q}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+T & T & F & T & T & \textbf{T} & T & F \\
+T & F & F & F & T & \textbf{F} & F & T \\
+F & T & T & F & T & \textbf{T} & F & T \\
+F & F & T & F & F & \textbf{T} & T & F \\
+\end{longtable}
+
+\endgroup
+
+\textbf{p → q is false ONLY when p is true and q is false.}
+
+\begin{asciiblock}{78pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Implication family (p → q)
+ Converse        q → p
+ Inverse        ¬p → ¬q
+ Contrapositive ¬q → ¬p   ≡ p → q   (logically equivalent)
+ Converse ≡ Inverse
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{154pt}
+
+\hypertarget{p2-01--12-important-equivalences}{%
+\subsection{1.2 Important Equivalences}\label{p2-01--12-important-equivalences}}
+
+\begin{asciiblock}{99pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+p → q        ≡ ¬p ∨ q
+p ↔ q        ≡ (p → q) ∧ (q → p)
+De Morgan    ¬(p ∧ q) ≡ ¬p ∨ ¬q ;  ¬(p ∨ q) ≡ ¬p ∧ ¬q
+Absorption   p ∨ (p ∧ q) ≡ p ;  p ∧ (p ∨ q) ≡ p
+Exportation  (p ∧ q) → r ≡ p → (q → r)
+(p → q) ∧ (p → r) ≡ p → (q ∧ r)
+(p → r) ∧ (q → r) ≡ (p ∨ q) → r
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Tautology}: always true (p ∨ ¬p). \textbf{Contradiction}: always false. \textbf{Contingency}: neither.
+\item
+  Functionally complete sets: \{∧, ¬\}, \{∨, ¬\}, \{NAND\}, \{NOR\}, \{→, ¬\}, \{→, F\}.
+\end{itemize}
+
+\needspace{100pt}
+
+\hypertarget{p2-01--13-normal-forms}{%
+\subsection{1.3 Normal Forms}\label{p2-01--13-normal-forms}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{CNF} = AND of ORs (product of sums); \textbf{DNF} = OR of ANDs (sum of products).
+\item
+  Number of Boolean functions on n variables = \textbf{2\^{}(2ⁿ)}.
+\end{itemize}
+
+\needspace{135pt}
+
+\hypertarget{p2-01--14-rules-of-inference}{%
+\subsection{1.4 Rules of Inference}\label{p2-01--14-rules-of-inference}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1991}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1410}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Rule}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Form}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Modus Ponens & p, p→q ⊢ q \\
+Modus Tollens & ¬q, p→q ⊢ ¬p \\
+Hypothetical syllogism & p→q, q→r ⊢ p→r \\
+Disjunctive syllogism & p∨q, ¬p ⊢ q \\
+Addition & p ⊢ p∨q \\
+Simplification & p∧q ⊢ p \\
+Resolution & p∨q, ¬p∨r ⊢ q∨r \\
+Universal instantiation & ∀x P(x) ⊢ P(c) \\
+Existential generalisation & P(c) ⊢ ∃x P(x) \\
+\end{longtable}
+
+\endgroup
+
+Fallacies: affirming the consequent (q, p→q ⊢ p ✗), denying the antecedent (¬p, p→q ⊢ ¬q ✗).
+
+\needspace{133pt}
+
+\hypertarget{p2-01--15-predicates--quantifiers}{%
+\subsection{1.5 Predicates \& Quantifiers}\label{p2-01--15-predicates--quantifiers}}
+
+\begin{asciiblock}{78pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+¬∀x P(x) ≡ ∃x ¬P(x)        ¬∃x P(x) ≡ ∀x ¬P(x)
+∀x (P ∧ Q) ≡ ∀x P ∧ ∀x Q    ∃x (P ∨ Q) ≡ ∃x P ∨ ∃x Q
+∃x∀y P(x,y) → ∀y∃x P(x,y)   (valid; converse NOT valid)
+"All students are smart"     ∀x (S(x) → M(x))    ← use →  with ∀
+"Some students are smart"    ∃x (S(x) ∧ M(x))    ← use ∧  with ∃
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{100pt}
+
+\hypertarget{p2-01--2-sets--relations}{%
+\section{2. Sets \& Relations}\label{p2-01--2-sets--relations}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbar A ∪ B\textbar{} = \textbar A\textbar{} + \textbar B\textbar{} − \textbar A ∩ B\textbar; \textbar P(A)\textbar{} = 2ⁿ; \textbar A × B\textbar{} = mn.
+\item
+  Number of relations on A (\textbar A\textbar{} = n) = \textbf{2\^{}(n²)}.
+\end{itemize}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1759}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3495}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Relation type}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Count on n elements}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Reflexive & 2\^{}(n² − n) \\
+Irreflexive & 2\^{}(n² − n) \\
+Symmetric & 2\^{}(n(n+1)/\allowbreak{}2) \\
+Antisymmetric & 2ⁿ · 3\^{}(n(n−1)/\allowbreak{}2) \\
+Asymmetric & 3\^{}(n(n−1)/\allowbreak{}2) \\
+Reflexive \& symmetric & 2\^{}(n(n−1)/\allowbreak{}2) \\
+Equivalence relations & Bell number Bₙ (1, 1, 2, 5, 15, 52, 203 \ldots) \\
+Functions A→B ( & A \\
+One-one (m ≤ n) & n!/(n−m)! \\
+Onto & Σ (−1)ᵏ C(n,k)(n−k)ᵐ \\
+Bijections (m = n) & n! \\
+\end{longtable}
+
+\endgroup
+
+\needspace{229pt}
+
+\hypertarget{p2-01--equivalence-relation--reflexive--symmetric--transitive--partitions-the-set-into-equivalence-classes}{%
+\subsection{\texorpdfstring{Equivalence relation = Reflexive + Symmetric + Transitive → partitions the set into \textbf{equivalence classes}.}{Equivalence relation = Reflexive + Symmetric + Transitive → partitions the set into equivalence classes.}}\label{p2-01--equivalence-relation--reflexive--symmetric--transitive--partitions-the-set-into-equivalence-classes}}
+
+\needspace{189pt}
+
+\hypertarget{p2-01--partial-order-poset--reflexive--antisymmetric--transitive}{%
+\subsection{Partial order (POSET) = Reflexive + Antisymmetric + Transitive.}\label{p2-01--partial-order-poset--reflexive--antisymmetric--transitive}}
+
+\textbf{Hasse diagram} of divisibility on \{1, 2, 3, 6, 12\}:
+
+\begin{asciiblock}{99pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+        12
+        │
+        6
+       ╱ ╲
+      2   3
+       ╲ ╱
+        1
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Lattice}: every pair has LUB (join, ∨) and GLB (meet, ∧).
+\item
+  \textbf{Bounded}: has 0 (least) and 1 (greatest). \textbf{Complemented}: every element has a complement. \textbf{Distributive}: no sub-lattice isomorphic to M₃ (diamond) or N₅ (pentagon).
+\item
+  \textbf{Boolean algebra} = complemented + distributive lattice. Divisor lattice Dₙ is Boolean iff n is square-free.
+\item
+  Total order (chain): every pair comparable. Well-ordered: every nonempty subset has least element.
+\end{itemize}
+
+\begin{asciiblock}{121pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ M3 (diamond)          N5 (pentagon)
+      1                     1
+    ╱ │ ╲                 ╱   ╲
+   a  b  c               a     │
+    ╲ │ ╱                │     c
+      0                  b     │
+                          ╲   ╱
+                            0
+ → Neither is distributive
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{144pt}
+
+\hypertarget{p2-01--3-counting--probability}{%
+\section{3. Counting \& Probability}\label{p2-01--3-counting--probability}}
+
+\begin{asciiblock}{89pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Permutations  nPr = n!/(n−r)!       Combinations  nCr = n!/(r!(n−r)!)
+Circular arrangements  (n−1)!       Necklace/garland (n−1)!/2
+Permutations with repetition of types: n!/(p! q! r!)
+r objects from n types with repetition: C(n+r−1, r)    (stars & bars)
+Derangements  Dₙ = n! [1 − 1/1! + 1/2! − … + (−1)ⁿ/n!]   D1=0 D2=1 D3=2 D4=9 D5=44
+Catalan Cₙ = C(2n,n)/(n+1)  → 1, 1, 2, 5, 14, 42 (BSTs with n keys, valid parentheses)
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Pigeonhole principle}: n items into m boxes ⇒ some box has at least ⌈n/m⌉ items.
+  \emph{e.g. Min. people to ensure 2 share a birth month = 13.}
+\item
+  \textbf{Inclusion--exclusion}: \textbar A∪B∪C\textbar{} = ΣA − Σ(A∩B) + (A∩B∩C).
+\item
+  \textbf{Mathematical induction}: base case + (P(k) ⇒ P(k+1)). Strong induction assumes all P(1)\ldots P(k).
+\end{itemize}
+
+\needspace{100pt}
+
+\hypertarget{p2-01--recurrence-relations}{%
+\subsection{Recurrence relations}\label{p2-01--recurrence-relations}}
+
+\begin{itemize}
+\tightlist
+\item
+  Linear homogeneous: aₙ = c₁aₙ₋₁ + c₂aₙ₋₂ → characteristic equation r² − c₁r − c₂ = 0.
+  Distinct roots r₁, r₂: aₙ = α r₁ⁿ + β r₂ⁿ; repeated root r: aₙ = (α + βn) rⁿ.
+\item
+  Fibonacci: Fₙ = Fₙ₋₁ + Fₙ₋₂. Tower of Hanoi: Tₙ = 2Tₙ₋₁ + 1 = 2ⁿ − 1.
+\end{itemize}
+
+\needspace{154pt}
+
+\hypertarget{p2-01--probability}{%
+\subsection{Probability}\label{p2-01--probability}}
+
+\begin{asciiblock}{99pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+P(A ∪ B) = P(A) + P(B) − P(A ∩ B)
+P(A | B) = P(A ∩ B) / P(B)
+Independent: P(A ∩ B) = P(A)·P(B)
+Bayes: P(A|B) = P(B|A)·P(A) / P(B)
+Binomial: P(X=k) = C(n,k) pᵏ (1−p)ⁿ⁻ᵏ ; mean np, variance npq
+Poisson: P(X=k) = e^(−λ) λᵏ / k! ; mean = variance = λ
+Expectation E[X] = Σ x·P(x) ; E[aX+b] = aE[X]+b ; Var = E[X²] − (E[X])²
+\end{Verbatim}
+\end{asciiblock}
+
+\needdiagram{figures/p2-01-00}{55pt}
+
+\hypertarget{p2-01--4-algebraic-structures}{%
+\section{4. Algebraic Structures}\label{p2-01--4-algebraic-structures}}
+
+\diagramhere{figures/p2-01-00}
+
+\diagram{figures/p2-01-01}
+
+Key facts:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Lagrange\textquotesingle s theorem}: order of a subgroup divides the order of the group (finite).
+\item
+  Every group of \textbf{prime order} is cyclic and abelian. Every cyclic group is abelian.
+\item
+  Number of generators of cyclic group of order n = \textbf{φ(n)} (Euler totient).
+\item
+  Groups of order ≤ 5 are abelian. Smallest non-abelian group: S₃ (order 6).
+\item
+  (Zₙ, +ₙ) is a group; (Zₙ*, ×ₙ) group of units has φ(n) elements; Zₙ is a \textbf{field iff n is prime}.
+\item
+  Every finite integral domain is a field.
+\item
+  \textbf{Homomorphism}: f(a∗b) = f(a)∘f(b). \textbf{Isomorphism}: bijective homomorphism. \textbf{Automorphism}: isomorphism onto itself.
+\item
+  \textbf{Normal subgroup} H: gH = Hg ∀g; quotient group G/H has order \textbar G\textbar/\textbar H\textbar.
+\item
+  Order of an element a = smallest k with aᵏ = e.
+\end{itemize}
+
+\needspace{194pt}
+
+\hypertarget{p2-01--5-graph-theory}{%
+\section{5. Graph Theory}\label{p2-01--5-graph-theory}}
+
+\needspace{154pt}
+
+\hypertarget{p2-01--51-basic-results}{%
+\subsection{5.1 Basic results}\label{p2-01--51-basic-results}}
+
+\begin{asciiblock}{99pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Handshaking lemma: Σ deg(v) = 2|E|  ⇒ number of odd-degree vertices is EVEN
+Max edges in simple graph with n vertices = n(n−1)/2
+Complete graph Kₙ: n(n−1)/2 edges, each vertex degree n−1
+Complete bipartite K_{m,n}: mn edges
+Tree with n vertices: n − 1 edges ; forest with k trees: n − k edges
+Number of labelled trees on n vertices (Cayley): nⁿ⁻²  = spanning trees of Kₙ
+Number of simple labelled graphs on n vertices: 2^(n(n−1)/2)
+\end{Verbatim}
+\end{asciiblock}
+
+\needdiagram{figures/p2-01-02}{55pt}
+
+\hypertarget{p2-01--52-euler-vs-hamilton}{%
+\subsection{5.2 Euler vs Hamilton}\label{p2-01--52-euler-vs-hamilton}}
+
+\diagramhere{figures/p2-01-02}
+
+\begin{itemize}
+\tightlist
+\item
+  Kₙ is Eulerian iff n is odd. Kₙ has (n−1)!/2 Hamiltonian cycles.
+\end{itemize}
+
+\needspace{133pt}
+
+\hypertarget{p2-01--53-planar-graphs}{%
+\subsection{5.3 Planar Graphs}\label{p2-01--53-planar-graphs}}
+
+\begin{asciiblock}{78pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Euler's formula (connected planar):  V − E + F = 2       (k components: V − E + F = k + 1)
+Simple planar, V ≥ 3:          E ≤ 3V − 6
+Planar with no triangles:      E ≤ 2V − 4
+Kuratowski: G is planar ⇔ no subdivision of K₅ or K₃,₃
+K₅ and K₃,₃ are the smallest non-planar graphs; K₄ is planar.
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{asciiblock}{89pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ K₃,₃ (non-planar)          K₄ (planar drawing)
+ a   b   c                     1
+ │╲ ╱│╲ ╱│                    ╱│╲
+ │ ╳ │ ╳ │                   ╱ 4 ╲
+ │╱ ╲│╱ ╲│                  ╱ ╱ ╲ ╲
+ x   y   z                 2───────3
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{100pt}
+
+\hypertarget{p2-01--54-colouring}{%
+\subsection{5.4 Colouring}\label{p2-01--54-colouring}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Chromatic number χ(G)}: min colours so adjacent vertices differ.
+\item
+  χ(Kₙ) = n; χ(bipartite with ≥1 edge) = 2; χ(tree, n ≥ 2) = 2; χ(cycle Cₙ) = 2 if n even, 3 if odd; χ(Wheel Wₙ) = 3 or 4.
+\item
+  \textbf{Four colour theorem}: planar ⇒ χ ≤ 4.
+\item
+  G is \textbf{bipartite ⇔ no odd cycle ⇔ 2-colourable}.
+\item
+  Chromatic polynomial of tree with n vertices: k(k−1)ⁿ⁻¹; of Kₙ: k(k−1)\ldots(k−n+1).
+\end{itemize}
+
+\needspace{100pt}
+
+\hypertarget{p2-01--55-other-definitions}{%
+\subsection{5.5 Other definitions}\label{p2-01--55-other-definitions}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Independent set}, \textbf{clique}, \textbf{vertex cover}: α(G) + β(G) = n (independence number + vertex cover number).
+\item
+  \textbf{Matching}; perfect matching. Edge chromatic number (Vizing): Δ ≤ χ′ ≤ Δ+1.
+\item
+  \textbf{Cut vertex / articulation point}, \textbf{bridge}, \textbf{cut-set}. Vertex connectivity κ ≤ edge connectivity λ ≤ δ (min degree) --- Whitney.
+\item
+  \textbf{Isomorphism} invariants: same \#vertices, \#edges, degree sequence, cycles.
+\item
+  \textbf{Prefix codes}: Huffman coding gives optimal prefix-free code using a binary tree.
+\end{itemize}
+
+\needspace{133pt}
+
+\hypertarget{p2-01--6-boolean-algebra}{%
+\section{6. Boolean Algebra}\label{p2-01--6-boolean-algebra}}
+
+\begin{asciiblock}{78pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Idempotent  x + x = x,  x·x = x
+Absorption  x + xy = x,  x(x + y) = x
+x + x'y = x + y          (x + y)(x + z) = x + yz
+Consensus   xy + x'z + yz = xy + x'z
+Duality: swap + ↔ · and 0 ↔ 1
+\end{Verbatim}
+\end{asciiblock}
+
+K-maps and minimisation are covered in \protect\hyperlink{p2-02}{Unit 2}.
+
+\needdiagram{figures/p2-01-03}{95pt}
+
+\hypertarget{p2-01--7-optimization}{%
+\section{7. Optimization}\label{p2-01--7-optimization}}
+
+\needspace{100pt}
+
+\hypertarget{p2-01--71-linear-programming-lpp}{%
+\subsection{7.1 Linear Programming (LPP)}\label{p2-01--71-linear-programming-lpp}}
+
+\diagramhere{figures/p2-01-03}
+
+\textbf{Graphical example}: Max Z = 3x + 5y, s.t. x + 2y ≤ 8, 3x + 2y ≤ 12, x, y ≥ 0.
+
+\begin{asciiblock}{121pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ y
+ 6│\
+ 4│ \.        3x+2y=12
+  │  •(0,4)
+ 3│   \ •(2,3)  ← intersection of x+2y=8 & 3x+2y=12
+  │    \  \
+  │ feasible\
+ 0└──────────•(4,0)──────── x
+ Corner points: (0,0)→0, (4,0)→12, (2,3)→21, (0,4)→20  ⇒ Max Z = 21 at (2,3)
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  Optimal solution occurs at a \textbf{corner point} (extreme point) of the convex feasible region.
+\item
+  Special cases: \textbf{unbounded}, \textbf{infeasible}, \textbf{alternate optima} (objective parallel to a binding constraint), \textbf{degeneracy} (basic variable = 0).
+\item
+  Slack (for ≤), surplus (for ≥), artificial variables (Big-M / Two-phase).
+\item
+  Simplex: entering variable = most negative Cⱼ − Zⱼ (max) ; leaving variable = \textbf{minimum ratio test}.
+\item
+  \textbf{Duality}: primal max ⇔ dual min; \#constraints ↔ \#variables; dual of dual = primal. Strong duality: optimal values equal. Weak duality: any feasible dual value bounds the primal.
+\item
+  \textbf{Dual simplex}: starts optimal but infeasible, keeps optimality till feasibility.
+\end{itemize}
+
+\needspace{100pt}
+
+\hypertarget{p2-01--72-transportation-problem}{%
+\subsection{7.2 Transportation Problem}\label{p2-01--72-transportation-problem}}
+
+\begin{itemize}
+\tightlist
+\item
+  m sources, n destinations; balanced if supply = demand (else add dummy).
+\item
+  A basic feasible solution has \textbf{m + n − 1} allocations (fewer → degenerate).
+\item
+  Initial solution: \textbf{North-West Corner}, \textbf{Least Cost}, \textbf{Vogel\textquotesingle s Approximation (VAM --- best)}.
+\item
+  Optimality: \textbf{MODI (u-v) method} or Stepping stone.
+\end{itemize}
+
+\needspace{100pt}
+
+\hypertarget{p2-01--73-assignment-problem}{%
+\subsection{7.3 Assignment Problem}\label{p2-01--73-assignment-problem}}
+
+\begin{itemize}
+\tightlist
+\item
+  n jobs to n persons, one-to-one; solved by \textbf{Hungarian method} (row reduction, column reduction, cover zeros with min lines; if lines = n ⇒ optimal).
+\item
+  Special case of transportation (all supplies/demands = 1); highly degenerate.
+\end{itemize}
+
+\needspace{100pt}
+
+\hypertarget{p2-01--74-integer-programming}{%
+\subsection{7.4 Integer Programming}\label{p2-01--74-integer-programming}}
+
+\begin{itemize}
+\tightlist
+\item
+  Variables restricted to integers: \textbf{Branch and Bound}, \textbf{Gomory\textquotesingle s cutting plane}.
+\end{itemize}
+
+\needdiagram{figures/p2-01-04}{55pt}
+
+\hypertarget{p2-01--75-pert-cpm}{%
+\subsection{7.5 PERT-CPM}\label{p2-01--75-pert-cpm}}
+
+\diagramhere{figures/p2-01-04}
+
+Paths: A-C-E = 3+5+3 = \textbf{11} (critical), B-D-E = 4+2+3 = 9. Project duration = 11.
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2283}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2382}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Concept}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Formula}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Earliest start (forward pass) & ES = max(EF of predecessors) \\
+Latest finish (backward pass) & LF = min(LS of successors) \\
+Total float & LS − ES = LF − EF \\
+Critical activity & Total float = 0 \\
+PERT expected time & tₑ = (a + 4m + b)/6 \\
+PERT variance & σ² = ((b − a)/6)² \\
+Probability & Z = (T − Tₑ)/σ\_path \\
+\end{longtable}
+
+\endgroup
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{CPM}: deterministic time, cost-oriented (crashing). \textbf{PERT}: probabilistic (β-distribution), event-oriented.
+\item
+  \textbf{Crashing}: reducing duration by adding resources; crash cost slope = (crash cost − normal cost)/(normal time − crash time).
+\item
+  \textbf{Resource levelling}: smooth resource usage without changing project duration (use floats).
+\end{itemize}
+
+\needspace{245pt}
+
+\hypertarget{p2-01--8-deeper-dive--worked-simplex-transportation-assignment-groups--recurrences}{%
+\section{8. Deeper Dive --- Worked Simplex, Transportation, Assignment, Groups \& Recurrences}\label{p2-01--8-deeper-dive--worked-simplex-transportation-assignment-groups--recurrences}}
+
+\needspace{205pt}
+
+\hypertarget{p2-01--81-simplex-method--full-worked-example}{%
+\subsection{8.1 Simplex Method --- Full Worked Example}\label{p2-01--81-simplex-method--full-worked-example}}
+
+Max Z = 3x₁ + 5x₂ subject to x₁ ≤ 4, 2x₂ ≤ 12, 3x₁ + 2x₂ ≤ 18, x₁, x₂ ≥ 0.
+Add slacks s₁, s₂, s₃.
+
+\textbf{Tableau 0} (Z row written as Z − 3x₁ − 5x₂ = 0)
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0730}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0438}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0642}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0438}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0438}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0438}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0686}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1142}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Basic}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{x₁}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{x₂}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{s₁}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{s₂}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{s₃}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{RHS}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Ratio}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+s₁ & 1 & 0 & 1 & 0 & 0 & 4 & --- \\
+s₂ & 0 & \textbf{2} & 0 & 1 & 0 & 12 & 12/2 = \textbf{6} ← \\
+s₃ & 3 & 2 & 0 & 0 & 1 & 18 & 18/2 = 9 \\
+Z & −3 & \textbf{−5} ↑ & 0 & 0 & 0 & 0 & \\
+\end{longtable}
+
+\endgroup
+
+x₂ enters (most negative), s₂ leaves (minimum ratio). Pivot = 2.
+
+\textbf{Tableau 1}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0730}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0642}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0438}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0438}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0489}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0438}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0686}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1028}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Basic}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{x₁}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{x₂}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{s₁}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{s₂}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{s₃}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{RHS}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Ratio}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+s₁ & 1 & 0 & 1 & 0 & 0 & 4 & 4 \\
+x₂ & 0 & 1 & 0 & 1/2 & 0 & 6 & --- \\
+s₃ & \textbf{3} & 0 & 0 & −1 & 1 & 6 & 6/3 = \textbf{2} ← \\
+Z & \textbf{−3} ↑ & 0 & 0 & 5/2 & 0 & 30 & \\
+\end{longtable}
+
+\endgroup
+
+x₁ enters, s₃ leaves.
+
+\textbf{Tableau 2 (optimal --- no negative entries in Z row)}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0706}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0423}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0423}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0423}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0615}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0615}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0663}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Basic}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{x₁}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{x₂}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{s₁}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{s₂}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{s₃}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{RHS}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+s₁ & 0 & 0 & 1 & 1/3 & −1/3 & 2 \\
+x₂ & 0 & 1 & 0 & 1/2 & 0 & 6 \\
+x₁ & 1 & 0 & 0 & −1/3 & 1/3 & 2 \\
+Z & 0 & 0 & 0 & 3/2 & 1 & \textbf{36} \\
+\end{longtable}
+
+\endgroup
+
+\textbf{Optimal: x₁ = 2, x₂ = 6, Z = 36.} Shadow prices (dual solution) are read from the Z row under the slacks: y₁ = 0, y₂ = 3/2, y₃ = 1 --- and 4(0) + 12(3/2) + 18(1) = 36 confirms strong duality.
+
+\needspace{135pt}
+
+\hypertarget{p2-01--82-transportation-problem--nwc--modi}{%
+\subsection{8.2 Transportation Problem --- NWC + MODI}\label{p2-01--82-transportation-problem--nwc--modi}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0768}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0426}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0426}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0426}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1227}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{D1}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{D2}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{D3}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Supply}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+S1 & 4 & 6 & 8 & 20 \\
+S2 & 5 & 8 & 7 & 30 \\
+S3 & 6 & 9 & 5 & 25 \\
+Demand & 10 & 25 & 40 & 75 (balanced) \\
+\end{longtable}
+
+\endgroup
+
+\textbf{North-West Corner}: S1D1 = 10, S1D2 = 10, S2D2 = 15, S2D3 = 15, S3D3 = 25 → 5 allocations = m + n − 1 ✓.
+Cost = 40 + 60 + 120 + 105 + 125 = \textbf{450}.
+
+\textbf{MODI test} (set u₁ = 0; for basic cells uᵢ + vⱼ = cᵢⱼ): v₁ = 4, v₂ = 6, u₂ = 2, v₃ = 5, u₃ = 0.
+Reduced cost of non-basic cell = cᵢⱼ − uᵢ − vⱼ: S1D3 = 3, \textbf{S2D1 = 5 − 2 − 4 = −1} (negative → improve), S3D1 = 2, S3D2 = 3.
+
+Closed loop for S2D1: S2D1(+) → S1D1(−) → S1D2(+) → S2D2(−); θ = min(10, 15) = 10.
+New allocation: S1D2 = 20, S2D1 = 10, S2D2 = 5, S2D3 = 15, S3D3 = 25 → cost = 120 + 50 + 40 + 105 + 125 = \textbf{440}.
+Recomputing u, v gives all reduced costs ≥ 0 → \textbf{optimal cost 440}.
+
+\needspace{135pt}
+
+\hypertarget{p2-01--83-assignment-problem--hungarian-method}{%
+\subsection{8.3 Assignment Problem --- Hungarian Method}\label{p2-01--83-assignment-problem--hungarian-method}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0300}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0413}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0413}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0413}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{J1}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{J2}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{J3}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+A & 9 & 2 & 7 \\
+B & 6 & 4 & 3 \\
+C & 5 & 8 & 1 \\
+\end{longtable}
+
+\endgroup
+
+\begin{asciiblock}{89pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Row reduction (subtract row minima 2, 3, 1)     Column reduction (col minima 3, 0, 0)
+   A  7  0  5                                       A  4  0  5
+   B  3  1  0                                       B  0  1  0
+   C  4  7  0                                       C  1  7  0
+Zeros can be covered by 3 lines = n ⇒ optimal: A→J2, B→J1, C→J3
+Minimum cost = 2 + 6 + 1 = 9
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{165pt}
+
+\hypertarget{p2-01--84-groups--cayley-tables}{%
+\subsection{8.4 Groups --- Cayley Tables}\label{p2-01--84-groups--cayley-tables}}
+
+\begin{asciiblock}{110pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+(Z₄, +₄)                        Klein four-group V₄ = {e, a, b, c}
+ +  │ 0 1 2 3                     ·  │ e a b c
+ ───┼────────                     ───┼────────
+ 0  │ 0 1 2 3                     e  │ e a b c
+ 1  │ 1 2 3 0                     a  │ a e c b
+ 2  │ 2 3 0 1                     b  │ b c e a
+ 3  │ 3 0 1 2                     c  │ c b a e
+ cyclic (generators 1, 3)        not cyclic; every element has order 2
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  Both have order 4 and are abelian, but are \textbf{not isomorphic} (Z₄ has an element of order 4; V₄ does not).
+\item
+  Subgroups of Z₄: \{0\}, \{0, 2\}, Z₄. Cosets of H = \{0, 2\}: H and \{1, 3\} → Z₄/H ≅ Z₂.
+\item
+  Every group of order 4 is isomorphic to Z₄ or V₄; every group of order 6 is Z₆ or S₃.
+\end{itemize}
+
+\needspace{157pt}
+
+\hypertarget{p2-01--85-solving-a-recurrence}{%
+\subsection{8.5 Solving a Recurrence}\label{p2-01--85-solving-a-recurrence}}
+
+aₙ = 5aₙ₋₁ − 6aₙ₋₂, a₀ = 1, a₁ = 0.
+
+\begin{asciiblock}{67pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Characteristic equation: r² − 5r + 6 = 0 → r = 2, 3
+General: aₙ = α·2ⁿ + β·3ⁿ
+a₀: α + β = 1 ;  a₁: 2α + 3β = 0  ⇒ β = −2, α = 3
+aₙ = 3·2ⁿ − 2·3ⁿ          check: a₂ = 12 − 18 = −6 = 5(0) − 6(1) ✔
+\end{Verbatim}
+\end{asciiblock}
+
+Non-homogeneous: aₙ = 2aₙ₋₁ + 1 (Hanoi) → particular solution constant c = 2c + 1 ⇒ c = −1; aₙ = A·2ⁿ − 1; a₁ = 1 ⇒ aₙ = 2ⁿ − 1.
+
+\textbf{Generating functions}: the sequence 1, 1, 1, \ldots{} ↔ 1/(1 − x); aₙ = C(n + k − 1, k − 1) ↔ 1/(1 − x)ᵏ. Used to count integer solutions and to solve recurrences.
+
+\needspace{144pt}
+
+\hypertarget{p2-01--86-graph-isomorphism--colouring-checks}{%
+\subsection{8.6 Graph Isomorphism \& Colouring Checks}\label{p2-01--86-graph-isomorphism--colouring-checks}}
+
+\begin{asciiblock}{89pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ G1: square a-b-c-d with diagonal a–c      G2: vertices p, q, r, s with edges
+     a ───── b                                 p–q, q–r, r–s, s–p, q–s
+     │ ╲     │
+     │   ╲   │                              Degrees: p 2, q 3, r 2, s 3
+     │     ╲ │
+     d ───── c                              Degrees: a 3, b 2, c 3, d 2
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  Both graphs have 4 vertices, 5 edges and degree sequence (3, 3, 2, 2) --- each is K₄ minus one edge.
+\item
+  Mapping a→q, c→s, b→p, d→r preserves every edge → \textbf{isomorphic}.
+\item
+  χ(G1) = 3, because the triangle a--b--c needs three colours.
+\end{itemize}
+
+Quick invariant checklist for isomorphism: number of vertices and edges, degree sequence, number of cycles of each length, connectivity, bipartiteness. Matching invariants are necessary, not sufficient --- finish by exhibiting a mapping.
+
+\needspace{135pt}
+
+\hypertarget{p2-01--previous-year-questions-pyq-pattern}{%
+\section{Previous Year Questions (PYQ pattern)}\label{p2-01--previous-year-questions-pyq-pattern}}
+
+\textbf{Logic}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Which is a tautology? (a) p→(p∨q) (b) (p∨q)→p (c) p∧¬p (d) p→¬p --- \textbf{Ans: (a)}
+\item
+  The contrapositive of "If it rains, the ground is wet" is: \textbf{"If the ground is not wet, it did not rain."}
+\item
+  ¬∀x (P(x) → Q(x)) is equivalent to: \textbf{∃x (P(x) ∧ ¬Q(x))}
+\item
+  "Every student has a computer": with S(x), C(x): \textbf{∀x (S(x) → C(x))}
+\item
+  Number of Boolean functions of 3 variables: 2⁸ = \textbf{256}
+\item
+  Which is functionally complete? (a) \{∧,∨\} (b) \{↑\} NAND (c) \{∨,↔\} (d) \{∧,→\}... --- \textbf{NAND}
+\item
+  From p→q and ¬q we infer ¬p --- this is: \textbf{Modus Tollens}
+\end{enumerate}
+
+\textbf{Sets, relations, functions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{7}
+\tightlist
+\item
+  Number of reflexive relations on a set of 4 elements: 2¹² = \textbf{4096}
+\item
+  Number of symmetric relations on 3 elements: 2⁶ = \textbf{64}
+\item
+  Number of equivalence relations on \{1,2,3,4\}: \textbf{15}
+\item
+  Number of onto functions from a 4-set to a 3-set: 3⁴ − 3·2⁴ + 3·1 = 81 − 48 + 3 = \textbf{36}
+\item
+  Relation "≤" on integers is: \textbf{partial order (in fact total)}
+\item
+  Which lattice is not distributive? \textbf{Pentagon N₅ / Diamond M₃}
+\item
+  D₃₀ (divisors of 30) is a Boolean algebra because 30 is: \textbf{square-free} (D₁₂ is not)
+\end{enumerate}
+
+\textbf{Counting}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{14}
+\tightlist
+\item
+  Minimum students so that at least 3 share birthday month: 2×12 + 1 = \textbf{25}
+\item
+  Number of derangements of 4 letters: \textbf{9}
+\item
+  Number of ways to arrange letters of "MISSISSIPPI": 11!/(4!4!2!) = \textbf{34650}
+\item
+  Number of non-negative integer solutions of x+y+z = 10: C(12,2) = \textbf{66}
+\item
+  Solution of aₙ = 6aₙ₋₁ − 9aₙ₋₂ has form: \textbf{(α + βn)3ⁿ}
+\item
+  Number of distinct BSTs with 3 keys: \textbf{5} (Catalan)
+\end{enumerate}
+
+\textbf{Probability}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{20}
+\tightlist
+\item
+  Two dice thrown; probability sum = 7: \textbf{1/6}
+\item
+  A box: 3 defective of 10. Probability of picking 2 non-defective without replacement: (7/10)(6/9) = \textbf{7/15}
+\item
+  Bayes problem: Machines A, B produce 60\%, 40\%; defect rates 2\%, 3\%. P(A \textbar{} defective) = 0.012/0.024 = \textbf{1/2}
+\end{enumerate}
+
+\textbf{Groups}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{23}
+\tightlist
+\item
+  Which is NOT a group? (a) (Z,+) (b) (Q−\{0\},×) (c) (Z,×) (d) (R,+) --- \textbf{Ans: (c)} (no inverses)
+\item
+  A group of order 7 is: \textbf{cyclic (prime order)}
+\item
+  Number of generators of cyclic group of order 12: φ(12) = \textbf{4}
+\item
+  Possible orders of subgroups of a group of order 15: \textbf{1, 3, 5, 15}
+\item
+  Zₙ is a field iff: \textbf{n is prime}
+\item
+  Every finite integral domain is a: \textbf{field}
+\end{enumerate}
+
+\textbf{Graphs}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{29}
+\tightlist
+\item
+  Sum of degrees of a graph with 15 edges: \textbf{30}
+\item
+  A connected planar graph has 10 vertices and 15 edges. Number of faces: 15 − 10 + 2 = \textbf{7}
+\item
+  Max edges in simple planar graph with 8 vertices: 3×8 − 6 = \textbf{18}
+\item
+  Which graph is non-planar? (a) K₄ (b) K₂,₃ (c) K₃,₃ (d) Q₃ --- \textbf{(c)}
+\item
+  Kₙ has Euler circuit iff: \textbf{n is odd}
+\item
+  Chromatic number of a cycle with 7 vertices: \textbf{3}
+\item
+  Number of spanning trees of K₄: 4² = \textbf{16}
+\item
+  Graph with degree sequence (3,3,3,1) --- possible? Sum = 10 even → yes; (3,3,3,3,1)? Sum = 13 odd → \textbf{No}
+\item
+  Chromatic number of bipartite graph: \textbf{2}
+\end{enumerate}
+
+\textbf{Optimization}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{38}
+\tightlist
+\item
+  In a transportation problem with 4 sources and 5 destinations, a non-degenerate BFS has: \textbf{8} allocations
+\item
+  The best initial basic feasible solution method: \textbf{Vogel\textquotesingle s approximation}
+\item
+  Assignment problems are solved by: \textbf{Hungarian method}
+\item
+  The dual of a primal with 3 variables and 5 constraints has: \textbf{5 variables, 3 constraints}
+\item
+  In PERT, a=2, m=5, b=14: tₑ = (2+20+14)/6 = \textbf{6}, σ² = (12/6)² = \textbf{4}
+\item
+  Activities on the critical path have total float: \textbf{zero}
+\item
+  Simplex leaving variable is chosen by: \textbf{minimum ratio test}
+\item
+  If the objective function is parallel to a binding constraint: \textbf{multiple optimal solutions}
+\end{enumerate}
+
+\textbf{More practice questions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{46}
+\tightlist
+\item
+  In simplex, if all entries in the pivot column are ≤ 0, the LPP has: \textbf{an unbounded solution}
+\item
+  If an artificial variable remains in the basis at a positive level in the optimal tableau: \textbf{the problem is infeasible}
+\item
+  Shadow price of a constraint equals the optimal value of the corresponding: \textbf{dual variable}
+\item
+  A transportation solution with fewer than m + n − 1 positive allocations is: \textbf{degenerate}
+\item
+  In MODI, a negative reduced cost (cᵢⱼ − uᵢ − vⱼ) for an unoccupied cell means: \textbf{the solution can be improved}
+\item
+  Unbalanced assignment problems are balanced by adding: \textbf{dummy rows or columns with zero cost}
+\item
+  Number of subgroups of Z₄: \textbf{3}
+\item
+  Klein four-group is: \textbf{abelian but not cyclic}
+\item
+  Solution of aₙ = 4aₙ₋₁ − 4aₙ₋₂ has the form: \textbf{(α + βn)2ⁿ}
+\item
+  Coefficient of x⁵ in 1/(1 − x)³: C(7, 2) = \textbf{21}
+\item
+  The number of edges in a graph with degree sequence (3, 3, 2, 2): \textbf{5}
+\item
+  Which statement is true? (a) every abelian group is cyclic (b) every cyclic group is abelian (c) every group of order 4 is cyclic (d) S₃ is abelian --- \textbf{Ans: (b)}
+\item
+  Order of element 2 in (Z₆, +₆): \textbf{3}
+\item
+  Number of perfect matchings in K₄: \textbf{3}
+\end{enumerate}
+
+\begin{revbox}
+
+\begin{itemize}
+\tightlist
+\item
+  p→q ≡ ¬p∨q ≡ ¬q→¬p · Relations on n: 2\^{}(n²)
+\item
+  V − E + F = 2 · E ≤ 3V − 6 · Cayley nⁿ⁻² · Odd-degree vertices even
+\item
+  Lagrange: \textbar H\textbar{} divides \textbar G\textbar{} · Zₙ field iff n prime · generators = φ(n)
+\item
+  Transport BFS = m + n − 1 · PERT tₑ = (a+4m+b)/6
+\end{itemize}
+
+\end{revbox}

@@ -38,12 +38,16 @@ flowchart LR
 | **Barnlund** | Transactional | Simultaneous sending & receiving |
 
 ```
-Schramm's model — overlap of experience = shared meaning
-   ┌──────────────┐
-   │ Sender's     │   ╳ overlap ╳   ┌──────────────┐
-   │ field of     │◄══════════════►│ Receiver's   │
-   │ experience   │                 │ field of exp │
-   └──────────────┘                 └──────────────┘
+ Schramm's model — meaning is shared only where fields of experience overlap
+
+      ┌────────────────────┐              ┌────────────────────┐
+      │ SENDER             │   message    │ RECEIVER           │
+      │ field of experience├─────────────►│ field of experience│
+      │ (encoder)          │◄─────────────┤ (decoder)          │
+      └────────────────────┘   feedback   └────────────────────┘
+                  ╲                              ╱
+                   ╲──── common experience ─────╱
+                        = shared meaning
 ```
 
 ## 3. Types of Communication
@@ -131,6 +135,76 @@ flowchart TB
 Indian landmarks: First newspaper — *Hicky's Bengal Gazette* (1780, James Augustus Hicky); Doordarshan (1959);
 All India Radio (1936, named; Akashvani 1957); Press Council of India (1966); Prasar Bharati (1997).
 
+## 7. Deeper Dive — Listening, Feedback, Networks & Classroom Talk
+
+### 7.1 Listening
+
+Hearing is physiological; **listening** is psychological (attending, understanding, remembering, responding).
+
+| Type of listening | Purpose |
+|-------------------|---------|
+| Active / empathetic | Understand the speaker's feelings; paraphrase, nod, ask clarifying questions |
+| Critical / evaluative | Judge the message, logic and evidence |
+| Informational / comprehensive | Learn and retain content (lectures) |
+| Appreciative | Enjoyment (music, poetry) |
+| Selective | Hearing only what one wants — a barrier |
+
+Stages (HURIER model, Brownell): **Hearing → Understanding → Remembering → Interpreting → Evaluating → Responding**.
+
+### 7.2 Feedback
+- **Positive** (reinforces), **negative / corrective** (points out errors), **descriptive** (specific, non-judgemental), **evaluative** (judgement).
+- Good feedback is specific, timely, focused on behaviour (not the person), and actionable.
+- **Johari window** (Joseph Luft & Harrington Ingham): self-awareness in communication.
+
+```
+                 Known to self        Not known to self
+              ┌───────────────────┬────────────────────┐
+ Known to     │  OPEN (arena)     │  BLIND spot        │
+ others       │                   │                    │
+              ├───────────────────┼────────────────────┤
+ Not known to │  HIDDEN (facade)  │  UNKNOWN           │
+ others       │                   │                    │
+              └───────────────────┴────────────────────┘
+ Feedback from others shrinks the blind area; self-disclosure shrinks the hidden area.
+```
+
+### 7.3 Communication Networks (small groups)
+
+```mermaid
+flowchart LR
+    subgraph Wheel[Wheel - most centralised, fastest]
+        C1((Leader)) --- W1((A)) & W2((B)) & W3((C)) & W4((D))
+    end
+    subgraph Chain[Chain - hierarchy]
+        X1((A)) --- X2((B)) --- X3((C)) --- X4((D))
+    end
+    subgraph All[All-channel - decentralised, highest satisfaction]
+        Y1((A)) --- Y2((B)) --- Y3((C)) --- Y1
+        Y1 --- Y4((D)) --- Y2
+        Y3 --- Y4
+    end
+```
+
+| Network | Speed (simple tasks) | Accuracy | Member satisfaction | Leader emergence |
+|---------|----------------------|----------|---------------------|------------------|
+| Wheel | High | High | Low (except centre) | High |
+| Chain | Moderate | High | Low | Moderate |
+| Circle | Slow | Low | High | None |
+| All-channel | Fast for complex tasks | Moderate | **Highest** | None |
+
+### 7.4 Effective Classroom Communication
+- Use **simple language**, examples from learners' lives, and checks for understanding.
+- Combine verbal with **non-verbal** cues (eye contact, gestures, movement).
+- **Two-way**: questions, discussions, feedback.
+- **Barriers** in class: noise, overcrowding, teacher's monotone, unclear objectives, learner's anxiety.
+- **Teacher immediacy**: behaviours that reduce psychological distance (smiling, using names) → better learning.
+
+### 7.5 Communication Ethics & Digital Communication
+- Accuracy, honesty, respect for privacy, avoidance of plagiarism and misinformation.
+- **Fake news / misinformation** (false but shared without intent to deceive) vs **disinformation** (deliberately false).
+- **Netiquette**: rules of good online behaviour; ALL CAPS = shouting.
+- **Digital divide**: unequal access to ICT.
+
 ---
 
 ## Previous Year Questions (PYQ pattern)
@@ -157,6 +231,19 @@ All India Radio (1936, named; Akashvani 1957); Press Council of India (1966); Pr
 20. The first newspaper in India: **Hicky's Bengal Gazette (1780)**
 21. Communication with oneself: **Intrapersonal**
 22. Statement: "Effective communication requires the sender and receiver to share a common field of experience." — **True (Schramm)**
+
+**More practice questions**
+
+23. The first stage of the listening process: **Hearing (receiving)**
+24. In the Johari window, information known to others but not to self is the: **blind area**
+25. Self-disclosure reduces the: **hidden area**
+26. The most centralised small-group network: **wheel**
+27. Network with highest member satisfaction: **all-channel**
+28. Feedback should be: **specific, timely and descriptive**
+29. Deliberately false information spread to deceive: **disinformation**
+30. Typing in ALL CAPS in online communication is considered: **shouting (poor netiquette)**
+31. Teacher behaviours that reduce psychological distance: **immediacy behaviours**
+32. Which is NOT a characteristic of effective classroom communication? (a) two-way (b) jargon-heavy (c) clear (d) learner-centred — **Ans: (b)**
 
 ## Quick Revision Box
 - Lasswell = 5 Ws · Shannon-Weaver = noise · Schramm = field of experience · Berlo = SMCR

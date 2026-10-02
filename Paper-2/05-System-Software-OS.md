@@ -423,6 +423,117 @@ Linux process states: Running, Interruptible sleep, Uninterruptible sleep, Stopp
 - Clock synchronisation: **Lamport logical clocks** (happened-before →), vector clocks, Cristian's, Berkeley algorithms.
 - Mutual exclusion: centralised, Ricart–Agrawala (2(n−1) messages), token ring. Election: **Bully**, Ring.
 
+## 14. Deeper Dive — More Scheduling, Semaphore Traces, Multilevel Paging & File Numericals
+
+### 14.1 Priority & HRRN Scheduling — Worked
+
+| Process | Arrival | Burst | Priority (lower = higher) |
+|---------|---------|-------|---------------------------|
+| P1 | 0 | 10 | 3 |
+| P2 | 0 | 1 | 1 |
+| P3 | 0 | 2 | 4 |
+| P4 | 0 | 1 | 5 |
+| P5 | 0 | 5 | 2 |
+
+**Non-preemptive priority**:
+```
+| P2 | P5    | P1         | P3 | P4 |
+0    1       6            16   18   19
+```
+Waiting times: P1 6, P2 0, P3 16, P4 18, P5 1 → average = 41/5 = **8.2**.
+
+**HRRN** (non-preemptive; response ratio RR = (W + S)/S), processes A(0, 3), B(2, 6), C(4, 4), D(6, 5), E(8, 2):
+```
+t = 0: only A → run A to 3
+t = 3: only B arrived → run B to 9
+t = 9: C: (5 + 4)/4 = 2.25   D: (3 + 5)/5 = 1.6   E: (1 + 2)/2 = 1.5   → run C to 13
+t = 13: D: (7 + 5)/5 = 2.4   E: (5 + 2)/2 = 3.5                        → run E to 15
+t = 15: run D to 20
+Order: A B C E D
+```
+
+### 14.2 Semaphore Tracing
+
+```c
+semaphore S = 1, T = 0;
+P1: wait(S); print("A"); signal(T);
+P2: wait(T); print("B"); signal(S);
+```
+Whatever the scheduling, P2 blocks on T until P1 signals → output **"AB"** (and the pair can repeat as A B A B … if looped). This is the standard **ordering** use of semaphores (initialise to 0 to force "happens-after").
+
+**Deadlock with wrong order**:
+```
+P0: wait(S); wait(Q); …        P1: wait(Q); wait(S); …     (S = Q = 1)
+P0 gets S, P1 gets Q, each waits for the other → deadlock
+```
+
+### 14.3 Multilevel Paging Numericals
+
+48-bit virtual address, 4 KB pages, 8-byte PTEs.
+```
+Offset = 12 bits → page-number bits = 36
+Entries per page-table page = 4096 / 8 = 512 = 2⁹ → each level indexes 9 bits
+Levels needed = ⌈36 / 9⌉ = 4  (this is x86-64 4-level paging: 9 | 9 | 9 | 9 | 12)
+Memory accesses per reference without TLB = 4 (tables) + 1 (data) = 5
+```
+
+**Effective access time with TLB and 2-level paging**: TLB 10 ns, memory 100 ns, hit ratio 90%:
+EAT = 0.9 × (10 + 100) + 0.1 × (10 + 3 × 100) = 99 + 31 = **130 ns**.
+
+### 14.4 Segmentation — Address Translation
+
+| Segment | Base | Limit |
+|---------|------|-------|
+| 0 | 219 | 600 |
+| 1 | 2300 | 14 |
+| 2 | 90 | 100 |
+| 3 | 1327 | 580 |
+
+- (0, 430) → 430 < 600 → physical **649**
+- (1, 10) → **2310**
+- (2, 500) → 500 ≥ 100 → **segmentation fault (trap)**
+- (3, 400) → **1727**
+
+### 14.5 Page Replacement with 4 Frames (Belady check)
+
+Reference: 1 2 3 4 1 2 5 1 2 3 4 5
+- FIFO, 3 frames → **9** faults; 4 frames → **10** faults (anomaly).
+- LRU, 4 frames → **8** faults; Optimal, 4 frames → **6** faults.
+
+### 14.6 File-System Numericals
+
+**Max file size with UNIX inode**: block 1 KB, pointer 4 B → 256 pointers/block; 10 direct, 1 single, 1 double, 1 triple:
+```
+(10 + 256 + 256² + 256³) × 1 KB = (10 + 256 + 65,536 + 16,777,216) KB ≈ 16 GB
+```
+**FAT size**: 4 GB disk, 4 KB clusters, 32-bit entries → 2²⁰ clusters × 4 B = **4 MB** FAT.
+
+**Disk access**: 7200 RPM, average seek 8 ms, transfer rate 100 MB/s, read 4 KB block:
+seek 8 + latency 4.17 + transfer 0.04 ≈ **12.2 ms**.
+
+### 14.7 Buddy System — Worked
+
+1 MB block; requests A = 70 KB, B = 35 KB, C = 80 KB.
+```
+1024 → 512 + 512 → 256 + 256 → 128 + 128          A gets 128 KB (wastes 58 KB internal)
+B (35 KB): split a 128 → 64 + 64                   B gets 64 KB
+C (80 KB): needs 128 → split the second 256 → 128 + 128, C gets 128 KB
+Release: buddies of equal size and adjacent addresses coalesce back
+```
+
+### 14.8 Process Synchronisation Hardware
+
+```c
+// Test-and-Set lock
+bool lock = false;
+do {
+    while (test_and_set(&lock));   // atomically: old = lock; lock = true; return old
+    /* critical section */
+    lock = false;
+} while (true);
+```
+Gives mutual exclusion and progress, but **not bounded waiting** (a process can be overtaken indefinitely); the bounded-waiting version uses a `waiting[]` array.
+
 ---
 
 ## Previous Year Questions (PYQ pattern)
@@ -435,6 +546,7 @@ Linux process states: Running, Interruptible sleep, Uninterruptible sleep, Stopp
 5. Macro expansion is done by: **macro processor / preprocessor** (before assembly/compilation)
 
 **Processes & threads**
+
 6. Number of child processes created by `for(i=0;i<n;i++) fork();`: **2ⁿ − 1**
 7. Which is NOT shared by threads of a process? **Stack (and registers)**
 8. Degree of multiprogramming is controlled by: **long-term scheduler**
@@ -442,6 +554,7 @@ Linux process states: Running, Interruptible sleep, Uninterruptible sleep, Stopp
 10. Which multithreading model blocks the whole process on a blocking system call? **Many-to-one**
 
 **Synchronisation**
+
 11. Critical section solution requirements: **mutual exclusion, progress, bounded waiting**
 12. Semaphore S = 7; 20 P and 15 V operations performed: final = 7 − 20 + 15 = **2**
 13. Producer-consumer with bounded buffer of size n: initial values mutex = 1, empty = **n**, full = **0**
@@ -449,6 +562,7 @@ Linux process states: Running, Interruptible sleep, Uninterruptible sleep, Stopp
 15. Peterson's solution is for: **two processes**
 
 **Scheduling**
+
 16. Algorithm with minimum average waiting time: **SJF / SRTF**
 17. Round robin with very large quantum becomes: **FCFS**
 18. Starvation in priority scheduling is solved by: **aging**
@@ -457,6 +571,7 @@ Linux process states: Running, Interruptible sleep, Uninterruptible sleep, Stopp
 21. Rate-monotonic schedulability bound for 2 tasks: 2(√2 − 1) ≈ **0.828**
 
 **Deadlock**
+
 22. Necessary conditions for deadlock: **mutual exclusion, hold & wait, no preemption, circular wait**
 23. Banker's algorithm is for deadlock: **avoidance**
 24. Ordering resources numerically prevents: **circular wait**
@@ -464,6 +579,7 @@ Linux process states: Running, Interruptible sleep, Uninterruptible sleep, Stopp
 26. Cycle in RAG with single-instance resources implies: **deadlock**
 
 **Memory**
+
 27. Belady's anomaly occurs in: **FIFO**
 28. Page size 4 KB, logical address 32 bits → number of pages: **2²⁰**
 29. TLB 20 ns, memory 100 ns, hit 80%: EAT = 0.8×120 + 0.2×220 = **140 ns**
@@ -475,6 +591,7 @@ Linux process states: Running, Interruptible sleep, Uninterruptible sleep, Stopp
 35. Working set model is used to prevent: **thrashing**
 
 **Disk / file**
+
 36. Disk scheduling that may cause starvation: **SSTF**
 37. Elevator algorithm: **SCAN**
 38. RAID level with distributed parity: **RAID 5**
@@ -484,6 +601,7 @@ Linux process states: Running, Interruptible sleep, Uninterruptible sleep, Stopp
 42. Bit vector for 1 TB disk with 4 KB blocks: 2²⁸ bits = **32 MB**
 
 **Security / VM / distributed**
+
 43. Access control lists correspond to: **columns of the access matrix**
 44. Capability list corresponds to: **rows (domains)**
 45. A program that appears useful but performs malicious actions: **Trojan horse**
@@ -491,6 +609,20 @@ Linux process states: Running, Interruptible sleep, Uninterruptible sleep, Stopp
 47. Lamport clocks capture: **happened-before ordering (logical time)**
 48. Linux kernel is: **monolithic with loadable modules**
 49. Windows file system with MFT: **NTFS**
+
+**More practice questions**
+
+50. HRRN favours: **short jobs, while preventing starvation of long jobs (waiting time raises the ratio)**
+51. Response ratio of a process with waiting time 9 and burst 3: **4**
+52. Semaphore initialised to 0 is used for: **ordering / signalling between processes**
+53. 32-bit virtual address, 4 KB pages, 4-byte PTEs, single-level: page table size = **4 MB**
+54. Levels of paging for 48-bit VA, 4 KB pages, 8 B PTEs (page-sized tables): **4**
+55. Segment (2, 500) with limit 100: **trap / segmentation fault**
+56. LRU with 4 frames on 1 2 3 4 1 2 5 1 2 3 4 5: **8** faults
+57. Optimal with 4 frames on the same string: **6** faults
+58. Buddy system allocation for a 70 KB request: **128 KB** block
+59. Test-and-set spin lock fails to guarantee: **bounded waiting**
+60. Average rotational latency at 15,000 RPM: **2 ms**
 
 ## Quick Revision Box
 - n forks → 2ⁿ processes · Threads share code/data/files, not stack/registers

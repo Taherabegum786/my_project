@@ -1,0 +1,1316 @@
+\unitchapter{Paper 2 · Unit 5}{System Software \& Operating Systems}{p2-05}
+
+\textbf{Expected questions: 10--12 · Target: 10+ · Type: scheduling/paging/disk numericals + Galvin concepts --- highly scoring}
+
+\begin{sylbox}
+
+\begin{itemize}
+\tightlist
+\item[$\square$]
+  System software: assembly language, assemblers, compilers vs interpreters, loading, linking, relocation, macros, debuggers
+\item[$\square$]
+  OS basics: structure, services, system calls, boot
+\item[$\square$]
+  Process management: process states, PCB, IPC, synchronisation, critical section, Peterson, semaphores, classical problems
+\item[$\square$]
+  Threads: multithreading models, libraries, issues
+\item[$\square$]
+  CPU scheduling: criteria, FCFS, SJF, SRTF, priority, RR, multilevel queues, multiprocessor \& real-time scheduling
+\item[$\square$]
+  Deadlocks: conditions, RAG, prevention, avoidance (Banker\textquotesingle s), detection, recovery
+\item[$\square$]
+  Memory management: contiguous allocation, paging, segmentation, TLB, demand paging, page replacement, thrashing
+\item[$\square$]
+  Storage: disk structure, disk scheduling, RAID
+\item[$\square$]
+  File systems \& I/O: access methods, directories, allocation methods, free-space management, I/O subsystem
+\item[$\square$]
+  Security \& protection: access matrix, threats, authentication
+\item[$\square$]
+  Virtual machines; Linux \& Windows internals; distributed systems
+\end{itemize}
+
+\end{sylbox}
+
+\needdiagram{figures/p2-05-00}{55pt}
+
+\hypertarget{p2-05--1-system-software}{%
+\section{1. System Software}\label{p2-05--1-system-software}}
+
+\diagramhere{figures/p2-05-00}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1259}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.8741}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Tool}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Job}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Assembler & Assembly → machine code. \textbf{Two-pass}: pass 1 builds symbol table (location counter), pass 2 generates code. One-pass needs \textbf{back-patching} for forward references \\
+Compiler & Whole program → target code at once; faster execution \\
+Interpreter & Statement by statement; slower, easier debugging \\
+Linker & Resolves external references, combines object modules \\
+Loader & Places program in memory; functions: \textbf{Allocation, Linking, Relocation, Loading} \\
+Macro processor & Expands macros (text substitution, no call overhead); macro vs subroutine \\
+Debugger & Breakpoints, single-step, watch variables \\
+\end{longtable}
+
+\endgroup
+
+\begin{itemize}
+\tightlist
+\item
+  Loaders: \textbf{compile-and-go}, \textbf{absolute} (programmer does relocation), \textbf{relocating} (BSS loader), \textbf{direct-linking} loader, \textbf{dynamic loading} (load routine when called), \textbf{dynamic linking} (link at run time --- DLL, \texttt{.so}).
+\item
+  \textbf{Relocation}: adjusting address-sensitive instructions when program is loaded at a different address; relocation bits/table.
+\item
+  Assembler data structures: \textbf{Symbol table (ST)}, \textbf{Literal table (LT)}, \textbf{Opcode table (MOT/OPTAB)}, \textbf{Pseudo-op table (POT)}, Pool table.
+\item
+  Assembler directives (pseudo-ops): START, END, ORIGIN, EQU, LTORG, DC, DS.
+\end{itemize}
+
+\needdiagram{figures/p2-05-01}{55pt}
+
+\hypertarget{p2-05--2-os-basics}{%
+\section{2. OS Basics}\label{p2-05--2-os-basics}}
+
+\diagramhere{figures/p2-05-01}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1608}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5962}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Structure}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Example}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Simple / monolithic & MS-DOS, early UNIX, Linux (monolithic + loadable modules) \\
+Layered & THE OS (Dijkstra) \\
+\textbf{Microkernel} & Mach, QNX, Minix --- minimal kernel, services in user space via message passing \\
+Modular & Solaris, Linux LKMs \\
+Hybrid & Windows NT, macOS (XNU) \\
+Exokernel & Research --- exposes hardware \\
+\end{longtable}
+
+\endgroup
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Dual mode}: user mode / kernel mode (mode bit). System call → trap → kernel mode.
+\item
+  System call categories: process control (\texttt{fork}, \texttt{exec}, \texttt{exit}, \texttt{wait}), file management (\texttt{open}, \texttt{read}), device management (\texttt{ioctl}), information maintenance (\texttt{getpid}), communication (\texttt{pipe}, \texttt{shmget}), protection (\texttt{chmod}).
+\item
+  Parameter passing to system calls: registers, block/table in memory, stack.
+\item
+  Boot: power on → BIOS/UEFI firmware (POST) → bootstrap loader (MBR / GRUB) → kernel loaded → init/systemd.
+\item
+  OS types: batch, multiprogramming (maximise CPU utilisation), time-sharing (multitasking, response time), real-time (hard/soft), distributed, network, embedded.
+\end{itemize}
+
+\textbf{\texttt{fork()} puzzle}: \texttt{n} consecutive \texttt{fork()} calls create \textbf{2ⁿ − 1} child processes (2ⁿ total).
+
+\begin{asciiblock}{46pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+fork(); fork(); fork();   // 8 processes total, 7 children
+if (fork() && fork()) fork();   // count carefully: 4 processes total (parent + 3 children)
+\end{Verbatim}
+\end{asciiblock}
+
+\needdiagram{figures/p2-05-02}{95pt}
+
+\hypertarget{p2-05--3-process-management}{%
+\section{3. Process Management}\label{p2-05--3-process-management}}
+
+\needspace{100pt}
+
+\hypertarget{p2-05--31-process-states}{%
+\subsection{3.1 Process States}\label{p2-05--31-process-states}}
+
+\diagramhere{figures/p2-05-02}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{PCB} (Process Control Block): PID, state, PC, registers, scheduling info, memory info (page tables), accounting, I/O status.
+\item
+  Schedulers: \textbf{long-term} (job; controls degree of multiprogramming), \textbf{short-term} (CPU; very frequent), \textbf{medium-term} (swapping).
+\item
+  \textbf{Context switch} time is pure overhead. \textbf{Dispatcher latency}.
+\item
+  \textbf{Zombie}: terminated but parent hasn\textquotesingle t called \texttt{wait()}. \textbf{Orphan}: parent terminated (adopted by init).
+\end{itemize}
+
+\needspace{100pt}
+
+\hypertarget{p2-05--32-ipc}{%
+\subsection{3.2 IPC}\label{p2-05--32-ipc}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Shared memory} (fast, needs synchronisation) vs \textbf{message passing} (send/receive; direct/indirect via mailboxes; blocking = synchronous, non-blocking = asynchronous).
+\item
+  Pipes (ordinary -- parent-child, unidirectional; named pipes/FIFOs), sockets (IP + port), RPC (stubs, marshalling), signals.
+\end{itemize}
+
+\needspace{246pt}
+
+\hypertarget{p2-05--33-critical-section-problem}{%
+\subsection{3.3 Critical Section Problem}\label{p2-05--33-critical-section-problem}}
+
+Requirements: \textbf{Mutual exclusion}, \textbf{Progress}, \textbf{Bounded waiting}.
+
+\textbf{Peterson\textquotesingle s solution (2 processes)}:
+
+\begin{asciiblock}{121pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+// shared: bool flag[2]; int turn;
+do {
+    flag[i] = true;
+    turn = j;                       // politely give turn to other
+    while (flag[j] && turn == j);   // busy wait
+    /* critical section */
+    flag[i] = false;
+    /* remainder section */
+} while (true);
+\end{Verbatim}
+\end{asciiblock}
+
+Satisfies all three requirements (on sequentially consistent memory).
+
+Hardware: \textbf{TestAndSet}, \textbf{CompareAndSwap} (atomic). Simple TAS lock gives ME + progress but not bounded waiting.
+
+\needspace{101pt}
+
+\hypertarget{p2-05--34-semaphores}{%
+\subsection{3.4 Semaphores}\label{p2-05--34-semaphores}}
+
+\begin{asciiblock}{46pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+wait(S)   { while (S <= 0); S--; }      // P(), down()
+signal(S) { S++; }                      // V(), up()
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Binary semaphore} (mutex, 0/1) vs \textbf{counting semaphore}.
+\item
+  Blocking implementation uses a waiting queue --- negative value = number of waiting processes.
+\item
+  Counting semaphore initial value 10, then 6 P and 4 V → 10 − 6 + 4 = \textbf{8}.
+\item
+  Misuse → deadlock (wrong order of waits) or starvation. \textbf{Priority inversion} → solved by priority inheritance.
+\item
+  \textbf{Monitors}: high-level construct; condition variables with \texttt{wait()}/\texttt{signal()}.
+\item
+  \textbf{Spinlock} = busy-waiting lock (good for short waits on multiprocessors).
+\end{itemize}
+
+\needspace{135pt}
+
+\hypertarget{p2-05--classical-problems}{%
+\subsection{Classical problems}\label{p2-05--classical-problems}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2731}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.7269}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Problem}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Semaphores}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Bounded buffer (producer--consumer) & \texttt{mutex\ =\ 1}, \texttt{empty\ =\ n}, \texttt{full\ =\ 0} \\
+Readers--writers & \texttt{rw\_mutex\ =\ 1}, \texttt{mutex\ =\ 1}, \texttt{read\_count\ =\ 0} (first readers--writers: writers may starve) \\
+Dining philosophers (5) & \texttt{chopstick{[}5{]}\ =\ 1}; deadlock if all pick left --- fixes: at most 4 at table, asymmetric pick, pick both atomically \\
+Sleeping barber & customers, barbers, mutex \\
+\end{longtable}
+
+\endgroup
+
+\begin{asciiblock}{99pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Producer:                       Consumer:
+  wait(empty);                    wait(full);
+  wait(mutex);                    wait(mutex);
+  add item                        remove item
+  signal(mutex);                  signal(mutex);
+  signal(full);                   signal(empty);
+(swapping the two waits in producer can cause DEADLOCK)
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{100pt}
+
+\hypertarget{p2-05--4-threads}{%
+\section{4. Threads}\label{p2-05--4-threads}}
+
+\begin{itemize}
+\tightlist
+\item
+  Thread = lightweight process: own \textbf{PC, registers, stack}; shares code, data, files with peers.
+\item
+  \textbf{User-level threads} (fast, kernel unaware; one blocks → all block in many-to-one) vs \textbf{kernel-level threads}.
+\item
+  Models: \textbf{Many-to-one} (Green threads), \textbf{One-to-one} (Linux, Windows), \textbf{Many-to-many}, two-level.
+\item
+  Libraries: POSIX Pthreads, Windows threads, Java threads. Implicit threading: thread pools, OpenMP, GCD, fork-join.
+\item
+  Issues: \texttt{fork()}/\texttt{exec()} semantics, signal handling, thread cancellation (asynchronous vs deferred), thread-local storage, scheduler activations (LWP, upcalls).
+\item
+  \textbf{Amdahl\textquotesingle s law} for multicore: speedup ≤ 1 / (S + (1−S)/N).
+\end{itemize}
+
+\needspace{122pt}
+
+\hypertarget{p2-05--5-cpu-scheduling}{%
+\section{5. CPU Scheduling}\label{p2-05--5-cpu-scheduling}}
+
+\begin{asciiblock}{67pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Turnaround time (TAT) = Completion − Arrival
+Waiting time (WT)     = TAT − Burst
+Response time         = First run − Arrival
+Throughput            = #processes / total time
+\end{Verbatim}
+\end{asciiblock}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2005}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1879}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5689}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Algorithm}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Preemptive?}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Notes}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+FCFS & No & Convoy effect \\
+SJF & No & Optimal average waiting time (non-preemptive) \\
+\textbf{SRTF} & Yes (preemptive SJF) & \textbf{Optimal} average WT overall; starvation \\
+Priority & Both & Starvation → \textbf{aging} \\
+\textbf{Round Robin} & Yes & Time quantum q; large q → FCFS; small q → high context switch overhead \\
+Multilevel queue & --- & Fixed queues (foreground RR, background FCFS) \\
+Multilevel feedback queue & Yes & Processes move between queues; most general \\
+HRRN & No & Response ratio = (W + S)/S; favours short jobs, avoids starvation \\
+\end{longtable}
+
+\endgroup
+
+\needspace{135pt}
+
+\hypertarget{p2-05--worked-example}{%
+\subsection{Worked Example}\label{p2-05--worked-example}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0798}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0749}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0608}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Process}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Arrival}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Burst}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+P1 & 0 & 8 \\
+P2 & 1 & 4 \\
+P3 & 2 & 9 \\
+P4 & 3 & 5 \\
+\end{longtable}
+
+\endgroup
+
+\textbf{SRTF Gantt chart}:
+
+\begin{asciiblock}{46pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+| P1 | P2      | P4        | P1             | P3                  |
+0    1         5           10               17                    26
+\end{Verbatim}
+\end{asciiblock}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0385}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0452}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0604}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0452}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{P}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{CT}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{TAT}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{WT}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+P1 & 17 & 17 & 9 \\
+P2 & 5 & 4 & 0 \\
+P3 & 26 & 24 & 15 \\
+P4 & 10 & 7 & 2 \\
+\end{longtable}
+
+\endgroup
+
+Average WT = 26/4 = \textbf{6.5}.
+
+\textbf{Round Robin (q = 4)} on same data:
+
+\begin{asciiblock}{46pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+| P1 | P2 | P3 | P4 | P1 | P3 | P4 | P3 |
+0    4    8    12   16   20   24   25   26
+\end{Verbatim}
+\end{asciiblock}
+
+CT: P1 = 20, P2 = 8, P3 = 26, P4 = 25 → WT: P1 = 12, P2 = 3, P3 = 15, P4 = 17 → average = \textbf{11.75}.
+
+\needspace{100pt}
+
+\hypertarget{p2-05--multiprocessor--real-time}{%
+\subsection{Multiprocessor \& Real-time}\label{p2-05--multiprocessor--real-time}}
+
+\begin{itemize}
+\tightlist
+\item
+  Asymmetric vs \textbf{symmetric multiprocessing (SMP)}; processor affinity (soft/hard); load balancing (push/pull migration).
+\item
+  \textbf{Rate Monotonic} (static priority: shorter period → higher priority); schedulable if U ≤ n(2\^{}(1/n) − 1) (≈ 0.69 for large n).
+\item
+  \textbf{EDF} (Earliest Deadline First, dynamic): schedulable iff U ≤ 1.
+\item
+  Linux: \textbf{CFS} (Completely Fair Scheduler, red-black tree keyed by virtual runtime). Windows: 32-level priority-based preemptive.
+\end{itemize}
+
+\needspace{240pt}
+
+\hypertarget{p2-05--6-deadlocks}{%
+\section{6. Deadlocks}\label{p2-05--6-deadlocks}}
+
+\needspace{200pt}
+
+\hypertarget{p2-05--four-necessary-conditions-coffman}{%
+\subsection{Four Necessary Conditions (Coffman)}\label{p2-05--four-necessary-conditions-coffman}}
+
+\textbf{Mutual exclusion · Hold and wait · No preemption · Circular wait} --- all four must hold.
+
+\begin{asciiblock}{110pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Resource Allocation Graph
+  P1 ──request──► [R1 •]──assigned──► P2
+   ▲                                    │
+   │                                    ▼
+  [R2 •]◄─────────request───────────────┘
+  (assigned to P1)
+  Cycle with single-instance resources ⇒ DEADLOCK
+  Cycle with multi-instance resources ⇒ deadlock POSSIBLE
+\end{Verbatim}
+\end{asciiblock}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1585}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.8415}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Strategy}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{How}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Prevention & Break one condition: e.g. request all at once (hold \& wait), allow preemption, \textbf{impose total order on resources} (circular wait) \\
+Avoidance & \textbf{Banker\textquotesingle s algorithm} --- grant only if state remains safe \\
+Detection \& recovery & Wait-for graph (single instance), detection algorithm; recover by killing processes / preemption \\
+Ignorance & Ostrich algorithm (UNIX, Windows) \\
+\end{longtable}
+
+\endgroup
+
+\needspace{170pt}
+
+\hypertarget{p2-05--bankers-algorithm--worked}{%
+\subsection{Banker\textquotesingle s Algorithm --- Worked}\label{p2-05--bankers-algorithm--worked}}
+
+5 processes, resources A(10), B(5), C(7).
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0385}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1858}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0560}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1858}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{P}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Allocation (A B C)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Max}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Need = Max − Alloc}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+P0 & 0 1 0 & 7 5 3 & 7 4 3 \\
+P1 & 2 0 0 & 3 2 2 & 1 2 2 \\
+P2 & 3 0 2 & 9 0 2 & 6 0 0 \\
+P3 & 2 1 1 & 2 2 2 & 0 1 1 \\
+P4 & 0 0 2 & 4 3 3 & 4 3 1 \\
+\end{longtable}
+
+\endgroup
+
+Available = (10,5,7) − (7,2,5) = \textbf{(3,3,2)}.
+
+\begin{asciiblock}{89pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Work=(3,3,2): P1 need(1,2,2) ✓ → Work=(5,3,2)
+              P3 need(0,1,1) ✓ → Work=(7,4,3)
+              P4 need(4,3,1) ✓ → Work=(7,4,5)
+              P0 need(7,4,3) ✓ → Work=(7,5,5)
+              P2 need(6,0,0) ✓ → Work=(10,5,7)
+Safe sequence: <P1, P3, P4, P0, P2>
+\end{Verbatim}
+\end{asciiblock}
+
+\textbf{Deadlock-free condition formula}: n processes each needing max k instances of a resource with R instances total → deadlock-free if \textbf{R ≥ n(k − 1) + 1}.
+e.g. 3 processes each need 3 units → minimum R = 3×2 + 1 = \textbf{7}.
+
+\needspace{140pt}
+
+\hypertarget{p2-05--7-memory-management}{%
+\section{7. Memory Management}\label{p2-05--7-memory-management}}
+
+\needspace{100pt}
+
+\hypertarget{p2-05--71-contiguous-allocation}{%
+\subsection{7.1 Contiguous Allocation}\label{p2-05--71-contiguous-allocation}}
+
+\begin{itemize}
+\tightlist
+\item
+  Fixed partitions → \textbf{internal fragmentation}. Variable partitions → \textbf{external fragmentation} (fix with compaction).
+\item
+  Placement: \textbf{First fit}, \textbf{Best fit} (smallest adequate hole), \textbf{Worst fit} (largest), Next fit.
+\item
+  \textbf{50-percent rule}: with first fit, N allocated blocks → 0.5N blocks lost to fragmentation.
+\end{itemize}
+
+\needdiagram{figures/p2-05-03}{55pt}
+
+\hypertarget{p2-05--72-paging}{%
+\subsection{7.2 Paging}\label{p2-05--72-paging}}
+
+\diagramhere{figures/p2-05-03}
+
+\begin{asciiblock}{78pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Logical address bits = log₂(virtual space);  offset bits d = log₂(page size)
+#pages = 2^(LA bits − d) ;  #frames = physical size / page size
+Page table size = #pages × PTE size
+EAT with TLB (hit ratio h, TLB t, memory m):
+    EAT = h(t + m) + (1 − h)(t + 2m)
+\end{Verbatim}
+\end{asciiblock}
+
+\textbf{Worked}: 32-bit logical address, 4 KB pages, 4-byte PTE.
+
+\begin{itemize}
+\tightlist
+\item
+  Offset = 12 bits; pages = 2²⁰; page table = 2²⁰ × 4 B = \textbf{4 MB} per process (hence multilevel paging).
+\item
+  Two-level (10 \textbar{} 10 \textbar{} 12): outer table 1024 entries × 4 B = 4 KB = one page.
+\item
+  Inverted page table: one entry per \textbf{frame} (size ∝ physical memory), searched by hashing.
+\end{itemize}
+
+\needspace{100pt}
+
+\hypertarget{p2-05--73-segmentation}{%
+\subsection{7.3 Segmentation}\label{p2-05--73-segmentation}}
+
+\begin{itemize}
+\tightlist
+\item
+  Logical address = (segment number, offset); segment table has \textbf{base \& limit}; offset ≥ limit → trap.
+\item
+  No internal fragmentation, but external fragmentation. Segmentation with paging (Intel x86).
+\end{itemize}
+
+\needspace{101pt}
+
+\hypertarget{p2-05--74-virtual-memory--demand-paging}{%
+\subsection{7.4 Virtual Memory \& Demand Paging}\label{p2-05--74-virtual-memory--demand-paging}}
+
+\begin{asciiblock}{46pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+EAT with page faults = (1 − p) × ma + p × page-fault service time
+e.g. ma = 200 ns, service = 8 ms, p = 0.001 → EAT ≈ 200 + 0.001 × 8,000,000 = 8.2 µs
+\end{Verbatim}
+\end{asciiblock}
+
+Page fault steps: trap → check valid → find free frame → schedule disk read → update table → restart instruction.
+
+\needspace{214pt}
+
+\hypertarget{p2-05--75-page-replacement--worked}{%
+\subsection{7.5 Page Replacement --- Worked}\label{p2-05--75-page-replacement--worked}}
+
+Reference string: \textbf{7 0 1 2 0 3 0 4 2 3 0 3 2}, 3 frames.
+
+\textbf{FIFO}
+
+\begin{asciiblock}{89pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Ref:  7  0  1  2  0  3  0  4  2  3  0  3  2
+F1    7  7  7  2  2  2  2  4  4  4  0  0  0
+F2       0  0  0  0  3  3  3  2  2  2  2  2
+F3          1  1  1  1  0  0  0  3  3  3  3
+Fault ✱  ✱  ✱  ✱     ✱  ✱  ✱  ✱  ✱  ✱
+→ 10 faults
+\end{Verbatim}
+\end{asciiblock}
+
+\textbf{Optimal (replace page used farthest in future)} → \textbf{7 faults}.
+\textbf{LRU (replace least recently used)} → \textbf{9 faults}.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Belady\textquotesingle s anomaly}: more frames → more faults; occurs in \textbf{FIFO}, not in stack algorithms (LRU, Optimal).
+  Classic string: 1 2 3 4 1 2 5 1 2 3 4 5 → FIFO 3 frames: 9 faults, 4 frames: 10 faults.
+\item
+  Other algorithms: Second chance (clock), LFU, MFU, NRU (reference \& modify bits).
+\item
+  \textbf{Thrashing}: process spends more time paging than executing --- when Σ working sets \textgreater{} available frames; fix with \textbf{working-set model} or \textbf{page-fault frequency} control, reduce degree of multiprogramming.
+\item
+  Frame allocation: equal, proportional; global vs local replacement.
+\item
+  \textbf{Copy-on-write} for \texttt{fork()}. \textbf{Memory-mapped files}.
+\end{itemize}
+
+\needspace{210pt}
+
+\hypertarget{p2-05--8-disk--storage}{%
+\section{8. Disk \& Storage}\label{p2-05--8-disk--storage}}
+
+\needspace{170pt}
+
+\hypertarget{p2-05--81-disk-scheduling--worked}{%
+\subsection{8.1 Disk Scheduling --- Worked}\label{p2-05--81-disk-scheduling--worked}}
+
+Queue: \textbf{98, 183, 37, 122, 14, 124, 65, 67}; head at \textbf{53}; cylinders 0--199.
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2005}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3417}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3451}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Algorithm}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Order}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Total head movement}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+FCFS & 53→\allowbreak{}98→\allowbreak{}183→\allowbreak{}37→\allowbreak{}122→\allowbreak{}14→\allowbreak{}124→\allowbreak{}65→\allowbreak{}67 & \textbf{640} \\
+SSTF & 53→\allowbreak{}65→\allowbreak{}67→\allowbreak{}37→\allowbreak{}14→\allowbreak{}98→\allowbreak{}122→\allowbreak{}124→\allowbreak{}183 & \textbf{236} \\
+SCAN (towards 0) & 53→\allowbreak{}37→\allowbreak{}14→\allowbreak{}0→\allowbreak{}65→\allowbreak{}67→\allowbreak{}98→\allowbreak{}122→\allowbreak{}124→\allowbreak{}183 & \textbf{236} \\
+C-SCAN (towards 199) & 53→\allowbreak{}65→\allowbreak{}\ldots→\allowbreak{}183→\allowbreak{}199→\allowbreak{}0→\allowbreak{}14→\allowbreak{}37 & 146 + 199 + 37 = \textbf{382} (counting return jump) \\
+LOOK (towards 0) & 53→\allowbreak{}37→\allowbreak{}14→\allowbreak{}65→\allowbreak{}\ldots→\allowbreak{}183 & 39 + 169 = \textbf{208} \\
+C-LOOK (up) & 53→\allowbreak{}65→\allowbreak{}67→\allowbreak{}98→\allowbreak{}122→\allowbreak{}124→\allowbreak{}183→\allowbreak{}14→\allowbreak{}37 & 130 + 169 + 23 = \textbf{322} \\
+\end{longtable}
+
+\endgroup
+
+\begin{asciiblock}{89pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+SSTF head path (cylinder axis →)
+0    14    37    53 65 67    98    122 124        183   199
+                 ●──►──►                                    53→65→67
+           ◄─────────────┘                                 67→37
+      ◄────┘                                               37→14
+      └──────────────────────►──────►──►──────────►         14→98→122→124→183
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  SSTF may cause \textbf{starvation}. SCAN = elevator. C-SCAN gives more uniform wait time.
+\end{itemize}
+
+\needspace{135pt}
+
+\hypertarget{p2-05--82-raid}{%
+\subsection{8.2 RAID}\label{p2-05--82-raid}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0845}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2710}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0956}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2070}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Level}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Technique}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Min disks}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Fault tolerance}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & Striping (block) & 2 & None \\
+1 & Mirroring & 2 & 1 disk \\
+2 & Bit striping + Hamming ECC & --- & 1 \\
+3 & Byte striping + dedicated parity & 3 & 1 \\
+4 & Block striping + dedicated parity & 3 & 1 (parity disk bottleneck) \\
+\textbf{5} & Block striping + \textbf{distributed parity} & 3 & 1 \\
+6 & Distributed double parity (P+Q) & 4 & 2 \\
+10 (1+0) & Mirror then stripe & 4 & 1 per mirror pair \\
+\end{longtable}
+
+\endgroup
+
+\needspace{100pt}
+
+\hypertarget{p2-05--9-file-systems--io}{%
+\section{9. File Systems \& I/O}\label{p2-05--9-file-systems--io}}
+
+\begin{itemize}
+\tightlist
+\item
+  Access methods: sequential, direct (relative), indexed.
+\item
+  Directory structures: single-level → two-level → tree → \textbf{acyclic graph} (sharing via links) → general graph (cycles; needs garbage collection).
+\item
+  Hard link (same inode, same FS, no dirs) vs soft/symbolic link (path, can cross FS, can dangle).
+\end{itemize}
+
+\needspace{122pt}
+
+\hypertarget{p2-05--allocation-methods}{%
+\subsection{Allocation Methods}\label{p2-05--allocation-methods}}
+
+\begin{asciiblock}{67pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+ Contiguous        Linked (FAT is a variant)      Indexed (inode)
+ [A A A A]         A→A→A→A→nil                   index block → [b1,b2,b3,…]
+ fast, direct      no ext. fragmentation          direct access, no ext. frag.
+ ext. fragmentation  only sequential access        overhead of index block
+\end{Verbatim}
+\end{asciiblock}
+
+\textbf{UNIX inode max file size}: 12 direct + 1 single + 1 double + 1 triple indirect. Block 4 KB, pointer 4 B → 1024 pointers per block:
+
+\begin{asciiblock}{35pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+(12 + 1024 + 1024² + 1024³) × 4 KB ≈ 4 TB
+\end{Verbatim}
+\end{asciiblock}
+
+\begin{itemize}
+\tightlist
+\item
+  Free-space management: \textbf{bit vector} (1 bit per block), linked list, grouping, counting.
+\item
+  Directory implementation: linear list, hash table.
+\item
+  Mounting, file sharing, NFS. Journaling (log-structured) file systems for consistency.
+\end{itemize}
+
+\textbf{I/O}: polling, interrupts, DMA (see \protect\hyperlink{p2-02}{Unit 2}). Kernel I/O subsystem: scheduling, \textbf{buffering} (single, double, circular), \textbf{caching}, \textbf{spooling} (printer), error handling. Device drivers. Block vs character devices.
+
+\needspace{100pt}
+
+\hypertarget{p2-05--10-protection--security}{%
+\section{10. Protection \& Security}\label{p2-05--10-protection--security}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Access matrix}: rows = domains, columns = objects. Implementations: global table, \textbf{access control lists} (column-wise, per object), \textbf{capability lists} (row-wise, per domain), lock-key.
+\item
+  Revocation: immediate/delayed, selective/general, partial/total.
+\item
+  Principle of \textbf{least privilege}; need-to-know.
+\item
+  Program threats: Trojan horse, trap door (back door), logic bomb, stack/buffer overflow, virus. System/network threats: worms, port scanning, DoS/DDoS.
+\item
+  Authentication: passwords (salted hash), OTP, biometrics, multi-factor.
+\item
+  Cryptography --- see \protect\hyperlink{p2-09}{Unit 9}.
+\end{itemize}
+
+\needspace{100pt}
+
+\hypertarget{p2-05--11-virtual-machines}{%
+\section{11. Virtual Machines}\label{p2-05--11-virtual-machines}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Type 1 (bare-metal) hypervisor}: VMware ESXi, Xen, Hyper-V, KVM. \textbf{Type 2 (hosted)}: VirtualBox, VMware Workstation.
+\item
+  Full virtualisation, para-virtualisation (guest OS modified --- Xen), hardware-assisted (Intel VT-x, AMD-V), containers (OS-level: Docker --- share host kernel), emulation (QEMU).
+\item
+  JVM, .NET CLR = application/process VMs.
+\end{itemize}
+
+\needspace{135pt}
+
+\hypertarget{p2-05--12-linux--windows}{%
+\section{12. Linux \& Windows}\label{p2-05--12-linux--windows}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1359}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4282}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4044}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Feature}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Linux}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Windows}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Kernel & Monolithic + loadable kernel modules & Hybrid (microkernel-inspired), HAL, executive \\
+Process creation & \texttt{fork()} + \texttt{exec()} (clone for threads) & \texttt{CreateProcess()} \\
+Scheduling & CFS (normal), real-time FIFO/RR & Priority-based preemptive, 32 levels \\
+Memory & Buddy system + slab allocator, demand paging & Demand paging with clustering, working sets \\
+File system & ext2/3/4 (inodes), VFS layer; \texttt{/proc} & NTFS (MFT, journaling, ACLs), FAT32, ReFS \\
+IPC & pipes, signals, shared memory, message queues, sockets & ALPC, pipes, mailslots \\
+Other & GPL; first released 1991 (Linus Torvalds) & Terminal services, fast user switching \\
+\end{longtable}
+
+\endgroup
+
+Linux process states: Running, Interruptible sleep, Uninterruptible sleep, Stopped, Zombie.
+\textbf{Buddy system}: memory split into power-of-2 blocks; request 70 KB from 1 MB → gets 128 KB block.
+
+\needspace{100pt}
+
+\hypertarget{p2-05--13-distributed-systems}{%
+\section{13. Distributed Systems}\label{p2-05--13-distributed-systems}}
+
+\begin{itemize}
+\tightlist
+\item
+  Network OS (users aware of machines; remote login, file transfer) vs \textbf{Distributed OS} (transparent: data, computation, process migration).
+\item
+  Topologies \& communication: naming, routing, connection strategies, contention.
+\item
+  Robustness: failure detection (heartbeat), reconfiguration, recovery.
+\item
+  Design issues: transparency, fault tolerance, scalability.
+\item
+  \textbf{Distributed File Systems}: NFS (stateless, v3), AFS (whole-file caching), GFS/HDFS. Naming transparency vs location independence; caching \& consistency (write-through, delayed-write, callback).
+\item
+  Clock synchronisation: \textbf{Lamport logical clocks} (happened-before →), vector clocks, Cristian\textquotesingle s, Berkeley algorithms.
+\item
+  Mutual exclusion: centralised, Ricart--Agrawala (2(n−1) messages), token ring. Election: \textbf{Bully}, Ring.
+\end{itemize}
+
+\needspace{175pt}
+
+\hypertarget{p2-05--14-deeper-dive--more-scheduling-semaphore-traces-multilevel-paging--file-numericals}{%
+\section{14. Deeper Dive --- More Scheduling, Semaphore Traces, Multilevel Paging \& File Numericals}\label{p2-05--14-deeper-dive--more-scheduling-semaphore-traces-multilevel-paging--file-numericals}}
+
+\needspace{135pt}
+
+\hypertarget{p2-05--141-priority--hrrn-scheduling--worked}{%
+\subsection{14.1 Priority \& HRRN Scheduling --- Worked}\label{p2-05--141-priority--hrrn-scheduling--worked}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0822}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0772}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0626}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2284}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Process}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Arrival}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Burst}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Priority (lower = higher)}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+P1 & 0 & 10 & 3 \\
+P2 & 0 & 1 & 1 \\
+P3 & 0 & 2 & 4 \\
+P4 & 0 & 1 & 5 \\
+P5 & 0 & 5 & 2 \\
+\end{longtable}
+
+\endgroup
+
+\textbf{Non-preemptive priority}:
+
+\begin{asciiblock}{46pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+| P2 | P5    | P1         | P3 | P4 |
+0    1       6            16   18   19
+\end{Verbatim}
+\end{asciiblock}
+
+Waiting times: P1 6, P2 0, P3 16, P4 18, P5 1 → average = 41/5 = \textbf{8.2}.
+
+\textbf{HRRN} (non-preemptive; response ratio RR = (W + S)/S), processes A(0, 3), B(2, 6), C(4, 4), D(6, 5), E(8, 2):
+
+\begin{asciiblock}{89pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+t = 0: only A → run A to 3
+t = 3: only B arrived → run B to 9
+t = 9: C: (5 + 4)/4 = 2.25   D: (3 + 5)/5 = 1.6   E: (1 + 2)/2 = 1.5   → run C to 13
+t = 13: D: (7 + 5)/5 = 2.4   E: (5 + 2)/2 = 3.5                        → run E to 15
+t = 15: run D to 20
+Order: A B C E D
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{112pt}
+
+\hypertarget{p2-05--142-semaphore-tracing}{%
+\subsection{14.2 Semaphore Tracing}\label{p2-05--142-semaphore-tracing}}
+
+\begin{asciiblock}{57pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+semaphore S = 1, T = 0;
+P1: wait(S); print("A"); signal(T);
+P2: wait(T); print("B"); signal(S);
+\end{Verbatim}
+\end{asciiblock}
+
+Whatever the scheduling, P2 blocks on T until P1 signals → output \textbf{"AB"} (and the pair can repeat as A B A B \ldots{} if looped). This is the standard \textbf{ordering} use of semaphores (initialise to 0 to force "happens-after").
+
+\textbf{Deadlock with wrong order}:
+
+\begin{asciiblock}{46pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+P0: wait(S); wait(Q); …        P1: wait(Q); wait(S); …     (S = Q = 1)
+P0 gets S, P1 gets Q, each waits for the other → deadlock
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{157pt}
+
+\hypertarget{p2-05--143-multilevel-paging-numericals}{%
+\subsection{14.3 Multilevel Paging Numericals}\label{p2-05--143-multilevel-paging-numericals}}
+
+48-bit virtual address, 4 KB pages, 8-byte PTEs.
+
+\begin{asciiblock}{67pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+Offset = 12 bits → page-number bits = 36
+Entries per page-table page = 4096 / 8 = 512 = 2⁹ → each level indexes 9 bits
+Levels needed = ⌈36 / 9⌉ = 4  (this is x86-64 4-level paging: 9 | 9 | 9 | 9 | 12)
+Memory accesses per reference without TLB = 4 (tables) + 1 (data) = 5
+\end{Verbatim}
+\end{asciiblock}
+
+\textbf{Effective access time with TLB and 2-level paging}: TLB 10 ns, memory 100 ns, hit ratio 90\%:
+EAT = 0.9 × (10 + 100) + 0.1 × (10 + 3 × 100) = 99 + 31 = \textbf{130 ns}.
+
+\needspace{135pt}
+
+\hypertarget{p2-05--144-segmentation--address-translation}{%
+\subsection{14.4 Segmentation --- Address Translation}\label{p2-05--144-segmentation--address-translation}}
+
+\begingroup\small
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0863}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0553}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0657}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Segment}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Base}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Limit}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & 219 & 600 \\
+1 & 2300 & 14 \\
+2 & 90 & 100 \\
+3 & 1327 & 580 \\
+\end{longtable}
+
+\endgroup
+
+\begin{itemize}
+\tightlist
+\item
+  (0, 430) → 430 \textless{} 600 → physical \textbf{649}
+\item
+  (1, 10) → \textbf{2310}
+\item
+  (2, 500) → 500 ≥ 100 → \textbf{segmentation fault (trap)}
+\item
+  (3, 400) → \textbf{1727}
+\end{itemize}
+
+\needspace{135pt}
+
+\hypertarget{p2-05--145-page-replacement-with-4-frames-belady-check}{%
+\subsection{14.5 Page Replacement with 4 Frames (Belady check)}\label{p2-05--145-page-replacement-with-4-frames-belady-check}}
+
+Reference: 1 2 3 4 1 2 5 1 2 3 4 5
+
+\begin{itemize}
+\tightlist
+\item
+  FIFO, 3 frames → \textbf{9} faults; 4 frames → \textbf{10} faults (anomaly).
+\item
+  LRU, 4 frames → \textbf{8} faults; Optimal, 4 frames → \textbf{6} faults.
+\end{itemize}
+
+\needspace{125pt}
+
+\hypertarget{p2-05--146-file-system-numericals}{%
+\subsection{14.6 File-System Numericals}\label{p2-05--146-file-system-numericals}}
+
+\textbf{Max file size with UNIX inode}: block 1 KB, pointer 4 B → 256 pointers/block; 10 direct, 1 single, 1 double, 1 triple:
+
+\begin{asciiblock}{35pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+(10 + 256 + 256² + 256³) × 1 KB = (10 + 256 + 65,536 + 16,777,216) KB ≈ 16 GB
+\end{Verbatim}
+\end{asciiblock}
+
+\textbf{FAT size}: 4 GB disk, 4 KB clusters, 32-bit entries → 2²⁰ clusters × 4 B = \textbf{4 MB} FAT.
+
+\textbf{Disk access}: 7200 RPM, average seek 8 ms, transfer rate 100 MB/s, read 4 KB block:
+seek 8 + latency 4.17 + transfer 0.04 ≈ \textbf{12.2 ms}.
+
+\needspace{157pt}
+
+\hypertarget{p2-05--147-buddy-system--worked}{%
+\subsection{14.7 Buddy System --- Worked}\label{p2-05--147-buddy-system--worked}}
+
+1 MB block; requests A = 70 KB, B = 35 KB, C = 80 KB.
+
+\begin{asciiblock}{67pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+1024 → 512 + 512 → 256 + 256 → 128 + 128          A gets 128 KB (wastes 58 KB internal)
+B (35 KB): split a 128 → 64 + 64                   B gets 64 KB
+C (80 KB): needs 128 → split the second 256 → 128 + 128, C gets 128 KB
+Release: buddies of equal size and adjacent addresses coalesce back
+\end{Verbatim}
+\end{asciiblock}
+
+\needspace{154pt}
+
+\hypertarget{p2-05--148-process-synchronisation-hardware}{%
+\subsection{14.8 Process Synchronisation Hardware}\label{p2-05--148-process-synchronisation-hardware}}
+
+\begin{asciiblock}{99pt}
+\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+// Test-and-Set lock
+bool lock = false;
+do {
+    while (test_and_set(&lock));   // atomically: old = lock; lock = true; return old
+    /* critical section */
+    lock = false;
+} while (true);
+\end{Verbatim}
+\end{asciiblock}
+
+Gives mutual exclusion and progress, but \textbf{not bounded waiting} (a process can be overtaken indefinitely); the bounded-waiting version uses a \texttt{waiting{[}{]}} array.
+
+\needspace{135pt}
+
+\hypertarget{p2-05--previous-year-questions-pyq-pattern}{%
+\section{Previous Year Questions (PYQ pattern)}\label{p2-05--previous-year-questions-pyq-pattern}}
+
+\textbf{System software}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  A two-pass assembler\textquotesingle s first pass: \textbf{builds the symbol table (assigns addresses)}
+\item
+  Forward reference problem in one-pass assembler is solved by: \textbf{back-patching}
+\item
+  Which loader function adjusts address-dependent locations? \textbf{Relocation}
+\item
+  Dynamic linking is performed at: \textbf{run time}
+\item
+  Macro expansion is done by: \textbf{macro processor / preprocessor} (before assembly/compilation)
+\end{enumerate}
+
+\textbf{Processes \& threads}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{5}
+\tightlist
+\item
+  Number of child processes created by \texttt{for(i=0;i\textless{}n;i++)\ fork();}: \textbf{2ⁿ − 1}
+\item
+  Which is NOT shared by threads of a process? \textbf{Stack (and registers)}
+\item
+  Degree of multiprogramming is controlled by: \textbf{long-term scheduler}
+\item
+  A process whose parent has not called wait(): \textbf{zombie}
+\item
+  Which multithreading model blocks the whole process on a blocking system call? \textbf{Many-to-one}
+\end{enumerate}
+
+\textbf{Synchronisation}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{10}
+\tightlist
+\item
+  Critical section solution requirements: \textbf{mutual exclusion, progress, bounded waiting}
+\item
+  Semaphore S = 7; 20 P and 15 V operations performed: final = 7 − 20 + 15 = \textbf{2}
+\item
+  Producer-consumer with bounded buffer of size n: initial values mutex = 1, empty = \textbf{n}, full = \textbf{0}
+\item
+  Priority inversion is solved by: \textbf{priority inheritance protocol}
+\item
+  Peterson\textquotesingle s solution is for: \textbf{two processes}
+\end{enumerate}
+
+\textbf{Scheduling}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{15}
+\tightlist
+\item
+  Algorithm with minimum average waiting time: \textbf{SJF / SRTF}
+\item
+  Round robin with very large quantum becomes: \textbf{FCFS}
+\item
+  Starvation in priority scheduling is solved by: \textbf{aging}
+\item
+  Convoy effect occurs in: \textbf{FCFS}
+\item
+  Processes P1(0,10), P2(1,1), P3(2,2) with SRTF: average waiting time = P1: 3, P2: 0, P3: 0 → \textbf{1}
+\item
+  Rate-monotonic schedulability bound for 2 tasks: 2(√2 − 1) ≈ \textbf{0.828}
+\end{enumerate}
+
+\textbf{Deadlock}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{21}
+\tightlist
+\item
+  Necessary conditions for deadlock: \textbf{mutual exclusion, hold \& wait, no preemption, circular wait}
+\item
+  Banker\textquotesingle s algorithm is for deadlock: \textbf{avoidance}
+\item
+  Ordering resources numerically prevents: \textbf{circular wait}
+\item
+  4 processes each need 2 tape drives; minimum drives to ensure no deadlock: 4×1 + 1 = \textbf{5}
+\item
+  Cycle in RAG with single-instance resources implies: \textbf{deadlock}
+\end{enumerate}
+
+\textbf{Memory}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{26}
+\tightlist
+\item
+  Belady\textquotesingle s anomaly occurs in: \textbf{FIFO}
+\item
+  Page size 4 KB, logical address 32 bits → number of pages: \textbf{2²⁰}
+\item
+  TLB 20 ns, memory 100 ns, hit 80\%: EAT = 0.8×120 + 0.2×220 = \textbf{140 ns}
+\item
+  Thrashing is caused by: \textbf{high degree of multiprogramming / insufficient frames}
+\item
+  Internal fragmentation occurs in: \textbf{paging (fixed-size)}; external in: \textbf{segmentation / variable partitions}
+\item
+  Best fit, memory holes 100K, 500K, 200K, 300K, 600K; request 212K → \textbf{300K hole}
+\item
+  LRU faults for 1,2,3,4,1,2,5,1,2,3,4,5 with 3 frames: \textbf{10}
+\item
+  Optimal page replacement is not implementable because: \textbf{future references are unknown}
+\item
+  Working set model is used to prevent: \textbf{thrashing}
+\end{enumerate}
+
+\textbf{Disk / file}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{35}
+\tightlist
+\item
+  Disk scheduling that may cause starvation: \textbf{SSTF}
+\item
+  Elevator algorithm: \textbf{SCAN}
+\item
+  RAID level with distributed parity: \textbf{RAID 5}
+\item
+  RAID with mirroring: \textbf{RAID 1}
+\item
+  Allocation method that supports direct access and has no external fragmentation: \textbf{Indexed}
+\item
+  FAT uses which allocation method? \textbf{Linked (table variant)}
+\item
+  Bit vector for 1 TB disk with 4 KB blocks: 2²⁸ bits = \textbf{32 MB}
+\end{enumerate}
+
+\textbf{Security / VM / distributed}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{42}
+\tightlist
+\item
+  Access control lists correspond to: \textbf{columns of the access matrix}
+\item
+  Capability list corresponds to: \textbf{rows (domains)}
+\item
+  A program that appears useful but performs malicious actions: \textbf{Trojan horse}
+\item
+  VMware ESXi is a: \textbf{Type 1 hypervisor}
+\item
+  Lamport clocks capture: \textbf{happened-before ordering (logical time)}
+\item
+  Linux kernel is: \textbf{monolithic with loadable modules}
+\item
+  Windows file system with MFT: \textbf{NTFS}
+\end{enumerate}
+
+\textbf{More practice questions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{49}
+\tightlist
+\item
+  HRRN favours: \textbf{short jobs, while preventing starvation of long jobs (waiting time raises the ratio)}
+\item
+  Response ratio of a process with waiting time 9 and burst 3: \textbf{4}
+\item
+  Semaphore initialised to 0 is used for: \textbf{ordering / signalling between processes}
+\item
+  32-bit virtual address, 4 KB pages, 4-byte PTEs, single-level: page table size = \textbf{4 MB}
+\item
+  Levels of paging for 48-bit VA, 4 KB pages, 8 B PTEs (page-sized tables): \textbf{4}
+\item
+  Segment (2, 500) with limit 100: \textbf{trap / segmentation fault}
+\item
+  LRU with 4 frames on 1 2 3 4 1 2 5 1 2 3 4 5: \textbf{8} faults
+\item
+  Optimal with 4 frames on the same string: \textbf{6} faults
+\item
+  Buddy system allocation for a 70 KB request: \textbf{128 KB} block
+\item
+  Test-and-set spin lock fails to guarantee: \textbf{bounded waiting}
+\item
+  Average rotational latency at 15,000 RPM: \textbf{2 ms}
+\end{enumerate}
+
+\begin{revbox}
+
+\begin{itemize}
+\tightlist
+\item
+  n forks → 2ⁿ processes · Threads share code/data/files, not stack/registers
+\item
+  SRTF optimal WT · RR big q = FCFS · aging fixes starvation
+\item
+  Deadlock-free: R ≥ n(k−1)+1 · Banker = avoidance
+\item
+  EAT(TLB) = h(t+m) + (1−h)(t+2m) · Belady only FIFO
+\item
+  SSTF starvation · SCAN elevator · RAID 5 distributed parity
+\end{itemize}
+
+\end{revbox}

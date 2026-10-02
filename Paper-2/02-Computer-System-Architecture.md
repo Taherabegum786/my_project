@@ -291,17 +291,17 @@ flowchart LR
 ## 9. Memory Hierarchy
 
 ```
- ┌──────────────┐ ▲ faster, costlier, smaller
- │  Registers   │ │
- ├──────────────┤ │
- │  Cache L1/L2/L3 (SRAM)
- ├──────────────┤
- │  Main memory (DRAM)
- ├──────────────┤
- │  SSD / Magnetic disk
- ├──────────────┤ │
- │  Tape / Optical │ ▼ slower, cheaper, larger
- └──────────────┘
+ ┌─────────────────────────────┐  ▲  faster, costlier, smaller
+ │ Registers                   │  │
+ ├─────────────────────────────┤  │
+ │ Cache L1 / L2 / L3 (SRAM)   │  │
+ ├─────────────────────────────┤  │
+ │ Main memory (DRAM)          │  │
+ ├─────────────────────────────┤  │
+ │ SSD / Magnetic disk         │  │
+ ├─────────────────────────────┤  │
+ │ Tape / Optical              │  ▼  slower, cheaper, larger
+ └─────────────────────────────┘
 ```
 - SRAM (flip-flops, no refresh, cache) vs DRAM (capacitors, refresh, main memory).
 - ROM, PROM, EPROM (UV erase), EEPROM (electrical), Flash.
@@ -358,6 +358,96 @@ e.g. 7200 RPM → one rotation 8.33 ms → avg latency **4.17 ms**.
 - **Cache coherence**: write-invalidate / write-update; snoopy protocols; **MESI** (Modified, Exclusive, Shared, Invalid); directory-based protocols.
 - **Multicore**: multiple cores on one chip sharing L2/L3 cache; hyper-threading (SMT).
 
+## 11. Deeper Dive — Booth Trace, Instruction Encoding, Cache Behaviour & Interrupts
+
+### 11.1 Booth's Algorithm — Full Trace: 7 × (−3), 4 bits
+
+M = 0111 (7), −M = 1001, Q = 1101 (−3), A = 0000, Q₋₁ = 0.
+
+| Step | Q₀ Q₋₁ | Operation | A | Q | Q₋₁ |
+|------|-------|-----------|---|---|-----|
+| Init | | | 0000 | 1101 | 0 |
+| 1 | 1 0 | A ← A − M | 1001 | 1101 | 0 |
+| | | Arithmetic shift right | 1100 | 1110 | 1 |
+| 2 | 0 1 | A ← A + M | 0011 | 1110 | 1 |
+| | | Arithmetic shift right | 0001 | 1111 | 0 |
+| 3 | 1 0 | A ← A − M | 1010 | 1111 | 0 |
+| | | Arithmetic shift right | 1101 | 0111 | 1 |
+| 4 | 1 1 | Shift only | 1110 | 1011 | 1 |
+
+Result A Q = **1110 1011** = −21 in 8-bit 2's complement ✔.
+Booth reduces additions for runs of 1s; worst case is alternating bits (0101…).
+
+### 11.2 Instruction Encoding Numericals
+
+**Fixed format**: 32-bit instructions, 64 registers, 45 distinct opcodes, format `opcode | Rd | Rs | immediate`.
+```
+opcode bits = ⌈log₂ 45⌉ = 6        register field = log₂ 64 = 6 each
+immediate   = 32 − 6 − 6 − 6 = 14 bits  → signed range −8192 … +8191
+```
+
+**Expanding opcode**: 16-bit instruction, 4-bit address fields.
+```
+3-address: 4-bit opcode → 2⁴ = 16 patterns; use 15, keep 1 as escape
+2-address: escape (4 bits) + 4 more opcode bits → 16 patterns; use 14, keep 2
+1-address: 2 escapes × 16 = 32 patterns; use 31, keep 1
+0-address: 1 escape × 16 = 16 instructions
+General rule: unused patterns at level k × 2^(field width) = patterns available at level k+1
+```
+
+### 11.3 Mapping an Address into a Set-Associative Cache
+
+2-way set associative, 128 lines, 16-byte blocks, 16-bit byte address **0x1A2B**.
+```
+Sets = 128 / 2 = 64 → 6 set bits ; offset = 4 bits ; tag = 16 − 6 − 4 = 6 bits
+Block number = 0x1A2B >> 4 = 0x1A2 = 418
+Set   = 418 mod 64 = 34           Tag = 418 div 64 = 6         Offset = 0xB = 11
+```
+
+### 11.4 Hits & Misses for Three Organisations
+
+Block reference string: **0, 4, 0, 4, 8, 0** with 4 cache lines.
+
+| Organisation | Trace | Misses |
+|-------------|-------|--------|
+| Direct mapped (line = block mod 4) | 0, 4, 8 all map to line 0 → every access evicts the previous | **6** |
+| 2-way set assoc., LRU (set = block mod 2) | 0 M, 4 M, 0 H, 4 H, 8 M (evict 0), 0 M (evict 4) | **4** |
+| Fully associative, LRU | 0 M, 4 M, 0 H, 4 H, 8 M, 0 H | **3** |
+
+Higher associativity removes **conflict misses**; the three first-time misses are **compulsory**.
+
+### 11.5 Interrupt Cycle (Mano basic computer)
+
+```mermaid
+flowchart TD
+    A{R = 1?<br/>interrupt pending} -->|No| F[Normal fetch cycle T0 T1 T2]
+    A -->|Yes| I0["RT0: AR ← 0, TR ← PC"]
+    I0 --> I1["RT1: M[AR] ← TR, PC ← 0"]
+    I1 --> I2["RT2: PC ← PC + 1, IEN ← 0, R ← 0, SC ← 0"]
+    I2 --> ISR[Branch at location 1 to the interrupt service routine]
+```
+Return address is saved in memory location 0; the ISR ends with an indirect branch through location 0 (BUN 0 I), re-enabling interrupts with ION.
+
+### 11.6 Microprogrammed Control Numericals
+Mano's microinstruction: `F1 (3) | F2 (3) | F3 (3) | CD (2) | BR (2) | AD (7)` = **20 bits**; control memory 128 × 20.
+- Horizontal: n control signals → n bits. Vertical: encode k mutually exclusive signals in ⌈log₂(k + 1)⌉ bits.
+- **Example**: 48 control signals in 4 mutually-exclusive groups of 12 → vertical needs 4 × ⌈log₂ 13⌉ = 4 × 4 = 16 bits (vs 48 horizontal).
+
+### 11.7 DMA & I/O Numericals
+- Disk transfers 4 MB/s in 32-bit words using cycle stealing on a memory that supports 100 million cycles/s:
+  words/s = 4 MB / 4 B = 1 M → fraction of memory cycles stolen = 1 M / 100 M = **1%**.
+- Programmed I/O polling overhead: polling 100 times/s × 500 cycles each = 50,000 cycles/s → **0.05%** of a 100 MHz CPU.
+
+### 11.8 Memory Interleaving
+
+```
+ Low-order interleaving (4 modules): module = address mod 4
+ Address:  0  1  2  3  4  5  6  7  8 …
+ Module:   M0 M1 M2 M3 M0 M1 M2 M3 M0 …
+ Consecutive words come from different modules → overlapped access, higher bandwidth
+ High-order interleaving: module = high bits → consecutive words in the same module
+```
+
 ---
 
 ## Previous Year Questions (PYQ pattern)
@@ -372,6 +462,7 @@ e.g. 7200 RPM → one rotation 8.33 ms → avg latency **4.17 ms**.
 7. (−0.75) in IEEE 754 single: S=1, −1.1×2⁻¹, E=126 → **BF400000**
 
 **Digital logic**
+
 8. Minimum number of NAND gates for XOR: **4**
 9. Simplify F = Σm(0,1,2,3): **A'** (for 3 variables A,B,C) — F = A'
 10. Number of select lines for 32:1 MUX: **5**
@@ -382,6 +473,7 @@ e.g. 7200 RPM → one rotation 8.33 ms → avg latency **4.17 ms**.
 15. 16K × 8 memory needs **14** address lines
 
 **CPU & addressing**
+
 16. Addressing mode used for position-independent code: **Relative (PC-relative)**
 17. Addressing mode in which operand is part of instruction: **Immediate**
 18. Which addressing mode needs two memory accesses to get operand (after fetch)? **Indirect**
@@ -390,6 +482,7 @@ e.g. 7200 RPM → one rotation 8.33 ms → avg latency **4.17 ms**.
 21. Horizontal microprogramming: **one bit per control signal, longer control words**
 
 **Pipelining**
+
 22. A 5-stage pipeline, stage delay 20 ns, executes 100 instructions. Time = (5 + 99) × 20 = **2080 ns**
 23. Ideal speedup of a k-stage pipeline: **k**
 24. Stages 150, 120, 160, 140 ns, latch 5 ns. Pipeline cycle = **165 ns**; non-pipelined instruction = 570 ns
@@ -398,6 +491,7 @@ e.g. 7200 RPM → one rotation 8.33 ms → avg latency **4.17 ms**.
 27. Vector processors belong to which Flynn category? **SIMD**
 
 **Memory & cache**
+
 28. Cache 2 ns, memory 20 ns, hit ratio 0.9, hierarchical: 0.9×2 + 0.1×22 = **4 ns**
 29. Direct-mapped cache with 128 lines, block 16 words; 64K-word memory → address 16 bits: TAG **5**, LINE **7**, WORD **4**
 30. Which miss cannot be reduced by increasing cache size? **Compulsory miss**
@@ -406,15 +500,30 @@ e.g. 7200 RPM → one rotation 8.33 ms → avg latency **4.17 ms**.
 33. Disk 6000 RPM: average rotational latency = **5 ms**
 
 **I/O**
+
 34. Which mode transfers data without CPU intervention? **DMA**
 35. In daisy chaining, priority is determined by: **position of device in the chain**
 36. DMA cycle stealing means: **DMA takes the bus for one cycle at a time**
 37. Handshaking uses: **two control lines**
 
 **Multiprocessors**
+
 38. Number of crosspoints in a crossbar connecting 8 processors to 8 memories: **64**
 39. MESI protocol is used for: **cache coherence**
 40. In a 4-dimensional hypercube, number of nodes: **16**, links per node: **4**
+
+**More practice questions**
+
+41. Booth's algorithm when Q₀Q₋₁ = 01: **add M then shift**
+42. A machine has 32-bit instructions and 128 registers; a 3-register format leaves how many opcode bits? 32 − 21 = **11**
+43. 16-bit instructions with 6-bit address fields: 2-address instructions use 4-bit opcodes; with 14 two-address instructions used, one-address instructions possible: 2 × 64 = **128**
+44. 4-way set associative cache, 256 lines, 32-byte blocks, 32-bit addresses: set bits **6**, offset **5**, tag **21**
+45. Which miss is eliminated by full associativity? **conflict miss**
+46. In Mano's interrupt cycle, the return address is stored in: **memory location 0**
+47. Vertical microprogramming requires a: **decoder** for the encoded control fields
+48. Low-order interleaving places consecutive addresses in: **different memory modules**
+49. A DMA transfer of 1 M words/s on 50 M memory cycles/s steals: **2%** of cycles
+50. Booth multiplication of 2 × (−4) in 4 bits gives A Q = **1111 1000** (−8)
 
 ## Quick Revision Box
 - NAND: XOR=4 · NOR: XNOR=4 · Johnson n FF → 2n states

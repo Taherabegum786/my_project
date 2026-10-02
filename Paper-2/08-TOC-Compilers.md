@@ -36,22 +36,27 @@ flowchart TB
 ```
 
 ```
- ┌──────────────────────────────────────────────┐
- │ All languages (uncountable)                  │
- │  ┌────────────────────────────────────────┐  │
- │  │ RE (TM accepts; may loop on rejection) │  │
- │  │  ┌──────────────────────────────────┐  │  │
- │  │  │ Recursive / Decidable (TM halts) │  │  │
- │  │  │  ┌────────────────────────────┐  │  │  │
- │  │  │  │ CSL (LBA)                  │  │  │  │
- │  │  │  │  ┌──────────────────────┐  │  │  │  │
- │  │  │  │  │ CFL (NPDA)           │  │  │  │  │
- │  │  │  │  │  ┌────────────────┐  │  │  │  │  │
- │  │  │  │  │  │ DCFL (DPDA)    │  │  │  │  │  │
- │  │  │  │  │  │  ┌──────────┐  │  │  │  │  │  │
- │  │  │  │  │  │  │ Regular  │  │  │  │  │  │  │
- │  │  │  │  │  │  └──────────┘  │  │  │  │  │  │
- └──┴──┴──┴──┴──┴────────────────┴──┴──┴──┴──┴──┘
+ ┌──────────────────────────────────────────────────┐
+ │ All languages (uncountable)                      │
+ │ ┌──────────────────────────────────────────────┐ │
+ │ │ RE — Turing machine (may loop on rejection)  │ │
+ │ │ ┌──────────────────────────────────────────┐ │ │
+ │ │ │ Recursive / decidable (TM always halts)  │ │ │
+ │ │ │ ┌──────────────────────────────────────┐ │ │ │
+ │ │ │ │ CSL — linear bounded automaton       │ │ │ │
+ │ │ │ │ ┌──────────────────────────────────┐ │ │ │ │
+ │ │ │ │ │ CFL — non-deterministic PDA      │ │ │ │ │
+ │ │ │ │ │ ┌──────────────────────────────┐ │ │ │ │ │
+ │ │ │ │ │ │ DCFL — deterministic PDA     │ │ │ │ │ │
+ │ │ │ │ │ │ ┌──────────────────────────┐ │ │ │ │ │ │
+ │ │ │ │ │ │ │ Regular — finite automata│ │ │ │ │ │ │
+ │ │ │ │ │ │ └──────────────────────────┘ │ │ │ │ │ │
+ │ │ │ │ │ └──────────────────────────────┘ │ │ │ │ │
+ │ │ │ │ └──────────────────────────────────┘ │ │ │ │
+ │ │ │ └──────────────────────────────────────┘ │ │ │
+ │ │ └──────────────────────────────────────────┘ │ │
+ │ └──────────────────────────────────────────────┘ │
+ └──────────────────────────────────────────────────┘
 ```
 
 ## 3. Finite Automata
@@ -487,6 +492,145 @@ Live variables:        IN[B]  = use[B] ∪ (OUT[B] − def[B]) ;  OUT[B] = ∪ I
 - `getreg`, register & address descriptors. Next-use information.
 - **Instruction scheduling**: reorder to avoid pipeline stalls (list scheduling); respects data dependences.
 
+## 15. Deeper Dive — Constructions & Parsing Traces
+
+### 15.1 NFA → DFA (Subset Construction)
+
+NFA for strings over {0, 1} ending in "01": q0 —0,1→ q0, q0 —0→ q1, q1 —1→ q2 (final).
+
+| DFA state | on 0 | on 1 | Final? |
+|-----------|------|------|--------|
+| → {q0} | {q0, q1} | {q0} | |
+| {q0, q1} | {q0, q1} | {q0, q2} | |
+| {q0, q2} | {q0, q1} | {q0} | ✔ |
+
+Only 3 of the 2³ = 8 subsets are reachable — this is the same DFA drawn in §3.1.
+
+### 15.2 DFA Minimisation (partition refinement)
+
+| State | on 0 | on 1 | Final? |
+|-------|------|------|--------|
+| → A | B | C | |
+| B | A | D | |
+| C | E | F | ✔ |
+| D | E | F | ✔ |
+| E | E | F | ✔ |
+| F | F | F | |
+
+```
+P0 = { C D E } { A B F }                       (final / non-final)
+P1: in {A B F}, F goes to non-final on 1 while A, B go to final → split
+    = { C D E } { A B } { F }
+P2: {A B}: both go to {A B} on 0 and {C D E} on 1 → no split
+    {C D E}: all go to {C D E} on 0 and {F} on 1 → no split   → stable
+Minimal DFA: 3 states  [AB] —1→ [CDE] —1→ [F] (dead), 0-loops on each
+Language: strings over {0,1} containing exactly one 1
+```
+
+### 15.3 CFG → CNF
+
+S → aSb | ab
+```
+1. Replace terminals in long bodies:  A → a, B → b
+   S → A S B | A B
+2. Break bodies longer than 2:        S → A X,  X → S B
+CNF:  S → AX | AB,   X → SB,   A → a,   B → b
+```
+
+### 15.4 Pumping-Lemma Proof Template (L = { aⁿbⁿ | n ≥ 0 } is not regular)
+
+1. Assume L is regular with pumping length p.
+2. Choose w = aᵖbᵖ ∈ L, |w| ≥ p.
+3. Any split w = xyz with |xy| ≤ p, |y| ≥ 1 forces y = aᵏ (k ≥ 1).
+4. Pump i = 2: xy²z = a^(p+k) bᵖ ∉ L — contradiction. Hence L is not regular.
+
+### 15.5 LR(0) Automaton and Parse — Worked
+
+Grammar: (0) S′ → S (1) S → AA (2) A → aA (3) A → b
+
+```mermaid
+stateDiagram-v2
+    direction LR
+    I0: I0 S'→.S  S→.AA  A→.aA  A→.b
+    I1: I1 S'→S.
+    I2: I2 S→A.A  A→.aA  A→.b
+    I3: I3 A→a.A  A→.aA  A→.b
+    I4: I4 A→b.
+    I5: I5 S→AA.
+    I6: I6 A→aA.
+    I0 --> I1: S
+    I0 --> I2: A
+    I0 --> I3: a
+    I0 --> I4: b
+    I2 --> I5: A
+    I2 --> I3: a
+    I2 --> I4: b
+    I3 --> I6: A
+    I3 --> I3: a
+    I3 --> I4: b
+```
+
+| State | a | b | $ | A | S |
+|-------|---|---|---|---|---|
+| 0 | s3 | s4 | | 2 | 1 |
+| 1 | | | **acc** | | |
+| 2 | s3 | s4 | | 5 | |
+| 3 | s3 | s4 | | 6 | |
+| 4 | r3 | r3 | r3 | | |
+| 5 | r1 | r1 | r1 | | |
+| 6 | r2 | r2 | r2 | | |
+
+No state contains both a shift and a complete item → the grammar is **LR(0)** (hence also SLR, LALR, CLR).
+
+Parse of **abb$**:
+
+| Stack | Input | Action |
+|-------|-------|--------|
+| 0 | abb$ | shift 3 |
+| 0 a 3 | bb$ | shift 4 |
+| 0 a 3 b 4 | b$ | reduce A → b, goto(3, A) = 6 |
+| 0 a 3 A 6 | b$ | reduce A → aA, goto(0, A) = 2 |
+| 0 A 2 | b$ | shift 4 |
+| 0 A 2 b 4 | $ | reduce A → b, goto(2, A) = 5 |
+| 0 A 2 A 5 | $ | reduce S → AA, goto(0, S) = 1 |
+| 0 S 1 | $ | **accept** |
+
+**A grammar that is LALR(1) but not SLR(1)**: S → L = R | R, L → *R | id, R → L. In the state containing S → L·= R and R → L·, '=' ∈ FOLLOW(R), so SLR has a shift/reduce conflict on '='; LR(1) lookaheads resolve it.
+
+### 15.6 Basic Blocks — Worked
+
+```
+ 1  i = 1                      Leaders: 1 (first), 2 & 3 & 13 (jump targets),
+ 2  j = 1                               10 & 12 (follow a conditional jump)
+ 3  t1 = 10 * i
+ 4  t2 = t1 + j                Blocks:  B1 = {1}      B2 = {2}
+ 5  t3 = 8 * t2                         B3 = {3–9}    B4 = {10–11}
+ 6  t4 = t3 - 88                        B5 = {12}     B6 = {13–17}
+ 7  a[t4] = 0.0
+ 8  j = j + 1                  Loops: B3 (inner, back edge B3→B3),
+ 9  if j <= 10 goto 3                 B2–B4 (outer), B6 (self loop)
+10  i = i + 1
+11  if i <= 10 goto 2
+12  i = 1
+13  t5 = i - 1
+14  t6 = 88 * t5
+15  a[t6] = 1.0
+16  i = i + 1
+17  if i <= 10 goto 13
+```
+
+### 15.7 DAG-Based Local Optimisation
+
+```
+ Block                       DAG nodes built                         Optimised block
+ a = b + c                   n1 = + (b0, c0)        label a          a = b + c
+ b = a - d                   n2 = − (n1, d0)        label b          b = a - d
+ c = b + c                   n3 = + (n2, c0)        label c          c = b + c
+ d = a - d                   − (n1, d0) exists = n2 → label d too    d = b
+```
+- `d = a − d` recomputes node n2 (same operator, same operands, nothing changed in between) → replaced by the copy `d = b`.
+- `c = b + c` is **not** a repeat of `a = b + c`, because b was reassigned in between (its operand is n2, not b0).
+
 ---
 
 ## Previous Year Questions (PYQ pattern)
@@ -504,6 +648,7 @@ Live variables:        IN[B]  = use[B] ∪ (OUT[B] − def[B]) ;  OUT[B] = ∪ I
 10. Pumping lemma for regular languages is used to prove a language is: **not regular**
 
 **CFLs & PDAs**
+
 11. Which language is context-free but not regular? **aⁿbⁿ**
 12. Which is not context-free? **aⁿbⁿcⁿ**
 13. CFLs are NOT closed under: **intersection and complement**
@@ -516,6 +661,7 @@ Live variables:        IN[B]  = use[B] ∪ (OUT[B] − def[B]) ;  OUT[B] = ∪ I
 20. Grammar S → aSb | ab generates: **aⁿbⁿ, n ≥ 1**
 
 **TMs & decidability**
+
 21. A language accepted by an LBA is: **context-sensitive**
 22. Halting problem is: **recursively enumerable but not recursive**
 23. Complement of an RE but non-recursive language is: **not RE**
@@ -528,6 +674,7 @@ Live variables:        IN[B]  = use[B] ∪ (OUT[B] − def[B]) ;  OUT[B] = ∪ I
 30. Type-1 grammars are: **context-sensitive**
 
 **Compilers**
+
 31. Number of tokens in `int a = b + 10;`: int, a, =, b, +, 10, ; = **7**
 32. Lexical analysis is based on: **regular expressions / finite automata**
 33. YACC generates: **LALR(1) parsers**
@@ -548,6 +695,19 @@ Live variables:        IN[B]  = use[B] ∪ (OUT[B] − def[B]) ;  OUT[B] = ∪ I
 48. Register allocation is commonly modelled as: **graph colouring**
 49. A DAG for a basic block helps to detect: **common subexpressions**
 50. Number of basic blocks in a flow graph — first find **leaders**: first statement, jump targets, statements after jumps
+
+**More practice questions**
+
+51. Subset construction for the "ends in 01" NFA yields how many reachable DFA states? **3**
+52. Minimal DFA for "exactly one 1" over {0, 1} (with dead state): **3 states**
+53. CNF of S → aSb | ab needs how many non-terminals? **4** (S, X, A, B)
+54. In the pumping-lemma proof for aⁿbⁿ, pumping y changes: **only the number of a's**
+55. Number of LR(0) item sets for S → AA, A → aA | b: **7**
+56. The grammar S → L = R | R, L → *R | id, R → L is: **LALR(1) but not SLR(1)**
+57. Number of basic blocks in the code of §15.6: **6**
+58. In `a = b + c; b = a − d; c = b + c; d = a − d`, the redundant computation is: **d = a − d** (equals b)
+59. A shift/reduce conflict in SLR arises when a terminal in FOLLOW(A) also: **labels a shift from the same state**
+60. The handle in a right-sentential form is reduced by: **a bottom-up (shift-reduce) parser**
 
 ## Quick Revision Box
 - Regular closed under everything basic · CFL ✘ ∩, ✘ complement · DCFL ✔ complement · RE ✘ complement
