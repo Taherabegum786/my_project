@@ -1,0 +1,20 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \foreach \n/\d [count=\i from 0] in {Functional/a single well-defined task, Sequential/output of one part is input to the next,
+      Communicational/parts operate on the same data, Procedural/parts follow a sequence of execution,
+      Temporal/executed at the same time (e.g.\ initialisation), Logical/logically similar tasks chosen by a flag,
+      Coincidental/unrelated tasks} {
+    \pgfmathtruncatemacro{\pct}{100-100*\i/6}
+    \filldraw[fill=fsage!\pct!frose, draw=fgink, line width=0.5pt] (0,{-0.62*\i}) rectangle (3.4,{-0.62*\i-0.52});
+    \node[font=\small\bfseries] at (1.7,{-0.62*\i-0.26}) {\n};
+    \node[font=\footnotesize, anchor=west] at (3.6,{-0.62*\i-0.26}) {\d};
+  }
+  \draw[arr, line width=0.9pt] (-0.5,-4.3) -- (-0.5,0);
+  \node[capt, anchor=east] at (-0.7,-0.25) {best}; \node[capt, anchor=east] at (-0.7,-4.05) {worst};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Cohesion, the strength of the bond \emph{within} a module, from best (top) to worst. Aim for high
+cohesion.}
+\end{figure}

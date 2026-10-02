@@ -1,0 +1,27 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[hd/.style={box, minimum width=24mm}, msg/.style={font=\footnotesize, above, inner sep=1.5pt},
+    rep/.style={->, draw=fgink, line width=0.55pt, dash pattern=on 2.5pt off 1.8pt}]
+  \node[hd, fill=fsand] (U) at (0,0) {:Customer}; \node[hd, fill=fslate] (A) at (5,0) {:ATM}; \node[hd, fill=fsage] (B) at (10,0) {:Bank server};
+  \foreach \x in {0,5,10} \draw[fgink!60, line width=0.45pt, dash pattern=on 3pt off 2pt] (\x,-0.45) -- (\x,-8.6);
+  \draw[arr] (0,-1.1) -- node[msg] {insert card, enter PIN} (5,-1.1);
+  \draw[arr] (5,-1.8) -- node[msg] {verifyPIN(card, pin)} (10,-1.8);
+  \draw[rep] (10,-2.5) -- node[msg] {OK} (5,-2.5);
+  \draw[arr] (0,-3.2) -- node[msg] {withdraw 2000} (5,-3.2);
+  \draw[arr] (5,-3.9) -- node[msg] {debit(account, 2000)} (10,-3.9);
+  \draw[fgink, line width=0.5pt] (-0.9,-4.3) rectangle (10.9,-8.2);
+  \draw[fgink, line width=0.5pt, fill=fgrey] (-0.9,-4.3) -- (0.1,-4.3) -- (0.1,-4.55) -- (-0.05,-4.7) -- (-0.9,-4.7) -- cycle;
+  \node[font=\footnotesize\bfseries] at (-0.42,-4.5) {alt};
+  \node[font=\scriptsize, anchor=west] at (0.25,-4.55) {[sufficient balance]};
+  \draw[rep] (10,-5.2) -- node[msg] {approved} (5,-5.2);
+  \draw[rep] (5,-5.9) -- node[msg] {dispense cash, print receipt} (0,-5.9);
+  \draw[fgink, line width=0.45pt, dash pattern=on 3pt off 2pt] (-0.9,-6.35) -- (10.9,-6.35);
+  \node[font=\scriptsize, anchor=west] at (0.25,-6.6) {[insufficient balance]};
+  \draw[rep] (10,-7.1) -- node[msg] {declined} (5,-7.1);
+  \draw[rep] (5,-7.8) -- node[msg] {show error} (0,-7.8);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{UML sequence diagram for an ATM withdrawal. Time runs downwards; solid arrows are calls, dashed
+arrows are replies; the \textsf{alt} fragment shows two mutually exclusive outcomes.}
+\end{figure}

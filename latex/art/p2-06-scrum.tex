@@ -1,0 +1,21 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[s/.style={box, minimum width=27mm, font=\small}]
+  \node[s, fill=fslate] (pb) at (0,0) {product backlog};
+  \node[s, fill=fsage] (sp) at (3.6,0) {sprint planning};
+  \node[s, fill=fslate] (sb) at (7.2,0) {sprint backlog};
+  \node[circ, fill=fochre, minimum size=24mm, align=center, font=\small] (sp2) at (11.2,0) {\textbf{Sprint}\\2--4 weeks};
+  \node[s, fill=fsand] (inc) at (11.2,-3.2) {shippable increment};
+  \node[s, fill=fsage] (rv) at (7.2,-3.2) {sprint review};
+  \node[s, fill=fsage] (rt) at (3.6,-3.2) {retrospective};
+  \draw[arr] (pb) -- (sp); \draw[arr] (sp) -- (sb); \draw[arr] (sb) -- (sp2); \draw[arr] (sp2) -- (inc);
+  \draw[arr] (inc) -- (rv); \draw[arr] (rv) -- (rt); \draw[arr] (rt) -| (pb);
+  \draw[arr, fwine] ([shift={(0.35,0.2)}]sp2.north) arc[start angle=-60, end angle=240, radius=0.42];
+  \node[lbl, anchor=west] at (11.9,1.75) {daily scrum\\every 24 h};
+  \node[lbl, below=1mm of pb] {owned by the\\product owner};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{The Scrum cycle. Work is pulled from the product backlog into fixed-length sprints; every sprint ends
+with a working increment, a review with stakeholders and a retrospective on the process.}
+\end{figure}

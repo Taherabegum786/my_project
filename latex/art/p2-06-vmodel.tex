@@ -1,0 +1,19 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[l/.style={box, fill=fslate, minimum width=33mm, font=\small}, r/.style={box, fill=fsage, minimum width=33mm, font=\small}]
+  \node[l] (l1) at (0,0) {Requirements};       \node[r] (r1) at (12,0) {Acceptance testing};
+  \node[l] (l2) at (1.2,-1.3) {System design};   \node[r] (r2) at (10.8,-1.3) {System testing};
+  \node[l] (l3) at (2.4,-2.6) {Architecture design}; \node[r] (r3) at (9.6,-2.6) {Integration testing};
+  \node[l] (l4) at (3.6,-3.9) {Module design};  \node[r] (r4) at (8.4,-3.9) {Unit testing};
+  \node[box, fill=fsand, minimum width=26mm] (c) at (6,-5.2) {Coding};
+  \draw[arr] (l1) -- (l2); \draw[arr] (l2) -- (l3); \draw[arr] (l3) -- (l4); \draw[arr] (l4) -- (c);
+  \draw[arr] (c) -- (r4); \draw[arr] (r4) -- (r3); \draw[arr] (r3) -- (r2); \draw[arr] (r2) -- (r1);
+  \foreach \i in {1,2,3,4} \draw[dasharr, <->] (l\i) -- (r\i);
+  \node[capt] at (-0.6,1.0) {verification}; \node[capt] at (12.6,1.0) {validation};
+
+
+\end{tikzpicture}
+\end{adjustbox}
+\caption{The V-model. Each design phase on the left defines the test phase that checks it on the right.}
+\end{figure}

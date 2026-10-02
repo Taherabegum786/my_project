@@ -15,8 +15,13 @@
 
 ## 1. Software Process Models
 
+A process model fixes the order in which a team specifies, designs, builds and tests software. Plan-driven
+models (waterfall, V) suit stable requirements; iterative models (prototype, spiral, agile) suit
+requirements that will change. Questions usually describe a project and ask which model fits.
+
 ### 1.1 Waterfall (Royce, 1970)
 
+<!-- latex: p2-06-waterfall -->
 ```mermaid
 flowchart TD
     A[Requirements analysis] --> B[System design]
@@ -28,6 +33,7 @@ flowchart TD
 - Linear sequential; each phase completes before next. Good when **requirements are clear & stable**. No working software until late; high risk.
 - **V-Model**: verification phases (left) paired with validation/testing phases (right): Requirements↔Acceptance test, System design↔System test, Architecture↔Integration test, Module design↔Unit test.
 
+<!-- latex: p2-06-vmodel -->
 ```
  Requirements ─────────────────────────► Acceptance testing
    System design ───────────────────► System testing
@@ -46,6 +52,7 @@ Quick design → build prototype → customer evaluation → refine → (throwaw
 
 ### 1.4 Spiral Model (Barry Boehm, 1986) — **risk-driven**
 
+<!-- latex: p2-06-spiral -->
 ```
             1. Determine objectives,      │      2. Evaluate alternatives,
                alternatives, constraints  │         IDENTIFY & RESOLVE RISKS
@@ -76,6 +83,10 @@ Quick design → build prototype → customer evaluation → refine → (throwaw
 
 ### 1.6 Agile
 
+Agile methods deliver working software in short iterations and welcome changing requirements. The
+Agile Manifesto (2001) values individuals and interactions, working software, customer collaboration and
+responding to change over processes, documentation, contract negotiation and following a plan.
+
 **Agile Manifesto (2001)** values:
 - **Individuals & interactions** over processes & tools
 - **Working software** over comprehensive documentation
@@ -94,6 +105,7 @@ Quick design → build prototype → customer evaluation → refine → (throwaw
 | Kanban | Visual board, limit Work-In-Progress (WIP) |
 | Lean | Eliminate waste |
 
+<!-- latex: p2-06-scrum -->
 ```mermaid
 flowchart LR
     PB[Product backlog] --> SP[Sprint planning] --> SB[Sprint backlog]
@@ -114,6 +126,11 @@ flowchart LR
 
 ## 2. Requirements Engineering
 
+Requirements engineering finds out what the system must do (**functional** requirements) and how well it must
+do it (**non-functional** requirements: performance, security, usability), and records both in a
+Software Requirements Specification (SRS).
+
+<!-- latex: p2-06-re-tasks -->
 ```mermaid
 flowchart LR
     I[Inception] --> E[Elicitation] --> EL[Elaboration] --> N[Negotiation] --> S[Specification] --> V[Validation] --> M[Management]
@@ -124,6 +141,7 @@ flowchart LR
 - Requirement traceability matrix. Validation: reviews, prototyping, test-case generation.
 - Analysis models: **DFD** (process), ER (data), **state diagrams** (behaviour), use case diagrams, data dictionary.
 
+<!-- latex: p2-06-dfd-notation -->
 ```
  DFD notation (Yourdon/DeMarco)
  ┌──────┐  External entity   ( ○ )  Process (bubble)   ═══  Data store   ──►  Data flow
@@ -132,6 +150,7 @@ flowchart LR
 ```
 
 ### UML Diagrams
+<!-- latex: p2-06-uml -->
 ```mermaid
 flowchart TB
     U[UML 2.x: 14 diagrams] --> S[Structural - 7]
@@ -144,11 +163,16 @@ Relationships: association, aggregation (◇ hollow, "has-a", weak), composition
 
 ## 3. Software Design
 
+Design turns requirements into a structure of modules and interfaces. Its two classic measures are
+**cohesion** (how closely the parts of one module belong together) and **coupling** (how strongly modules
+depend on each other): good designs have high cohesion and low coupling.
+
 ### 3.1 Design Concepts
 Abstraction (procedural, data), architecture, patterns, separation of concerns, **modularity**, **information hiding** (Parnas), **functional independence** (high cohesion + low coupling), stepwise refinement (Wirth), refactoring, aspects.
 
 ### 3.2 Cohesion (within a module) — best to worst
 
+<!-- latex: p2-06-cohesion -->
 ```
  BEST  ▲  Functional      – single well-defined task
        │  Sequential      – output of one part is input to next
@@ -162,6 +186,7 @@ Mnemonic (worst→best): **"Coin Logic Temp Proc Comm Seq Func"**.
 
 ### 3.3 Coupling (between modules) — best to worst
 
+<!-- latex: p2-06-coupling -->
 ```
  BEST  ▲  No coupling / Data coupling – pass only needed data
        │  Stamp coupling   – pass whole data structure, use part
@@ -187,8 +212,13 @@ Golden rules (Mandel): place user in control, reduce memory load, make interface
 
 ## 4. Software Quality
 
+Quality means conformance to requirements and fitness for use. Quality models such as McCall's and ISO 9126
+break this into measurable factors; process standards such as ISO 9001 and CMMI judge the organisation that
+builds the software.
+
 ### McCall's Quality Factors (1977) — 11 factors in 3 perspectives
 
+<!-- latex: p2-06-mccall -->
 ```mermaid
 flowchart TB
     Q[McCall] --> R[Product Revision]
@@ -209,6 +239,7 @@ flowchart TB
 - ISO 9001 — QMS standard applicable to software.
 
 ### Reliability
+<!-- latex: p2-06-reliability -->
 ```
 MTBF = MTTF + MTTR
 Availability = MTTF / (MTTF + MTTR) × 100%
@@ -224,8 +255,12 @@ Reliability R(t) = e^(−λt)   (λ = failure rate)
 
 ## 5. Estimation
 
+Before a project starts, managers must estimate its size, effort and duration. Size is measured in lines of
+code or function points; empirical models such as COCOMO then turn size into effort and schedule.
+
 ### 5.1 LOC & Function Points
 **Function Point (Albrecht, 1979)**:
+<!-- latex: p2-06-fp -->
 ```
 FP = UFP × VAF        VAF = 0.65 + 0.01 × ΣFᵢ     (14 GSCs, each 0–5 → ΣFᵢ ∈ [0, 70])
 VAF range: 0.65 to 1.35
@@ -240,6 +275,7 @@ VAF range: 0.65 to 1.35
 | External Interface Files (EIF) | 5 | 7 | 10 |
 
 **Worked**: EI = 10 (avg), EO = 8 (avg), EQ = 5 (avg), ILF = 4 (avg), EIF = 2 (avg); ΣFᵢ = 42.
+<!-- latex: p2-06-fp-worked -->
 ```
 UFP = 10×4 + 8×5 + 5×4 + 4×10 + 2×7 = 40 + 40 + 20 + 40 + 14 = 154
 VAF = 0.65 + 0.42 = 1.07
@@ -248,6 +284,7 @@ FP  = 154 × 1.07 = 164.78
 
 ### 5.2 COCOMO (Boehm, 1981)
 
+<!-- latex: p2-06-cocomo -->
 ```
 Basic COCOMO:  Effort E = a·(KLOC)^b  person-months
                Time   D = c·(E)^d     months
@@ -261,6 +298,7 @@ Basic COCOMO:  Effort E = a·(KLOC)^b  person-months
 | **Embedded** | 3.6 | 1.20 | 2.5 | 0.32 | Tight constraints, hardware |
 
 **Worked**: Organic, 32 KLOC.
+<!-- latex: p2-06-cocomo-worked -->
 ```
 E = 2.4 × 32^1.05 ≈ 2.4 × 38.06 ≈ 91 PM
 D = 2.5 × 91^0.38 ≈ 2.5 × 5.55 ≈ 13.9 months
@@ -280,7 +318,12 @@ Staff ≈ 91 / 13.9 ≈ 6.5 persons
 
 ## 6. Software Testing
 
+Testing executes a program in order to find faults. It can show the presence of bugs but never their absence
+(Dijkstra), so test cases are chosen systematically, from the specification (black-box) or from the code
+(white-box).
+
 ### 6.1 Terminology
+<!-- latex: p2-06-error-chain -->
 ```
 Mistake/Error (human) ──► Fault/Defect/Bug (in code) ──► Failure (observed deviation at run time)
 ```
@@ -290,6 +333,7 @@ Mistake/Error (human) ──► Fault/Defect/Bug (in code) ──► Failure (ob
 
 ### 6.2 Levels of Testing
 
+<!-- latex: p2-06-test-levels -->
 ```mermaid
 flowchart LR
     U[Unit testing<br/>drivers & stubs] --> I[Integration testing<br/>top-down: stubs<br/>bottom-up: drivers<br/>big-bang, sandwich]
@@ -318,6 +362,7 @@ flowchart LR
 
 ### 6.4 Cyclomatic Complexity (McCabe, 1976)
 
+<!-- latex: p2-06-cyclomatic -->
 ```
 V(G) = E − N + 2P        (P = connected components, usually 1)
 V(G) = number of predicate (decision) nodes + 1
@@ -325,6 +370,7 @@ V(G) = number of bounded regions + 1  (regions of planar flow graph incl. outer)
      = number of linearly independent paths = minimum test cases for basis path testing
 ```
 
+<!-- latex: p2-06-flowgraph -->
 ```
  Flow graph for: if (a) { x } else { y }; while (b) { z }
       (1) if a
@@ -347,6 +393,10 @@ V(G) ≤ 10 recommended.
 
 ## 8. Maintenance & Re-engineering
 
+Most of the cost of software is spent after delivery. Maintenance fixes faults, adapts the program to new
+environments, adds features and improves its structure; when a system becomes too hard to change it is
+re-engineered.
+
 | Maintenance type | Share (approx.) | Purpose |
 |-----------------|------|---------|
 | Corrective | ~20% | Fix bugs |
@@ -361,6 +411,7 @@ V(G) ≤ 10 recommended.
 - Software maintenance cost is typically **60–80%** of total lifecycle cost.
 
 ### Other Metrics
+<!-- latex: p2-06-metrics -->
 ```
 Halstead:  n1 = distinct operators, n2 = distinct operands, N1, N2 = totals
            Vocabulary n = n1 + n2 ; Length N = N1 + N2
@@ -374,6 +425,7 @@ CK (OO) metrics: WMC, DIT, NOC, CBO, RFC, LCOM
 
 ### 9.1 Level-1 DFD — Library System
 
+<!-- latex: p2-06-dfd-library -->
 ```mermaid
 flowchart LR
     M[Member] -->|request book| P1((1.0 Issue book))
@@ -391,6 +443,7 @@ Rules: every process has at least one input and one output; data stores connect 
 
 ### 9.2 UML Class Diagram
 
+<!-- latex: p2-06-class -->
 ```mermaid
 classDiagram
     class Member {
@@ -419,6 +472,7 @@ Visibility: `+` public, `-` private, `#` protected, `~` package. Multiplicity: 1
 
 ### 9.3 UML Sequence Diagram — ATM Withdrawal
 
+<!-- latex: p2-06-sequence -->
 ```mermaid
 sequenceDiagram
     actor U as Customer
@@ -463,6 +517,7 @@ Function: `eligible(age, grade)` where age ∈ [18, 60] and grade ∈ {A, B, C}.
 ### 9.5 Intermediate COCOMO — Worked
 
 Semi-detached project, 50 KLOC, EAF = 1.2 (product of the 15 cost-driver multipliers).
+<!-- latex: p2-06-cocomo-int -->
 ```
 Intermediate coefficients a: organic 3.2, semi-detached 3.0, embedded 2.8 (b as in basic)
 E = 3.0 × 50^1.12 × 1.2 ≈ 3.0 × 80 × 1.2 ≈ 288 person-months

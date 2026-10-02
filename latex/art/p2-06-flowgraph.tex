@@ -1,0 +1,21 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[n/.style={vertex, fill=fslate, minimum size=8mm}]
+  \node[n] (1) at (0,0) {1}; \node[n] (2) at (-1.4,-1.4) {2}; \node[n] (3) at (1.4,-1.4) {3};
+  \node[n] (4) at (0,-2.8) {4}; \node[n] (5) at (1.6,-4.0) {5}; \node[n] (6) at (0,-5.2) {6};
+  \draw[arr] (1) -- (2); \draw[arr] (1) -- (3); \draw[arr] (2) -- (4); \draw[arr] (3) -- (4);
+  \draw[arr] (4) -- (5); \draw[arr] (5) to[bend right=50] (4); \draw[arr] (4) -- (6);
+  \node[font=\footnotesize\itshape, text=fwine] at (0,-1.4) {R1};
+  \node[font=\footnotesize\itshape, text=fwine] at (1.45,-3.0) {R2};
+  \node[font=\footnotesize\itshape, text=fwine] at (-2.0,-3.6) {R3 (outer)};
+  \node[font=\footnotesize, anchor=west] at (3.6,-0.2) {1: \texttt{if (a)}};
+  \node[font=\footnotesize, anchor=west] at (3.6,-0.8) {2: \texttt{x}\qquad 3: \texttt{y}};
+  \node[font=\footnotesize, anchor=west] at (3.6,-1.4) {4: \texttt{while (b)}};
+  \node[font=\footnotesize, anchor=west] at (3.6,-2.0) {5: \texttt{z}\qquad 6: end};
+  \node[font=\small, anchor=west, align=left] at (3.6,-3.6) {$N = 6$, $E = 7$\\[2pt]$V(G) = 7 - 6 + 2 = 3$\\[2pt]= 2 decisions + 1 = 3 regions};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Flow graph for \texttt{if (a) \{x\} else \{y\}; while (b) \{z\}}. All three formulas give
+$V(G) = 3$, so three test cases cover a basis set of paths.}
+\end{figure}

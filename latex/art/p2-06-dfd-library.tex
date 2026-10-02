@@ -1,0 +1,33 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[ent/.style={box, fill=fslate, minimum width=22mm, minimum height=9mm},
+    proc/.style={circ, fill=fsage, minimum size=19mm, align=center, font=\footnotesize, inner sep=1pt},
+    fl/.style={font=\scriptsize\itshape, text=fgink!85, fill=white, inner sep=1pt}]
+  \newcommand{\store}[4]{\fill[fsand] (#1-1.25,#2-0.32) rectangle (#1+1.25,#2+0.32);
+    \draw[fgink, line width=0.55pt] (#1+1.25,#2+0.32) -- (#1-1.25,#2+0.32) -- (#1-1.25,#2-0.32) -- (#1+1.25,#2-0.32) (#1-0.7,#2+0.32) -- (#1-0.7,#2-0.32);
+    \node[font=\footnotesize] at (#1-0.975,#2) {#3}; \node[font=\footnotesize] at (#1+0.3,#2) {#4};
+    \coordinate (#3) at (#1,#2);}
+  \node[ent] (M) at (0,0) {Member};
+  \node[proc] (P1) at (4.2,2.2) {1.0\\Issue\\book};
+  \node[proc] (P2) at (4.2,-2.2) {2.0\\Return\\book};
+  \node[proc] (P3) at (8.8,-2.2) {3.0\\Calculate\\fine};
+  \node[proc] (P4) at (12.6,2.2) {4.0\\Maintain\\catalogue};
+  \node[ent] (L) at (12.6,-0.6) {Librarian};
+  \store{8.4}{2.2}{D1}{Books}
+  \store{8.4}{0}{D2}{Loans}
+  \draw[arr] (M) to[bend left=12] node[fl, sloped, above] {request book} (P1);
+  \draw[arr] (P1) to[bend left=12] node[fl, sloped, below] {issue slip} (M);
+  \draw[arrd] (P1) -- node[fl, above] {book status} (7.15,2.2);
+  \draw[arr] (P1) -- node[fl, sloped, below] {loan record} (7.15,0.15);
+  \draw[arr] (M) -- node[fl, sloped, below] {return book} (P2);
+  \draw[arrd] (P2) -- (7.15,-0.15);
+  \draw[arr] (P2) -- node[fl, below] {fine details} (P3);
+  \draw[arr] (P3) |- node[fl, pos=0.75, below] {fine notice} (0,-4.0) -- (M);
+  \draw[arr] (L) -- node[fl, right] {new books} (P4);
+  \draw[arr] (P4) -- (9.65,2.2);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Level-1 DFD for a library system: four processes, two data stores (open rectangles) and two
+external entities.}
+\end{figure}

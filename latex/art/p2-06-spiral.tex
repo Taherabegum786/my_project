@@ -1,0 +1,20 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[scale=0.92]
+  \fill[fslate!45] (-4.4,0) rectangle (0,4.0); \fill[frose!55] (0,0) rectangle (4.4,4.0);
+  \fill[fsage!55] (0,-4.0) rectangle (4.4,0); \fill[fsand!60] (-4.4,-4.0) rectangle (0,0);
+  \draw[thinline, fgink!60] (-4.4,0) -- (4.4,0) (0,-4.0) -- (0,4.0);
+  \draw[fwine, line width=0.9pt, -{Stealth[length=2.6mm]}, domain=0:1350, samples=300, variable=\t]
+    plot ({(0.25+\t/360*0.95)*cos(180-\t)}, {(0.25+\t/360*0.95)*sin(180-\t)});
+  \fill[fwine] (-0.25,0) circle (2pt); \node[font=\scriptsize, below left=-1pt] at (-0.25,0) {start};
+  \node[font=\footnotesize, align=center, text width=40mm, anchor=south] at (-2.2,4.1) {\textbf{1. Determine objectives,}\\alternatives and constraints};
+  \node[font=\footnotesize, align=center, text width=40mm, anchor=south] at (2.2,4.1) {\textbf{2. Evaluate alternatives;}\\identify and resolve risks};
+  \node[font=\footnotesize, align=center, text width=40mm, anchor=north] at (2.2,-4.1) {\textbf{3. Develop and verify}\\the next-level product};
+  \node[font=\footnotesize, align=center, text width=40mm, anchor=north] at (-2.2,-4.1) {\textbf{4. Plan the next phase}\\(review with customer)};
+  \draw[arr, fgink!70] (0.1,0.1) -- node[lbl, sloped, above, pos=0.6] {cumulative cost} (3.0,2.6);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Boehm's spiral model. Each turn of the spiral is one phase passing through all four quadrants; the
+radius is cumulative cost. Risk analysis in quadrant 2 is what makes the model \emph{risk-driven}.}
+\end{figure}

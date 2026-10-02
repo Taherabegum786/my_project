@@ -1,0 +1,14 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[s/.style={box, minimum width=36mm, minimum height=11mm}]
+  \node[s, fill=fsand] (e) at (0,0) {\textbf{Error / mistake}\\\footnotesize made by a person};
+  \node[s, fill=frose] (f) at (6,0) {\textbf{Fault / defect / bug}\\\footnotesize present in the code};
+  \node[s, fill=fbrick!70] (x) at (12,0) {\textbf{Failure}\\\footnotesize observed at run time};
+  \draw[arr] (e) -- node[lbl, above] {introduces} (f);
+  \draw[arr] (f) -- node[lbl, above] {when executed} (x);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Error, fault and failure. Not every fault causes a failure: the faulty code must be executed with
+data that exposes it.}
+\end{figure}

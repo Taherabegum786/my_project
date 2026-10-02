@@ -1,0 +1,14 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[ph/.style={box, minimum width=34mm, minimum height=8.5mm, font=\small}]
+  \foreach \n/\t/\c [count=\i from 0] in {A/Requirements analysis/fslate, B/System design/fsage, C/{Implementation, coding}/fsand,
+      D/Testing/frose, E/Deployment/fgrey, F/Maintenance/fsteel}
+    \node[ph, fill=\c] (\n) at ({2.3*\i},{-1.05*\i}) {\t};
+  \foreach \u/\v in {A/B, B/C, C/D, D/E, E/F} \draw[arr] (\u.east) -| (\v.north);
+  \node[lbl, anchor=west] at (8.0,0.1) {each phase is finished and signed off\\before the next begins};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{The waterfall model (Royce, 1970): a linear sequence of phases, cascading like a waterfall. Going back to an
+earlier phase is possible but expensive.}
+\end{figure}

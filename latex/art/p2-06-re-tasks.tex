@@ -1,0 +1,11 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[chev/.style={ink, signal, signal to=east, signal from=west, minimum width=24mm, minimum height=10mm, font=\footnotesize, align=center, inner sep=1pt}]
+  \foreach \t/\c [count=\i from 0] in {Inception/fslate, Elicitation/fsage, Elaboration/fsand, Negotiation/frose, Specification/fslate, Validation/fsage, Management/fsand}
+    \node[chev, fill=\c] at ({2.25*\i},0) {\t};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{The seven requirements-engineering tasks (Pressman). Elicitation gathers needs; specification writes
+them down (the SRS); validation checks that they are complete, consistent and unambiguous.}
+\end{figure}

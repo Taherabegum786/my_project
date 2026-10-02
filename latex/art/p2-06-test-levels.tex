@@ -1,0 +1,22 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \pic at (0,0)     {slab={3.3}{0.9}{0.8}{fslate}};
+  \pic at (3.5,0.7) {slab={3.3}{0.9}{0.8}{fsage}};
+  \pic at (7.0,1.4) {slab={3.3}{0.9}{0.8}{fsand}};
+  \pic at (10.5,2.1){slab={3.3}{0.9}{0.8}{frose}};
+  \node[font=\small\bfseries] at (1.65,0.45) {Unit};
+  \node[font=\small\bfseries] at (5.15,1.15) {Integration};
+  \node[font=\small\bfseries] at (8.65,1.85) {System};
+  \node[font=\small\bfseries] at (12.15,2.55) {Acceptance};
+  \foreach \x/\y/\t in {1.65/0/{one module;\\drivers and stubs}, 5.15/0.7/{top-down (stubs), bottom-up (drivers), big-bang, sandwich},
+      8.65/1.4/{performance, stress, load, volume, security, recovery}, 12.15/2.1/{alpha at developer's site; beta at customer's site}} {
+    \draw[fgink!40, line width=0.4pt, dash pattern=on 1.5pt off 1.5pt] (\x,\y) -- (\x,-0.3);
+    \node[lbl, anchor=north, text width=32mm] at (\x,-0.3) {\t};
+  }
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Levels of testing. Each level tests a larger assembly than the one before, ending with the customer's
+acceptance.}
+\end{figure}

@@ -1,0 +1,19 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \foreach \n/\d [count=\i from 0] in {Data/pass only the data items needed, Stamp/pass a whole structure and use part of it,
+      Control/pass a flag that steers the callee, External/{share an external format, device or protocol},
+      Common/share global data, Content/one module uses or alters another's internals} {
+    \pgfmathtruncatemacro{\pct}{100-100*\i/5}
+    \filldraw[fill=fsage!\pct!frose, draw=fgink, line width=0.5pt] (0,{-0.62*\i}) rectangle (3.4,{-0.62*\i-0.52});
+    \node[font=\small\bfseries] at (1.7,{-0.62*\i-0.26}) {\n};
+    \node[font=\footnotesize, anchor=west] at (3.6,{-0.62*\i-0.26}) {\d};
+  }
+  \draw[arr, line width=0.9pt] (-0.5,-3.65) -- (-0.5,0);
+  \node[capt, anchor=east] at (-0.7,-0.25) {best}; \node[capt, anchor=east] at (-0.7,-3.4) {worst};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Coupling, the degree of dependence \emph{between} modules, from best (top) to worst. Aim for low
+coupling: no coupling at all is better still.}
+\end{figure}

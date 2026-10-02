@@ -1,0 +1,18 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \coordinate (L) at (0,0); \coordinate (R) at (7,0); \coordinate (T) at (3.5,4.6);
+  \filldraw[fill=fpaper, draw=fgink, line width=0.7pt] (L) -- (R) -- (T) -- cycle;
+  \path (L) -- node[font=\small\bfseries, sloped, below] {Product revision} (T);
+  \path (T) -- node[font=\small\bfseries, sloped, below] {Product transition} (R);
+  \node[font=\small\bfseries, above] at (3.5,0.05) {Product operation};
+  \node[align=right, anchor=east, font=\footnotesize] at (1.0,2.9) {maintainability\\flexibility\\testability};
+  \node[align=left, anchor=west, font=\footnotesize] at (6.0,2.9) {portability\\reusability\\interoperability};
+  \node[align=center, anchor=north, font=\footnotesize] at (3.5,-0.25) {correctness \textperiodcentered{} reliability \textperiodcentered{} efficiency\\integrity \textperiodcentered{} usability};
+  \node[lbl] at (3.5,1.6) {11 factors};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{McCall's quality triangle (1977): eleven factors grouped by the three ways a product is used ---
+operated, revised and moved to new environments.}
+\end{figure}

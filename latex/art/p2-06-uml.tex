@@ -1,0 +1,19 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[lf/.style={plain, align=left, font=\footnotesize, text width=36mm}]
+  \node[box, fill=fochre] (u) at (4.6,0) {\textbf{UML 2.x} --- 14 diagrams};
+  \node[box, fill=fslate] (s) at (0,-1.5) {\textbf{Structural} (7)};
+  \node[box, fill=fsage] (b) at (8.3,-1.5) {\textbf{Behavioural} (7)};
+  \node[lf, anchor=north] (sl) at (0,-2.3) {class\\object\\component\\deployment\\package\\composite structure\\profile};
+  \node[lf, anchor=north, text width=26mm] (bl) at (5.6,-2.3) {use case\\activity\\state machine};
+  \node[box, fill=fsand, font=\small] (i) at (10.3,-2.75) {Interaction (4)};
+  \node[lf, anchor=north, text width=30mm] (il) at (10.3,-3.5) {sequence\\communication\\timing\\interaction overview};
+  \draw[arr] (u) -- (s); \draw[arr] (u) -- (b);
+  \draw[arr] (s) -- (sl); \draw[arr] (b) -- (bl.north); \draw[arr] (b) -- (i);
+  \draw[arr] (i) -- (il);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{The fourteen UML 2.x diagrams: seven describe structure, seven describe behaviour (four of them
+interactions).}
+\end{figure}

@@ -1,0 +1,20 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \node[box, fill=fslate, minimum width=22mm] at (0,0) {Customer}; \node[lbl] at (0,-0.9) {external entity};
+  \node[circ, fill=fsage, minimum size=15mm, align=center, font=\footnotesize] at (3.6,0) {1.0\\Process}; \node[lbl] at (3.6,-1.1) {process (bubble)};
+  \fill[fsand] (6.0,-0.35) rectangle (8.6,0.35);
+  \draw[fgink, line width=0.55pt] (8.6,0.35) -- (6.0,0.35) -- (6.0,-0.35) -- (8.6,-0.35) (6.55,0.35) -- (6.55,-0.35);
+  \node[font=\footnotesize] at (6.275,0) {D1}; \node[font=\footnotesize] at (7.55,0) {Orders};
+  \node[lbl] at (7.3,-0.9) {data store};
+  \draw[arr] (9.4,0) -- node[lbl, above] {order details} (11.8,0); \node[lbl] at (10.6,-0.9) {data flow};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{DFD notation (Yourdon/DeMarco). Every flow is named; data never flows directly between two stores or
+two external entities without passing through a process.}
+\end{figure}
+\begin{itemize}
+\item A \textbf{level-0 DFD} is the \emph{context diagram}: a single process and the external entities only.
+\item \textbf{Balancing}: the inputs and outputs of a child diagram must equal those of its parent process.
+\end{itemize}

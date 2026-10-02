@@ -1,0 +1,22 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[cls/.style={ink, rectangle split, rectangle split parts=3, rectangle split part fill={fslate, fpaper, fpaper},
+    font=\footnotesize, align=left, text width=40mm
+, inner sep=3pt,
+    blur shadow={shadow blur steps=6, shadow xshift=0.7pt, shadow yshift=-0.9pt, shadow opacity=22}},
+    inh/.style={-{Triangle[open, length=3mm, width=3mm]}, draw=fgink, line width=0.6pt}]
+  \node[cls] (M) at (0,0) {\centering\textbf{Member}\nodepart{second}$-$ memberId : int\\$-$ name : String\nodepart{third}$+$ borrow(b : Book) : Loan};
+  \node[cls] (L) at (6,0) {\centering\textbf{Loan}\nodepart{second}$-$ issueDate : Date\\$-$ dueDate : Date\nodepart{third}$+$ fine() : double};
+  \node[cls] (B) at (12,0) {\centering\textbf{Book}\nodepart{second}$-$ isbn : String\\$-$ title : String\nodepart{third}$+$ isAvailable() : bool};
+  \node[box, fill=fslate, font=\footnotesize\bfseries] (S) at (-1.9,-3.3) {StudentMember};
+  \node[box, fill=fslate, font=\footnotesize\bfseries] (F) at (1.9,-3.3) {FacultyMember};
+  \draw[inh] (S.north) -- ++(0,0.6) -| ([xshift=-2mm]M.south);
+  \draw[inh] (F.north) -- ++(0,0.6) -| ([xshift=2mm]M.south);
+  \draw[arr] (M) -- node[lbl, above] {has} node[font=\scriptsize, pos=0.12, below] {1} node[font=\scriptsize, pos=0.85, below] {0..*} (L);
+  \draw[arr] (L) -- node[lbl, above] {for} node[font=\scriptsize, pos=0.12, below] {0..*} node[font=\scriptsize, pos=0.88, below] {1} (B);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{UML class diagram. Each class box lists name, attributes and operations ($-$ private, $+$ public);
+hollow triangles show inheritance; numbers at line ends give multiplicity.}
+\end{figure}

@@ -25,17 +25,21 @@
 
 \end{sylbox}
 
-\needspace{131pt}
+\needspace{161pt}
 
 \hypertarget{p2-06--1-software-process-models}{%
 \section{Software Process Models}\label{p2-06--1-software-process-models}}
+
+A process model fixes the order in which a team specifies, designs, builds and tests software. Plan-driven
+models (waterfall, V) suit stable requirements; iterative models (prototype, spiral, agile) suit
+requirements that will change. Questions usually describe a project and ask which model fits.
 
 \needspace{95pt}
 
 \hypertarget{p2-06--11-waterfall-royce-1970}{%
 \subsection{Waterfall (Royce, 1970)}\label{p2-06--11-waterfall-royce-1970}}
 
-\diagram{figures/p2-06-00}
+\input{art/p2-06-waterfall}
 
 \begin{itemize}
 \tightlist
@@ -45,16 +49,7 @@
   \textbf{V-Model}: verification phases (left) paired with validation/testing phases (right): Requirements↔Acceptance test, System design↔System test, Architecture↔Integration test, Module design↔Unit test.
 \end{itemize}
 
-\begin{listingblock}{86pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
- Requirements ─────────────────────────► Acceptance testing
-   System design ───────────────────► System testing
-     Architecture design ────────► Integration testing
-        Module design ─────────► Unit testing
-                    ╲         ╱
-                      Coding
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-06-vmodel}
 
 \needspace{161pt}
 
@@ -76,30 +71,12 @@ Quick design → build prototype → customer evaluation → refine → (throwaw
   \textbf{RAD} (Rapid Application Development): 60--90 days, component reuse, multiple teams; needs modular \& well-understood requirements.
 \end{itemize}
 
-\needspace{234pt}
+\needspace{95pt}
 
 \hypertarget{p2-06--14-spiral-model-barry-boehm-1986--risk-driven}{%
 \subsection{\texorpdfstring{Spiral Model (Barry Boehm, 1986) --- \textbf{risk-driven}}{Spiral Model (Barry Boehm, 1986) --- risk-driven}}\label{p2-06--14-spiral-model-barry-boehm-1986--risk-driven}}
 
-\begin{listingblock}{184pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-            1. Determine objectives,      │      2. Evaluate alternatives,
-               alternatives, constraints  │         IDENTIFY & RESOLVE RISKS
-                                          │
-             ┌────────────────────────────┼────────────────────────────┐
-             │       ┌────────────────────┼────────────────────┐       │
-             │       │       ┌────────────┼────────────┐       │       │
-             │       │       │          START          │       │       │
-  ───────────┼───────┼───────┼────────────┼────────────┼───────┼───────┼──────────
-             │       │       └────────────┼────────────┘       │       │
-             │       └────────────────────┼────────────────────┘       │
-             └────────────────────────────┼────────────────────────────┘
-                                          │
-            4. Plan the next phase        │      3. Develop & verify the
-                                          │         next-level product
-  Each loop = one phase; radius = cumulative cost; angle = progress through the quadrants
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-06-spiral}
 
 \begin{itemize}
 \tightlist
@@ -135,10 +112,14 @@ AOSD & Aspect-oriented: crosscutting concerns (logging, security) as aspects \\
 
 \endgroup
 
-\needspace{125pt}
+\needspace{155pt}
 
 \hypertarget{p2-06--16-agile}{%
 \subsection{Agile}\label{p2-06--16-agile}}
+
+Agile methods deliver working software in short iterations and welcome changing requirements. The
+Agile Manifesto (2001) values individuals and interactions, working software, customer collaboration and
+responding to change over processes, documentation, contract negotiation and following a plan.
 
 \textbf{Agile Manifesto (2001)} values:
 
@@ -181,7 +162,7 @@ Lean & Eliminate waste \\
 
 \endgroup
 
-\diagram{figures/p2-06-01}
+\input{art/p2-06-scrum}
 
 \needspace{130pt}
 
@@ -212,12 +193,16 @@ Safety-critical & Formal methods / Cleanroom \\
 
 \endgroup
 
-\needspace{95pt}
+\needspace{125pt}
 
 \hypertarget{p2-06--2-requirements-engineering}{%
 \section{Requirements Engineering}\label{p2-06--2-requirements-engineering}}
 
-\diagram{figures/p2-06-02}
+Requirements engineering finds out what the system must do (\textbf{functional} requirements) and how well it must
+do it (\textbf{non-functional} requirements: performance, security, usability), and records both in a
+Software Requirements Specification (SRS).
+
+\input{art/p2-06-re-tasks}
 
 \begin{itemize}
 \tightlist
@@ -233,70 +218,48 @@ Safety-critical & Formal methods / Cleanroom \\
   Analysis models: \textbf{DFD} (process), ER (data), \textbf{state diagrams} (behaviour), use case diagrams, data dictionary.
 \end{itemize}
 
-\begin{listingblock}{64pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
- DFD notation (Yourdon/DeMarco)
- ┌──────┐  External entity   ( ○ )  Process (bubble)   ═══  Data store   ──►  Data flow
- Level 0 DFD = Context diagram (single process, shows external entities only)
- Balancing: inputs/outputs of child DFD = those of parent process
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-06-dfd-notation}
 
 \needspace{95pt}
 
 \hypertarget{p2-06--uml-diagrams}{%
 \subsection{UML Diagrams}\label{p2-06--uml-diagrams}}
 
-\diagram{figures/p2-06-03}
+\input{art/p2-06-uml}
 
 Relationships: association, aggregation (◇ hollow, "has-a", weak), composition (◆ filled, strong ownership), generalisation (△ "is-a"), dependency (dashed arrow), realisation. Use case relations: «include» (mandatory), «extend» (optional).
 
-\needspace{249pt}
+\needspace{227pt}
 
 \hypertarget{p2-06--3-software-design}{%
 \section{Software Design}\label{p2-06--3-software-design}}
 
-\needspace{213pt}
+Design turns requirements into a structure of modules and interfaces. Its two classic measures are
+\textbf{cohesion} (how closely the parts of one module belong together) and \textbf{coupling} (how strongly modules
+depend on each other): good designs have high cohesion and low coupling.
+
+\needspace{161pt}
 
 \hypertarget{p2-06--31-design-concepts}{%
 \subsection{Design Concepts}\label{p2-06--31-design-concepts}}
 
 Abstraction (procedural, data), architecture, patterns, separation of concerns, \textbf{modularity}, \textbf{information hiding} (Parnas), \textbf{functional independence} (high cohesion + low coupling), stepwise refinement (Wirth), refactoring, aspects.
 
-\needspace{147pt}
+\needspace{95pt}
 
 \hypertarget{p2-06--32-cohesion-within-a-module--best-to-worst}{%
 \subsection{Cohesion (within a module) --- best to worst}\label{p2-06--32-cohesion-within-a-module--best-to-worst}}
 
-\begin{listingblock}{97pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
- BEST  ▲  Functional      – single well-defined task
-       │  Sequential      – output of one part is input to next
-       │  Communicational – parts operate on same data
-       │  Procedural      – parts follow a sequence of execution
-       │  Temporal        – executed at same time (e.g. initialisation)
-       │  Logical         – logically similar tasks, selected by flag
- WORST ▼  Coincidental    – unrelated tasks
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-06-cohesion}
 
 Mnemonic (worst→best): \textbf{"Coin Logic Temp Proc Comm Seq Func"}.
 
-\needspace{136pt}
+\needspace{95pt}
 
 \hypertarget{p2-06--33-coupling-between-modules--best-to-worst}{%
 \subsection{Coupling (between modules) --- best to worst}\label{p2-06--33-coupling-between-modules--best-to-worst}}
 
-\begin{listingblock}{86pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
- BEST  ▲  No coupling / Data coupling – pass only needed data
-       │  Stamp coupling   – pass whole data structure, use part
-       │  Control coupling – pass control flag
-       │  External coupling – share external format/device/protocol
-       │  Common coupling  – share global data
- WORST ▼  Content coupling – one module modifies/uses internals of another
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-06-coupling}
 
 \textbf{Goal: high cohesion, low coupling.}
 
@@ -333,24 +296,28 @@ Behavioural (11) & Observer, Strategy, Command, Iterator, State, Template Method
 
 \endgroup
 
-\needspace{197pt}
+\needspace{227pt}
 
 \hypertarget{p2-06--36-ui-design}{%
 \subsection{UI Design}\label{p2-06--36-ui-design}}
 
 Golden rules (Mandel): place user in control, reduce memory load, make interface consistent. Usability heuristics (Nielsen).
 
-\needspace{131pt}
+\needspace{161pt}
 
 \hypertarget{p2-06--4-software-quality}{%
 \section{Software Quality}\label{p2-06--4-software-quality}}
+
+Quality means conformance to requirements and fitness for use. Quality models such as McCall\textquotesingle s and ISO 9126
+break this into measurable factors; process standards such as ISO 9001 and CMMI judge the organisation that
+builds the software.
 
 \needspace{95pt}
 
 \hypertarget{p2-06--mccalls-quality-factors-1977--11-factors-in-3-perspectives}{%
 \subsection{McCall\textquotesingle s Quality Factors (1977) --- 11 factors in 3 perspectives}\label{p2-06--mccalls-quality-factors-1977--11-factors-in-3-perspectives}}
 
-\diagram{figures/p2-06-04}
+\input{art/p2-06-mccall}
 
 \textbf{ISO 9126} (6 characteristics): \textbf{Functionality, Reliability, Usability, Efficiency, Maintainability, Portability} (FRUEMP). Replaced by \textbf{ISO/IEC 25010} (8: + Security, Compatibility; "functional suitability", "performance efficiency").
 
@@ -370,19 +337,12 @@ Golden rules (Mandel): place user in control, reduce memory load, make interface
   ISO 9001 --- QMS standard applicable to software.
 \end{itemize}
 
-\needspace{114pt}
+\needspace{95pt}
 
 \hypertarget{p2-06--reliability}{%
 \subsection{Reliability}\label{p2-06--reliability}}
 
-\begin{listingblock}{64pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-MTBF = MTTF + MTTR
-Availability = MTTF / (MTTF + MTTR) × 100%
-ROCOF = rate of occurrence of failure; POFOD = probability of failure on demand
-Reliability R(t) = e^(−λt)   (λ = failure rate)
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-06-reliability}
 
 \needspace{95pt}
 
@@ -401,24 +361,22 @@ Reliability R(t) = e^(−λt)   (λ = failure rate)
   Risk table → \textbf{RMMM}: Risk \textbf{Mitigation} (avoid), \textbf{Monitoring}, \textbf{Management} (contingency).
 \end{itemize}
 
-\needspace{158pt}
+\needspace{191pt}
 
 \hypertarget{p2-06--5-estimation}{%
 \section{Estimation}\label{p2-06--5-estimation}}
 
-\needspace{122pt}
+Before a project starts, managers must estimate its size, effort and duration. Size is measured in lines of
+code or function points; empirical models such as COCOMO then turn size into effort and schedule.
+
+\needspace{125pt}
 
 \hypertarget{p2-06--51-loc--function-points}{%
 \subsection{LOC \& Function Points}\label{p2-06--51-loc--function-points}}
 
 \textbf{Function Point (Albrecht, 1979)}:
 
-\begin{listingblock}{42pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-FP = UFP × VAF        VAF = 0.65 + 0.01 × ΣFᵢ     (14 GSCs, each 0–5 → ΣFᵢ ∈ [0, 70])
-VAF range: 0.65 to 1.35
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-06-fp}
 
 \begingroup\small
 
@@ -451,26 +409,14 @@ External Interface Files (EIF) & 5 & 7 & 10 \\
 
 \textbf{Worked}: EI = 10 (avg), EO = 8 (avg), EQ = 5 (avg), ILF = 4 (avg), EIF = 2 (avg); ΣFᵢ = 42.
 
-\begin{listingblock}{53pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-UFP = 10×4 + 8×5 + 5×4 + 4×10 + 2×7 = 40 + 40 + 20 + 40 + 14 = 154
-VAF = 0.65 + 0.42 = 1.07
-FP  = 154 × 1.07 = 164.78
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-06-fp-worked}
 
-\needspace{103pt}
+\needspace{95pt}
 
 \hypertarget{p2-06--52-cocomo-boehm-1981}{%
 \subsection{COCOMO (Boehm, 1981)}\label{p2-06--52-cocomo-boehm-1981}}
 
-\begin{listingblock}{53pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-Basic COCOMO:  Effort E = a·(KLOC)^b  person-months
-               Time   D = c·(E)^d     months
-               Staff  = E / D
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-06-cocomo}
 
 \begingroup\small
 
@@ -507,13 +453,7 @@ Basic COCOMO:  Effort E = a·(KLOC)^b  person-months
 
 \textbf{Worked}: Organic, 32 KLOC.
 
-\begin{listingblock}{53pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-E = 2.4 × 32^1.05 ≈ 2.4 × 38.06 ≈ 91 PM
-D = 2.5 × 91^0.38 ≈ 2.5 × 5.55 ≈ 13.9 months
-Staff ≈ 91 / 13.9 ≈ 6.5 persons
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-06-cocomo-worked}
 
 \begin{itemize}
 \tightlist
@@ -550,21 +490,21 @@ Staff ≈ 91 / 13.9 ≈ 6.5 persons
   40-20-40 rule: 40\% analysis \& design, 20\% coding, 40\% testing.
 \end{itemize}
 
-\needspace{117pt}
+\needspace{161pt}
 
 \hypertarget{p2-06--6-software-testing}{%
 \section{Software Testing}\label{p2-06--6-software-testing}}
 
-\needspace{81pt}
+Testing executes a program in order to find faults. It can show the presence of bugs but never their absence
+(Dijkstra), so test cases are chosen systematically, from the specification (black-box) or from the code
+(white-box).
+
+\needspace{95pt}
 
 \hypertarget{p2-06--61-terminology}{%
 \subsection{Terminology}\label{p2-06--61-terminology}}
 
-\begin{listingblock}{31pt}
-\begin{Verbatim}[fontsize=\fontsize{8.9}{10.8}\selectfont]
-Mistake/Error (human) ──► Fault/Defect/Bug (in code) ──► Failure (observed deviation at run time)
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-06-error-chain}
 
 \begin{itemize}
 \tightlist
@@ -581,7 +521,7 @@ Mistake/Error (human) ──► Fault/Defect/Bug (in code) ──► Failure (ob
 \hypertarget{p2-06--62-levels-of-testing}{%
 \subsection{Levels of Testing}\label{p2-06--62-levels-of-testing}}
 
-\diagram{figures/p2-06-05}
+\input{art/p2-06-test-levels}
 
 \begin{itemize}
 \tightlist
@@ -634,35 +574,14 @@ Error guessing & Mutation testing \\
   Coverage strength: Statement \textless{} Branch \textless{} Condition/Decision \textless{} MC/DC \textless{} Multiple condition \textless{} Path.
 \end{itemize}
 
-\needspace{114pt}
+\needspace{95pt}
 
 \hypertarget{p2-06--64-cyclomatic-complexity-mccabe-1976}{%
 \subsection{Cyclomatic Complexity (McCabe, 1976)}\label{p2-06--64-cyclomatic-complexity-mccabe-1976}}
 
-\begin{listingblock}{64pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-V(G) = E − N + 2P        (P = connected components, usually 1)
-V(G) = number of predicate (decision) nodes + 1
-V(G) = number of bounded regions + 1  (regions of planar flow graph incl. outer)
-     = number of linearly independent paths = minimum test cases for basis path testing
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-06-cyclomatic}
 
-\begin{listingblock}{140pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
- Flow graph for: if (a) { x } else { y }; while (b) { z }
-      (1) if a
-      ╱    ╲
-    (2)x   (3)y
-      ╲    ╱
-      (4) while b ◄──┐
-        │   ╲        │
-        │   (5) z ───┘
-        ▼
-       (6) end
- N = 6, E = 7  → V(G) = 7 − 6 + 2 = 3   (2 decisions + 1 = 3)
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-06-flowgraph}
 
 V(G) ≤ 10 recommended.
 
@@ -681,10 +600,14 @@ V(G) ≤ 10 recommended.
   SCIs (Software Configuration Items). Tools: Git, SVN, CVS.
 \end{itemize}
 
-\needspace{130pt}
+\needspace{160pt}
 
 \hypertarget{p2-06--8-maintenance--re-engineering}{%
 \section{Maintenance \& Re-engineering}\label{p2-06--8-maintenance--re-engineering}}
+
+Most of the cost of software is spent after delivery. Maintenance fixes faults, adapts the program to new
+environments, adds features and improves its structure; when a system becomes too hard to change it is
+re-engineered.
 
 \begingroup\small
 
@@ -725,21 +648,12 @@ Preventive & \textasciitilde5\% & Improve future maintainability (refactoring) \
   Software maintenance cost is typically \textbf{60--80\%} of total lifecycle cost.
 \end{itemize}
 
-\needspace{136pt}
+\needspace{95pt}
 
 \hypertarget{p2-06--other-metrics}{%
 \subsection{Other Metrics}\label{p2-06--other-metrics}}
 
-\begin{listingblock}{86pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-Halstead:  n1 = distinct operators, n2 = distinct operands, N1, N2 = totals
-           Vocabulary n = n1 + n2 ; Length N = N1 + N2
-           Volume V = N log₂ n ; Difficulty D = (n1/2)(N2/n2) ; Effort E = D × V
-Defect density = defects / KLOC
-DRE (Defect Removal Efficiency) = E / (E + D)   E = errors before delivery, D = defects after
-CK (OO) metrics: WMC, DIT, NOC, CBO, RFC, LCOM
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-06-metrics}
 
 \needspace{131pt}
 
@@ -751,7 +665,7 @@ CK (OO) metrics: WMC, DIT, NOC, CBO, RFC, LCOM
 \hypertarget{p2-06--91-level-1-dfd--library-system}{%
 \subsection{Level-1 DFD --- Library System}\label{p2-06--91-level-1-dfd--library-system}}
 
-\diagram{figures/p2-06-06}
+\input{art/p2-06-dfd-library}
 
 Rules: every process has at least one input and one output; data stores connect only through processes; external entities never connect directly to data stores.
 
@@ -760,7 +674,7 @@ Rules: every process has at least one input and one output; data stores connect 
 \hypertarget{p2-06--92-uml-class-diagram}{%
 \subsection{UML Class Diagram}\label{p2-06--92-uml-class-diagram}}
 
-\diagram{figures/p2-06-07}
+\input{art/p2-06-class}
 
 Visibility: \texttt{+} public, \texttt{-} private, \texttt{\#} protected, \texttt{\textasciitilde{}} package. Multiplicity: 1, 0..1, 0..\emph{, 1..}.
 
@@ -769,7 +683,7 @@ Visibility: \texttt{+} public, \texttt{-} private, \texttt{\#} protected, \textt
 \hypertarget{p2-06--93-uml-sequence-diagram--atm-withdrawal}{%
 \subsection{UML Sequence Diagram --- ATM Withdrawal}\label{p2-06--93-uml-sequence-diagram--atm-withdrawal}}
 
-\diagram{figures/p2-06-08}
+\input{art/p2-06-sequence}
 
 \needspace{160pt}
 
@@ -835,21 +749,14 @@ Show "unknown user" & & & ✔ & ✔ \\
 
 \endgroup
 
-\needspace{144pt}
+\needspace{125pt}
 
 \hypertarget{p2-06--95-intermediate-cocomo--worked}{%
 \subsection{Intermediate COCOMO --- Worked}\label{p2-06--95-intermediate-cocomo--worked}}
 
 Semi-detached project, 50 KLOC, EAF = 1.2 (product of the 15 cost-driver multipliers).
 
-\begin{listingblock}{64pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-Intermediate coefficients a: organic 3.2, semi-detached 3.0, embedded 2.8 (b as in basic)
-E = 3.0 × 50^1.12 × 1.2 ≈ 3.0 × 80 × 1.2 ≈ 288 person-months
-D = 2.5 × 288^0.35 ≈ 2.5 × 7.26 ≈ 18 months
-Average staff ≈ 288 / 18 = 16 persons
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-06-cocomo-int}
 
 Cost drivers include RELY (reliability), CPLX (complexity), ACAP (analyst capability), PCAP, TOOL, SCED (schedule constraint), etc.
 
