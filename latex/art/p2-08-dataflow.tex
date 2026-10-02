@@ -1,0 +1,6 @@
+\begin{formulatable}
+Reaching definitions (forward): transfer & \text{OUT}[B] = \text{gen}[B] \cup (\text{IN}[B] - \text{kill}[B]) \\
+Reaching definitions: meet over predecessors & \text{IN}[B] = \textstyle\bigcup_{P \in \text{pred}(B)} \text{OUT}[P] \\
+Live variables (backward): transfer & \text{IN}[B] = \text{use}[B] \cup (\text{OUT}[B] - \text{def}[B]) \\
+Live variables: meet over successors & \text{OUT}[B] = \textstyle\bigcup_{S \in \text{succ}(B)} \text{IN}[S] \\
+\end{formulatable}

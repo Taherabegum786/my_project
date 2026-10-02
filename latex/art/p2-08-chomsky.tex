@@ -1,0 +1,20 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \foreach \i/\c/\t in {0/fsteel/{Type 0 \textperiodcentered{} Recursively enumerable}, 1/fslate/{Type 1 \textperiodcentered{} Context-sensitive},
+      2/fsage/{Type 2 \textperiodcentered{} Context-free}, 3/fsand/{Type 3 \textperiodcentered{} Regular}} {
+    \pic at ({0.75*\i},{0.9*\i}) {slab={9-1.5*\i}{0.9}{0.8}{\c}};
+    \node[font=\small\bfseries] at (4.5,{0.9*\i+0.45}) {\t};
+  }
+  \node[capt, anchor=west] at (10.2,4.0) {grammar}; \node[capt, anchor=west] at (14.4,4.0) {automaton};
+  \foreach \i/\g/\m in {0/{$\alpha \to \beta$ (unrestricted)}/{Turing machine}, 1/{$\alpha A\beta \to \alpha\gamma\beta$, $|\text{LHS}| \le |\text{RHS}|$}/{linear-bounded automaton},
+      2/{$A \to \gamma$}/{pushdown automaton}, 3/{$A \to aB \mid a$}/{finite automaton}} {
+    \node[font=\footnotesize, anchor=west] at (10.2,{0.9*\i+0.45}) {\g};
+    \node[font=\footnotesize, anchor=west] at (14.4,{0.9*\i+0.45}) {\m};
+  }
+\end{tikzpicture}
+\end{adjustbox}
+\caption{The Chomsky hierarchy. Each class contains the one above it; the restriction on grammar rules and the
+power of the matching machine grow together.}
+\end{figure}

@@ -1,0 +1,26 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[x=0.95cm]
+  \foreach \t [count=\i from 0] in {$a_1$, $\cdots$, $a_i$, $\cdots$, $a_n$, \$} {
+    \filldraw[fill=fpaper, draw=fgink, line width=0.5pt] (2+\i,2.4) rectangle (3+\i,3.15); \node[font=\small] at (2.5+\i,2.775) {\t}; }
+  \fill[fsand] (4,2.4) rectangle (5,3.15); \draw[fgink, line width=0.5pt] (4,2.4) rectangle (5,3.15); \node[font=\small] at (4.5,2.775) {$a_i$};
+  \node[capt, anchor=west] at (8.2,2.775) {input};
+  \node[box, fill=fslate, minimum width=36mm, minimum height=12mm] (prog) at (4.5,0.4) {LR parsing\\program};
+  \draw[arr] (prog.north) -- (4.5,2.4);
+  \foreach \t [count=\i from 0] in {$s_0$, $X_1$, $s_1$, $\vdots$, $X_m$, $s_m$} {
+    \filldraw[fill=fpaper, draw=fgink, line width=0.5pt] (-0.6,{-2.2+0.6*\i}) rectangle (0.6,{-1.6+0.6*\i}); \node[font=\small] at (0,{-1.9+0.6*\i}) {\t}; }
+  \fill[fsand] (-0.6,0.8) rectangle (0.6,1.4); \draw[fgink, line width=0.5pt] (-0.6,0.8) rectangle (0.6,1.4); \node[font=\small] at (0,1.1) {$s_m$};
+  \node[capt] at (0,-2.55) {stack};
+  \draw[arr] (prog.west) -- (0.6,1.1) ; \node[lbl] at (1.45,1.25) {top};
+  \draw[arr] (prog.east) -- (9.0,0.4) node[right, font=\small] {output};
+  \node[box, fill=fsage, minimum width=24mm] (act) at (3.2,-1.7) {ACTION};
+  \node[box, fill=fsage, minimum width=24mm] (go) at (5.8,-1.7) {GOTO};
+  \draw[arr] (prog) -- (act); \draw[arr] (prog) -- (go);
+  \node[font=\scriptsize, align=center] at (3.2,-2.6) {shift / reduce /\\accept / error};
+  \node[font=\scriptsize, align=center] at (5.8,-2.6) {next state after\\a reduction};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{The LR parser model. The driver program is the same for every LR parser; only the ACTION and GOTO tables
+differ between LR(0), SLR, LALR and CLR.}
+\end{figure}

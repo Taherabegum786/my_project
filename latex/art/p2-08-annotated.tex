@@ -1,0 +1,31 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[x=1.25cm, y=1.05cm, a/.style={plain, fill=fslate!50, font=\footnotesize, inner sep=2.5pt}, t/.style={font=\small}]
+  \node[a] (L) at (0,0) {$L$};
+  \node[a] (E19) at (-1.2,-1) {$E.\mathit{val} = 19$}; \node[t] (n) at (1.6,-1) {\textbf{n}};
+  \node[a] (E15) at (-3.0,-2) {$E.\mathit{val} = 15$}; \node[t] (p) at (-1.2,-2) {$+$}; \node[a] (T4) at (0.6,-2) {$T.\mathit{val} = 4$};
+  \node[a] (T15) at (-3.0,-3) {$T.\mathit{val} = 15$}; \node[a] (F4) at (0.6,-3) {$F.\mathit{val} = 4$};
+  \node[a] (T3) at (-4.6,-4) {$T.\mathit{val} = 3$}; \node[t] (m) at (-3.0,-4) {$*$}; \node[a] (F5) at (-1.4,-4) {$F.\mathit{val} = 5$};
+  \node[a, fill=fsand] (d4) at (0.6,-4) {$\mathbf{digit}.\mathit{lexval} = 4$};
+  \node[a] (F3) at (-4.6,-5) {$F.\mathit{val} = 3$}; \node[a, fill=fsand] (d5) at (-1.4,-5) {$\mathbf{digit}.\mathit{lexval} = 5$};
+  \node[a, fill=fsand] (d3) at (-4.6,-6) {$\mathbf{digit}.\mathit{lexval} = 3$};
+  \foreach \u/\v in {L/E19, L/n, E19/E15, E19/p, E19/T4, E15/T15, T4/F4, T15/T3, T15/m, T15/F5, F4/d4, T3/F3, F5/d5, F3/d3}
+    \draw[thinline] (\u) -- (\v);
+  \node[font=\small, text=fwine, anchor=west] at (0.55,0) {prints 19};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Annotated parse tree for \texttt{3 * 5 + 4 n}. Synthesised attributes flow upwards: each node's value is
+computed from its children's.}
+\end{figure}
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{@{}l l@{}}
+\toprule \textbf{Production} & \textbf{Semantic rule} \\ \midrule
+$L \to E\ \mathbf{n}$ & $\mathit{print}(E.\mathit{val})$ \\
+$E \to E_1 + T$ & $E.\mathit{val} = E_1.\mathit{val} + T.\mathit{val}$ \\
+$T \to T_1 * F$ & $T.\mathit{val} = T_1.\mathit{val} \times F.\mathit{val}$ \\
+$F \to \mathbf{digit}$ & $F.\mathit{val} = \mathbf{digit}.\mathit{lexval}$ \\
+\bottomrule
+\end{tabular}
+\end{center}

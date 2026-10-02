@@ -1,0 +1,20 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \filldraw[fill=fslate, draw=fgink, line width=0.55pt] (0,4.2) rectangle (3.2,5.2); \node at (1.6,4.7) {stack};
+  \fill[fpaper] (0,2.2) rectangle (3.2,4.2); \draw[fgink, line width=0.55pt] (0,2.2) -- (0,4.2) (3.2,2.2) -- (3.2,4.2);
+  \draw[arr] (1.6,4.15) -- (1.6,3.55); \draw[arr] (1.6,2.25) -- (1.6,2.85);
+  \node[lbl] at (1.6,3.2) {free};
+  \filldraw[fill=fsage, draw=fgink, line width=0.55pt] (0,1.2) rectangle (3.2,2.2); \node at (1.6,1.7) {heap};
+  \filldraw[fill=fsand, draw=fgink, line width=0.55pt] (0,0.6) rectangle (3.2,1.2); \node[font=\small] at (1.6,0.9) {static data};
+  \filldraw[fill=fgrey, draw=fgink, line width=0.55pt] (0,0) rectangle (3.2,0.6); \node[font=\small] at (1.6,0.3) {code (text)};
+  \node[font=\footnotesize, anchor=east] at (-0.15,5.2) {high address}; \node[font=\footnotesize, anchor=east] at (-0.15,0) {low address};
+  \node[lbl, anchor=west] at (3.4,4.7) {activation records; grows downwards};
+  \node[lbl, anchor=west] at (3.4,1.7) {dynamic allocation; grows upwards};
+  \node[lbl, anchor=west] at (3.4,0.9) {globals and static variables};
+  \node[lbl, anchor=west] at (3.4,0.3) {machine instructions};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Run-time memory layout. Stack and heap grow towards each other into the free space between them.}
+\end{figure}

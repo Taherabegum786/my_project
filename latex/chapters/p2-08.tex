@@ -54,43 +54,26 @@ for 250+}
   \textbf{Russell\textquotesingle s paradox}: the set of all sets that do not contain themselves --- self-reference leads to contradiction (basis of diagonalisation).
 \end{itemize}
 
-\needspace{95pt}
+\needspace{125pt}
 
 \hypertarget{p2-08--2-chomsky-hierarchy}{%
 \section{Chomsky Hierarchy}\label{p2-08--2-chomsky-hierarchy}}
 
-\diagram{figures/p2-08-00}
+Noam Chomsky (1956) classified grammars by the form their rules may take. Each type of grammar corresponds
+exactly to a type of machine, and the questions in this unit nearly always come down to placing a language
+in the right class.
 
-\begin{listingblock}{249pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
- ┌──────────────────────────────────────────────────┐
- │ All languages (uncountable)                      │
- │ ┌──────────────────────────────────────────────┐ │
- │ │ RE — Turing machine (may loop on rejection)  │ │
- │ │ ┌──────────────────────────────────────────┐ │ │
- │ │ │ Recursive / decidable (TM always halts)  │ │ │
- │ │ │ ┌──────────────────────────────────────┐ │ │ │
- │ │ │ │ CSL — linear bounded automaton       │ │ │ │
- │ │ │ │ ┌──────────────────────────────────┐ │ │ │ │
- │ │ │ │ │ CFL — non-deterministic PDA      │ │ │ │ │
- │ │ │ │ │ ┌──────────────────────────────┐ │ │ │ │ │
- │ │ │ │ │ │ DCFL — deterministic PDA     │ │ │ │ │ │
- │ │ │ │ │ │ ┌──────────────────────────┐ │ │ │ │ │ │
- │ │ │ │ │ │ │ Regular — finite automata│ │ │ │ │ │ │
- │ │ │ │ │ │ └──────────────────────────┘ │ │ │ │ │ │
- │ │ │ │ │ └──────────────────────────────┘ │ │ │ │ │
- │ │ │ │ └──────────────────────────────────┘ │ │ │ │
- │ │ │ └──────────────────────────────────────┘ │ │ │
- │ │ └──────────────────────────────────────────┘ │ │
- │ └──────────────────────────────────────────────┘ │
- └──────────────────────────────────────────────────┘
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-08-chomsky}
 
-\needspace{131pt}
+\input{art/p2-08-classes}
+
+\needspace{161pt}
 
 \hypertarget{p2-08--3-finite-automata}{%
 \section{Finite Automata}\label{p2-08--3-finite-automata}}
+
+A finite automaton reads its input once, left to right, remembering only which of finitely many states it is
+in. That fixed memory is exactly what limits it to the regular languages.
 
 \needspace{95pt}
 
@@ -109,11 +92,11 @@ for 250+}
 
 \textbf{Example}: DFA for binary strings ending in "01".
 
-\diagram{figures/p2-08-01}
+\input{art/p2-08-dfa01}
 
 \textbf{Example}: DFA for binary numbers divisible by 3 (state = remainder so far; reading bit b takes remainder i to (2i + b) mod 3).
 
-\diagram{figures/p2-08-02}
+\input{art/p2-08-dfa3}
 
 \needspace{130pt}
 
@@ -227,7 +210,7 @@ Exactly one \textquotesingle a\textquotesingle{} & b\emph{ab} \\
 
 \endgroup
 
-\needspace{197pt}
+\needspace{227pt}
 
 \hypertarget{p2-08--pumping-lemma-regular}{%
 \subsection{Pumping Lemma (Regular)}\label{p2-08--pumping-lemma-regular}}
@@ -236,10 +219,14 @@ If L is regular, ∃ p such that every w ∈ L with \textbar w\textbar{} ≥ p c
 Non-regular: aⁿbⁿ, ww\^{}R, palindromes, a\^{}(n²), a\^{}p (p prime), balanced parentheses, aⁿbᵐ (n \textless{} m).
 Regular: aⁿbᵐ (n, m ≥ 0), (ab)ⁿ, a\^{}(2n), strings with equal number of "ab" and "ba" substrings, aⁿbⁿ for n ≤ 100 (finite).
 
-\needspace{131pt}
+\needspace{161pt}
 
 \hypertarget{p2-08--5-context-free-languages}{%
 \section{Context-Free Languages}\label{p2-08--5-context-free-languages}}
+
+Adding a stack to a finite automaton gives it unbounded memory of a restricted, last-in-first-out kind. That
+is enough to match nested structures such as brackets and \(a^n b^n\), the backbone of every programming-language
+syntax.
 
 \needspace{95pt}
 
@@ -258,13 +245,7 @@ Regular: aⁿbᵐ (n, m ≥ 0), (ab)ⁿ, a\^{}(2n), strings with equal number of
   Remove ambiguity by encoding precedence \& associativity:
 \end{itemize}
 
-\begin{listingblock}{53pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-E → E + T | T        (+ left-assoc, lower precedence)
-T → T * F | F        (* higher precedence)
-F → (E) | id
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-08-expr-grammar}
 
 \needspace{95pt}
 
@@ -296,16 +277,7 @@ F → (E) | id
   DCFLs are unambiguous; every LR(k) grammar generates a DCFL.
 \end{itemize}
 
-\begin{listingblock}{86pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-PDA for aⁿbⁿ
- δ(q0, a, Z) = (q0, aZ)       push a
- δ(q0, a, a) = (q0, aa)       push a
- δ(q0, b, a) = (q1, ε)        pop on b
- δ(q1, b, a) = (q1, ε)
- δ(q1, ε, Z) = (qf, Z)        accept
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-08-pda}
 
 \needspace{262pt}
 
@@ -413,10 +385,13 @@ Intersection empty? & D & U & U & U & U \\
 
 D = decidable, U = undecidable.
 
-\needspace{95pt}
+\needspace{125pt}
 
 \hypertarget{p2-08--7-turing-machines}{%
 \section{Turing Machines}\label{p2-08--7-turing-machines}}
+
+A Turing machine has an unbounded tape it can read, write and move along in both directions. It is the
+accepted mathematical model of what any computer can compute.
 
 \begin{itemize}
 \tightlist
@@ -438,19 +413,14 @@ D = decidable, U = undecidable.
   \textbf{Unrestricted grammar} (α → β) ≡ TM.
 \end{itemize}
 
-\begin{listingblock}{42pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-TM for aⁿbⁿ: repeatedly mark leftmost a as X, move right to leftmost b, mark as Y,
-return left; when no a's left, check no b's remain → accept.
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-08-tm}
 
 \needspace{95pt}
 
 \hypertarget{p2-08--8-undecidability}{%
 \section{Undecidability}\label{p2-08--8-undecidability}}
 
-\diagram{figures/p2-08-03}
+\input{art/p2-08-undecidable}
 
 \begin{itemize}
 \tightlist
@@ -470,17 +440,20 @@ return left; when no a's left, check no b's remain → accept.
   Complexity: P, NP, PSPACE, EXPTIME; tractable (polynomial) vs intractable. See \protect\hyperlink{p2-07--10-complexity-classes}{Unit 7 §10}.
 \end{itemize}
 
-\needspace{131pt}
+\needspace{161pt}
 
 \hypertarget{p2-08--part-b--compiler-design}{%
 \section{Part B --- Compiler Design}\label{p2-08--part-b--compiler-design}}
 
-\needspace{95pt}
+\needspace{125pt}
 
 \hypertarget{p2-08--9-phases-of-a-compiler}{%
 \section{Phases of a Compiler}\label{p2-08--9-phases-of-a-compiler}}
 
-\diagram{figures/p2-08-04}
+A compiler translates a program in one stage after another. The analysis phases (front end) break the source
+down and check it; the synthesis phases (back end) build the target program. All phases share a symbol table.
+
+\input{art/p2-08-phases}
 
 \begin{itemize}
 \tightlist
@@ -498,12 +471,15 @@ return left; when no a's left, check no b's remain → accept.
   Compiler passes: single-pass vs multi-pass. \textbf{Cross compiler}: runs on one machine, generates code for another. \textbf{Bootstrapping}: writing a compiler in its own language (T-diagrams).
 \end{itemize}
 
-\needspace{95pt}
+\needspace{125pt}
 
 \hypertarget{p2-08--10-syntax-analysis-parsing}{%
 \section{Syntax Analysis (Parsing)}\label{p2-08--10-syntax-analysis-parsing}}
 
-\diagram{figures/p2-08-05}
+The parser checks that the token stream can be generated by the grammar and builds a parse tree. Top-down
+parsers build the tree from the root; bottom-up parsers build it from the leaves.
+
+\input{art/p2-08-parsers}
 
 \textbf{Power}: LR(0) ⊂ SLR(1) ⊂ LALR(1) ⊂ CLR(1); LL(1) ⊂ LR(1). Number of states: \textbf{LR(0) = SLR = LALR ≤ CLR}.
 
@@ -520,22 +496,14 @@ return left; when no a's left, check no b's remain → accept.
   \textbf{Left factoring}: A → αβ₁ \textbar{} αβ₂ ⇒ A → αA′, A′ → β₁ \textbar{} β₂.
 \end{itemize}
 
-\needspace{155pt}
+\needspace{125pt}
 
 \hypertarget{p2-08--102-first-and-follow}{%
 \subsection{FIRST and FOLLOW}\label{p2-08--102-first-and-follow}}
 
 Grammar:
 
-\begin{listingblock}{75pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-E  → T E'
-E' → + T E' | ε
-T  → F T'
-T' → * F T' | ε
-F  → ( E ) | id
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-08-ll-grammar}
 
 \begingroup\small
 
@@ -604,20 +572,12 @@ F & F→id & & & F→(E) & & \\
 
 \textbf{LL(1) condition}: for A → α \textbar{} β: FIRST(α) ∩ FIRST(β) = ∅; if β ⇒* ε then FIRST(α) ∩ FOLLOW(A) = ∅. A left-recursive or ambiguous grammar is \textbf{never} LL(1).
 
-\needspace{125pt}
+\needspace{95pt}
 
 \hypertarget{p2-08--103-lr-parsing}{%
 \subsection{LR Parsing}\label{p2-08--103-lr-parsing}}
 
-\begin{listingblock}{75pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
- LR parser model
- input:  a1 a2 ... an $
-           ▲
- stack:  s0 X1 s1 X2 s2 ... Xm sm     ACTION[s, a]: shift / reduce / accept / error
-                                     GOTO[s, A]: next state after reduce
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-08-lrmodel}
 
 \begingroup\small
 
@@ -700,53 +660,21 @@ Conflicts: \textbf{shift-reduce (S/R)} and \textbf{reduce-reduce (R/R)}.
   \textbf{Type checking}: static vs dynamic; type expressions; coercion; overloading resolution; strongly typed language.
 \end{itemize}
 
-\begin{listingblock}{86pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-SDT for desk calculator: input 3 * 5 + 4
-L → E n      { print(E.val) }
-E → E1 + T   { E.val = E1.val + T.val }
-T → T1 * F   { T.val = T1.val * F.val }
-F → digit    { F.val = digit.lexval }
-Annotated root value: 19
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-08-annotated}
 
-\needspace{190pt}
+\needspace{125pt}
 
 \hypertarget{p2-08--12-run-time-environment}{%
 \section{Run-Time Environment}\label{p2-08--12-run-time-environment}}
 
-\begin{listingblock}{140pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
- Memory layout
- ┌──────────────┐ high address
- │    Stack     │  activation records (grows ↓)
- │      ↓       │
- │      ↑       │
- │    Heap      │  dynamic allocation (grows ↑)
- ├──────────────┤
- │ Static data  │  globals, static
- ├──────────────┤
- │    Code      │  text
- └──────────────┘ low address
-\end{Verbatim}
-\end{listingblock}
+At run time each procedure call needs storage for its parameters, locals and bookkeeping. The run-time
+environment decides where this storage lives and how a procedure finds non-local names.
+
+\input{art/p2-08-memlayout}
 
 \textbf{Activation record (stack frame)}:
 
-\begin{listingblock}{119pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
- ┌──────────────────────────┐
- │ Actual parameters        │
- │ Returned value           │
- │ Control link (dynamic)   │ → caller's AR
- │ Access link (static)     │ → AR of lexically enclosing procedure
- │ Saved machine status     │ (return address, registers)
- │ Local data               │
- │ Temporaries              │
- └──────────────────────────┘
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-08-actrec}
 
 \begin{itemize}
 \tightlist
@@ -819,20 +747,7 @@ a  = t5
 
 \textbf{DAG} for the same expression shares the common subexpression b * −c:
 
-\begin{listingblock}{129pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-        =
-       ╱ ╲
-      a   +
-         ╱ ╲
-         ╲ ╱      (both operands point to the same * node)
-          *
-         ╱ ╲
-        b   minus
-             │
-             c
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-08-dag}
 
 \begin{itemize}
 \tightlist
@@ -842,10 +757,13 @@ a  = t5
   Boolean expressions: numerical vs \textbf{short-circuit (jumping) code}; \textbf{backpatching} for one-pass generation of jumps (makelist, merge, backpatch).
 \end{itemize}
 
-\needspace{161pt}
+\needspace{191pt}
 
 \hypertarget{p2-08--14-code-optimisation--generation}{%
 \section{Code Optimisation \& Generation}\label{p2-08--14-code-optimisation--generation}}
+
+Optimisation rewrites the intermediate code so that it runs faster or takes less space without changing what it
+computes. It works first inside basic blocks, then across the flow graph.
 
 \needspace{125pt}
 
@@ -854,7 +772,7 @@ a  = t5
 
 \textbf{Leaders}: (1) first statement; (2) target of any jump; (3) statement immediately after a jump. A basic block runs from a leader up to (not including) the next leader.
 
-\diagram{figures/p2-08-06}
+\input{art/p2-08-flowgraph}
 
 \needspace{130pt}
 
@@ -925,12 +843,7 @@ Very busy expressions & Backward & ∩ & Code hoisting \\
 
 \endgroup
 
-\begin{listingblock}{42pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-Reaching definitions:  OUT[B] = gen[B] ∪ (IN[B] − kill[B]) ;  IN[B] = ∪ OUT[pred]
-Live variables:        IN[B]  = use[B] ∪ (OUT[B] − def[B]) ;  OUT[B] = ∪ IN[succ]
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-08-dataflow}
 
 \begin{itemize}
 \tightlist
@@ -1031,33 +944,16 @@ F & F & F & \\
 
 \endgroup
 
-\begin{listingblock}{97pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-P0 = { C D E } { A B F }                       (final / non-final)
-P1: in {A B F}, F goes to non-final on 1 while A, B go to final → split
-    = { C D E } { A B } { F }
-P2: {A B}: both go to {A B} on 0 and {C D E} on 1 → no split
-    {C D E}: all go to {C D E} on 0 and {F} on 1 → no split   → stable
-Minimal DFA: 3 states  [AB] —1→ [CDE] —1→ [F] (dead), 0-loops on each
-Language: strings over {0,1} containing exactly one 1
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-08-minimise}
 
-\needspace{144pt}
+\needspace{125pt}
 
 \hypertarget{p2-08--153-cfg--cnf}{%
 \subsection{CFG → CNF}\label{p2-08--153-cfg--cnf}}
 
 S → aSb \textbar{} ab
 
-\begin{listingblock}{64pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-1. Replace terminals in long bodies:  A → a, B → b
-   S → A S B | A B
-2. Break bodies longer than 2:        S → A X,  X → S B
-CNF:  S → AX | AB,   X → SB,   A → a,   B → b
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-08-cnf}
 
 \needspace{95pt}
 
@@ -1084,7 +980,7 @@ CNF:  S → AX | AB,   X → SB,   A → a,   B → b
 
 Grammar: (0) S′ → S (1) S → AA (2) A → aA (3) A → b
 
-\diagram{figures/p2-08-07}
+\input{art/p2-08-lr0}
 
 \begingroup\small
 
@@ -1158,47 +1054,19 @@ Parse of \textbf{abb\$}:
 
 \textbf{A grammar that is LALR(1) but not SLR(1)}: S → L = R \textbar{} R, L → *R \textbar{} id, R → L. In the state containing S → L·= R and R → L·, \textquotesingle=\textquotesingle{} ∈ FOLLOW(R), so SLR has a shift/reduce conflict on \textquotesingle=\textquotesingle; LR(1) lookaheads resolve it.
 
-\needspace{256pt}
+\needspace{95pt}
 
 \hypertarget{p2-08--156-basic-blocks--worked}{%
 \subsection{Basic Blocks --- Worked}\label{p2-08--156-basic-blocks--worked}}
 
-\begin{listingblock}{206pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
- 1  i = 1                      Leaders: 1 (first), 2 & 3 & 13 (jump targets),
- 2  j = 1                               10 & 12 (follow a conditional jump)
- 3  t1 = 10 * i
- 4  t2 = t1 + j                Blocks:  B1 = {1}      B2 = {2}
- 5  t3 = 8 * t2                         B3 = {3–9}    B4 = {10–11}
- 6  t4 = t3 - 88                        B5 = {12}     B6 = {13–17}
- 7  a[t4] = 0.0
- 8  j = j + 1                  Loops: B3 (inner, back edge B3→B3),
- 9  if j <= 10 goto 3                 B2–B4 (outer), B6 (self loop)
-10  i = i + 1
-11  if i <= 10 goto 2
-12  i = 1
-13  t5 = i - 1
-14  t6 = 88 * t5
-15  a[t6] = 1.0
-16  i = i + 1
-17  if i <= 10 goto 13
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-08-blocks}
 
-\needspace{125pt}
+\needspace{95pt}
 
 \hypertarget{p2-08--157-dag-based-local-optimisation}{%
 \subsection{DAG-Based Local Optimisation}\label{p2-08--157-dag-based-local-optimisation}}
 
-\begin{listingblock}{75pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
- Block                       DAG nodes built                         Optimised block
- a = b + c                   n1 = + (b0, c0)        label a          a = b + c
- b = a - d                   n2 = − (n1, d0)        label b          b = a - d
- c = b + c                   n3 = + (n2, c0)        label c          c = b + c
- d = a - d                   − (n1, d0) exists = n2 → label d too    d = b
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-08-dagopt}
 
 \begin{itemize}
 \tightlist

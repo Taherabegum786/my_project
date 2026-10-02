@@ -1,0 +1,22 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[o/.style={circ, fill=fslate, minimum size=9mm, font=\small}, lf/.style={circ, fill=fsand, minimum size=8mm, font=\small},
+    tag/.style={font=\footnotesize\itshape, text=fwine}]
+  \node[lf] (b0) at (-1.6,0) {$b_0$}; \node[lf] (c0) at (0.2,0) {$c_0$}; \node[lf] (d0) at (2.0,0) {$d_0$};
+  \node[o] (n1) at (-0.7,1.4) {$+$}; \node[tag, left=2pt of n1] {$a$};
+  \node[o] (n2) at (0.9,2.8) {$-$}; \node[tag, right=2pt of n2] {$b,\ d$};
+  \node[o] (n3) at (-0.2,4.2) {$+$}; \node[tag, left=2pt of n3] {$c$};
+  \draw[thinline] (n1) -- (b0) (n1) -- (c0) (n2) -- (n1) (n2) -- (d0) (n3) -- (n2);
+  \draw[thinline] (n3) to[bend right=35] (c0);
+  \node[anchor=west, font=\footnotesize] at (3.4,2.1) {%
+    \renewcommand{\arraystretch}{1.25}\begin{tabular}{@{}l l@{}}
+    \toprule \textbf{Original block} & \textbf{Optimised block}\\ \midrule
+    \texttt{a = b + c} & \texttt{a = b + c}\\ \texttt{b = a - d} & \texttt{b = a - d}\\
+    \texttt{c = b + c} & \texttt{c = b + c}\\ \texttt{d = a - d} & \texttt{d = b}\\ \bottomrule
+    \end{tabular}};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{DAG of a basic block. When \texttt{d = a - d} is processed, the node $-(n_1, d_0)$ already exists (it is
+labelled $b$), so $d$ is simply attached to it: the last statement becomes the copy \texttt{d = b}.}
+\end{figure}

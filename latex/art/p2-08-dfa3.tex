@@ -1,0 +1,19 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[shorten >=1pt, node distance=30mm, on grid, auto, >={Stealth[length=2.3mm]},
+    every state/.style={ink, fill=fslate, minimum size=10mm, font=\small}, initial text=start]
+  \node[state, initial, accepting, fill=fsage] (r0) {$R_0$};
+  \node[state] (r1) [right=of r0] {$R_1$};
+  \node[state] (r2) [right=of r1] {$R_2$};
+  \path[arr] (r0) edge[loop above] node {0} ()
+             (r0) edge[bend left=20] node {1} (r1)
+             (r1) edge[bend left=20] node {1} (r0)
+             (r1) edge[bend left=20] node {0} (r2)
+             (r2) edge[bend left=20] node {0} (r1)
+             (r2) edge[loop above] node {1} ();
+\end{tikzpicture}
+\end{adjustbox}
+\caption{DFA for binary numbers divisible by 3. State $R_i$ means ``value so far $\equiv i \pmod 3$''; reading bit
+$b$ moves from $R_i$ to $R_{(2i+b) \bmod 3}$.}
+\end{figure}

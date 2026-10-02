@@ -1,0 +1,15 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \foreach \k/\c/\t in {0/fgrey/{All languages (uncountably many)}, 1/fsteel!60/{RE --- Turing machine; may loop on rejection},
+      2/fslate/{Recursive (decidable) --- TM always halts}, 3/fsage!80/{CSL --- linear-bounded automaton},
+      4/fmoss!60/{CFL --- non-deterministic PDA}, 5/fsand/{DCFL --- deterministic PDA}, 6/fochre!70/{Regular --- finite automaton}} {
+    \filldraw[fill=\c, draw=fgink, line width=0.5pt, rounded corners=4pt] ({0.5*\k},{0.62*\k}) rectangle ({13-0.5*\k},{8.4-0.62*\k});
+    \node[font=\footnotesize, anchor=west] at ({0.5*\k+0.2},{8.4-0.62*\k-0.3}) {\t};
+  }
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Language classes, each properly contained in the next. Regular, DCFL, CSL and recursive languages are
+closed under complement; CFL and RE are not.}
+\end{figure}

@@ -1,0 +1,16 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[bb/.style={box, fill=fslate, font=\footnotesize\ttfamily, align=left, text width=36mm}]
+  \node[bb] (B1) at (0,0) {B1: i = 1};
+  \node[bb] (B2) at (0,-1.6) {B2: t1 = 4*i\\\phantom{B2: }t2 = a[t1]\\\phantom{B2: }if t2 > 0 goto B4};
+  \node[bb] (B3) at (-2.6,-3.4) {B3: s = s + t2};
+  \node[bb] (B4) at (0,-4.9) {B4: i = i + 1\\\phantom{B4: }if i <= n goto B2};
+  \node[bb, fill=fsage] (B5) at (0,-6.4) {B5: exit};
+  \draw[arr] (B1) -- (B2); \draw[arr] (B2.south west) ++(0.6,0) -- (B3); \draw[arr] (B2) -- (B4);
+  \draw[arr] (B3) |- (B4.west); \draw[arr] (B4) -- (B5);
+  \draw[arr, fwine] (B4.east) -- ++(0.6,0) |- node[lbl, pos=0.25, right, text=fwine] {back edge} (B2.east);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Basic blocks and the flow graph of a loop. The back edge B4 $\to$ B2 marks a natural loop \{B2, B3, B4\}.}
+\end{figure}

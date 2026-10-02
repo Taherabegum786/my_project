@@ -1,0 +1,15 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \foreach \t/\c/\n [count=\i from 0] in {actual parameters/fslate/, returned value/fslate/, control link (dynamic)/fsand/{points to the caller's record},
+      access link (static)/fsand/{points to the record of the lexically enclosing procedure}, saved machine status/fsage/{return address, registers},
+      local data/fgrey/, temporaries/fgrey/} {
+    \filldraw[fill=\c, draw=fgink, line width=0.5pt] (0,{-0.62*\i}) rectangle (4.4,{-0.62*\i-0.62});
+    \node[font=\small] at (2.2,{-0.62*\i-0.31}) {\t};
+    \node[lbl, anchor=west] at (4.6,{-0.62*\i-0.31}) {\n};
+  }
+\end{tikzpicture}
+\end{adjustbox}
+\caption{A typical activation record (stack frame), created on each procedure call and removed on return.}
+\end{figure}

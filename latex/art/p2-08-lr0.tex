@@ -1,0 +1,28 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[it/.style={box, fill=fpaper, align=left, font=\footnotesize, inner sep=3pt}, red/.style={it, fill=fsage},
+    e/.style={arr}, el/.style={font=\footnotesize, fill=white, inner sep=1pt}]
+  \node[it, fill=fslate!60] (I0) at (0,0) {\textbf{I0}\\$S' \to \cdot S$\\$S \to \cdot AA$\\$A \to \cdot aA$\\$A \to \cdot b$};
+  \node[red] (I1) at (4.6,2.6) {\textbf{I1}\\$S' \to S\,\cdot$};
+  \node[it] (I2) at (4.6,0.2) {\textbf{I2}\\$S \to A \cdot A$\\$A \to \cdot aA$\\$A \to \cdot b$};
+  \node[red] (I5) at (9.4,1.4) {\textbf{I5}\\$S \to AA\,\cdot$};
+  \node[it] (I3) at (4.6,-3.6) {\textbf{I3}\\$A \to a \cdot A$\\$A \to \cdot aA$\\$A \to \cdot b$};
+  \node[red] (I4) at (9.4,-1.2) {\textbf{I4}\\$A \to b\,\cdot$};
+  \node[red] (I6) at (9.4,-3.6) {\textbf{I6}\\$A \to aA\,\cdot$};
+  \draw[e] (I0) |- node[el, pos=0.75] {$S$} (I1);
+  \draw[e] (I0) -- node[el] {$A$} (I2);
+  \draw[e] (I0) |- node[el, pos=0.75] {$a$} (I3);
+  \draw[e] (I2) -- node[el] {$A$} (I5);
+  \draw[e] (I2) -- node[el] {$b$} (I4);
+  \draw[e] (I2) -- node[el] {$a$} (I3);
+  \draw[e] (I3) -- node[el] {$A$} (I6);
+  \draw[e] (I3) -- node[el] {$b$} (I4);
+  \path (I3) edge[e, loop below, looseness=5] node[el, below] {$a$} ();
+
+  \draw[e] (I0.south) ++(0.4,0) |- node[el, pos=0.8] {$b$} ([yshift=-3mm]I4.west) ;
+\end{tikzpicture}
+\end{adjustbox}
+\caption{LR(0) automaton for $S \to AA$, $A \to aA \mid b$. Shaded states contain a complete item (a reduction);
+none also contains a shift, so the grammar is LR(0).}
+\end{figure}

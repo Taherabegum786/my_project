@@ -1,0 +1,21 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[n/.style={box, font=\footnotesize, minimum width=22mm}]
+  \node[n, fill=fochre] (P) at (0,0) {\textbf{Parsers}};
+  \node[n, fill=fslate] (TD) at (-4.2,-1.3) {\textbf{Top-down}\\leftmost derivation};
+  \node[n, fill=fsage] (BU) at (4.2,-1.3) {\textbf{Bottom-up} (shift--reduce)\\reverse rightmost derivation};
+  \node[n, fill=fslate!50] (RD) at (-5.8,-2.9) {recursive descent\\(backtracking)};
+  \node[n, fill=fslate!50] (PP) at (-2.6,-2.9) {predictive LL(1)\\(no backtracking)};
+  \node[n, fill=fsage!50] (OP) at (1.6,-2.9) {operator\\precedence};
+  \node[n, fill=fsage!50] (LR) at (5.6,-2.9) {LR parsers};
+  \foreach \x/\t [count=\k] in {2.8/LR(0), 4.6/SLR(1), 6.4/LALR(1), 8.4/CLR(1)} \node[n, fill=fsand, minimum width=15mm] (L\k) at (\x,-4.4) {\t};
+  \draw[arr] (P) -- (TD); \draw[arr] (P) -- (BU); \draw[arr] (TD) -- (RD); \draw[arr] (TD) -- (PP);
+  \draw[arr] (BU) -- (OP); \draw[arr] (BU) -- (LR);
+  \foreach \k in {1,...,4} \draw[arr] (LR) -- (L\k);
+
+  \draw[arr, fwine] (2.8,-5.0) -- node[lbl, below, text=fwine] {increasing power: LR(0) $<$ SLR $<$ LALR $<$ CLR} (8.4,-5.0);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{A family tree of parsers. Bottom-up LR parsers handle a strictly larger class of grammars than LL(1).}
+\end{figure}

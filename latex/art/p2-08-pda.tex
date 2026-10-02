@@ -1,0 +1,17 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[shorten >=1pt, node distance=42mm, on grid, auto, >={Stealth[length=2.3mm]},
+    every state/.style={ink, fill=fslate, minimum size=10mm, font=\small}, initial text=start, el/.style={font=\footnotesize, align=center}]
+  \node[state, initial] (q0) {$q_0$};
+  \node[state] (q1) [right=of q0] {$q_1$};
+  \node[state, accepting, fill=fsage] (qf) [right=of q1] {$q_f$};
+  \path[arr] (q0) edge[loop above] node[el] {$a, Z / aZ$\\$a, a / aa$} ()
+             (q0) edge node[el] {$b, a / \varepsilon$} (q1)
+             (q1) edge[loop above] node[el] {$b, a / \varepsilon$} ()
+             (q1) edge node[el] {$\varepsilon, Z / Z$} (qf);
+  \node[lbl] at (0,-1.1) {push each $a$}; \node[lbl] at (4.2,-1.1) {pop one $a$ per $b$}; \node[lbl] at (8.4,-1.1) {stack back to $Z$: accept};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{PDA for $\{a^n b^n \mid n \ge 1\}$. An edge label $x, Y / \gamma$ means: read $x$, pop $Y$, push $\gamma$.}
+\end{figure}

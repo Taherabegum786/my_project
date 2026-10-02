@@ -1,0 +1,26 @@
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}l l p{0.5\linewidth}@{}}
+\toprule \textbf{Round} & \textbf{Partition} & \textbf{Reason} \\ \midrule
+$P_0$ & $\{C, D, E\}\ \{A, B, F\}$ & final versus non-final \\
+$P_1$ & $\{C, D, E\}\ \{A, B\}\ \{F\}$ & on 1, $F$ goes to a non-final state while $A$, $B$ go to final states \\
+$P_2$ & $\{C, D, E\}\ \{A, B\}\ \{F\}$ & no group splits further: stable \\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[shorten >=1pt, node distance=32mm, on grid, auto, >={Stealth[length=2.3mm]},
+    every state/.style={ink, fill=fslate, minimum size=11mm, font=\small}, initial text=start]
+  \node[state, initial] (ab) {$AB$};
+  \node[state, accepting, fill=fsage] (cde) [right=of ab] {$CDE$};
+  \node[state, fill=fgrey] (f) [right=of cde] {$F$};
+  \path[arr] (ab) edge[loop above] node {0} () (ab) edge node {1} (cde)
+             (cde) edge[loop above] node {0} () (cde) edge node {1} (f)
+             (f) edge[loop above] node {0, 1} ();
+\end{tikzpicture}
+\end{adjustbox}
+\caption{The minimal DFA has three states and accepts strings over $\{0, 1\}$ containing exactly one 1; $F$ is a
+dead state.}
+\end{figure}

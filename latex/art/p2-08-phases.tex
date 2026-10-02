@@ -1,0 +1,21 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[ph/.style={box, fill=fslate, minimum width=48mm, minimum height=8mm}, io/.style={plain, minimum width=36mm}]
+  \node[io] (S) at (0,0) {source program};
+  \foreach \n/\t/\c/\y in {LA/Lexical analyser/fslate/-1.4, SA/Syntax analyser/fslate/-2.8, SEM/Semantic analyser/fslate/-4.2,
+      ICG/Intermediate-code generator/fsage/-5.6, CO/Code optimiser/fsage/-7.0, CG/Code generator/fsage/-8.4}
+    \node[ph, fill=\c] (\n) at (0,\y) {\t};
+  \node[io] (T) at (0,-9.8) {target program};
+  \foreach \u/\v/\l in {S/LA/{character stream}, LA/SA/tokens, SA/SEM/parse tree, SEM/ICG/annotated tree, ICG/CO/three-address code, CO/CG/optimised IR, CG/T/{}}
+    \draw[arr] (\u) -- node[lbl, right=1pt] {\l} (\v);
+  \node[db, minimum width=20mm, minimum height=16mm] (ST) at (-5.0,-4.9) {symbol\\table};
+  \node[box, fill=frose, minimum width=22mm, minimum height=12mm] (EH) at (5.4,-2.8)
+ {error\\handler};
+  \foreach \n in {LA,SA,SEM,ICG,CO,CG} \draw[dasharr, <->, fgink!60] (ST.east) -- (\n.west);
+  \foreach \n in {LA,SA,SEM} \draw[dasharr, fgink!60] (\n.east) -- (EH.west);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{The phases of a compiler. The first three phases (blue) form the analysis front end and the last three
+(green) the synthesis back end. Every phase consults the symbol table; the analysis phases also report errors.}
+\end{figure}

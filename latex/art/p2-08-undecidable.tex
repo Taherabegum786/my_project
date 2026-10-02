@@ -1,0 +1,15 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[b/.style={box, text width=44mm, font=\footnotesize}]
+  \node[b, fill=frose] (H) at (0,0) {\textbf{Halting problem}\\undecidable, but RE};
+  \node[b, fill=fslate] (R) at (7,1.5) {\textbf{Rice's theorem}: every non-trivial property of RE languages is undecidable};
+  \node[b, fill=fsand] (P) at (7,-1.5) {\textbf{Post Correspondence Problem}\\undecidable (MPCP too)};
+  \node[b, fill=fsage] (C) at (14,-1.5) {CFG ambiguity, CFG equivalence, CFL intersection emptiness: undecidable};
+  \draw[arr] (H) -- node[lbl, sloped, above] {generalises} (R);
+  \draw[arr] (H) -- node[lbl, sloped, below] {reduces to} (P);
+  \draw[arr] (P) -- node[lbl, above] {reduces to} (C);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{How the classic undecidability results follow from the halting problem by reduction.}
+\end{figure}

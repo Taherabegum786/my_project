@@ -1,0 +1,16 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[o/.style={circ, fill=fslate, minimum size=9mm, font=\small}, lf/.style={circ, fill=fsand, minimum size=8mm, font=\small}]
+  \node[o] (eq) at (0,0) {$=$};
+  \node[lf] (a) at (-1.2,-1.2) {$a$}; \node[o] (plus) at (1.2,-1.2) {$+$};
+  \node[o] (mul) at (1.2,-2.7) {$*$};
+  \node[lf] (b) at (0.2,-4.0) {$b$}; \node[o, minimum size=11mm, font=\footnotesize] (minus) at (2.2,-4.0) {minus};
+  \node[lf] (c) at (2.2,-5.3) {$c$};
+  \draw[thinline] (eq) -- (a) (eq) -- (plus) (mul) -- (b) (mul) -- (minus) (minus) -- (c);
+  \draw[thinline] (plus) to[bend right=30] (mul); \draw[thinline] (plus) to[bend left=30] (mul);
+  \node[lbl, anchor=west] at (2.6,-1.95) {both operands of $+$ are\\the same $*$ node};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{DAG for \texttt{a = b * -c + b * -c}. The common subexpression \texttt{b * -c} is built once and shared.}
+\end{figure}
