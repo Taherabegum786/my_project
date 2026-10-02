@@ -1,0 +1,11 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[chev/.style={ink, signal, signal to=east, signal from=west, minimum width=30mm, minimum height=13mm, font=\footnotesize, align=center, inner sep=1pt}]
+  \foreach \t/\s/\c [count=\i from 0] in {Morphological/{stems, affixes}/fslate, Syntactic/{parsing}/fsage, Semantic/{meaning}/fsand,
+      Discourse/{context of\\sentences}/frose, Pragmatic/{intended\\meaning}/fslate}
+    \node[chev, fill=\c] at ({2.85*\i},0) {\textbf{\t}\\\scriptsize \s};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{The stages of natural-language understanding, from the form of single words to the speaker's intention.}
+\end{figure}

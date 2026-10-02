@@ -16,6 +16,9 @@
 
 ## 1. Approaches to AI
 
+Artificial intelligence studies how to build systems that perceive, reason, learn and act. Definitions differ in
+whether they aim to think or to act, and whether the yardstick is human behaviour or ideal rationality.
+
 | | Human-like | Rational |
 |-|-----------|----------|
 | **Thinking** | Cognitive modelling (GPS — Newell & Simon) | Laws of thought (logic) |
@@ -27,6 +30,7 @@
 
 ### 1.1 Agents
 
+<!-- latex: p2-10-agent -->
 ```mermaid
 flowchart LR
     E[Environment] -->|Percepts via sensors| A[Agent<br/>agent function: percept sequence → action]
@@ -49,9 +53,13 @@ Environment properties: fully/partially observable, deterministic/stochastic, ep
 
 ## 2. State Space Search
 
+Many problems can be posed as finding a path through a space of states, from a start state to a goal state, using
+operators that turn one state into another. Search strategies differ in the order in which they explore states.
+
 Problem = initial state, actions, transition model, **goal test**, path cost.
 Examples: 8-puzzle (9!/2 = 181,440 reachable states), water jug, missionaries & cannibals, 8-queens, Tower of Hanoi.
 
+<!-- latex: p2-10-waterjug -->
 ```
  Water jug (4 L & 3 L, get 2 L in 4 L jug)
  (0,0) → (0,3) → (3,0) → (3,3) → (4,2) → (0,2) → (2,0)   ✔
@@ -73,6 +81,7 @@ IDDFS combines BFS's completeness/optimality with DFS's memory — preferred uni
 
 ### 2.2 Heuristic (Informed) Search
 
+<!-- latex: p2-10-heuristics -->
 ```
 Greedy best-first:  f(n) = h(n)                 — fast, not optimal, not complete
 A*:                 f(n) = g(n) + h(n)          — optimal if h is ADMISSIBLE (tree search)
@@ -84,6 +93,7 @@ Dominance:    h₂ ≥ h₁ (both admissible) ⇒ h₂ better (expands fewer nod
 8-puzzle heuristics: h₁ = misplaced tiles, h₂ = **Manhattan distance** (h₂ dominates h₁).
 
 **A\* worked** — h(S)=7, h(A)=6, h(B)=2, h(C)=1, h(G)=0 (all admissible)
+<!-- latex: p2-10-astar -->
 ```mermaid
 flowchart LR
     S((S)) -->|1| A((A))
@@ -114,12 +124,16 @@ With a consistent heuristic, a node is never re-expanded.
 
 ## 3. Game Playing
 
+In two-player games the opponent also chooses moves. The game tree alternates MAX levels (our moves) and MIN levels
+(the opponent's), and the value of a position is worked out from the leaves upwards.
+
 ### 3.1 Minimax
 MAX picks maximum, MIN picks minimum child value; complete & optimal against an optimal opponent. Time O(b^m), space O(bm).
 
 ### 3.2 Alpha–Beta Pruning
 α = best value MAX can guarantee so far (lower bound); β = best value MIN can guarantee (upper bound). **Prune when α ≥ β.**
 
+<!-- latex: p2-10-alphabeta -->
 ```
                          MAX                    A = 3
                     ┌─────┴─────┬───────────┐
@@ -136,6 +150,9 @@ MAX picks maximum, MIN picks minimum child value; complete & optimal against an 
 
 ## 4. Knowledge Representation
 
+An intelligent program needs knowledge in a form it can reason with: logic for precise inference, structured
+representations (semantic nets, frames, scripts) for organised everyday knowledge.
+
 ### 4.1 Logic
 - **Propositional logic**; **First-order predicate logic (FOPL)** — see [Unit 1](01-Discrete-Structures-Optimization.md#1-mathematical-logic).
 - Inference: **resolution** (refutation — negate goal, convert to **CNF/clausal form**, derive empty clause), **forward chaining** (data-driven; production systems, OPS5), **backward chaining** (goal-driven; Prolog, MYCIN).
@@ -146,6 +163,7 @@ MAX picks maximum, MIN picks minimum child value; complete & optimal against an 
 
 ### 4.2 Structured Representations
 
+<!-- latex: p2-10-semnet -->
 ```mermaid
 flowchart LR
     Bird -->|is-a| Animal
@@ -164,6 +182,7 @@ flowchart LR
 
 ### 4.3 Expert Systems
 
+<!-- latex: p2-10-expert -->
 ```mermaid
 flowchart LR
     U[User] <--> UI[User interface]
@@ -184,6 +203,7 @@ flowchart LR
 | INTERNIST / CADUCEUS | Internal medicine |
 
 ### 4.4 Uncertainty
+<!-- latex: p2-10-uncertainty -->
 ```
 Bayes:   P(H|E) = P(E|H)·P(H) / P(E)
 Certainty factor (MYCIN): CF = MB − MD ∈ [−1, 1]
@@ -205,6 +225,7 @@ Other: fuzzy logic (vagueness — §7), Markov models, HMMs.
 | Graphplan | Planning graph with mutex links |
 | Forward (progression) vs backward (regression) state-space planning | |
 
+<!-- latex: p2-10-strips -->
 ```
 STRIPS operator (Blocks world)
  PICKUP(x)
@@ -220,6 +241,7 @@ STRIPS operator (Blocks world)
 
 ## 6. Natural Language Processing
 
+<!-- latex: p2-10-nlp -->
 ```mermaid
 flowchart LR
     T[Text] --> M[Morphological analysis<br/>stems, affixes]
@@ -253,8 +275,12 @@ flowchart LR
 
 ## 8. Fuzzy Sets & Logic (Zadeh, 1965)
 
+In a classical set an element is either in or out. In a fuzzy set it belongs to a degree $\mu \in [0, 1]$,
+which lets systems reason with vague terms such as “hot” or “tall”.
+
 Membership μ_A(x) ∈ [0, 1] (vs crisp {0, 1}).
 
+<!-- latex: p2-10-membership -->
 ```
  μ
  1 ┤      ╱‾‾‾‾╲              triangular(a,b,c): peak at b
@@ -265,6 +291,7 @@ Membership μ_A(x) ∈ [0, 1] (vs crisp {0, 1}).
 ```
 
 ### Operations (standard Zadeh)
+<!-- latex: p2-10-fuzzyops -->
 ```
 Union          μ_{A∪B}(x) = max(μA, μB)
 Intersection   μ_{A∩B}(x) = min(μA, μB)
@@ -276,6 +303,7 @@ Concentration (very)   μ²     Dilation (somewhat) √μ
 **Laws that FAIL in fuzzy sets**: **law of excluded middle** (A ∪ A' ≠ U) and **law of contradiction** (A ∩ A' ≠ ∅). De Morgan, associativity, distributivity still hold.
 
 **Worked**: A = {0.2/x₁, 0.7/x₂, 1/x₃}, B = {0.5/x₁, 0.3/x₂, 0.8/x₃}
+<!-- latex: p2-10-fuzzy-worked -->
 ```
 A ∪ B = {0.5, 0.7, 1}      A ∩ B = {0.2, 0.3, 0.8}     A' = {0.8, 0.3, 0}
 A ∩ A' = {0.2, 0.3, 0} ≠ ∅
@@ -286,6 +314,7 @@ A ∩ A' = {0.2, 0.3, 0} ≠ ∅
 - **Linguistic variables**: e.g. Temperature ∈ {cold, warm, hot}; hedges: very, somewhat.
 - **Fuzzy inference system**:
 
+<!-- latex: p2-10-fis -->
 ```mermaid
 flowchart LR
     I[Crisp input] --> F[Fuzzification<br/>membership functions]
@@ -300,6 +329,7 @@ flowchart LR
 
 ## 9. Genetic Algorithms (John Holland, 1975)
 
+<!-- latex: p2-10-ga -->
 ```mermaid
 flowchart TD
     I[Initialise random population<br/>encoded chromosomes] --> E[Evaluate fitness]
@@ -320,6 +350,9 @@ flowchart TD
 
 ## 10. Artificial Neural Networks
 
+Artificial neural networks are built from simple units that compute a weighted sum of their inputs and pass it
+through an activation function. They learn by adjusting the weights from examples.
+
 ### 10.1 Learning Paradigms
 | Type | Data | Examples |
 |------|------|----------|
@@ -331,6 +364,7 @@ Q-learning: Q(s,a) ← Q(s,a) + α[r + γ max_a′ Q(s′,a′) − Q(s,a)].
 
 ### 10.2 Perceptron (Rosenblatt, 1958)
 
+<!-- latex: p2-10-perceptron -->
 ```
  x1 ──w1──╲
  x2 ──w2───► Σ wᵢxᵢ + b ──► step(·) ──► y
@@ -344,6 +378,7 @@ Q-learning: Q(s,a) ← Q(s,a) + α[r + γ max_a′ Q(s′,a′) − Q(s,a)].
 
 ### 10.3 Multilayer Perceptron & Backpropagation
 
+<!-- latex: p2-10-mlp -->
 ```mermaid
 flowchart LR
     x1((x1)) --> h1((h1)) & h2((h2)) & h3((h3))
@@ -373,6 +408,7 @@ flowchart LR
 
 ### 11.1 Alpha–Beta Trace (depth 3)
 
+<!-- latex: p2-10-alphabeta2 -->
 ```
                          MAX  A
                ┌──────────┴──────────┐
@@ -398,6 +434,7 @@ flowchart LR
 ### 11.2 Resolution Refutation
 
 **First-order**: "All men are mortal. Socrates is a man. Prove Socrates is mortal."
+<!-- latex: p2-10-resolution -->
 ```
 1. ¬Man(x) ∨ Mortal(x)          (∀x Man(x) → Mortal(x))
 2. Man(Socrates)
@@ -420,6 +457,7 @@ Rules: R1: A ∧ B → C; R2: C → D; R3: D ∧ E → F. Facts: A, B, E. Goal: 
 ### 11.4 Bayes — Medical Test
 
 Disease prevalence 1%, test sensitivity 99%, false-positive rate 5%.
+<!-- latex: p2-10-bayes -->
 ```
 P(D | +) = P(+ | D)·P(D) / [P(+ | D)·P(D) + P(+ | ¬D)·P(¬D)]
          = 0.99 × 0.01 / (0.0099 + 0.05 × 0.99)
@@ -428,6 +466,7 @@ P(D | +) = P(+ | D)·P(D) / [P(+ | D)·P(D) + P(+ | ¬D)·P(¬D)]
 
 ### 11.5 Fuzzy Max–Min Composition & Inference
 
+<!-- latex: p2-10-maxmin -->
 ```
 R = | 0.6  0.3 |      S = | 1.0  0.5 |      T = R ∘ S
     | 0.2  0.9 |          | 0.8  0.4 |
@@ -470,6 +509,7 @@ Check: (0,0) → −2 → 0; (0,1) → −1 → 0; (1,0) → 0 → 0; (1,1) → 
 ### 11.8 One Backpropagation Step (single sigmoid neuron)
 
 x = 1, w = 0.5, b = 0, target t = 1, η = 1, E = ½(t − o)².
+<!-- latex: p2-10-backprop -->
 ```
 net = 0.5 → o = σ(0.5) = 0.6225
 δ = (t − o) · o(1 − o) = 0.3775 × 0.6225 × 0.3775 ≈ 0.0887
@@ -479,6 +519,7 @@ net = 0.5 → o = σ(0.5) = 0.6225
 ### 11.9 Hopfield Storage & Recall
 
 Store bipolar pattern p = [1, −1, 1]: W = p pᵀ − I.
+<!-- latex: p2-10-hopfield -->
 ```
 W = |  0  −1   1 |      Noisy input x = [1, 1, 1]
     | −1   0  −1 |      W x = [0, −2, 0] → sign (keep old value on 0) = [1, −1, 1]
@@ -487,6 +528,7 @@ W = |  0  −1   1 |      Noisy input x = [1, 1, 1]
 
 ### 11.10 CSP — Map Colouring with Heuristics
 
+<!-- latex: p2-10-mapcolour -->
 ```mermaid
 flowchart LR
     WA((WA)) --- NT((NT))

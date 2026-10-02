@@ -1,0 +1,20 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[v/.style={vertex, fill=fslate, minimum size=9mm}, w/.style={edgelbl}, opt/.style={draw=fwine, line width=1.4pt, ->}, hv/.style={font=\scriptsize\itshape, text=fgink!80}]
+  \node[v, fill=fsand] (S) at (0,0) {S}; \node[v] (A) at (2.6,1.4) {A}; \node[v] (B) at (2.6,-1.4) {B};
+  \node[v] (C) at (5.4,-1.4) {C}; \node[v, fill=fsage] (G) at (8.0,0) {G};
+  \draw[opt] (S) -- node[w] {1} (A);
+  \draw[arr] (S) -- node[w] {4} (B);
+  \draw[opt] (A) -- node[w] {2} (B);
+  \draw[arr] (A) -- node[w] {5} (C);
+  \draw[arr] (A) -- node[w] {12} (G);
+  \draw[opt] (B) -- node[w] {2} (C);
+  \draw[opt] (C) -- node[w] {3} (G);
+  \node[hv, above=1pt of S] {$h=7$}; \node[hv, above=1pt of A] {$h=6$}; \node[hv, below=1pt of B] {$h=2$};
+  \node[hv, below=1pt of C] {$h=1$}; \node[hv, above=1pt of G] {$h=0$};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{A* example. The optimal path S--A--B--C--G (cost 8) is drawn in red. Since $h(A) = 6 > c(A,B) + h(B) =
+4$, the heuristic is admissible but not consistent.}
+\end{figure}

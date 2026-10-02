@@ -1,0 +1,21 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[c/.style={box, fill=fslate, rounded corners=5pt}, i/.style={box, fill=fsand}, p/.style={plain}, el/.style={font=\scriptsize\itshape, fill=white, inner sep=1pt}]
+  \node[c] (An) at (0,2.4) {Animal};
+  \node[c] (Bi) at (0,0.8) {Bird};
+  \node[c] (Pe) at (0,-0.8) {Penguin};
+  \node[i] (Tw) at (0,-2.4) {Tweety};
+  \node[p] (Fl) at (4.2,0) {Fly};
+  \node[p] (Fe) at (-4.0,0.8) {Feathers};
+  \draw[arr] (Bi) -- node[el] {is-a} (An);
+  \draw[arr] (Pe) -- node[el] {is-a} (Bi);
+  \draw[arr] (Tw) -- node[el] {instance-of} (Pe);
+  \draw[arr] (Bi) -- node[el, sloped] {can} (Fl);
+  \draw[arr, fwine] (Pe) -- node[el, sloped, text=fwine] {cannot} (Fl);
+  \draw[arr] (Bi) -- node[el] {has} (Fe);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{A semantic network. Properties are inherited down is-a links (Tweety has feathers); a more specific link
+(Penguin cannot fly) overrides an inherited default.}
+\end{figure}

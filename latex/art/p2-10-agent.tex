@@ -1,0 +1,18 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \filldraw[fill=fslate!50, draw=fgink, line width=0.6pt, rounded corners=3pt] (0,-0.1) rectangle (5.2,3.7);
+  \node[capt] at (2.6,4.0) {agent};
+  \node[box, fill=fpaper, minimum width=20mm] (sen) at (2.6,3.0) {sensors};
+  \node[box, fill=fsand, text width=42mm, font=\footnotesize] (fn) at (2.6,1.8) {agent function:\\percept sequence $\to$ action};
+  \node[box, fill=fpaper, minimum width=20mm] (act) at (2.6,0.6) {actuators};
+  \draw[arr] (sen) -- (fn); \draw[arr] (fn) -- (act);
+  \node[cloudnode, minimum width=34mm, minimum height=26mm, font=\small] (env) at (9.6,1.8) {Environment};
+  \draw[arr] (env.north west) to[bend right=25] node[lbl, above] {percepts} (sen.east);
+  \draw[arr] (act.east) to[bend right=25] node[lbl, below] {actions} (env.south west);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{An agent perceives its environment through sensors and acts on it through actuators. A rational agent
+chooses the action expected to maximise its performance measure.}
+\end{figure}

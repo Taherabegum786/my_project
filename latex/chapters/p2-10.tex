@@ -28,10 +28,13 @@ Russell \& Norvig)}
 
 \end{sylbox}
 
-\needspace{130pt}
+\needspace{160pt}
 
 \hypertarget{p2-10--1-approaches-to-ai}{%
 \section{Approaches to AI}\label{p2-10--1-approaches-to-ai}}
+
+Artificial intelligence studies how to build systems that perceive, reason, learn and act. Definitions differ in
+whether they aim to think or to act, and whether the yardstick is human behaviour or ideal rationality.
 
 \begingroup\small
 
@@ -70,7 +73,7 @@ Russell \& Norvig)}
 \hypertarget{p2-10--11-agents}{%
 \subsection{Agents}\label{p2-10--11-agents}}
 
-\diagram{figures/p2-10-00}
+\input{art/p2-10-agent}
 
 \textbf{PEAS} description: Performance measure, Environment, Actuators, Sensors.
 (Automated taxi: P = safety, speed, legality; E = roads, traffic; A = steering, brake; S = cameras, GPS, sonar.)
@@ -101,20 +104,18 @@ Learning agent & performance element + learning element + critic + problem gener
 Environment properties: fully/partially observable, deterministic/stochastic, episodic/sequential, static/dynamic, discrete/continuous, single/multi-agent, known/unknown.
 (Chess with clock: fully observable, strategic, sequential, semi-dynamic, discrete, multi-agent.)
 
-\needspace{122pt}
+\needspace{155pt}
 
 \hypertarget{p2-10--2-state-space-search}{%
 \section{State Space Search}\label{p2-10--2-state-space-search}}
 
+Many problems can be posed as finding a path through a space of states, from a start state to a goal state, using
+operators that turn one state into another. Search strategies differ in the order in which they explore states.
+
 Problem = initial state, actions, transition model, \textbf{goal test}, path cost.
 Examples: 8-puzzle (9!/2 = 181,440 reachable states), water jug, missionaries \& cannibals, 8-queens, Tower of Hanoi.
 
-\begin{listingblock}{42pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
- Water jug (4 L & 3 L, get 2 L in 4 L jug)
- (0,0) → (0,3) → (3,0) → (3,3) → (4,2) → (0,2) → (2,0)   ✔
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-10-waterjug}
 
 \needspace{160pt}
 
@@ -158,27 +159,18 @@ Bidirectional & Yes & Yes & O(b\^{}(d/2)) & O(b\^{}(d/2)) \\
 
 IDDFS combines BFS\textquotesingle s completeness/optimality with DFS\textquotesingle s memory --- preferred uninformed method for large spaces.
 
-\needspace{136pt}
+\needspace{95pt}
 
 \hypertarget{p2-10--22-heuristic-informed-search}{%
 \subsection{Heuristic (Informed) Search}\label{p2-10--22-heuristic-informed-search}}
 
-\begin{listingblock}{86pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-Greedy best-first:  f(n) = h(n)                 — fast, not optimal, not complete
-A*:                 f(n) = g(n) + h(n)          — optimal if h is ADMISSIBLE (tree search)
-                                                  or CONSISTENT (graph search)
-Admissible:   h(n) ≤ h*(n)  (never overestimates)
-Consistent:   h(n) ≤ c(n, n') + h(n')    (consistent ⇒ admissible)
-Dominance:    h₂ ≥ h₁ (both admissible) ⇒ h₂ better (expands fewer nodes)
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-10-heuristics}
 
 8-puzzle heuristics: h₁ = misplaced tiles, h₂ = \textbf{Manhattan distance} (h₂ dominates h₁).
 
 \textbf{A* worked} --- h(S)=7, h(A)=6, h(B)=2, h(C)=1, h(G)=0 (all admissible)
 
-\diagram{figures/p2-10-01}
+\input{art/p2-10-astar}
 
 \begingroup\small
 
@@ -224,37 +216,29 @@ With a consistent heuristic, a node is never re-expanded.
   \textbf{Means--ends analysis} (GPS): reduce the difference between current and goal state.
 \end{itemize}
 
-\needspace{290pt}
+\needspace{227pt}
 
 \hypertarget{p2-10--3-game-playing}{%
 \section{Game Playing}\label{p2-10--3-game-playing}}
 
-\needspace{254pt}
+In two-player games the opponent also chooses moves. The game tree alternates MAX levels (our moves) and MIN levels
+(the opponent\textquotesingle s), and the value of a position is worked out from the leaves upwards.
+
+\needspace{191pt}
 
 \hypertarget{p2-10--31-minimax}{%
 \subsection{Minimax}\label{p2-10--31-minimax}}
 
 MAX picks maximum, MIN picks minimum child value; complete \& optimal against an optimal opponent. Time O(b\^{}m), space O(bm).
 
-\needspace{188pt}
+\needspace{125pt}
 
 \hypertarget{p2-10--32-alphabeta-pruning}{%
 \subsection{Alpha--Beta Pruning}\label{p2-10--32-alphabeta-pruning}}
 
 α = best value MAX can guarantee so far (lower bound); β = best value MIN can guarantee (upper bound). \textbf{Prune when α ≥ β.}
 
-\begin{listingblock}{108pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-                         MAX                    A = 3
-                    ┌─────┴─────┬───────────┐
-                   MIN         MIN          MIN
-                   B=3         C≤2          D=2
-                 ┌─┼─┐       ┌─┼─┐        ┌─┼─┐
-                 3 12 8      2  ✂  ✂      14 5 2
-                                (pruned: once C sees 2 < α=3, MAX will never choose C)
- Minimax value at root = 3 ; 2 leaves pruned
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-10-alphabeta}
 
 \begin{itemize}
 \tightlist
@@ -266,10 +250,13 @@ MAX picks maximum, MIN picks minimum child value; complete \& optimal against an
   Stochastic games: \textbf{Expectiminimax} (chance nodes). Imperfect real-time decisions: cutoff test + evaluation function, quiescence search, horizon effect.
 \end{itemize}
 
-\needspace{131pt}
+\needspace{161pt}
 
 \hypertarget{p2-10--4-knowledge-representation}{%
 \section{Knowledge Representation}\label{p2-10--4-knowledge-representation}}
+
+An intelligent program needs knowledge in a form it can reason with: logic for precise inference, structured
+representations (semantic nets, frames, scripts) for organised everyday knowledge.
 
 \needspace{95pt}
 
@@ -297,7 +284,7 @@ MAX picks maximum, MIN picks minimum child value; complete \& optimal against an
 \hypertarget{p2-10--42-structured-representations}{%
 \subsection{Structured Representations}\label{p2-10--42-structured-representations}}
 
-\diagram{figures/p2-10-02}
+\input{art/p2-10-semnet}
 
 \begin{itemize}
 \tightlist
@@ -320,7 +307,7 @@ MAX picks maximum, MIN picks minimum child value; complete \& optimal against an
 \hypertarget{p2-10--43-expert-systems}{%
 \subsection{Expert Systems}\label{p2-10--43-expert-systems}}
 
-\diagram{figures/p2-10-03}
+\input{art/p2-10-expert}
 
 \begingroup\small
 
@@ -346,20 +333,12 @@ INTERNIST / CADUCEUS & Internal medicine \\
 
 \endgroup
 
-\needspace{125pt}
+\needspace{95pt}
 
 \hypertarget{p2-10--44-uncertainty}{%
 \subsection{Uncertainty}\label{p2-10--44-uncertainty}}
 
-\begin{listingblock}{75pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-Bayes:   P(H|E) = P(E|H)·P(H) / P(E)
-Certainty factor (MYCIN): CF = MB − MD ∈ [−1, 1]
-  combining two positive CFs: CF = CF1 + CF2(1 − CF1)
-Dempster–Shafer: belief Bel(A) ≤ plausibility Pl(A) ; mass function m over subsets
-Bayesian network: DAG + conditional probability tables; P(x₁…xₙ) = Π P(xᵢ | parents(xᵢ))
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-10-uncertainty}
 
 Other: fuzzy logic (vagueness --- §7), Markov models, HMMs.
 
@@ -393,19 +372,7 @@ Forward (progression) vs backward (regression) state-space planning & \\
 
 \endgroup
 
-\begin{listingblock}{119pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-STRIPS operator (Blocks world)
- PICKUP(x)
-   PRE:  ONTABLE(x) ∧ CLEAR(x) ∧ HANDEMPTY
-   ADD:  HOLDING(x)
-   DEL:  ONTABLE(x), CLEAR(x), HANDEMPTY
- STACK(x, y)
-   PRE:  HOLDING(x) ∧ CLEAR(y)
-   ADD:  ON(x,y), CLEAR(x), HANDEMPTY
-   DEL:  HOLDING(x), CLEAR(y)
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-10-strips}
 
 \textbf{Sussman anomaly}: initial C on A, A and B on table; goal ON(A,B) ∧ ON(B,C) --- goal-stack (linear) planning cannot solve it without undoing a subgoal.
 
@@ -414,7 +381,7 @@ STRIPS operator (Blocks world)
 \hypertarget{p2-10--6-natural-language-processing}{%
 \section{Natural Language Processing}\label{p2-10--6-natural-language-processing}}
 
-\diagram{figures/p2-10-04}
+\input{art/p2-10-nlp}
 
 \begin{itemize}
 \tightlist
@@ -479,51 +446,30 @@ Interaction & Method calls & Communication languages & User interface \\
   Tools: \textbf{JADE} (Java, FIPA-compliant), JACK, Jason (AgentSpeak), Zeus, Aglets, NetLogo.
 \end{itemize}
 
-\needspace{166pt}
+\needspace{155pt}
 
 \hypertarget{p2-10--8-fuzzy-sets--logic-zadeh-1965}{%
 \section{Fuzzy Sets \& Logic (Zadeh, 1965)}\label{p2-10--8-fuzzy-sets--logic-zadeh-1965}}
 
+In a classical set an element is either in or out. In a fuzzy set it belongs to a degree \(\mu \in [0, 1]\),
+which lets systems reason with vague terms such as ``hot'' or ``tall''.
+
 Membership μ\_A(x) ∈ {[}0, 1{]} (vs crisp \{0, 1\}).
 
-\begin{listingblock}{86pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
- μ
- 1 ┤      ╱‾‾‾‾╲              triangular(a,b,c): peak at b
-   │     ╱      ╲             trapezoidal(a,b,c,d): flat top b..c
-   │    ╱        ╲            Gaussian: e^(−(x−c)²/2σ²)
- 0 ┼───┴──────────┴───────
-       a   b    c   d         Core: μ = 1 ; Support: μ > 0 ; Crossover: μ = 0.5
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-10-membership}
 
-\needspace{136pt}
+\needspace{95pt}
 
 \hypertarget{p2-10--operations-standard-zadeh}{%
 \subsection{Operations (standard Zadeh)}\label{p2-10--operations-standard-zadeh}}
 
-\begin{listingblock}{86pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-Union          μ_{A∪B}(x) = max(μA, μB)
-Intersection   μ_{A∩B}(x) = min(μA, μB)
-Complement     μ_{A'}(x)  = 1 − μA(x)
-Algebraic sum  μA + μB − μA·μB ; Algebraic product μA·μB
-Bounded sum    min(1, μA + μB) ; Bounded difference max(0, μA − μB)
-Concentration (very)   μ²     Dilation (somewhat) √μ
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-10-fuzzyops}
 
 \textbf{Laws that FAIL in fuzzy sets}: \textbf{law of excluded middle} (A ∪ A\textquotesingle{} ≠ U) and \textbf{law of contradiction} (A ∩ A\textquotesingle{} ≠ ∅). De Morgan, associativity, distributivity still hold.
 
 \textbf{Worked}: A = \{0.2/x₁, 0.7/x₂, 1/x₃\}, B = \{0.5/x₁, 0.3/x₂, 0.8/x₃\}
 
-\begin{listingblock}{53pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-A ∪ B = {0.5, 0.7, 1}      A ∩ B = {0.2, 0.3, 0.8}     A' = {0.8, 0.3, 0}
-A ∩ A' = {0.2, 0.3, 0} ≠ ∅
-α-cut A₀.₅ = {x₂, x₃}       Height(A) = 1 (normal fuzzy set)
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-10-fuzzy-worked}
 
 \begin{itemize}
 \tightlist
@@ -535,7 +481,7 @@ A ∩ A' = {0.2, 0.3, 0} ≠ ∅
   \textbf{Fuzzy inference system}:
 \end{itemize}
 
-\diagram{figures/p2-10-05}
+\input{art/p2-10-fis}
 
 \begin{itemize}
 \tightlist
@@ -552,7 +498,7 @@ A ∩ A' = {0.2, 0.3, 0} ≠ ∅
 \hypertarget{p2-10--9-genetic-algorithms-john-holland-1975}{%
 \section{Genetic Algorithms (John Holland, 1975)}\label{p2-10--9-genetic-algorithms-john-holland-1975}}
 
-\diagram{figures/p2-10-06}
+\input{art/p2-10-ga}
 
 \begin{itemize}
 \tightlist
@@ -570,10 +516,13 @@ A ∩ A' = {0.2, 0.3, 0} ≠ ∅
   Premature convergence; elitism keeps the best individuals.
 \end{itemize}
 
-\needspace{166pt}
+\needspace{196pt}
 
 \hypertarget{p2-10--10-artificial-neural-networks}{%
 \section{Artificial Neural Networks}\label{p2-10--10-artificial-neural-networks}}
+
+Artificial neural networks are built from simple units that compute a weighted sum of their inputs and pass it
+through an activation function. They learn by adjusting the weights from examples.
 
 \needspace{130pt}
 
@@ -606,19 +555,12 @@ A ∩ A' = {0.2, 0.3, 0} ≠ ∅
 
 Q-learning: Q(s,a) ← Q(s,a) + α{[}r + γ max\_a′ Q(s′,a′) − Q(s,a){]}.
 
-\needspace{114pt}
+\needspace{95pt}
 
 \hypertarget{p2-10--102-perceptron-rosenblatt-1958}{%
 \subsection{Perceptron (Rosenblatt, 1958)}\label{p2-10--102-perceptron-rosenblatt-1958}}
 
-\begin{listingblock}{64pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
- x1 ──w1──╲
- x2 ──w2───► Σ wᵢxᵢ + b ──► step(·) ──► y
- x3 ──w3──╱
- Update rule:  wᵢ ← wᵢ + η (t − y) xᵢ        (t = target, η = learning rate)
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-10-perceptron}
 
 \begin{itemize}
 \tightlist
@@ -637,7 +579,7 @@ Q-learning: Q(s,a) ← Q(s,a) + α{[}r + γ max\_a′ Q(s′,a′) − Q(s,a){]}
 \hypertarget{p2-10--103-multilayer-perceptron--backpropagation}{%
 \subsection{Multilayer Perceptron \& Backpropagation}\label{p2-10--103-multilayer-perceptron--backpropagation}}
 
-\diagram{figures/p2-10-07}
+\input{art/p2-10-mlp}
 
 \begin{itemize}
 \tightlist
@@ -685,27 +627,17 @@ Q-learning: Q(s,a) ← Q(s,a) + α{[}r + γ max\_a′ Q(s′,a′) − Q(s,a){]}
   Also: \textbf{Hebbian learning} ("neurons that fire together wire together") Δw = η·x·y; \textbf{BAM} (bidirectional associative memory --- Kosko); \textbf{ART} (Grossberg -- stability--plasticity); RBF networks; Boltzmann machine.
 \end{itemize}
 
-\needspace{183pt}
+\needspace{131pt}
 
 \hypertarget{p2-10--11-deeper-dive--worked-traces-for-every-numerical-topic}{%
 \section{Deeper Dive --- Worked Traces for Every Numerical Topic}\label{p2-10--11-deeper-dive--worked-traces-for-every-numerical-topic}}
 
-\needspace{147pt}
+\needspace{95pt}
 
 \hypertarget{p2-10--111-alphabeta-trace-depth-3}{%
 \subsection{Alpha--Beta Trace (depth 3)}\label{p2-10--111-alphabeta-trace-depth-3}}
 
-\begin{listingblock}{97pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-                         MAX  A
-               ┌──────────┴──────────┐
-              MIN B                 MIN C
-          ┌─────┴─────┐          ┌─────┴─────┐
-        MAX D       MAX E      MAX F       MAX G
-        ┌─┴─┐       ┌─┴─┐      ┌─┴─┐       ┌─┴─┐
-        3   5       6   9      1   2       0  −1
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-10-alphabeta2}
 
 \begingroup\small
 
@@ -740,22 +672,14 @@ Q-learning: Q(s,a) ← Q(s,a) + α{[}r + γ max\_a′ Q(s′,a′) − Q(s,a){]}
 
 3 of 8 leaves pruned; the root value is the same as plain minimax.
 
-\needspace{155pt}
+\needspace{125pt}
 
 \hypertarget{p2-10--112-resolution-refutation}{%
 \subsection{Resolution Refutation}\label{p2-10--112-resolution-refutation}}
 
 \textbf{First-order}: "All men are mortal. Socrates is a man. Prove Socrates is mortal."
 
-\begin{listingblock}{75pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-1. ¬Man(x) ∨ Mortal(x)          (∀x Man(x) → Mortal(x))
-2. Man(Socrates)
-3. ¬Mortal(Socrates)            (negated goal)
-4. ¬Man(Socrates)               resolve 1, 3 with {x / Socrates}
-5. □  (empty clause)            resolve 2, 4  → goal proved
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-10-resolution}
 
 \textbf{Propositional}: from P → Q, Q → R, P prove R. Clauses ¬P ∨ Q, ¬Q ∨ R, P, ¬R → resolve ¬Q ∨ R with ¬R → ¬Q; with ¬P ∨ Q → ¬P; with P → □.
 
@@ -787,38 +711,21 @@ D, E ⊢ F (R3) ✔ & C ← need A and B (R1); both facts ✔ \\
 
 \endgroup
 
-\needspace{133pt}
+\needspace{125pt}
 
 \hypertarget{p2-10--114-bayes--medical-test}{%
 \subsection{Bayes --- Medical Test}\label{p2-10--114-bayes--medical-test}}
 
 Disease prevalence 1\%, test sensitivity 99\%, false-positive rate 5\%.
 
-\begin{listingblock}{53pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-P(D | +) = P(+ | D)·P(D) / [P(+ | D)·P(D) + P(+ | ¬D)·P(¬D)]
-         = 0.99 × 0.01 / (0.0099 + 0.05 × 0.99)
-         = 0.0099 / 0.0594 ≈ 0.167      → only about 17% of positives actually have the disease
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-10-bayes}
 
-\needspace{158pt}
+\needspace{95pt}
 
 \hypertarget{p2-10--115-fuzzy-maxmin-composition--inference}{%
 \subsection{Fuzzy Max--Min Composition \& Inference}\label{p2-10--115-fuzzy-maxmin-composition--inference}}
 
-\begin{listingblock}{108pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-R = | 0.6  0.3 |      S = | 1.0  0.5 |      T = R ∘ S
-    | 0.2  0.9 |          | 0.8  0.4 |
-T₁₁ = max(min(0.6, 1.0), min(0.3, 0.8)) = max(0.6, 0.3) = 0.6
-T₁₂ = max(min(0.6, 0.5), min(0.3, 0.4)) = max(0.5, 0.3) = 0.5
-T₂₁ = max(min(0.2, 1.0), min(0.9, 0.8)) = max(0.2, 0.8) = 0.8
-T₂₂ = max(min(0.2, 0.5), min(0.9, 0.4)) = max(0.2, 0.4) = 0.4
-T = | 0.6  0.5 |
-    | 0.8  0.4 |
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-10-maxmin}
 
 \textbf{Sugeno-style inference}: temperature 30 °C → μ\_warm = 0.4, μ\_hot = 0.6. Rules: warm → fan 40\%, hot → fan 80\%.
 Output = (0.4 × 40 + 0.6 × 80) / (0.4 + 0.6) = \textbf{64\%}.
@@ -902,42 +809,30 @@ Crossover 0110\textbar1 × 1100\textbar0 at position 4 → \textbf{01100 (12)} a
 
 Check: (0,0) → −2 → 0; (0,1) → −1 → 0; (1,0) → 0 → 0; (1,1) → 1 → 1 ✔ = AND.
 
-\needspace{133pt}
+\needspace{125pt}
 
 \hypertarget{p2-10--118-one-backpropagation-step-single-sigmoid-neuron}{%
 \subsection{One Backpropagation Step (single sigmoid neuron)}\label{p2-10--118-one-backpropagation-step-single-sigmoid-neuron}}
 
 x = 1, w = 0.5, b = 0, target t = 1, η = 1, E = ½(t − o)².
 
-\begin{listingblock}{53pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-net = 0.5 → o = σ(0.5) = 0.6225
-δ = (t − o) · o(1 − o) = 0.3775 × 0.6225 × 0.3775 ≈ 0.0887
-Δw = η δ x = 0.0887 → w_new = 0.5887 (output moves toward the target)
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-10-backprop}
 
-\needspace{133pt}
+\needspace{125pt}
 
 \hypertarget{p2-10--119-hopfield-storage--recall}{%
 \subsection{Hopfield Storage \& Recall}\label{p2-10--119-hopfield-storage--recall}}
 
 Store bipolar pattern p = {[}1, −1, 1{]}: W = p pᵀ − I.
 
-\begin{listingblock}{53pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-W = |  0  −1   1 |      Noisy input x = [1, 1, 1]
-    | −1   0  −1 |      W x = [0, −2, 0] → sign (keep old value on 0) = [1, −1, 1]
-    |  1  −1   0 |      → stored pattern recovered
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-10-hopfield}
 
 \needspace{95pt}
 
 \hypertarget{p2-10--1110-csp--map-colouring-with-heuristics}{%
 \subsection{CSP --- Map Colouring with Heuristics}\label{p2-10--1110-csp--map-colouring-with-heuristics}}
 
-\diagram{figures/p2-10-08}
+\input{art/p2-10-mapcolour}
 
 Three colours. \textbf{MRV/degree heuristic} picks SA first (degree 5). Assign SA = red → WA, NT, Q, NSW, V lose red; WA = green → NT = blue → Q = green → NSW = blue → V = green. Solution found without backtracking; \textbf{forward checking} removes inconsistent values early.
 

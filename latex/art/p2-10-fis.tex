@@ -1,0 +1,16 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[n/.style={box, text width=24mm, font=\footnotesize, align=center, minimum height=14mm}]
+  \node[plain, font=\small] (I) at (0,0) {crisp\\input};
+  \node[n, fill=fslate] (F) at (2.7,0) {\textbf{fuzzification}\\membership functions};
+  \node[n, fill=fsage] (R) at (5.9,0) {\textbf{rule evaluation}\\IF temp is hot THEN fan is fast};
+  \node[n, fill=fsand] (A) at (9.1,0) {\textbf{aggregation}\\of rule outputs};
+  \node[n, fill=frose] (D) at (12.3,0) {\textbf{defuzzification}\\centroid, mean of max, \dots};
+  \node[plain, font=\small] (O) at (14.9,0) {crisp\\output};
+  \draw[arr] (I) -- (F); \draw[arr] (F) -- (R); \draw[arr] (R) -- (A); \draw[arr] (A) -- (D); \draw[arr] (D) -- (O);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{A fuzzy inference system (Mamdani). Crisp values are fuzzified, the rules fire to a degree, their outputs
+are combined, and a single crisp value is extracted.}
+\end{figure}

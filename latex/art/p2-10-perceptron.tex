@@ -1,0 +1,17 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[inp/.style={circ, fill=fsand, minimum size=8mm, font=\small}]
+  \node[inp] (x1) at (0,1.3) {$x_1$}; \node[inp] (x2) at (0,0) {$x_2$}; \node[inp] (x3) at (0,-1.3) {$x_3$};
+  \node[circ, fill=fslate, minimum size=14mm, font=\large] (s) at (3.4,0) {$\Sigma$};
+  \node[box, fill=fsage, minimum width=14mm, minimum height=10mm] (f) at (7.0,0) {\tikz[baseline]{\draw[fgink, line width=0.8pt] (0,0) -- (0.3,0) -- (0.3,0.35) -- (0.6,0.35);}};
+  \node[font=\small] (y) at (9.0,0) {$y$};
+  \draw[arr] (x1) -- node[lbl, above, sloped] {$w_1$} (s); \draw[arr] (x2) -- node[lbl, above] {$w_2$} (s); \draw[arr] (x3) -- node[lbl, below, sloped] {$w_3$} (s);
+  \draw[arr] (3.4,1.6) node[above, font=\footnotesize] {bias $b$} -- (s);
+  \draw[arr] (s) -- node[lbl, above] {$\sum w_i x_i + b$} (f); \draw[arr] (f) -- (y);
+  \node[smalllbl] at (7.0,-0.85) {step function};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Rosenblatt's perceptron. Learning rule: $w_i \leftarrow w_i + \eta\,(t - y)\,x_i$, where $t$ is the
+target and $\eta$ the learning rate. A single perceptron can learn only linearly separable functions (not XOR).}
+\end{figure}

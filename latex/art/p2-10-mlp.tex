@@ -1,0 +1,16 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[n/.style={circ, minimum size=9mm, font=\small}]
+  \node[n, fill=fsand] (x1) at (0,0.8) {$x_1$}; \node[n, fill=fsand] (x2) at (0,-0.8) {$x_2$};
+  \foreach \k/\y in {1/1.6, 2/0, 3/-1.6} \node[n, fill=fslate] (h\k) at (3,\y) {$h_\k$};
+  \node[n, fill=fsage] (o) at (6,0) {$y$};
+  \foreach \i in {1,2} \foreach \k in {1,2,3} \draw[arr, fgink!70] (x\i) -- (h\k);
+  \foreach \k in {1,2,3} \draw[arr, fgink!70] (h\k) -- (o);
+  \node[capt] at (0,2.5) {input}; \node[capt] at (3,2.5) {hidden}; \node[capt] at (6,2.5) {output};
+  \draw[arr, fwine, line width=0.8pt] (6.2,-2.3) -- node[lbl, below, text=fwine] {errors propagate backwards (backpropagation)} (-0.2,-2.3);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{A multilayer perceptron. With a non-linear hidden layer it can represent XOR; training adjusts every weight
+by gradient descent on the output error.}
+\end{figure}

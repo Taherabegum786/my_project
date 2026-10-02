@@ -1,0 +1,20 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[n/.style={box, minimum width=26mm, font=\small, align=center}, d/.style={db, minimum width=26mm, minimum height=14mm, font=\footnotesize}]
+  \node[n, fill=fsand] (U) at (0,0) {user};
+  \node[n, fill=fslate] (UI) at (3.4,0) {user interface};
+  \node[n, fill=fochre, minimum height=14mm] (IE) at (7.2,0) {inference engine\\\scriptsize forward / backward chaining};
+  \node[d] (KB) at (11.2,1.3) {knowledge base\\facts + rules};
+  \node[d, cylinder body fill=fsage, cylinder end fill=fsage!55!white] (WM) at (11.2,-1.3) {working\\memory};
+  \node[n, fill=fslate!50] (EX) at (7.2,-2.2) {explanation facility};
+  \node[n, fill=fsand] (KE) at (7.2,3.4) {knowledge engineer};
+  \node[n, fill=fslate!50] (KA) at (11.2,3.4) {knowledge acquisition};
+  \draw[arrd] (U) -- (UI); \draw[arrd] (UI) -- (IE); \draw[arrd] (IE) -- (KB); \draw[arrd] (IE) -- (WM);
+  \draw[arr] (IE) -- (EX); \draw[arr] (KE) -- (KA); \draw[arr] (KA) -- (KB);
+  \draw[arr] (EX.west) -| node[lbl, pos=0.25, below] {why? how?} (UI.south);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Architecture of an expert system. The knowledge base holds domain rules; the inference engine applies them
+to the facts in working memory and can explain its reasoning.}
+\end{figure}

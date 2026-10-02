@@ -1,0 +1,14 @@
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}l l l@{}}
+\toprule
+& \textbf{PICKUP}$(x)$ & \textbf{STACK}$(x, y)$ \\
+\midrule
+\textsc{pre} & ONTABLE$(x) \wedge$ CLEAR$(x) \wedge$ HANDEMPTY & HOLDING$(x) \wedge$ CLEAR$(y)$ \\
+\textsc{add} & HOLDING$(x)$ & ON$(x, y)$, CLEAR$(x)$, HANDEMPTY \\
+\textsc{del} & ONTABLE$(x)$, CLEAR$(x)$, HANDEMPTY & HOLDING$(x)$, CLEAR$(y)$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+\noindent A STRIPS operator lists its preconditions and the facts it adds to and deletes from the state; every fact
+it does not mention is assumed unchanged (the STRIPS assumption).

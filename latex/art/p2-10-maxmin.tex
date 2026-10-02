@@ -1,0 +1,16 @@
+\[
+R = \begin{pmatrix} 0.6 & 0.3\\ 0.2 & 0.9 \end{pmatrix},\qquad
+S = \begin{pmatrix} 1.0 & 0.5\\ 0.8 & 0.4 \end{pmatrix},\qquad
+T = R \circ S,\quad T_{ij} = \max_k \min(R_{ik}, S_{kj})
+\]
+\begin{formulas}
+\begin{align*}
+T_{11} &= \max(\min(0.6, 1.0),\ \min(0.3, 0.8)) = \max(0.6, 0.3) = 0.6\\
+T_{12} &= \max(\min(0.6, 0.5),\ \min(0.3, 0.4)) = \max(0.5, 0.3) = 0.5\\
+T_{21} &= \max(\min(0.2, 1.0),\ \min(0.9, 0.8)) = \max(0.2, 0.8) = 0.8\\
+T_{22} &= \max(\min(0.2, 0.5),\ \min(0.9, 0.4)) = \max(0.2, 0.4) = 0.4
+\end{align*}
+\end{formulas}
+\[
+T = \begin{pmatrix} 0.6 & 0.5\\ 0.8 & 0.4 \end{pmatrix}
+\]

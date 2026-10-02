@@ -1,0 +1,17 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[v/.style={vertex, minimum size=11mm, font=\small}]
+  \node[v, fill=fmoss] (WA) at (0,0) {WA};
+  \node[v, fill=fsteel] (NT) at (2.4,1.4) {NT};
+  \node[v, fill=fbrick!70] (SA) at (2.8,-0.6) {SA};
+  \node[v, fill=fmoss] (Q) at (5.0,1.2) {Q};
+  \node[v, fill=fsteel] (NSW) at (5.4,-0.9) {NSW};
+  \node[v, fill=fmoss] (V) at (4.2,-2.4) {V};
+  \foreach \u/\w in {WA/NT, WA/SA, NT/SA, NT/Q, SA/Q, SA/NSW, SA/V, Q/NSW, NSW/V} \draw[thinline] (\u) -- (\w);
+  \node[font=\footnotesize, align=left, anchor=west] at (7.0,0) {order: SA, WA, NT, Q, NSW, V\\SA first: most constrained (degree 5)};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Map colouring of Australia as a CSP, solved with three colours and no backtracking using the MRV and degree
+heuristics with forward checking.}
+\end{figure}

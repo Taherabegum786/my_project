@@ -1,0 +1,20 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \begin{axis}[width=12cm, height=5.2cm, xmin=0, xmax=20, ymin=0, ymax=1.15, axis lines=left,
+      xlabel={$x$}, ylabel={$\mu(x)$}, ytick={0,0.5,1}, xtick={2,5,8,11,13,16,18}, xticklabels={$a$,$b$,$c$,$a$,$b$,$c$,$d$},
+      tick label style={font=\footnotesize}, label style={font=\small}, every axis plot/.append style={line width=0.9pt}]
+    \addplot[fsteel!80!black, fill=fsteel, fill opacity=0.25] coordinates {(2,0) (5,1) (8,0)};
+    \addplot[fwine, fill=frose, fill opacity=0.35] coordinates {(11,0) (13,1) (16,1) (18,0)};
+    \draw[fgink!50, dash pattern=on 2pt off 2pt] (axis cs:0,0.5) -- (axis cs:20,0.5);
+    \node[font=\footnotesize] at (axis cs:5,1.08) {triangular};
+    \node[font=\footnotesize] at (axis cs:14.5,1.08) {trapezoidal};
+    \draw[fwine, line width=1.2pt] (axis cs:13,0.02) -- (axis cs:16,0.02);
+  \end{axis}
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Membership functions. For the trapezoid, the \emph{core} ($\mu = 1$) is $[b, c]$, the \emph{support}
+($\mu > 0$) is $(a, d)$ and the \emph{crossover} points are where $\mu = 0.5$ (dashed). A Gaussian has
+$\mu(x) = e^{-(x-c)^2/2\sigma^2}$.}
+\end{figure}

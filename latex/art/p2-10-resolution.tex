@@ -1,0 +1,19 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[c/.style={box, fill=fpaper, font=\small}, g/.style={c, fill=frose}]
+  \node[c] (c1) at (-2.6,0) {$\neg\mathit{Man}(x) \vee \mathit{Mortal}(x)$};
+  \node[g] (c3) at (2.6,0) {$\neg\mathit{Mortal}(\mathit{Socrates})$};
+  \node[c] (c4) at (0,-1.6) {$\neg\mathit{Man}(\mathit{Socrates})$};
+  \node[c] (c2) at (-4.2,-1.6) {$\mathit{Man}(\mathit{Socrates})$};
+  \node[c, fill=fsage, minimum width=12mm] (e) at (-2.1,-3.2) {$\square$};
+  \draw[arr] (c1) -- (c4); \draw[arr] (c3) -- (c4);
+  \draw[arr] (c2) -- (e); \draw[arr] (c4) -- (e);
+  \node[lbl, anchor=east] at (-1.5,-0.8) {$\{x / \mathit{Socrates}\}$};
+  \node[smalllbl] at (2.6,0.55) {negated goal};
+  \node[smalllbl, anchor=west] at (-1.2,-3.2) {empty clause: contradiction, so the goal is proved};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Resolution refutation of ``Socrates is mortal''. Add the negated goal to the clauses and resolve until the
+empty clause appears.}
+\end{figure}

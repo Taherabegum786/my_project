@@ -1,0 +1,19 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[n/.style={box, text width=36mm, font=\footnotesize, align=center}]
+  \node[n, fill=fsand] (I) at (0,2.6) {\textbf{initialise} a random population of encoded chromosomes};
+  \node[n, fill=fslate] (E) at (0,1.0) {\textbf{evaluate} fitness};
+  \node[diamondbox, fill=fochre, font=\footnotesize] (T) at (0,-0.7) {stop?};
+  \node[n, fill=fsage] (S) at (5.2,-0.7) {\textbf{selection}\\roulette wheel, tournament, rank, elitism};
+  \node[n, fill=fsage] (C) at (5.2,1.0) {\textbf{crossover}\\single-point, two-point, uniform};
+  \node[n, fill=fsage] (M) at (5.2,2.6) {\textbf{mutation}\\flip bits with low probability};
+  \node[n, fill=fgrey] (B) at (0,-2.4) {best solution};
+  \draw[arr] (I) -- (E); \draw[arr] (E) -- (T); \draw[arr] (T) -- node[lbl, above] {no} (S);
+  \draw[arr] (S) -- (C); \draw[arr] (C) -- (M); \draw[arr] (M.west) -- node[lbl, sloped, above] {next generation} (E.east);
+  \draw[arr] (T) -- node[lbl, right] {yes} (B);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{The genetic-algorithm cycle (Holland, 1975). Each generation keeps the fitter chromosomes, recombines them
+and mutates a few bits.}
+\end{figure}

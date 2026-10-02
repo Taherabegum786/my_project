@@ -1,0 +1,20 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[mx/.style={ink, regular polygon, regular polygon sides=3, fill=fslate, minimum size=10mm, inner sep=0pt, font=\small},
+    mn/.style={mx, shape border rotate=180, fill=fsage}, lf/.style={ink, rectangle, fill=fpaper, minimum size=6.5mm, font=\small, inner sep=0pt},
+    pr/.style={lf, draw=fgink!40, text=fgink!40}, dl/.style={thinline, fgink!40, dash pattern=on 2pt off 1.5pt}]
+  \node[mx] (A) at (0,0) {5};
+  \node[mn] (B) at (-3.6,-1.5) {5}; \node[mn] (C) at (3.6,-1.5) {$\le 2$};
+  \node[mx] (D) at (-5.4,-3.0) {5}; \node[mx] (E) at (-1.8,-3.0) {$\ge 6$}; \node[mx] (F) at (1.8,-3.0) {2}; \node[mx, draw=fgink!40, fill=fslate!35] (G) at (5.4,-3.0) {};
+  \draw[thinline] (A) -- (B) (A) -- (C) (B) -- (D) (B) -- (E) (C) -- (F); \draw[dl] (C) -- (G);
+  \foreach \v/\x/\p [count=\k] in {3/-6.0/D, 5/-4.8/D, 6/-2.4/E, 1/1.2/F, 2/2.4/F} { \node[lf] (l\k) at (\x,-4.5) {\v}; \draw[thinline] (\p) -- (l\k); }
+  \node[pr] (p1) at (-1.2,-4.5) {9}; \draw[dl] (E) -- (p1);
+  \node[pr] (p2) at (4.8,-4.5) {0}; \node[pr] (p3) at (6.0,-4.5) {$-1$}; \draw[dl] (G) -- (p2); \draw[dl] (G) -- (p3);
+  \node[font=\scriptsize, text=fwine, anchor=west] at (-1.05,-3.75) {$\alpha = 6 \ge \beta = 5$};
+  \node[font=\scriptsize, text=fwine, anchor=west] at (4.2,-1.5) {$\beta = 2 \le \alpha = 5$: prune G};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Alpha--beta on a depth-3 tree. Grey nodes are never examined: 3 of 8 leaves are pruned and the root still
+gets the minimax value 5.}
+\end{figure}

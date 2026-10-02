@@ -1,0 +1,7 @@
+\begin{formulatable}
+Greedy best-first: fast, but neither optimal nor complete & f(n) = h(n) \\
+A*: optimal if $h$ is admissible (tree search) or consistent (graph search) & f(n) = g(n) + h(n) \\
+Admissible: never overestimates the true cost $h^*$ & h(n) \le h^*(n) \\
+Consistent (monotone); consistent $\Rightarrow$ admissible & h(n) \le c(n, n') + h(n') \\
+Dominance: both admissible, $h_2$ expands fewer nodes & h_2(n) \ge h_1(n) \\
+\end{formulatable}

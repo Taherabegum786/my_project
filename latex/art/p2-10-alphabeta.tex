@@ -1,0 +1,21 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[mx/.style={ink, regular polygon, regular polygon sides=3, fill=fslate, minimum size=11mm, inner sep=0pt, font=\small},
+    mn/.style={mx, shape border rotate=180, fill=fsage}, lf/.style={ink, rectangle, fill=fpaper, minimum size=6.5mm, font=\small, inner sep=0pt},
+    pr/.style={lf, draw=fgink!40, text=fgink!40}]
+  \node[mx] (A) at (0,0) {3};
+  \node[mn] (B) at (-3.6,-1.6) {3}; \node[mn] (C) at (0,-1.6) {$\le 2$}; \node[mn] (D) at (3.6,-1.6) {2};
+  \foreach \v/\x [count=\k] in {3/-4.6, 12/-3.6, 8/-2.6} { \node[lf] (b\k) at (\x,-3.1) {\v}; \draw[thinline] (B) -- (b\k); }
+  \node[lf] (c1) at (-1.0,-3.1) {2}; \draw[thinline] (C) -- (c1);
+  \foreach \x [count=\k from 2] in {0,1.0} { \node[pr] (c\k) at (\x,-3.1) {?}; \draw[thinline, fgink!40, dash pattern=on 2pt off 1.5pt] (C) -- (c\k); }
+  \foreach \v/\x [count=\k] in {14/2.6, 5/3.6, 2/4.6} { \node[lf] (d\k) at (\x,-3.1) {\v}; \draw[thinline] (D) -- (d\k); }
+  \draw[thinline] (A) -- (B) (A) -- (C) (A) -- (D);
+  \draw[fwine, line width=1pt] (0.25,-2.25) -- (0.75,-2.55);
+  \node[font=\footnotesize, text=fwine, align=left, anchor=west] at (5.4,-1.6) {C sees 2 $< \alpha = 3$:\\its other leaves are pruned};
+  \node[font=\footnotesize, anchor=west] at (0.9,0) {MAX}; \node[font=\footnotesize, anchor=west] at (4.4,-1.6) {MIN};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Alpha--beta pruning. MAX nodes point up, MIN nodes down. After B returns 3, MAX is guaranteed at least 3, so
+once C finds a 2 the rest of C need not be examined. The root value equals plain minimax: 3.}
+\end{figure}
