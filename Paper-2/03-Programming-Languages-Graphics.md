@@ -17,8 +17,13 @@
 
 ## 1. Language Concepts
 
+Every programming language makes design decisions about how programs are structured, when names are
+bound to meanings, how data are typed and how arguments reach procedures. Questions in this part ask you
+to recognise these decisions and their consequences.
+
 ### 1.1 Paradigms
 
+<!-- latex: p2-03-paradigms -->
 ```mermaid
 flowchart TB
     P[Programming paradigms] --> I[Imperative]
@@ -47,7 +52,11 @@ flowchart TB
 | Python | 1991, Guido van Rossum | Multi-paradigm |
 
 ### 1.2 Binding Time
+
+A binding associates a name or entity with an attribute — a type, an address, a value. The earlier the
+binding, the more efficient but less flexible the program; the figure orders the possible binding times.
 Binding = association of an attribute with an entity.
+<!-- latex: p2-03-binding -->
 ```
 Language design time → Language implementation time → Compile time → Link time → Load time → Run time
   (meaning of *)          (size of int)                 (type of var)   (library code)  (address)    (value)
@@ -57,6 +66,10 @@ Language design time → Language implementation time → Compile time → Link 
 - Storage: static (globals), stack-dynamic (locals), explicit heap-dynamic (new/malloc), implicit heap-dynamic.
 
 ### 1.3 Parameter Passing
+
+How arguments are passed determines whether a procedure can change the caller's variables and when the
+argument expressions are evaluated. Questions typically give a short program and ask what it prints under
+each mechanism.
 
 | Method | Behaviour | Language |
 |--------|-----------|----------|
@@ -81,7 +94,12 @@ by name → `A[2]` incremented (since i changed first); by reference → `A[1]` 
 
 ## 2. C Programming — Exam Traps
 
+Output-prediction questions on C test a small number of rules: operator precedence and associativity,
+integer arithmetic, pointer arithmetic, the behaviour of macros, and the few constructs whose behaviour is
+undefined. Work each example by hand before reading its comment.
+
 ### 2.1 Operator precedence (high → low)
+<!-- latex: p2-03-precedence -->
 ```
 () [] -> .     ++ -- (postfix)
 ! ~ ++ -- + - * & (type) sizeof   (unary, right-to-left)
@@ -127,6 +145,7 @@ printf("%d", SQ(2+3));           // 2+3*2+3 = 11 (macro pitfall)
 ```
 
 ### 2.3 Pointers
+<!-- latex: p2-03-pointers -->
 ```
 int *p;          pointer to int
 int **pp;        pointer to pointer
@@ -161,6 +180,11 @@ union  U { int i; char c; double d; };  // size = largest member (8) — members
 
 ## 3. OOP Concepts
 
+Object-oriented programming organises software around objects that combine state and behaviour. Its four
+principles, shown below as the pillars of a building, are among the most frequently examined definitions in
+the paper.
+
+<!-- latex: p2-03-oop -->
 ```mermaid
 mindmap
   root((OOP))
@@ -181,6 +205,7 @@ mindmap
       Run time - virtual functions, overriding
 ```
 
+<!-- latex: p2-03-inheritance -->
 ```
  Inheritance types
  Single      Multiple      Multilevel     Hierarchical      Hybrid (diamond)
@@ -237,6 +262,10 @@ b->show();    // "Derived" (virtual)  — without virtual: "Base"
 
 ## 6. Computer Graphics
 
+Computer graphics turns mathematical descriptions of shapes into pixels. The syllabus covers the hardware,
+the scan-conversion algorithms that draw lines and circles, the transformations that move objects, and
+the clipping and projection steps that fit a scene onto a screen.
+
 ### 6.1 Display Devices
 
 | Raster scan | Random (vector) scan |
@@ -247,6 +276,7 @@ b->show();    // "Derived" (virtual)  — without virtual: "Base"
 | Aliasing (jaggies) | No aliasing |
 | TV, monitors | Pen plotters, early CAD |
 
+<!-- latex: p2-03-framebuffer -->
 ```
 Frame buffer size = Resolution × bits per pixel / 8   bytes
 e.g. 1024 × 768, 24-bit colour → 1024×768×3 = 2.25 MB
@@ -259,7 +289,12 @@ Aspect ratio = width : height
 
 ### 6.2 Line Drawing
 
+A raster display can light only whole pixels, so drawing a line means choosing, column by column, the pixel
+closest to the true line. DDA does this with floating-point increments; Bresenham's algorithm reaches the
+same choices with integer additions and a sign test.
+
 **DDA (Digital Differential Analyzer)**
+<!-- latex: p2-03-dda -->
 ```
 dx = x2 − x1, dy = y2 − y1, steps = max(|dx|, |dy|)
 xinc = dx/steps, yinc = dy/steps
@@ -268,12 +303,14 @@ repeat steps times: x += xinc, y += yinc, plot(round(x), round(y))
 ```
 
 **Bresenham (|m| < 1)** — integer only:
+<!-- latex: p2-03-bresenham-rule -->
 ```
 p0 = 2dy − dx
 if pk < 0:  next = (xk+1, yk),     pk+1 = pk + 2dy
 else:       next = (xk+1, yk+1),   pk+1 = pk + 2dy − 2dx
 ```
 Example (20,10)→(30,18): dx=10, dy=8, p0 = 6, 2dy = 16, 2dy−2dx = −4.
+<!-- latex: p2-03-bresenham -->
 ```
  k  pk   plot
  0   6   (21,11)
@@ -286,7 +323,11 @@ Example (20,10)→(30,18): dx=10, dy=8, p0 = 6, 2dy = 16, 2dy−2dx = −4.
 ```
 
 ### 6.3 Mid-point Circle
+
+The mid-point algorithm decides between two candidate pixels by testing whether the midpoint between them
+lies inside or outside the circle. Symmetry means only one-eighth of the circle need be computed.
 - 8-way symmetry: compute one octant (x from 0 to x = y), reflect to 8.
+<!-- latex: p2-03-circle -->
 ```
 p0 = 1 − r     (5/4 − r)
 if pk < 0:  (xk+1, yk),     pk+1 = pk + 2xk+1 + 1
@@ -302,6 +343,11 @@ Ellipse: **4-way symmetry**, two regions (slope −1 boundary).
 
 ### 6.5 2-D Transformations (Homogeneous coordinates)
 
+Writing a point $(x, y)$ as $(x, y, 1)$ lets translation, which is not linear, be expressed as matrix
+multiplication like rotation and scaling. Any sequence of transformations then collapses into a single
+matrix product — applied right to left.
+
+<!-- latex: p2-03-transform2d -->
 ```
 Translation        Scaling            Rotation (anticlockwise θ)
 | 1  0  tx |       | sx 0  0 |        | cosθ  −sinθ  0 |
@@ -319,11 +365,13 @@ X-shear: x' = x + shx·y                      Y-shear: y' = y + shy·x
 
 ### 6.6 Viewing & Window-to-Viewport
 
+<!-- latex: p2-03-viewing -->
 ```mermaid
 flowchart LR
     MC[Modelling coords] --> WC[World coords] --> VC[Viewing coords] --> NC[Normalised coords] --> DC[Device coords]
 ```
 
+<!-- latex: p2-03-window -->
 ```
 xv = xvmin + (xw − xwmin) · sx      sx = (xvmax − xvmin)/(xwmax − xwmin)
 yv = yvmin + (yw − ywmin) · sy      sy = (yvmax − yvmin)/(ywmax − ywmin)
@@ -331,7 +379,11 @@ yv = yvmin + (yw − ywmin) · sy      sy = (yvmax − yvmin)/(ywmax − ywmin)
 
 ### 6.7 Clipping
 
+Clipping removes the parts of a picture that fall outside the window. Fast algorithms first reject or accept
+whole lines with cheap tests and compute intersections only when they must.
+
 **Cohen–Sutherland line clipping** — 4-bit region code **TBRL** (Top, Bottom, Right, Left):
+<!-- latex: p2-03-cohen -->
 ```
         1001 │ 1000 │ 1010
        ──────┼──────┼──────
@@ -368,6 +420,10 @@ yv = yvmin + (yw − ywmin) · sy      sy = (yvmax − yvmin)/(ywmax − ywmin)
 Cubic Bezier: P(t) = (1−t)³P₀ + 3t(1−t)²P₁ + 3t²(1−t)P₂ + t³P₃, 0 ≤ t ≤ 1.
 
 ### 6.9 Illumination & Shading
+
+An illumination model computes how bright a surface point appears; a shading method decides at which
+points to apply the model and how to fill in between.
+<!-- latex: p2-03-illumination -->
 ```
 I = Ia·ka  +  Il·kd·(N·L)  +  Il·ks·(R·V)ⁿ
     ambient     diffuse (Lambert)   specular (Phong, n = shininess)
@@ -381,6 +437,11 @@ I = Ia·ka  +  Il·kd·(N·L)  +  Il·ks·(R·V)ⁿ
 
 ### 6.10 Projections
 
+A projection maps a three-dimensional scene onto a two-dimensional view plane. Parallel projections keep
+parallel lines parallel and are used in engineering drawings; perspective projections look natural because
+distant objects appear smaller.
+
+<!-- latex: p2-03-projections -->
 ```mermaid
 flowchart TB
     P[Projection] --> PA[Parallel<br/>projectors parallel]
@@ -417,6 +478,7 @@ int fun(int n) { if (n <= 1) return 1; return n * fun(n - 2); }
 fun(7) = 7 × fun(5) = 7 × 5 × fun(3) = 7 × 5 × 3 × fun(1) = 105
 ```
 
+<!-- latex: p2-03-callstack -->
 ```
 Call stack (grows downward)       Returns (unwinding)
  fun(7)                            fun(1) → 1
@@ -485,6 +547,7 @@ printf("%d", *(*(m + 1) + 2));                  // 6  (m[1][2])
 ### 7.5 Graphics Traces
 
 **DDA**: (2, 3) → (8, 6); dx = 6, dy = 3, steps = 6, x-inc = 1, y-inc = 0.5.
+<!-- latex: p2-03-dda-trace -->
 ```
 x : 2   3    4   5    6   7    8
 y : 3   3.5  4   4.5  5   5.5  6
@@ -504,6 +567,7 @@ plotted (round half up): (2,3) (3,4) (4,4) (5,5) (6,5) (7,6) (8,6)
 | 6 | 5 | (7, 7) | stop (x ≥ y) |
 
 **Composite transformation**: rotate P(4, 2) by 90° anticlockwise about pivot (2, 2).
+<!-- latex: p2-03-rotation -->
 ```
 1. Translate by (−2, −2):  (2, 0)
 2. Rotate 90°: (x cos90 − y sin90, x sin90 + y cos90) = (0, 2)
@@ -514,6 +578,7 @@ Scaling about fixed point (xf, yf): T(xf, yf) · S(sx, sy) · T(−xf, −yf) �
 **Cohen–Sutherland**: window (0, 0)–(10, 10); line (−5, 5) → (15, 5). Codes 0001 and 0010; AND = 0000 → not trivially rejected; clip at x = 0 → (0, 5) and at x = 10 → (10, 5).
 
 **Liang–Barsky**: same window; line (−5, 3) → (15, 9); Δx = 20, Δy = 6.
+<!-- latex: p2-03-liang -->
 ```
 p₁ = −Δx = −20, q₁ = x₁ − xmin = −5   → r₁ = 0.25    (entering)
 p₂ =  Δx =  20, q₂ = xmax − x₁ = 15   → r₂ = 0.75    (leaving)
@@ -525,6 +590,7 @@ Clipped line: (−5 + 0.25·20, 3 + 0.25·6) = (0, 4.5)  to  (−5 + 0.75·20, 3
 
 ### 7.6 3-D Transformation Matrices (homogeneous 4 × 4)
 
+<!-- latex: p2-03-transform3d -->
 ```
 Translation           Scaling              Rotation about z-axis
 | 1 0 0 tx |          | sx 0  0  0 |       | cosθ −sinθ 0 0 |

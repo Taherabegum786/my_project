@@ -1,0 +1,19 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \filldraw[fill=fslate!60, draw=fgink, line width=0.5pt] (0,0) rectangle (4,3);
+  \node[capt, anchor=south] at (2,3.05) {window (world)};
+  \fill[fwine] (2.6,1.9) circle (2pt); \node[font=\scriptsize, anchor=south west] at (2.6,1.9) {$(x_w, y_w)$};
+  \node[font=\scriptsize, anchor=north east] at (0,0) {$(x_{w\min}, y_{w\min})$};
+  \node[font=\scriptsize, anchor=south west] at (4,3) {$(x_{w\max}, y_{w\max})$};
+  \filldraw[fill=fsand!80, draw=fgink, line width=0.5pt] (7.5,0.6) rectangle (10.5,2.1);
+  \node[capt, anchor=south] at (9,2.15) {viewport (device)};
+  \fill[fwine] (9.45,1.5) circle (2pt); \node[font=\scriptsize, anchor=south west] at (9.45,1.5) {$(x_v, y_v)$};
+  \draw[dasharr] (4.3,1.5) -- node[lbl, above] {scale and translate} (7.2,1.35);
+\end{tikzpicture}
+\caption{Window-to-viewport mapping preserves the relative position of a point.}
+\end{figure}
+\begin{formulatable}
+Horizontal mapping & x_v = x_{v\min} + (x_w - x_{w\min})\,s_x,\quad s_x = \frac{x_{v\max}-x_{v\min}}{x_{w\max}-x_{w\min}} \\
+Vertical mapping & y_v = y_{v\min} + (y_w - y_{w\min})\,s_y,\quad s_y = \frac{y_{v\max}-y_{v\min}}{y_{w\max}-y_{w\min}} \\
+\end{formulatable}

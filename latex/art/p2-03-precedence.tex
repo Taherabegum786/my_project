@@ -1,0 +1,21 @@
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{c l l}
+\toprule
+\textbf{Level} & \textbf{Operators} & \textbf{Associativity} \\
+\midrule
+1 & \texttt{() [] -> .}\ \ postfix \texttt{++ --} & left to right \\
+2 & unary \texttt{! \~{} ++ -- + - * \&}\ (\emph{type})\ \texttt{sizeof} & right to left \\
+3 & \texttt{* / \%} & left to right \\
+4 & \texttt{+ -} & left to right \\
+5 & \texttt{<< >>} & left to right \\
+6 & \texttt{< <= > >=} & left to right \\
+7 & \texttt{== !=} & left to right \\
+8 & \texttt{\&}, then \texttt{\^{}}, then \texttt{|} & left to right \\
+9 & \texttt{\&\&}, then \texttt{||} & left to right \\
+10 & \texttt{?:} & right to left \\
+11 & \texttt{= += -=} \dots & right to left \\
+12 & \texttt{,} & left to right \\
+\bottomrule
+\end{tabular}
+\end{center}

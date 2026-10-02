@@ -1,0 +1,16 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \node[grey, minimum width=40mm] (P) at (0,0) {\textbf{Programming paradigms}};
+  \node[slate, minimum width=40mm] (I) at (-4.2,-1.4) {\textbf{Imperative}\\\footnotesize \emph{how} to compute};
+  \node[sage, minimum width=40mm] (D) at (4.2,-1.4) {\textbf{Declarative}\\\footnotesize \emph{what} to compute};
+  \draw[arr] (P) -- (I); \draw[arr] (P) -- (D);
+  \node[plain, text width=34mm, font=\footnotesize] (I1) at (-6.6,-3.0) {\textbf{procedural}\\C, Pascal, FORTRAN};
+  \node[plain, text width=34mm, font=\footnotesize] (I2) at (-2.3,-3.0) {\textbf{object-oriented}\\C++, Java, Smalltalk};
+  \node[plain, text width=26mm, font=\footnotesize] (D1) at (1.6,-3.0) {\textbf{functional}\\LISP, Haskell, ML};
+  \node[plain, text width=19mm, font=\footnotesize] (D2) at (4.6,-3.0) {\textbf{logic}\\Prolog};
+  \node[plain, text width=19mm, font=\footnotesize] (D3) at (7.4,-3.0) {\textbf{query}\\SQL};
+  \draw[arr] (I) -- (I1); \draw[arr] (I) -- (I2); \draw[arr] (D) -- (D1); \draw[arr] (D) -- (D2); \draw[arr] (D) -- (D3);
+\end{tikzpicture}
+\caption{The main programming paradigms. Event-driven, scripting and concurrent styles cut across both families.}
+\end{figure}

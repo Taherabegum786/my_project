@@ -1,0 +1,16 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \fill[fsand] (-3,-0.25) rectangle (3,0); \draw[fgink, line width=0.6pt] (-3,0) -- (3,0);
+  \draw[arr, line width=0.8pt] (0,0) -- (0,2.4) node[above, font=\small] {$N$};
+  \draw[arr, line width=0.8pt, fochre!80!black] (0,0) -- (-1.9,1.6) node[above left, font=\small] {$L$ (to light)};
+  \draw[arr, line width=0.8pt, fwine] (0,0) -- (1.9,1.6) node[above right, font=\small] {$R$ (reflection)};
+  \draw[arr, line width=0.8pt, fsteel!60!black] (0,0) -- (2.5,0.75) node[right, font=\small] {$V$ (to viewer)};
+  \draw[thinline] (0,0.75) arc (90:139.9:0.75); \draw[thinline] (0,0.95) arc (90:40.1:0.95);
+  \node[font=\scriptsize] at (-0.3,0.95) {$\theta$}; \node[font=\scriptsize] at (0.35,1.15) {$\theta$};
+\end{tikzpicture}
+\caption{Vectors in the Phong illumination model.}
+\end{figure}
+\[
+I \;=\; \underbrace{I_a k_a}_{\text{ambient}} \;+\; \underbrace{I_l k_d\,(N\cdot L)}_{\text{diffuse (Lambert)}} \;+\; \underbrace{I_l k_s\,(R\cdot V)^{n}}_{\text{specular (Phong; } n=\text{shininess)}}
+\]

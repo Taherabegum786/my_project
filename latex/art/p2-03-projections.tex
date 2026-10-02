@@ -1,0 +1,14 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \node[grey, minimum width=26mm] (P) at (0,0) {\textbf{Projection}};
+  \node[slate, text width=36mm] (PA) at (-4,-1.4) {\textbf{Parallel}\\\footnotesize projectors parallel};
+  \node[sage, text width=40mm] (PE) at (4,-1.4) {\textbf{Perspective}\\\footnotesize projectors meet at a centre};
+  \draw[arr] (P) -- (PA); \draw[arr] (P) -- (PE);
+  \node[plain, text width=30mm, font=\footnotesize] (O) at (-6.0,-3.5) {\textbf{orthographic}\\multiview (front, top, side); axonometric: isometric, dimetric, trimetric};
+  \node[plain, text width=26mm, font=\footnotesize] (OB) at (-2.2,-3.5) {\textbf{oblique}\\cavalier,\\cabinet};
+  \node[plain, text width=40mm, font=\footnotesize] (V) at (4,-3.3) {one-, two- or three-point perspective (number of vanishing points)};
+  \draw[arr] (PA) -- (O); \draw[arr] (PA) -- (OB); \draw[arr] (PE) -- (V);
+\end{tikzpicture}
+\caption{The family of planar geometric projections.}
+\end{figure}

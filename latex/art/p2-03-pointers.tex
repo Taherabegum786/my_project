@@ -1,0 +1,18 @@
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{l l}
+\toprule
+\textbf{Declaration} & \textbf{Meaning} \\
+\midrule
+\texttt{int *p;} & pointer to \texttt{int} \\
+\texttt{int **pp;} & pointer to a pointer to \texttt{int} \\
+\texttt{int *a[10];} & array of 10 pointers to \texttt{int} \\
+\texttt{int (*a)[10];} & pointer to an array of 10 \texttt{int}s \\
+\texttt{int *f();} & function returning a pointer to \texttt{int} \\
+\texttt{int (*f)();} & pointer to a function returning \texttt{int} \\
+\bottomrule
+\end{tabular}
+
+\smallskip
+{\small Read declarations from the name outwards: \texttt{()} and \texttt{[]} bind more tightly than \texttt{*}.}
+\end{center}

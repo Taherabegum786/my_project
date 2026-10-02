@@ -1,0 +1,23 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[scale=0.85]
+  \draw[thinline, fgink!40, ->] (-0.3,0) -- (5.3,0) node[right, font=\scriptsize] {$x$};
+  \draw[thinline, fgink!40, ->] (0,-0.3) -- (0,5.2) node[above, font=\scriptsize] {$y$};
+  \foreach \t in {1,...,5} { \draw[fgink!40] (\t,-0.06) -- (\t,0.06); \draw[fgink!40] (-0.06,\t) -- (0.06,\t); }
+  \fill[fgink] (2,2) circle (2.2pt) node[below left, font=\footnotesize] {pivot (2, 2)};
+  \fill[fwine] (4,2) circle (2.2pt) node[below right, font=\footnotesize] {$P(4,2)$};
+  \fill[fwine] (2,4) circle (2.2pt) node[above right, font=\footnotesize] {$P'(2,4)$};
+  \draw[dasharr] (4,2) arc (0:90:2);
+  \draw[thinline] (2,2) -- (4,2) (2,2) -- (2,4);
+  \node[font=\footnotesize] at (2.55,2.5) {$90^\circ$};
+\end{tikzpicture}
+\caption{Rotation about a pivot: translate the pivot to the origin, rotate, translate back —
+$T(2,2)\,R(90^\circ)\,T(-2,-2)$.}
+\end{figure}
+\begin{formulas}
+\begin{align*}
+\text{translate by }(-2,-2):\quad &(4,2)\mapsto(2,0)\\
+\text{rotate by }90^\circ:\quad &(x\cos 90^\circ - y\sin 90^\circ,\ x\sin 90^\circ + y\cos 90^\circ) = (0,2)\\
+\text{translate by }(+2,+2):\quad &(0,2)\mapsto(2,4) = P'
+\end{align*}
+\end{formulas}

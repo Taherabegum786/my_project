@@ -1,0 +1,12 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[node distance=6mm]
+  \node[slate, text width=19mm, font=\footnotesize] (a) {modelling\\coordinates};
+  \node[slate, text width=19mm, font=\footnotesize, right=of a] (b) {world\\coordinates};
+  \node[sage, text width=19mm, font=\footnotesize, right=of b] (c) {viewing\\coordinates};
+  \node[sand, text width=19mm, font=\footnotesize, right=of c] (d) {normalised\\coordinates};
+  \node[rose, text width=19mm, font=\footnotesize, right=of d] (e) {device\\coordinates};
+  \draw[arr] (a) -- (b); \draw[arr] (b) -- (c); \draw[arr] (c) -- (d); \draw[arr] (d) -- (e);
+\end{tikzpicture}
+\caption{The two-dimensional viewing pipeline.}
+\end{figure}

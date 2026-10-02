@@ -32,7 +32,7 @@ end
 
 -- ---------- code / listing blocks ----------
 local TEXT_PT = 440   -- usable width of a listing (text width minus indentation), pt
-local MONO_EM = 0.6   -- advance width of the monospaced font, em
+local MONO_EM = 0.506   -- advance width of the monospaced font, em
 
 local function code_block(el)
   local lines, maxlen = {}, 1

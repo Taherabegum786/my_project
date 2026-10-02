@@ -1,0 +1,14 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \draw[arr, line width=0.8pt] (0,0) -- (14.6,0);
+  \foreach \x/\t/\e in {0.9/{language\\design}/{meaning of $*$}, 3.4/{language\\implementation}/{size of \texttt{int}}, 5.9/{compile\\time}/{type of a variable}, 8.3/{link\\time}/{library code}, 10.6/{load\\time}/{absolute address}, 13.0/{run\\time}/{value of a variable}} {
+    \filldraw[fill=fwine, draw=white, line width=0.8pt] (\x,0) circle (3.5pt);
+    \node[font=\footnotesize\bfseries, align=center, above=2mm] at (\x,0) {\t};
+    \node[font=\footnotesize\itshape, align=center, below=2mm, text width=22mm] at (\x,0) {\e};
+  }
+  \node[lbl, anchor=west] at (0,-1.3) {early (static) binding};
+  \node[lbl, anchor=east] at (14.6,-1.3) {late (dynamic) binding};
+\end{tikzpicture}
+\caption{Binding times, from the earliest to the latest, with a typical attribute bound at each.}
+\end{figure}

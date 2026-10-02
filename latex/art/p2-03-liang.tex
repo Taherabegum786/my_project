@@ -1,0 +1,21 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[scale=0.45]
+  \filldraw[fill=fslate!60, draw=fgink, line width=0.6pt] (0,0) rectangle (10,10);
+  \draw[fgink!60, line width=0.6pt, dashed] (-5,3) -- (15,9);
+  \draw[fwine, line width=1.4pt] (0,4.5) -- (10,7.5);
+  \fill[fgink] (-5,3) circle (5pt) node[left, font=\footnotesize] {$(-5,3)$};
+  \fill[fgink] (15,9) circle (5pt) node[right, font=\footnotesize] {$(15,9)$};
+  \fill[fwine] (0,4.5) circle (5pt) node[above left, font=\footnotesize] {$u=0.25$: $(0,4.5)$};
+  \fill[fwine] (10,7.5) circle (5pt) node[below right, font=\footnotesize] {$u=0.75$: $(10,7.5)$};
+  \node[font=\footnotesize] at (5,1) {window $(0,0)$–$(10,10)$};
+\end{tikzpicture}
+\caption{Liang–Barsky clipping of the line from $(-5,3)$ to $(15,9)$.}
+\end{figure}
+\begin{formulatable}[0.62]
+Left edge ($p_1 = -\Delta x$, entering) & p_1 = -20,\ q_1 = x_1 - x_{\min} = -5\ \Rightarrow\ r_1 = 0.25 \\
+Right edge ($p_2 = \Delta x$, leaving) & p_2 = 20,\ q_2 = x_{\max} - x_1 = 15\ \Rightarrow\ r_2 = 0.75 \\
+Bottom edge (entering) & p_3 = -6,\ q_3 = 3\ \Rightarrow\ r_3 = -0.5 \\
+Top edge (leaving) & p_4 = 6,\ q_4 = 7\ \Rightarrow\ r_4 \approx 1.17 \\
+Parameter range of the visible part & u_1 = \max(0, 0.25, -0.5) = 0.25,\quad u_2 = \min(1, 0.75, 1.17) = 0.75 \\
+\end{formulatable}

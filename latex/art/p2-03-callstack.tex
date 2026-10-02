@@ -1,0 +1,14 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[fr/.style={ink, rectangle, minimum width=34mm, minimum height=7.5mm, font=\small}]
+  \foreach \y/\c/\col in {0/fun(7)/fslate, -0.8/fun(5)/fsage, -1.6/fun(3)/fsand, -2.4/fun(1)/frose}
+    \node[fr, fill=\col] at (0,\y) {\texttt{\c}};
+  \node[capt] at (0,0.75) {calls (stack grows downward)};
+  \draw[arr] (-2.3,0.1) -- node[lbl, left] {call} (-2.3,-2.5);
+  \foreach \y/\r in {-2.4/{returns 1}, -1.6/{returns $3\times1 = 3$}, -0.8/{returns $5\times3 = 15$}, 0/{returns $7\times15 = \mathbf{105}$}}
+    \node[font=\small, anchor=west] at (2.4,\y) {\r};
+  \draw[arr] (5.9,-2.5) -- node[lbl, right] {return} (5.9,0.1);
+\end{tikzpicture}
+\caption{Activation records for \texttt{fun(7)}: frames are pushed as calls are made and popped, with
+their results, as the recursion unwinds.}
+\end{figure}

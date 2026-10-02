@@ -1,0 +1,29 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[cls/.style={ink, rectangle, fill=fslate, minimum width=8mm, minimum height=6mm, font=\footnotesize\bfseries},
+    inh/.style={-{Triangle[open, length=2.6mm, width=2.4mm]}, draw=fgink, line width=0.55pt}]
+  \begin{scope}
+    \node[cls] (A) at (0,1.6) {A}; \node[cls] (B) at (0,0) {B}; \draw[inh] (B) -- (A);
+    \node[capt] at (0,-0.8) {single};
+  \end{scope}
+  \begin{scope}[shift={(2.4,0)}]
+    \node[cls] (A) at (-0.6,1.6) {A}; \node[cls] (B) at (0.6,1.6) {B}; \node[cls] (C) at (0,0) {C};
+    \draw[inh] (C) -- (A); \draw[inh] (C) -- (B); \node[capt] at (0,-0.8) {multiple};
+  \end{scope}
+  \begin{scope}[shift={(5.0,0)}]
+    \node[cls] (A) at (0,2.2) {A}; \node[cls] (B) at (0,1.1) {B}; \node[cls] (C) at (0,0) {C};
+    \draw[inh] (B) -- (A); \draw[inh] (C) -- (B); \node[capt] at (0,-0.8) {multilevel};
+  \end{scope}
+  \begin{scope}[shift={(7.9,0)}]
+    \node[cls] (A) at (0,1.6) {A}; \node[cls] (B) at (-1,0) {B}; \node[cls] (C) at (0,0) {C}; \node[cls] (D) at (1,0) {D};
+    \draw[inh] (B) -- (A); \draw[inh] (C) -- (A); \draw[inh] (D) -- (A); \node[capt] at (0,-0.8) {hierarchical};
+  \end{scope}
+  \begin{scope}[shift={(11.2,0)}]
+    \node[cls] (A) at (0,2.2) {A}; \node[cls] (B) at (-0.8,1.1) {B}; \node[cls] (C) at (0.8,1.1) {C}; \node[cls] (D) at (0,0) {D};
+    \draw[inh] (B) -- (A); \draw[inh] (C) -- (A); \draw[inh] (D) -- (B); \draw[inh] (D) -- (C);
+    \node[capt] at (0,-0.8) {hybrid (diamond)};
+  \end{scope}
+\end{tikzpicture}
+\caption{Kinds of inheritance, drawn with the UML generalisation arrow (pointing to the base class). The
+diamond causes duplicate copies of A in D unless A is declared a \emph{virtual} base class in C++.}
+\end{figure}

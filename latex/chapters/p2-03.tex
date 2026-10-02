@@ -29,17 +29,21 @@ OOP concepts, graphics algorithms \& transforms}
 
 \end{sylbox}
 
-\needspace{131pt}
+\needspace{161pt}
 
 \hypertarget{p2-03--1-language-concepts}{%
 \section{Language Concepts}\label{p2-03--1-language-concepts}}
+
+Every programming language makes design decisions about how programs are structured, when names are
+bound to meanings, how data are typed and how arguments reach procedures. Questions in this part ask you
+to recognise these decisions and their consequences.
 
 \needspace{95pt}
 
 \hypertarget{p2-03--11-paradigms}{%
 \subsection{Paradigms}\label{p2-03--11-paradigms}}
 
-\diagram{figures/p2-03-00}
+\input{art/p2-03-paradigms}
 
 \begingroup\small
 
@@ -75,19 +79,16 @@ Python & 1991, Guido van Rossum & Multi-paradigm \\
 
 \endgroup
 
-\needspace{117pt}
+\needspace{125pt}
 
 \hypertarget{p2-03--12-binding-time}{%
 \subsection{Binding Time}\label{p2-03--12-binding-time}}
 
+A binding associates a name or entity with an attribute --- a type, an address, a value. The earlier the
+binding, the more efficient but less flexible the program; the figure orders the possible binding times.
 Binding = association of an attribute with an entity.
 
-\begin{listingblock}{37pt}
-\begin{Verbatim}[fontsize=\fontsize{6.7}{8.1}\selectfont]
-Language design time → Language implementation time → Compile time → Link time → Load time → Run time
-  (meaning of *)          (size of int)                 (type of var)   (library code)  (address)    (value)
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-03-binding}
 
 \begin{itemize}
 \tightlist
@@ -99,10 +100,14 @@ Language design time → Language implementation time → Compile time → Link 
   Storage: static (globals), stack-dynamic (locals), explicit heap-dynamic (new/malloc), implicit heap-dynamic.
 \end{itemize}
 
-\needspace{130pt}
+\needspace{160pt}
 
 \hypertarget{p2-03--13-parameter-passing}{%
 \subsection{Parameter Passing}\label{p2-03--13-parameter-passing}}
+
+How arguments are passed determines whether a procedure can change the caller\textquotesingle s variables and when the
+argument expressions are evaluated. Questions typically give a short program and ask what it prints under
+each mechanism.
 
 \begingroup\small
 
@@ -159,32 +164,21 @@ by name → \texttt{A{[}2{]}} incremented (since i changed first); by reference 
   Type checking static (compile) vs dynamic (run time). Coercion = implicit type conversion.
 \end{itemize}
 
-\needspace{237pt}
+\needspace{161pt}
 
 \hypertarget{p2-03--2-c-programming--exam-traps}{%
 \section{C Programming --- Exam Traps}\label{p2-03--2-c-programming--exam-traps}}
 
-\needspace{201pt}
+Output-prediction questions on C test a small number of rules: operator precedence and associativity,
+integer arithmetic, pointer arithmetic, the behaviour of macros, and the few constructs whose behaviour is
+undefined. Work each example by hand before reading its comment.
+
+\needspace{95pt}
 
 \hypertarget{p2-03--21-operator-precedence-high--low}{%
 \subsection{Operator precedence (high → low)}\label{p2-03--21-operator-precedence-high--low}}
 
-\begin{listingblock}{151pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-() [] -> .     ++ -- (postfix)
-! ~ ++ -- + - * & (type) sizeof   (unary, right-to-left)
-* / %
-+ -
-<< >>
-< <= > >=
-== !=
-&   ^   |
-&&  ||
-?:              (right-to-left)
-= += -= ...     (right-to-left)
-,
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-03-precedence}
 
 \needspace{318pt}
 
@@ -220,21 +214,12 @@ printf("%d", SQ(2+3));           // 2+3*2+3 = 11 (macro pitfall)
 \end{Verbatim}
 \end{listingblock}
 
-\needspace{136pt}
+\needspace{95pt}
 
 \hypertarget{p2-03--23-pointers}{%
 \subsection{Pointers}\label{p2-03--23-pointers}}
 
-\begin{listingblock}{86pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-int *p;          pointer to int
-int **pp;        pointer to pointer
-int *a[10];      array of 10 pointers to int
-int (*a)[10];    pointer to an array of 10 ints
-int *f();        function returning pointer to int
-int (*f)();      pointer to function returning int
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-03-pointers}
 
 \begin{itemize}
 \tightlist
@@ -310,24 +295,18 @@ extern & Global & Whole program & 0 & Data segment \\
   Preprocessor: \texttt{\#include}, \texttt{\#define}, \texttt{\#ifdef}, \texttt{\#ifndef}, \texttt{\#if}, \texttt{\#pragma}, \texttt{\#undef}; runs \textbf{before compilation}.
 \end{itemize}
 
-\needspace{95pt}
+\needspace{125pt}
 
 \hypertarget{p2-03--3-oop-concepts}{%
 \section{OOP Concepts}\label{p2-03--3-oop-concepts}}
 
-\diagram{figures/p2-03-01}
+Object-oriented programming organises software around objects that combine state and behaviour. Its four
+principles, shown below as the pillars of a building, are among the most frequently examined definitions in
+the paper.
 
-\begin{listingblock}{97pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
- Inheritance types
- Single      Multiple      Multilevel     Hierarchical      Hybrid (diamond)
-   A         A     B          A               A                  A
-   │          ╲   ╱           │             ╱ │ ╲               ╱ ╲
-   B            C             B            B  C  D             B   C
-                              │                                 ╲ ╱
-                              C                                  D
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-03-oop}
+
+\input{art/p2-03-inheritance}
 
 \begin{itemize}
 \tightlist
@@ -418,10 +397,14 @@ HTTP methods & GET (in URL, idempotent), POST (in body), PUT, DELETE \\
 
 \endgroup
 
-\needspace{166pt}
+\needspace{196pt}
 
 \hypertarget{p2-03--6-computer-graphics}{%
 \section{Computer Graphics}\label{p2-03--6-computer-graphics}}
+
+Computer graphics turns mathematical descriptions of shapes into pixels. The syllabus covers the hardware,
+the scan-conversion algorithms that draw lines and circles, the transformations that move objects, and
+the clipping and projection steps that fit a scene onto a screen.
 
 \needspace{130pt}
 
@@ -452,15 +435,7 @@ TV, monitors & Pen plotters, early CAD \\
 
 \endgroup
 
-\begin{listingblock}{75pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-Frame buffer size = Resolution × bits per pixel / 8   bytes
-e.g. 1024 × 768, 24-bit colour → 1024×768×3 = 2.25 MB
-Number of colours = 2^(bits per pixel)
-Refresh: interlaced (odd/even lines alternately) vs non-interlaced
-Aspect ratio = width : height
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-03-framebuffer}
 
 \begin{itemize}
 \tightlist
@@ -470,51 +445,34 @@ Aspect ratio = width : height
   LCD, LED, plasma (flat panel); DVST (Direct View Storage Tube). Colour lookup table saves memory.
 \end{itemize}
 
-\needspace{144pt}
+\needspace{155pt}
 
 \hypertarget{p2-03--62-line-drawing}{%
 \subsection{Line Drawing}\label{p2-03--62-line-drawing}}
 
+A raster display can light only whole pixels, so drawing a line means choosing, column by column, the pixel
+closest to the true line. DDA does this with floating-point increments; Bresenham\textquotesingle s algorithm reaches the
+same choices with integer additions and a sign test.
+
 \textbf{DDA (Digital Differential Analyzer)}
 
-\begin{listingblock}{64pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-dx = x2 − x1, dy = y2 − y1, steps = max(|dx|, |dy|)
-xinc = dx/steps, yinc = dy/steps
-repeat steps times: x += xinc, y += yinc, plot(round(x), round(y))
-→ uses floating point and rounding (slower)
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-03-dda}
 
 \textbf{Bresenham (\textbar m\textbar{} \textless{} 1)} --- integer only:
 
-\begin{listingblock}{53pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-p0 = 2dy − dx
-if pk < 0:  next = (xk+1, yk),     pk+1 = pk + 2dy
-else:       next = (xk+1, yk+1),   pk+1 = pk + 2dy − 2dx
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-03-bresenham-rule}
 
 Example (20,10)→(30,18): dx=10, dy=8, p0 = 6, 2dy = 16, 2dy−2dx = −4.
 
-\begin{listingblock}{108pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
- k  pk   plot
- 0   6   (21,11)
- 1   2   (22,12)
- 2  −2   (23,12)
- 3  14   (24,13)
- 4  10   (25,14)
- 5   6   (26,15)
- ...
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-03-bresenham}
 
-\needspace{95pt}
+\needspace{125pt}
 
 \hypertarget{p2-03--63-mid-point-circle}{%
 \subsection{Mid-point Circle}\label{p2-03--63-mid-point-circle}}
+
+The mid-point algorithm decides between two candidate pixels by testing whether the midpoint between them
+lies inside or outside the circle. Symmetry means only one-eighth of the circle need be computed.
 
 \begin{itemize}
 \tightlist
@@ -522,13 +480,7 @@ Example (20,10)→(30,18): dx=10, dy=8, p0 = 6, 2dy = 16, 2dy−2dx = −4.
   8-way symmetry: compute one octant (x from 0 to x = y), reflect to 8.
 \end{itemize}
 
-\begin{listingblock}{53pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-p0 = 1 − r     (5/4 − r)
-if pk < 0:  (xk+1, yk),     pk+1 = pk + 2xk+1 + 1
-else:       (xk+1, yk−1),   pk+1 = pk + 2xk+1 + 1 − 2yk+1
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-03-circle}
 
 Ellipse: \textbf{4-way symmetry}, two regions (slope −1 boundary).
 
@@ -549,23 +501,16 @@ Ellipse: \textbf{4-way symmetry}, two regions (slope −1 boundary).
   Inside test: \textbf{odd-even (even-odd) rule}, \textbf{non-zero winding number rule}.
 \end{itemize}
 
-\needspace{145pt}
+\needspace{125pt}
 
 \hypertarget{p2-03--65-2-d-transformations-homogeneous-coordinates}{%
 \subsection{2-D Transformations (Homogeneous coordinates)}\label{p2-03--65-2-d-transformations-homogeneous-coordinates}}
 
-\begin{listingblock}{95pt}
-\begin{Verbatim}[fontsize=\fontsize{7.7}{9.3}\selectfont]
-Translation        Scaling            Rotation (anticlockwise θ)
-| 1  0  tx |       | sx 0  0 |        | cosθ  −sinθ  0 |
-| 0  1  ty |       | 0  sy 0 |        | sinθ   cosθ  0 |
-| 0  0  1  |       | 0  0  1 |        |  0      0    1 |
+Writing a point \((x, y)\) as \((x, y, 1)\) lets translation, which is not linear, be expressed as matrix
+multiplication like rotation and scaling. Any sequence of transformations then collapses into a single
+matrix product --- applied right to left.
 
-Reflection about x-axis: diag(1, −1, 1)      about y-axis: diag(−1, 1, 1)
-about origin: diag(−1, −1, 1)                about y = x: swap x and y  [[0 1 0][1 0 0][0 0 1]]
-X-shear: x' = x + shx·y                      Y-shear: y' = y + shy·x
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-03-transform2d}
 
 \begin{itemize}
 \tightlist
@@ -584,31 +529,21 @@ X-shear: x' = x + shx·y                      Y-shear: y' = y + shy·x
 \hypertarget{p2-03--66-viewing--window-to-viewport}{%
 \subsection{Viewing \& Window-to-Viewport}\label{p2-03--66-viewing--window-to-viewport}}
 
-\diagram{figures/p2-03-02}
+\input{art/p2-03-viewing}
 
-\begin{listingblock}{42pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-xv = xvmin + (xw − xwmin) · sx      sx = (xvmax − xvmin)/(xwmax − xwmin)
-yv = yvmin + (yw − ywmin) · sy      sy = (yvmax − yvmin)/(ywmax − ywmin)
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-03-window}
 
 \needspace{155pt}
 
 \hypertarget{p2-03--67-clipping}{%
 \subsection{Clipping}\label{p2-03--67-clipping}}
 
+Clipping removes the parts of a picture that fall outside the window. Fast algorithms first reject or accept
+whole lines with cheap tests and compute intersections only when they must.
+
 \textbf{Cohen--Sutherland line clipping} --- 4-bit region code \textbf{TBRL} (Top, Bottom, Right, Left):
 
-\begin{listingblock}{75pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-        1001 │ 1000 │ 1010
-       ──────┼──────┼──────
-        0001 │ 0000 │ 0010        window = 0000
-       ──────┼──────┼──────
-        0101 │ 0100 │ 0110
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-03-cohen}
 
 \begin{itemize}
 \tightlist
@@ -683,17 +618,15 @@ Bernstein basis polynomials & B-spline basis functions \\
 
 Cubic Bezier: P(t) = (1−t)³P₀ + 3t(1−t)²P₁ + 3t²(1−t)P₂ + t³P₃, 0 ≤ t ≤ 1.
 
-\needspace{92pt}
+\needspace{125pt}
 
 \hypertarget{p2-03--69-illumination--shading}{%
 \subsection{Illumination \& Shading}\label{p2-03--69-illumination--shading}}
 
-\begin{listingblock}{42pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-I = Ia·ka  +  Il·kd·(N·L)  +  Il·ks·(R·V)ⁿ
-    ambient     diffuse (Lambert)   specular (Phong, n = shininess)
-\end{Verbatim}
-\end{listingblock}
+An illumination model computes how bright a surface point appears; a shading method decides at which
+points to apply the model and how to fill in between.
+
+\input{art/p2-03-illumination}
 
 \begingroup\small
 
@@ -720,12 +653,16 @@ Flat (constant) & One intensity per polygon & Faceted \\
 
 \endgroup
 
-\needspace{95pt}
+\needspace{125pt}
 
 \hypertarget{p2-03--610-projections}{%
 \subsection{Projections}\label{p2-03--610-projections}}
 
-\diagram{figures/p2-03-03}
+A projection maps a three-dimensional scene onto a two-dimensional view plane. Parallel projections keep
+parallel lines parallel and are used in engineering drawings; perspective projections look natural because
+distant objects appear smaller.
+
+\input{art/p2-03-projections}
 
 \begin{itemize}
 \tightlist
@@ -776,15 +713,7 @@ fun(7) = 7 × fun(5) = 7 × 5 × fun(3) = 7 × 5 × 3 × fun(1) = 105
 \end{Verbatim}
 \end{listingblock}
 
-\begin{listingblock}{75pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-Call stack (grows downward)       Returns (unwinding)
- fun(7)                            fun(1) → 1
-   fun(5)                          fun(3) → 3 × 1  = 3
-     fun(3)                        fun(5) → 5 × 3  = 15
-       fun(1)                      fun(7) → 7 × 15 = 105
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-03-callstack}
 
 \needspace{331pt}
 
@@ -900,20 +829,14 @@ Use for "is-a" with shared code & Use for capability contracts \\
   \texttt{String} is immutable; \texttt{StringBuffer} (synchronised) and \texttt{StringBuilder} (faster) are mutable.
 \end{itemize}
 
-\needspace{133pt}
+\needspace{125pt}
 
 \hypertarget{p2-03--75-graphics-traces}{%
 \subsection{Graphics Traces}\label{p2-03--75-graphics-traces}}
 
 \textbf{DDA}: (2, 3) → (8, 6); dx = 6, dy = 3, steps = 6, x-inc = 1, y-inc = 0.5.
 
-\begin{listingblock}{53pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-x : 2   3    4   5    6   7    8
-y : 3   3.5  4   4.5  5   5.5  6
-plotted (round half up): (2,3) (3,4) (4,4) (5,5) (6,5) (7,6) (8,6)
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-03-dda-trace}
 
 \textbf{Mid-point circle, r = 10} (first octant, start (0, 10), p₀ = 1 − r = −9):
 
@@ -951,13 +874,7 @@ plotted (round half up): (2,3) (3,4) (4,4) (5,5) (6,5) (7,6) (8,6)
 
 \textbf{Composite transformation}: rotate P(4, 2) by 90° anticlockwise about pivot (2, 2).
 
-\begin{listingblock}{53pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-1. Translate by (−2, −2):  (2, 0)
-2. Rotate 90°: (x cos90 − y sin90, x sin90 + y cos90) = (0, 2)
-3. Translate by (+2, +2):  (2, 4)        → P' = (2, 4)
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-03-rotation}
 
 Scaling about fixed point (xf, yf): T(xf, yf) · S(sx, sy) · T(−xf, −yf) → x\textquotesingle{} = xf + (x − xf)·sx.
 
@@ -965,34 +882,14 @@ Scaling about fixed point (xf, yf): T(xf, yf) · S(sx, sy) · T(−xf, −yf) �
 
 \textbf{Liang--Barsky}: same window; line (−5, 3) → (15, 9); Δx = 20, Δy = 6.
 
-\begin{listingblock}{76pt}
-\begin{Verbatim}[fontsize=\fontsize{7.7}{9.3}\selectfont]
-p₁ = −Δx = −20, q₁ = x₁ − xmin = −5   → r₁ = 0.25    (entering)
-p₂ =  Δx =  20, q₂ = xmax − x₁ = 15   → r₂ = 0.75    (leaving)
-p₃ = −Δy = −6,  q₃ = y₁ − ymin = 3    → r₃ = −0.5    (entering)
-p₄ =  Δy =  6,  q₄ = ymax − y₁ = 7    → r₄ ≈ 1.17    (leaving)
-u₁ = max(0, 0.25, −0.5) = 0.25 ;  u₂ = min(1, 0.75, 1.17) = 0.75
-Clipped line: (−5 + 0.25·20, 3 + 0.25·6) = (0, 4.5)  to  (−5 + 0.75·20, 3 + 0.75·6) = (10, 7.5)
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-03-liang}
 
-\needspace{158pt}
+\needspace{95pt}
 
 \hypertarget{p2-03--76-3-d-transformation-matrices-homogeneous-4--4}{%
 \subsection{3-D Transformation Matrices (homogeneous 4 × 4)}\label{p2-03--76-3-d-transformation-matrices-homogeneous-4--4}}
 
-\begin{listingblock}{108pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-Translation           Scaling              Rotation about z-axis
-| 1 0 0 tx |          | sx 0  0  0 |       | cosθ −sinθ 0 0 |
-| 0 1 0 ty |          | 0  sy 0  0 |       | sinθ  cosθ 0 0 |
-| 0 0 1 tz |          | 0  0  sz 0 |       |  0     0   1 0 |
-| 0 0 0 1  |          | 0  0  0  1 |       |  0     0   0 1 |
-Rotation about x: y' = y cosθ − z sinθ, z' = y sinθ + z cosθ
-Rotation about y: z' = z cosθ − x sinθ, x' = z sinθ + x cosθ
-Perspective (centre of projection at origin, plane z = d): x' = x·d/z, y' = y·d/z
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-03-transform3d}
 
 \needspace{125pt}
 
