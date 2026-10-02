@@ -1,0 +1,17 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[y=0.5cm, m/.style={arr, line width=0.6pt}, ml/.style={font=\footnotesize, sloped, above, inner sep=1pt}]
+  \node[box, fill=fslate, minimum width=26mm] at (0,1.0) {Client (ISN 1000)}; \node[box, fill=fsage, minimum width=26mm] at (6.8,1.0) {Server (ISN 5000)};
+  \draw[fgink, line width=0.8pt] (0,0) -- (0,-12.4); \draw[fgink, line width=0.8pt] (6.8,0) -- (6.8,-12.4);
+  \draw[m] (0,-0.4) -- node[ml] {SYN, seq $=1000$} (6.8,-1.6);
+  \draw[m] (6.8,-2.6) -- node[ml] {SYN+ACK, seq $=5000$, ack $=1001$} (0,-3.8);
+  \draw[m] (0,-4.8) -- node[ml] {ACK, seq $=1001$, ack $=5001$} (6.8,-6.0);
+  \draw[m] (0,-6.8) -- node[ml] {data, seq $=1001$ (200 bytes)} (6.8,-8.0);
+  \draw[m] (0,-8.6) -- node[ml] {data, seq $=1201$ (300 bytes)} (6.8,-9.8);
+  \draw[m] (6.8,-10.6) -- node[ml] {ACK, ack $=1501$ (cumulative)} (0,-11.8);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{TCP sequence numbers count bytes. SYN and FIN each consume one number; the acknowledgement names the next
+byte expected.}
+\end{figure}

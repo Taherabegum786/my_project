@@ -1,0 +1,25 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \begin{axis}[width=12cm, height=6.2cm, xmin=0, xmax=19, ymin=0, ymax=13.5, axis lines=left,
+      xlabel={transmission round (RTT)}, ylabel={cwnd (MSS)}, tick label style={font=\footnotesize}, label style={font=\small},
+      xtick={0,2,...,18}, ytick={0,2,...,12}]
+    \addplot[fwine, line width=1pt, mark=*, mark size=1.4pt] coordinates {(0,1) (1,2) (2,4) (3,8) (4,9) (5,10) (6,11) (7,12) (8,1) (9,2) (10,4) (11,6) (12,7) (13,8) (14,9) (15,4.5) (16,5.5) (17,6.5) (18,7.5)};
+    \draw[fgink!55, dash pattern=on 3pt off 2pt] (axis cs:0,8) -- (axis cs:7.5,8);
+    \draw[fgink!55, dash pattern=on 3pt off 2pt] (axis cs:7.5,6) -- (axis cs:14.5,6);
+    \draw[fgink!55, dash pattern=on 3pt off 2pt] (axis cs:14.5,4.5) -- (axis cs:19,4.5);
+    \node[font=\scriptsize, anchor=south west] at (axis cs:0.1,8) {ssthresh = 8};
+    \node[font=\scriptsize, anchor=north west] at (axis cs:8.1,6) {ssthresh = 6};
+    \node[font=\scriptsize, anchor=north west] at (axis cs:15.1,4.5) {ssthresh = 4.5};
+    \node[lbl, anchor=east] at (axis cs:2.8,5.5) {slow start};
+    \node[lbl, anchor=east] at (axis cs:3.9,10.6) {congestion avoidance};
+    \node[lbl, anchor=west, align=left] at (axis cs:7.9,12.4) {timeout: cwnd $= 1$};
+    \node[lbl, anchor=south, align=center] at (axis cs:14.6,9.4) {3 dup ACKs:\\cwnd $=$ ssthresh};
+  \end{axis}
+\end{tikzpicture}
+\end{adjustbox}
+\caption{TCP congestion control. Slow start doubles cwnd each RTT up to ssthresh, then congestion avoidance adds one
+MSS per RTT. A timeout halves ssthresh and restarts from 1 (Tahoe); three duplicate ACKs halve cwnd and skip slow
+start (Reno fast recovery).}
+\end{figure}

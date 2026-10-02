@@ -22,8 +22,13 @@
 
 ## 1. Network Models
 
+Networking software is built in layers. Each layer offers a service to the layer above and uses the service of
+the layer below, so that, for example, a web browser never needs to know whether its data travels over Wi-Fi or
+fibre.
+
 ### 1.1 OSI vs TCP/IP
 
+<!-- latex: p2-09-osi -->
 ```
    OSI (7 layers)              TCP/IP (4/5 layers)        PDU          Devices / protocols
  ┌──────────────────┐        ┌───────────────────┐
@@ -68,6 +73,10 @@ Data flow: **simplex** (keyboard), **half-duplex** (walkie-talkie), **full-duple
 
 ## 2. Signals & Data Rates
 
+Every link has a limited bandwidth and some noise. Two classical results bound how fast data can be sent:
+Nyquist's for a noiseless channel and Shannon's for a noisy one.
+
+<!-- latex: p2-09-signals -->
 ```
 Nyquist (noiseless):    Max bit rate = 2 · B · log₂ L          (L signal levels)
 Shannon (noisy):        Capacity C = B · log₂(1 + SNR)
@@ -87,6 +96,10 @@ Impairments: **attenuation** (loss of energy, dB = 10 log(P₂/P₁)), **distort
 
 ### 3.1 Line Coding
 
+Line coding turns a bit sequence into a digital signal. Good codes keep the receiver's clock synchronised (by
+including transitions) and avoid a DC component.
+
+<!-- latex: p2-09-linecode -->
 ```
  Bits:        1      0      1      1      0
  NRZ-L      ──────┐      ┌─────────────┐      
@@ -119,6 +132,7 @@ Impairments: **attenuation** (loss of energy, dB = 10 log(P₂/P₁)), **distort
 
 ### 3.2 Digital-to-Analog
 
+<!-- latex: p2-09-modulation -->
 ```mermaid
 flowchart LR
     D[Digital-to-analog] --> ASK[ASK<br/>amplitude varies]
@@ -142,6 +156,7 @@ flowchart LR
 - T1 = (24 × 8 + 1 framing bit) × 8000 = **1.544 Mbps**.
 
 **Transmission media**:
+<!-- latex: p2-09-media -->
 ```
 Guided:   Twisted pair (UTP Cat5/6, RJ-45; twisting reduces crosstalk)
           Coaxial (BNC; cable TV)
@@ -164,6 +179,9 @@ Unguided: Radio waves (3 kHz–1 GHz, omnidirectional)
 
 ## 6. Data Link Layer
 
+The data link layer moves frames between two directly connected nodes. It frames the bit stream, detects (and
+sometimes corrects) errors and keeps a fast sender from swamping a slow receiver.
+
 ### 6.1 Framing
 Character count, **byte stuffing** (ESC/FLAG), **bit stuffing** (insert 0 after five consecutive 1s — HDLC flag 01111110), physical layer coding violations.
 Bit-stuffing example: data `0111111111110` → `011111011111010`.
@@ -180,6 +198,7 @@ Bit-stuffing example: data `0111111111110` → `011111011111010`.
 
 ### 6.3 Flow & Error Control (Sliding Window)
 
+<!-- latex: p2-09-window -->
 ```
 a = propagation delay / transmission time = Tp / Tt
 Stop-and-Wait efficiency   η = 1 / (1 + 2a)
@@ -190,6 +209,7 @@ Sequence number bits n:    Go-Back-N  W_s ≤ 2ⁿ − 1, W_r = 1
 Throughput = η × bandwidth
 ```
 
+<!-- latex: p2-09-gbn -->
 ```mermaid
 sequenceDiagram
     participant S as Sender
@@ -220,6 +240,9 @@ Stop-and-Wait η = 1/41 ≈ **2.4%**. Window for 100% = 1 + 40 = 41 → sequence
 
 ## 7. Medium Access Control
 
+When many stations share one channel, a medium-access protocol decides who may transmit when.
+
+<!-- latex: p2-09-mac -->
 ```mermaid
 flowchart TB
     M[Multiple access] --> R[Random access]
@@ -238,6 +261,7 @@ flowchart TB
     CH --> CD[CDMA - orthogonal codes, Walsh]
 ```
 
+<!-- latex: p2-09-aloha -->
 ```
 Pure ALOHA:     S = G·e^(−2G), max 1/(2e) = 0.184 at G = 0.5 ; vulnerable time = 2·Tt
 Slotted ALOHA:  S = G·e^(−G),  max 1/e  = 0.368 at G = 1   ; vulnerable time = Tt
@@ -251,6 +275,7 @@ CSMA/CD:        minimum frame size: Tt ≥ 2·Tp  ⇒  L_min = 2 · Tp · B
 - Token ring (802.5), token bus (802.4).
 
 ### Ethernet (IEEE 802.3)
+<!-- latex: p2-09-ethernet -->
 ```
 Frame: | Preamble 7 | SFD 1 | Dest 6 | Src 6 | Type/Len 2 | Data 46–1500 | CRC 4 |
 Min frame = 64 B (without preamble) ; Max = 1518 B ; MAC address 48 bits (OUI 24 + 24)
@@ -268,6 +293,9 @@ Devices: **Repeater/hub** (L1, one collision & broadcast domain), **Bridge/switc
 
 ## 8. Network Layer
 
+The network layer carries packets from source host to destination host across many networks. Its two jobs are
+addressing (IP) and routing (choosing the path).
+
 ### 8.1 IPv4 Addressing
 
 | Class | First bits | First octet | Default mask | Networks | Hosts/net |
@@ -280,6 +308,7 @@ Devices: **Repeater/hub** (L1, one collision & broadcast domain), **Bridge/switc
 
 - Private ranges: **10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16**. Loopback: 127.0.0.0/8. APIPA 169.254/16.
 - **Subnetting worked**: 192.168.10.0/26
+<!-- latex: p2-09-subnet -->
 ```
 Mask 255.255.255.192 → 4 subnets of 64 addresses (62 usable hosts each)
 Subnet 1: 192.168.10.0   – .63   (broadcast .63)
@@ -293,6 +322,7 @@ Host 192.168.10.100/26 → network 192.168.10.64, broadcast 192.168.10.127
 - **NAT**: maps private addresses to public; PAT uses ports.
 
 ### 8.2 IPv4 Header
+<!-- latex: p2-09-ipv4 -->
 ```
 | Ver 4 | HLEN 4 | DSCP/ToS 8 | Total length 16 |
 | Identification 16 | Flags 3 (–, DF, MF) | Fragment offset 13 (units of 8 bytes) |
@@ -332,6 +362,9 @@ fragments carry 1480, 1480, 1020 bytes; offsets **0, 185, 370**; MF = 1, 1, 0.
 
 ## 9. Transport Layer
 
+The transport layer provides process-to-process delivery using port numbers. TCP adds reliability, ordering, flow
+control and congestion control on top of IP; UDP adds almost nothing and is therefore fast.
+
 | Feature | TCP | UDP | SCTP |
 |---------|-----|-----|------|
 | Connection | Connection-oriented | Connectionless | Connection-oriented (association) |
@@ -343,6 +376,7 @@ fragments carry 1480, 1480, 1020 bytes; offsets **0, 185, 370**; MF = 1, 1, 0.
 
 ### TCP Connection Management
 
+<!-- latex: p2-09-tcp-conn -->
 ```mermaid
 sequenceDiagram
     participant C as Client
@@ -365,6 +399,7 @@ sequenceDiagram
 
 ### TCP Congestion Control
 
+<!-- latex: p2-09-cwnd -->
 ```
  cwnd
   │                 timeout → ssthresh = cwnd/2, cwnd = 1 (Tahoe/Reno)
@@ -381,6 +416,7 @@ sequenceDiagram
 - **QoS**: leaky bucket (constant output rate), **token bucket** (allows bursts: max burst S = C / (M − ρ)), IntServ (RSVP), DiffServ.
 
 ### Well-known Ports
+<!-- latex: p2-09-ports -->
 ```
 FTP 20 (data) / 21 (control)   SSH 22   TELNET 23   SMTP 25   DNS 53   DHCP 67/68
 TFTP 69   HTTP 80   POP3 110   NTP 123   IMAP 143   SNMP 161/162   BGP 179   HTTPS 443
@@ -399,6 +435,10 @@ Ports: well-known 0–1023, registered 1024–49151, dynamic 49152–65535
 
 ## 11. Network Security
 
+Network security protects data in transit (confidentiality, integrity, authentication) and the network itself
+(availability). Cryptography supplies the first three; firewalls and intrusion-detection systems defend the
+network.
+
 ### 11.1 Goals & Attacks
 CIA: **Confidentiality, Integrity, Availability** + authentication, non-repudiation.
 Passive attacks (eavesdropping, traffic analysis) vs active (masquerade, replay, modification, DoS).
@@ -406,6 +446,7 @@ Malware: virus, worm, Trojan, ransomware, spyware, rootkit, botnet, logic bomb, 
 
 ### 11.2 Cryptography
 
+<!-- latex: p2-09-crypto -->
 ```mermaid
 flowchart LR
     P[Plaintext] -->|Encrypt with key| C[Ciphertext] -->|Decrypt with key| P2[Plaintext]
@@ -434,6 +475,7 @@ flowchart LR
 - **Diffie–Hellman worked**: p = 23, g = 5, a = 6, b = 15 → A = 5⁶ mod 23 = 8, B = 5¹⁵ mod 23 = 19; shared key = 19⁶ mod 23 = 8¹⁵ mod 23 = **2**.
 
 ### 11.3 Digital Signature & PKI
+<!-- latex: p2-09-signature -->
 ```
 Sign:   signature = Encrypt(hash(M), sender's PRIVATE key)
 Verify: Decrypt(signature, sender's PUBLIC key) == hash(M)
@@ -457,6 +499,7 @@ Provides authentication, integrity, **non-repudiation**. Certificates (X.509) is
 
 ### 12.2 GSM Architecture
 
+<!-- latex: p2-09-gsm -->
 ```mermaid
 flowchart LR
     MS[Mobile Station<br/>ME + SIM] -->|Um air interface| BTS[BTS]
@@ -491,6 +534,7 @@ flowchart LR
 
 ## 13. Cloud Computing & IoT
 
+<!-- latex: p2-09-cloud -->
 ```
    ┌─────────────────────────────────────────────────────────────┐
    │ SaaS  (Gmail, Salesforce, Office 365)    — user uses app    │
@@ -524,6 +568,7 @@ Split **192.168.1.0/24** for LANs needing 100, 50, 25 and 10 hosts (allocate lar
 
 ### 14.2 Distance-Vector Update — Worked
 
+<!-- latex: p2-09-dv -->
 ```mermaid
 flowchart LR
     A((A)) ---|1| B((B))
@@ -543,6 +588,7 @@ Bellman–Ford equation: Dₓ(y) = minᵥ { c(x, v) + Dᵥ(y) }.
 
 ### 14.3 TCP Sequence and Acknowledgement Numbers
 
+<!-- latex: p2-09-tcp-seq -->
 ```mermaid
 sequenceDiagram
     participant C as Client (ISN 1000)
@@ -562,6 +608,7 @@ Sent 0, 1, 2 (lost), 3, 4 → on timeout resend 2, 3, 4, then send 5, 6. Total t
 ### 14.4 Hamming (7, 4) — Encode and Correct
 
 Data 1011 → positions: 1 p1, 2 p2, 3 d1, 4 p4, 5 d2, 6 d3, 7 d4 (even parity).
+<!-- latex: p2-09-hamming -->
 ```
 d1 d2 d3 d4 = 1 0 1 1
 p1 covers 1,3,5,7 → d1 d2 d4 = 1 0 1 → p1 = 0
@@ -592,6 +639,7 @@ Rules: drop leading zeros in each group; replace **one** longest run of all-zero
 
 ### 14.7 DNS Resolution
 
+<!-- latex: p2-09-dns -->
 ```mermaid
 sequenceDiagram
     participant H as Host
@@ -617,6 +665,7 @@ sequenceDiagram
 
 ### 14.9 HTTP Exchange (what a request looks like)
 
+<!-- latex: p2-09-http -->
 ```
 GET /index.html HTTP/1.1                 HTTP/1.1 200 OK
 Host: www.ugcnet.example                 Content-Type: text/html

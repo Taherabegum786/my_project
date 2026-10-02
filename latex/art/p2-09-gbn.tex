@@ -1,0 +1,20 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[y=0.78cm, m/.style={arr, line width=0.6pt}, ml/.style={font=\footnotesize, sloped, above, inner sep=1pt}]
+  \node[box, fill=fslate, minimum width=20mm] at (0,0.9) {Sender}; \node[box, fill=fsage, minimum width=20mm] at (6,0.9) {Receiver};
+  \draw[fgink, line width=0.8pt] (0,0) -- (0,-13); \draw[fgink, line width=0.8pt] (6,0) -- (6,-13);
+  \draw[m] (0,-0.5) -- node[ml] {F0} (6,-1.7);
+  \draw[m] (0,-1.5) -- node[ml] {F1} (6,-2.7);
+  \draw[m, fwine] (0,-2.5) -- node[ml, text=fwine] {F2} (3.3,-3.16); \node[text=fwine, font=\large\bfseries] at (3.45,-3.19) {$\times$};
+  \draw[m] (0,-3.5) -- node[ml, pos=0.2] {F3} (6,-4.7); \node[font=\scriptsize, anchor=west] at (6.1,-4.7) {out of order: discarded};
+  \draw[m, dash pattern=on 3pt off 2pt] (6,-2.9) -- node[ml, pos=0.2] {ACK 1} (0,-4.3);
+  \draw[fwine, line width=0.6pt] (-0.15,-2.5) -- (-0.45,-2.5) -- node[font=\scriptsize, text=fwine, left, align=right] {timer\\for F2} (-0.45,-8.0) -- (-0.15,-8.0);
+  \draw[m] (0,-8.2) -- node[ml] {F2 (resent)} (6,-9.4);
+  \draw[m] (0,-9.2) -- node[ml] {F3 (resent)} (6,-10.4);
+  \draw[m, dash pattern=on 3pt off 2pt] (6,-10.6) -- node[ml] {ACK 3} (0,-12.0);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Go-Back-N with a window of 4 when frame 2 is lost. The receiver accepts only in-order frames, so after
+the timeout the sender resends F2 \emph{and every frame after it}.}
+\end{figure}

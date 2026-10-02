@@ -1,0 +1,12 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[m/.style={ink, rectangle, rounded corners=2pt, align=left, font=\footnotesize\ttfamily, text width=62mm, inner sep=6pt,
+    blur shadow={shadow blur steps=6, shadow xshift=0.8pt, shadow yshift=-1pt, shadow opacity=22}}]
+  \node[m, fill=fslate!50, anchor=north] (q) at (0,0) {\textbf{GET} /index.html HTTP/1.1\\Host: www.ugcnet.example\\User-Agent: Mozilla/5.0\\Accept: text/html\\Connection: keep-alive};
+  \node[m, fill=fsage!60, anchor=north] (r) at (7.2,0) {HTTP/1.1 \textbf{200 OK}\\Content-Type: text/html\\Content-Length: 3421\\Set-Cookie: sid=abc123\\[6pt]<html> \dots{} </html>};
+  \node[capt, above=1mm of q] {request}; \node[capt, above=1mm of r] {response};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{An HTTP request and its response: a start line, header lines, a blank line and (for the response) the body.}
+\end{figure}

@@ -1,0 +1,23 @@
+\begin{formulatable}
+Pure ALOHA throughput (vulnerable time $2T_t$) & S = G\,e^{-2G},\quad S_{\max} = \frac{1}{2e} \approx 0.184 \text{ at } G = 0.5 \\
+Slotted ALOHA throughput (vulnerable time $T_t$) & S = G\,e^{-G},\quad S_{\max} = \frac{1}{e} \approx 0.368 \text{ at } G = 1 \\
+CSMA/CD minimum frame & T_t \ge 2T_p \;\Rightarrow\; L_{\min} = 2\,T_p\,B \\
+CSMA/CD efficiency & \eta = \frac{1}{1 + 6.44a} \\
+\end{formulatable}
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \begin{axis}[width=9.5cm, height=5.4cm, xmin=0, xmax=3, ymin=0, ymax=0.42, axis lines=left,
+      xlabel={offered load $G$ (frames per frame time)}, ylabel={throughput $S$}, tick label style={font=\footnotesize}, label style={font=\small},
+      legend style={font=\footnotesize, draw=none, fill=none, at={(0.98,0.98)}, anchor=north east}, legend cell align=left,
+      every axis plot/.append style={line width=0.9pt, no markers, samples=100, domain=0:3}]
+    \addplot[fwine] {x*exp(-x)}; \addlegendentry{slotted ALOHA}
+    \addplot[fsteel!80!black] {x*exp(-2*x)}; \addlegendentry{pure ALOHA}
+    \draw[fgink!50, dash pattern=on 2pt off 2pt] (axis cs:1,0) -- (axis cs:1,0.368) -- (axis cs:0,0.368);
+    \draw[fgink!50, dash pattern=on 2pt off 2pt] (axis cs:0.5,0) -- (axis cs:0.5,0.184) -- (axis cs:0,0.184);
+  \end{axis}
+\end{tikzpicture}
+\end{adjustbox}
+\caption{ALOHA throughput. Slotting halves the vulnerable period and so doubles the peak throughput.}
+\end{figure}

@@ -1,0 +1,31 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \foreach \b [count=\i from 0] in {1,0,1,1,0} \node[font=\small\bfseries] at ({1.2*\i+0.6},0.75) {\b};
+  \foreach \i in {0,...,5} \draw[fgink!25, line width=0.4pt] ({1.2*\i},0.45) -- ({1.2*\i},-5.75);
+  \draw[fgink!20, line width=0.3pt] (0,-0.20) -- (6,-0.20);
+  \draw[fwine, line width=0.9pt] (0.00,0.15) -- (1.20,0.15) -- (1.20,-0.55) -- (2.40,-0.55) -- (2.40,0.15) -- (4.80,0.15) -- (4.80,-0.55) -- (6.00,-0.55);
+  \node[capt, anchor=east] at (-0.2,-0.20) {NRZ-L};
+  \node[font=\footnotesize, anchor=west] at (6.3,-0.20) {1 = high, 0 = low};
+  \draw[fgink!20, line width=0.3pt] (0,-1.50) -- (6,-1.50);
+  \draw[fwine, line width=0.9pt] (0.00,-1.15) -- (2.40,-1.15) -- (2.40,-1.85) -- (3.60,-1.85) -- (3.60,-1.15) -- (6.00,-1.15);
+  \node[capt, anchor=east] at (-0.2,-1.50) {NRZ-I};
+  \node[font=\footnotesize, anchor=west] at (6.3,-1.50) {invert at the start of every 1};
+  \draw[fgink!20, line width=0.3pt] (0,-2.80) -- (6,-2.80);
+  \draw[fwine, line width=0.9pt] (0.00,-3.15) -- (0.60,-3.15) -- (0.60,-2.45) -- (1.80,-2.45) -- (1.80,-3.15) -- (3.00,-3.15) -- (3.00,-2.45) -- (3.60,-2.45) -- (3.60,-3.15) -- (4.20,-3.15) -- (4.20,-2.45) -- (5.40,-2.45) -- (5.40,-3.15) -- (6.00,-3.15);
+  \node[capt, anchor=east] at (-0.2,-2.80) {Manchester};
+  \node[font=\footnotesize, anchor=west] at (6.3,-2.80) {1 = low$\to$high, 0 = high$\to$low (IEEE)};
+  \draw[fgink!20, line width=0.3pt] (0,-4.10) -- (6,-4.10);
+  \draw[fwine, line width=0.9pt] (0.00,-4.45) -- (0.60,-4.45) -- (0.60,-3.75) -- (1.20,-3.75) -- (1.20,-4.45) -- (1.80,-4.45) -- (1.80,-3.75) -- (3.00,-3.75) -- (3.00,-4.45) -- (4.20,-4.45) -- (4.20,-3.75) -- (4.80,-3.75) -- (4.80,-4.45) -- (5.40,-4.45) -- (5.40,-3.75) -- (6.00,-3.75);
+  \node[capt, anchor=east] at (-0.2,-4.10) {Diff.\ Manchester};
+  \node[font=\footnotesize, anchor=west] at (6.3,-4.10) {0: transition at start; always mid-bit};
+  \draw[fgink!20, line width=0.3pt] (0,-5.40) -- (6,-5.40);
+  \draw[fwine, line width=0.9pt] (0.00,-5.05) -- (1.20,-5.05) -- (1.20,-5.40) -- (2.40,-5.40) -- (2.40,-5.75) -- (3.60,-5.75) -- (3.60,-5.05) -- (4.80,-5.05) -- (4.80,-5.40) -- (6.00,-5.40);
+  \node[capt, anchor=east] at (-0.2,-5.40) {AMI};
+  \node[font=\footnotesize, anchor=west] at (6.3,-5.40) {0 = zero; 1s alternate $+$ and $-$};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Line codes for the bits 10110. Manchester codes put a transition in the middle of every bit, so the
+receiver can recover the clock; AMI has no DC component.}
+\end{figure}

@@ -1,0 +1,18 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \pic at (0,0)   {slab={9}{1.0}{1.0}{fslate}};
+  \pic at (0,1.0) {slab={9}{1.0}{1.0}{fsage}};
+  \pic at (0,2.0) {slab={9}{1.0}{1.0}{fsand}};
+  \node at (4.5,0.5) {\textbf{IaaS}\quad\footnotesize AWS EC2, Google Compute Engine, Azure VMs};
+  \node at (4.5,1.5) {\textbf{PaaS}\quad\footnotesize Google App Engine, Heroku, Azure App Service};
+  \node at (4.5,2.5) {\textbf{SaaS}\quad\footnotesize Gmail, Salesforce, Office 365};
+  \node[lbl, anchor=west] at (9.9,0.5) {used by administrators};
+  \node[lbl, anchor=west] at (9.9,1.5) {used by developers};
+  \node[lbl, anchor=west] at (9.9,2.5) {used by end users};
+  \draw[arr] (-0.6,0) -- node[lbl, rotate=90, above] {provider manages more} (-0.6,3.0);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Cloud service models. Going up the stack the provider manages more and the customer less.}
+\end{figure}

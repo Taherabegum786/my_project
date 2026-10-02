@@ -39,37 +39,21 @@ window, Shannon/Nyquist numericals + Forouzan concepts}
 
 \end{sylbox}
 
-\needspace{273pt}
+\needspace{161pt}
 
 \hypertarget{p2-09--1-network-models}{%
 \section{Network Models}\label{p2-09--1-network-models}}
 
-\needspace{237pt}
+Networking software is built in layers. Each layer offers a service to the layer above and uses the service of
+the layer below, so that, for example, a web browser never needs to know whether its data travels over Wi-Fi or
+fibre.
+
+\needspace{95pt}
 
 \hypertarget{p2-09--11-osi-vs-tcpip}{%
 \subsection{OSI vs TCP/IP}\label{p2-09--11-osi-vs-tcpip}}
 
-\begin{listingblock}{187pt}
-\begin{Verbatim}[fontsize=\fontsize{8.1}{9.8}\selectfont]
-   OSI (7 layers)              TCP/IP (4/5 layers)        PDU          Devices / protocols
- ┌──────────────────┐        ┌───────────────────┐
- │ 7 Application    │        │                   │
- ├──────────────────┤        │                   │                     HTTP, FTP, SMTP, DNS,
- │ 6 Presentation   │  ───►  │   Application     │      Message        SNMP, TELNET, DHCP
- ├──────────────────┤        │                   │                     (gateway)
- │ 5 Session        │        │                   │
- ├──────────────────┤        ├───────────────────┤
- │ 4 Transport      │  ───►  │   Transport       │      Segment        TCP, UDP, SCTP
- ├──────────────────┤        ├───────────────────┤      (datagram)
- │ 3 Network        │  ───►  │   Internet        │      Packet         IP, ICMP, ARP, IGMP (router)
- ├──────────────────┤        ├───────────────────┤
- │ 2 Data Link      │  ───►  │   Network access  │      Frame          Ethernet, PPP, HDLC (switch, bridge)
- ├──────────────────┤        │   (link+physical) │
- │ 1 Physical       │        │                   │      Bits           (hub, repeater)
- └──────────────────┘        └───────────────────┘
- Mnemonic (top→bottom): "All People Seem To Need Data Processing"
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-09-osi}
 
 \begingroup\small
 
@@ -132,54 +116,35 @@ Tree / Hybrid & --- & \\
 
 Data flow: \textbf{simplex} (keyboard), \textbf{half-duplex} (walkie-talkie), \textbf{full-duplex} (telephone).
 
-\needspace{147pt}
+\needspace{125pt}
 
 \hypertarget{p2-09--2-signals--data-rates}{%
 \section{Signals \& Data Rates}\label{p2-09--2-signals--data-rates}}
 
-\begin{listingblock}{97pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-Nyquist (noiseless):    Max bit rate = 2 · B · log₂ L          (L signal levels)
-Shannon (noisy):        Capacity C = B · log₂(1 + SNR)
-SNR_dB = 10 log₁₀(SNR)  → 30 dB = 1000, 20 dB = 100, 10 dB = 10
-Bandwidth-delay product = bandwidth × propagation delay  (bits "in the pipe")
-Propagation delay = distance / propagation speed ;  Transmission delay = frame size / bandwidth
-Throughput, latency = propagation + transmission + queuing + processing
-Baud rate (signal rate) S = N / r  where r = bits per signal element
-\end{Verbatim}
-\end{listingblock}
+Every link has a limited bandwidth and some noise. Two classical results bound how fast data can be sent:
+Nyquist\textquotesingle s for a noiseless channel and Shannon\textquotesingle s for a noisy one.
+
+\input{art/p2-09-signals}
 
 \textbf{Worked}: telephone line B = 3000 Hz, SNR = 3162 (≈ 35 dB): C = 3000 × log₂(3163) ≈ 3000 × 11.62 = \textbf{34.86 kbps}.
 Nyquist: B = 3000 Hz, 4 levels → 2 × 3000 × 2 = \textbf{12 kbps}.
 
 Impairments: \textbf{attenuation} (loss of energy, dB = 10 log(P₂/P₁)), \textbf{distortion} (different delays of components), \textbf{noise} (thermal, induced, crosstalk, impulse).
 
-\needspace{236pt}
+\needspace{161pt}
 
 \hypertarget{p2-09--3-digital--analog-transmission}{%
 \section{Digital \& Analog Transmission}\label{p2-09--3-digital--analog-transmission}}
 
-\needspace{200pt}
+\needspace{125pt}
 
 \hypertarget{p2-09--31-line-coding}{%
 \subsection{Line Coding}\label{p2-09--31-line-coding}}
 
-\begin{listingblock}{150pt}
-\begin{Verbatim}[fontsize=\fontsize{8.9}{10.8}\selectfont]
- Bits:        1      0      1      1      0
- NRZ-L      ──────┐      ┌─────────────┐      
- (1 = high)       └──────┘             └──────
+Line coding turns a bit sequence into a digital signal. Good codes keep the receiver\textquotesingle s clock synchronised (by
+including transitions) and avoid a DC component.
 
- Bits:        1       0       1       1       0
- Manchester    ┌───────┐       ┌───┐   ┌───────┐   
- (IEEE)     ───┘       └───────┘   └───┘       └───
- 0 = high→low, 1 = low→high: every bit has a MID-BIT transition → receiver recovers the clock
-
- NRZ-I: invert the level at the start of every 1, no change for 0
- Differential Manchester: transition at START of bit for 0, none for 1; mid-bit transition always
- AMI (bipolar): 0 → zero voltage; successive 1s alternate +V and −V (no DC component)
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-09-linecode}
 
 \begingroup\small
 
@@ -227,7 +192,7 @@ MLT-3 & Multitransition & 100Base-TX \\
 \hypertarget{p2-09--32-digital-to-analog}{%
 \subsection{Digital-to-Analog}\label{p2-09--32-digital-to-analog}}
 
-\diagram{figures/p2-09-00}
+\input{art/p2-09-modulation}
 
 \begin{itemize}
 \tightlist
@@ -276,16 +241,7 @@ Spread spectrum & FHSS, DSSS & Wireless, security \\
 
 \textbf{Transmission media}:
 
-\begin{listingblock}{81pt}
-\begin{Verbatim}[fontsize=\fontsize{8.3}{10.1}\selectfont]
-Guided:   Twisted pair (UTP Cat5/6, RJ-45; twisting reduces crosstalk)
-          Coaxial (BNC; cable TV)
-          Optical fibre (total internal reflection; single-mode vs multimode; highest bandwidth, no EMI)
-Unguided: Radio waves (3 kHz–1 GHz, omnidirectional)
-          Microwaves (1–300 GHz, unidirectional, line-of-sight)
-          Infrared (300 GHz–400 THz, short range, can't penetrate walls)
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-09-media}
 
 \needspace{130pt}
 
@@ -322,10 +278,13 @@ Physical layer & Network layer & Data link (ATM) / network & Application \\
 
 \textbf{Delay for packet switching}: message split into k packets over h hops: total ≈ (k + h − 1) × transmission time per packet (+ propagation).
 
-\needspace{197pt}
+\needspace{227pt}
 
 \hypertarget{p2-09--6-data-link-layer}{%
 \section{Data Link Layer}\label{p2-09--6-data-link-layer}}
+
+The data link layer moves frames between two directly connected nodes. It frames the bit stream, detects (and
+sometimes corrects) errors and keeps a fast sender from swamping a slow receiver.
 
 \needspace{161pt}
 
@@ -360,24 +319,14 @@ Bit-stuffing example: data \texttt{0111111111110} → \texttt{011111011111010}.
   Hamming code (7,4): r parity bits with 2ʳ ≥ m + r + 1.
 \end{itemize}
 
-\needspace{147pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--63-flow--error-control-sliding-window}{%
 \subsection{Flow \& Error Control (Sliding Window)}\label{p2-09--63-flow--error-control-sliding-window}}
 
-\begin{listingblock}{97pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-a = propagation delay / transmission time = Tp / Tt
-Stop-and-Wait efficiency   η = 1 / (1 + 2a)
-Sliding window (size W)    η = W / (1 + 2a)   if W < 1 + 2a, else 1
-For 100% utilisation       W ≥ 1 + 2a
-Sequence number bits n:    Go-Back-N  W_s ≤ 2ⁿ − 1, W_r = 1
-                           Selective Repeat  W_s = W_r ≤ 2ⁿ⁻¹
-Throughput = η × bandwidth
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-09-window}
 
-\diagram{figures/p2-09-01}
+\input{art/p2-09-gbn}
 
 \begingroup\small
 
@@ -425,21 +374,16 @@ Stop-and-Wait η = 1/41 ≈ \textbf{2.4\%}. Window for 100\% = 1 + 40 = 41 → s
   \textbf{PPP}: byte-oriented, point-to-point (dial-up, DSL); LCP (link control), NCP, authentication \textbf{PAP} (plain-text) and \textbf{CHAP} (challenge-handshake, more secure). No flow control/sequence numbers by default.
 \end{itemize}
 
-\needspace{95pt}
+\needspace{125pt}
 
 \hypertarget{p2-09--7-medium-access-control}{%
 \section{Medium Access Control}\label{p2-09--7-medium-access-control}}
 
-\diagram{figures/p2-09-02}
+When many stations share one channel, a medium-access protocol decides who may transmit when.
 
-\begin{listingblock}{64pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-Pure ALOHA:     S = G·e^(−2G), max 1/(2e) = 0.184 at G = 0.5 ; vulnerable time = 2·Tt
-Slotted ALOHA:  S = G·e^(−G),  max 1/e  = 0.368 at G = 1   ; vulnerable time = Tt
-CSMA/CD:        minimum frame size: Tt ≥ 2·Tp  ⇒  L_min = 2 · Tp · B
-                Efficiency = 1 / (1 + 6.44a)
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-09-mac}
+
+\input{art/p2-09-aloha}
 
 \textbf{Worked}: 10 Mbps Ethernet, max RTT 51.2 µs → L\_min = 10⁷ × 51.2 × 10⁻⁶ = \textbf{512 bits = 64 bytes}.
 
@@ -453,18 +397,12 @@ CSMA/CD:        minimum frame size: Tt ≥ 2·Tp  ⇒  L_min = 2 · Tp · B
   Token ring (802.5), token bus (802.4).
 \end{itemize}
 
-\needspace{103pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--ethernet-ieee-8023}{%
 \subsection{Ethernet (IEEE 802.3)}\label{p2-09--ethernet-ieee-8023}}
 
-\begin{listingblock}{53pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-Frame: | Preamble 7 | SFD 1 | Dest 6 | Src 6 | Type/Len 2 | Data 46–1500 | CRC 4 |
-Min frame = 64 B (without preamble) ; Max = 1518 B ; MAC address 48 bits (OUI 24 + 24)
-Broadcast MAC: FF:FF:FF:FF:FF:FF ; multicast: LSB of first byte = 1
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-09-ethernet}
 
 \begingroup\small
 
@@ -494,10 +432,13 @@ Broadcast MAC: FF:FF:FF:FF:FF:FF ; multicast: LSB of first byte = 1
 
 Devices: \textbf{Repeater/hub} (L1, one collision \& broadcast domain), \textbf{Bridge/switch} (L2, separates collision domains, one broadcast domain; learning, STP), \textbf{Router} (L3, separates broadcast domains), \textbf{Gateway} (all layers / protocol conversion). VLANs split broadcast domains on switches.
 
-\needspace{166pt}
+\needspace{196pt}
 
 \hypertarget{p2-09--8-network-layer}{%
 \section{Network Layer}\label{p2-09--8-network-layer}}
+
+The network layer carries packets from source host to destination host across many networks. Its two jobs are
+addressing (IP) and routing (choosing the path).
 
 \needspace{130pt}
 
@@ -547,16 +488,7 @@ E & 1111 & 240--255 & --- & Reserved & --- \\
   \textbf{Subnetting worked}: 192.168.10.0/26
 \end{itemize}
 
-\begin{listingblock}{86pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-Mask 255.255.255.192 → 4 subnets of 64 addresses (62 usable hosts each)
-Subnet 1: 192.168.10.0   – .63   (broadcast .63)
-Subnet 2: 192.168.10.64  – .127
-Subnet 3: 192.168.10.128 – .191
-Subnet 4: 192.168.10.192 – .255
-Host 192.168.10.100/26 → network 192.168.10.64, broadcast 192.168.10.127
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-09-subnet}
 
 \begin{itemize}
 \tightlist
@@ -568,20 +500,12 @@ Host 192.168.10.100/26 → network 192.168.10.64, broadcast 192.168.10.127
   \textbf{NAT}: maps private addresses to public; PAT uses ports.
 \end{itemize}
 
-\needspace{125pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--82-ipv4-header}{%
 \subsection{IPv4 Header}\label{p2-09--82-ipv4-header}}
 
-\begin{listingblock}{75pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-| Ver 4 | HLEN 4 | DSCP/ToS 8 | Total length 16 |
-| Identification 16 | Flags 3 (–, DF, MF) | Fragment offset 13 (units of 8 bytes) |
-| TTL 8 | Protocol 8 (1 ICMP, 6 TCP, 17 UDP) | Header checksum 16 |
-| Source IP 32 | Destination IP 32 | Options (0–40 B) |
-Header 20–60 bytes (HLEN × 4) ; max datagram 65,535 bytes
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-09-ipv4}
 
 \textbf{Fragmentation worked}: 4000-byte datagram (20 B header) over MTU 1500 → data per fragment = 1480 (multiple of 8):
 fragments carry 1480, 1480, 1020 bytes; offsets \textbf{0, 185, 370}; MF = 1, 1, 0.
@@ -671,10 +595,13 @@ IGMP & Multicast group membership \\
 
 \endgroup
 
-\needspace{130pt}
+\needspace{160pt}
 
 \hypertarget{p2-09--9-transport-layer}{%
 \section{Transport Layer}\label{p2-09--9-transport-layer}}
+
+The transport layer provides process-to-process delivery using port numbers. TCP adds reliability, ordering, flow
+control and congestion control on top of IP; UDP adds almost nothing and is therefore fast.
 
 \begingroup\small
 
@@ -711,7 +638,7 @@ Use & HTTP, FTP, SMTP & DNS, SNMP, DHCP, VoIP, TFTP & Signalling; multihoming \\
 \hypertarget{p2-09--tcp-connection-management}{%
 \subsection{TCP Connection Management}\label{p2-09--tcp-connection-management}}
 
-\diagram{figures/p2-09-03}
+\input{art/p2-09-tcp-conn}
 
 \begin{itemize}
 \tightlist
@@ -729,24 +656,12 @@ Use & HTTP, FTP, SMTP & DNS, SNMP, DHCP, VoIP, TFTP & Signalling; multihoming \\
   RTT estimate: EstimatedRTT = (1 − α)·EstRTT + α·SampleRTT (α = 1/8).
 \end{itemize}
 
-\needspace{169pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--tcp-congestion-control}{%
 \subsection{TCP Congestion Control}\label{p2-09--tcp-congestion-control}}
 
-\begin{listingblock}{119pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
- cwnd
-  │                 timeout → ssthresh = cwnd/2, cwnd = 1 (Tahoe/Reno)
-  │            ╱╲   3 dup ACKs → ssthresh = cwnd/2, cwnd = ssthresh (Reno fast recovery)
-  │          ╱    ╲
-  │      ___╱       ╲_____/‾‾‾ (additive increase, +1 MSS per RTT)
-  │     ╱ ← threshold
-  │    ╱  slow start (exponential: doubles each RTT)
-  │  ╱
-  └─────────────────────────────────── RTT
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-09-cwnd}
 
 \textbf{Worked}: ssthresh = 16, starting cwnd = 1 MSS: 1, 2, 4, 8, 16 (slow start), then 17, 18, 19 \ldots{} (congestion avoidance). If timeout at cwnd = 20: ssthresh = 10, cwnd = 1.
 
@@ -758,18 +673,12 @@ Use & HTTP, FTP, SMTP & DNS, SNMP, DHCP, VoIP, TFTP & Signalling; multihoming \\
   \textbf{QoS}: leaky bucket (constant output rate), \textbf{token bucket} (allows bursts: max burst S = C / (M − ρ)), IntServ (RSVP), DiffServ.
 \end{itemize}
 
-\needspace{103pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--well-known-ports}{%
 \subsection{Well-known Ports}\label{p2-09--well-known-ports}}
 
-\begin{listingblock}{53pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-FTP 20 (data) / 21 (control)   SSH 22   TELNET 23   SMTP 25   DNS 53   DHCP 67/68
-TFTP 69   HTTP 80   POP3 110   NTP 123   IMAP 143   SNMP 161/162   BGP 179   HTTPS 443
-Ports: well-known 0–1023, registered 1024–49151, dynamic 49152–65535
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-09-ports}
 
 \needspace{95pt}
 
@@ -796,10 +705,14 @@ Ports: well-known 0–1023, registered 1024–49151, dynamic 49152–65535
   \textbf{Bluetooth} (IEEE 802.15.1): piconet (1 primary + up to \textbf{7 active} secondaries), scatternet; 2.4 GHz FHSS.
 \end{itemize}
 
-\needspace{197pt}
+\needspace{227pt}
 
 \hypertarget{p2-09--11-network-security}{%
 \section{Network Security}\label{p2-09--11-network-security}}
+
+Network security protects data in transit (confidentiality, integrity, authentication) and the network itself
+(availability). Cryptography supplies the first three; firewalls and intrusion-detection systems defend the
+network.
 
 \needspace{161pt}
 
@@ -815,7 +728,7 @@ Malware: virus, worm, Trojan, ransomware, spyware, rootkit, botnet, logic bomb, 
 \hypertarget{p2-09--112-cryptography}{%
 \subsection{Cryptography}\label{p2-09--112-cryptography}}
 
-\diagram{figures/p2-09-04}
+\input{art/p2-09-crypto}
 
 \begingroup\small
 
@@ -861,18 +774,12 @@ MD5 / SHA-1 / SHA-256 & Hash & 128 / 160 / 256-bit digests \\
   \textbf{Diffie--Hellman worked}: p = 23, g = 5, a = 6, b = 15 → A = 5⁶ mod 23 = 8, B = 5¹⁵ mod 23 = 19; shared key = 19⁶ mod 23 = 8¹⁵ mod 23 = \textbf{2}.
 \end{itemize}
 
-\needspace{103pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--113-digital-signature--pki}{%
 \subsection{Digital Signature \& PKI}\label{p2-09--113-digital-signature--pki}}
 
-\begin{listingblock}{53pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-Sign:   signature = Encrypt(hash(M), sender's PRIVATE key)
-Verify: Decrypt(signature, sender's PUBLIC key) == hash(M)
-Confidentiality: encrypt with receiver's PUBLIC key; decrypt with receiver's PRIVATE key
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-09-signature}
 
 Provides authentication, integrity, \textbf{non-repudiation}. Certificates (X.509) issued by \textbf{CA}; MAC/HMAC for message integrity with shared key.
 
@@ -924,7 +831,7 @@ Provides authentication, integrity, \textbf{non-repudiation}. Certificates (X.50
 \hypertarget{p2-09--122-gsm-architecture}{%
 \subsection{GSM Architecture}\label{p2-09--122-gsm-architecture}}
 
-\diagram{figures/p2-09-05}
+\input{art/p2-09-gsm}
 
 \begin{itemize}
 \tightlist
@@ -957,23 +864,12 @@ Provides authentication, integrity, \textbf{non-repudiation}. Certificates (X.50
   \textbf{Wireless geolocation}: GPS (trilateration, ≥ 4 satellites for 3-D fix), cell-ID, AoA, ToA, TDoA, RSSI. India: \textbf{NavIC (IRNSS, 7 satellites)}.
 \end{itemize}
 
-\needspace{158pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--13-cloud-computing--iot}{%
 \section{Cloud Computing \& IoT}\label{p2-09--13-cloud-computing--iot}}
 
-\begin{listingblock}{108pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-   ┌─────────────────────────────────────────────────────────────┐
-   │ SaaS  (Gmail, Salesforce, Office 365)    — user uses app    │
-   ├─────────────────────────────────────────────────────────────┤
-   │ PaaS  (Google App Engine, Heroku, Azure App Service) — dev  │
-   ├─────────────────────────────────────────────────────────────┤
-   │ IaaS  (AWS EC2, Google Compute Engine, Azure VMs) — admin   │
-   └─────────────────────────────────────────────────────────────┘
-   Customer manages more as you go down ; provider manages more as you go up
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-09-cloud}
 
 \begin{itemize}
 \tightlist
@@ -1043,7 +939,7 @@ Free & --- & /28 & 192.168.1.240 & --- & --- \\
 \hypertarget{p2-09--142-distance-vector-update--worked}{%
 \subsection{Distance-Vector Update --- Worked}\label{p2-09--142-distance-vector-update--worked}}
 
-\diagram{figures/p2-09-06}
+\input{art/p2-09-dv}
 
 \begingroup\small
 
@@ -1078,35 +974,21 @@ Bellman--Ford equation: Dₓ(y) = minᵥ \{ c(x, v) + Dᵥ(y) \}.
 \hypertarget{p2-09--143-tcp-sequence-and-acknowledgement-numbers}{%
 \subsection{TCP Sequence and Acknowledgement Numbers}\label{p2-09--143-tcp-sequence-and-acknowledgement-numbers}}
 
-\diagram{figures/p2-09-07}
+\input{art/p2-09-tcp-seq}
 
 Next expected byte = last seq + length; SYN and FIN consume one number each.
 
 \textbf{Go-Back-N count}: window 4, frames 0--6, frame 2 lost once (no other losses). Assume frames 0--4 have been sent when frame 2\textquotesingle s timer expires (ACKs for 0 and 1 slid the window to 2--5).
 Sent 0, 1, 2 (lost), 3, 4 → on timeout resend 2, 3, 4, then send 5, 6. Total transmissions = 5 + 3 + 2 = \textbf{10}. Selective Repeat resends only frame 2: 7 + 1 = \textbf{8}.
 
-\needspace{220pt}
+\needspace{125pt}
 
 \hypertarget{p2-09--144-hamming-7-4--encode-and-correct}{%
 \subsection{Hamming (7, 4) --- Encode and Correct}\label{p2-09--144-hamming-7-4--encode-and-correct}}
 
 Data 1011 → positions: 1 p1, 2 p2, 3 d1, 4 p4, 5 d2, 6 d3, 7 d4 (even parity).
 
-\begin{listingblock}{140pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-d1 d2 d3 d4 = 1 0 1 1
-p1 covers 1,3,5,7 → d1 d2 d4 = 1 0 1 → p1 = 0
-p2 covers 2,3,6,7 → d1 d3 d4 = 1 1 1 → p2 = 1
-p4 covers 4,5,6,7 → d2 d3 d4 = 0 1 1 → p4 = 0
-Codeword (positions 1..7) = 0 1 1 0 0 1 1
-
-Received 0 1 1 0 0 0 1 (bit 6 flipped):
-c1 = b1 b3 b5 b7 = 0 1 0 1 → 0
-c2 = b2 b3 b6 b7 = 1 1 0 1 → 1
-c4 = b4 b5 b6 b7 = 0 0 0 1 → 1
-Syndrome c4 c2 c1 = 110₂ = 6 → flip bit 6 → corrected
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-09-hamming}
 
 \needspace{95pt}
 
@@ -1156,7 +1038,7 @@ Rules: drop leading zeros in each group; replace \textbf{one} longest run of all
 \hypertarget{p2-09--147-dns-resolution}{%
 \subsection{DNS Resolution}\label{p2-09--147-dns-resolution}}
 
-\diagram{figures/p2-09-08}
+\input{art/p2-09-dns}
 
 \needspace{95pt}
 
@@ -1175,21 +1057,12 @@ Rules: drop leading zeros in each group; replace \textbf{one} longest run of all
   \textbf{Columnar transposition} rearranges letters by a key order; \textbf{substitution} replaces letters. Product ciphers (DES, AES) combine both (confusion + diffusion --- Shannon).
 \end{itemize}
 
-\needspace{136pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--149-http-exchange-what-a-request-looks-like}{%
 \subsection{HTTP Exchange (what a request looks like)}\label{p2-09--149-http-exchange-what-a-request-looks-like}}
 
-\begin{listingblock}{86pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-GET /index.html HTTP/1.1                 HTTP/1.1 200 OK
-Host: www.ugcnet.example                 Content-Type: text/html
-User-Agent: Mozilla/5.0                  Content-Length: 3421
-Accept: text/html                        Set-Cookie: sid=abc123
-Connection: keep-alive
-                                         <html> … </html>
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-09-http}
 
 \needspace{125pt}
 

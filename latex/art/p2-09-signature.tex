@@ -1,0 +1,20 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[d/.style={plain, minimum height=8mm, font=\footnotesize}, op/.style={box, fill=fslate, font=\footnotesize}]
+  \node[capt] at (2.8,1.1) {sender};
+  \node[d] (M) at (0,0) {message $M$}; \node[op] (H) at (2.5,0) {hash}; \node[op, fill=fsand] (S) at (5.6,0) {encrypt};
+  \node[d, fill=frose] (sig) at (8.2,0) {signature};
+  \draw[arr] (M) -- (H); \draw[arr] (H) -- node[lbl, above] {digest} (S); \draw[arr] (S) -- (sig);
+  \node[font=\scriptsize, text=fwine] at (5.6,-0.6) {sender's \textbf{private} key};
+  \node[capt] at (2.8,-1.7) {receiver};
+  \node[op, fill=fsand] (V) at (5.6,-2.8) {decrypt}; \node[op] (H2) at (2.5,-2.8) {hash}; \node[d] (M2) at (0,-2.8) {message $M$};
+  \node[box, fill=fsage, font=\footnotesize] (cmp) at (8.2,-4.1) {equal? $\Rightarrow$ valid};
+  \draw[arr] (sig.south) |- (V.east); \draw[arr] (M2) -- (H2); \draw[arr] (H2) |- (cmp); \draw[arr] (V) |- ([yshift=2mm]cmp.west);
+  \node[font=\scriptsize, text=fwine] at (5.6,-2.2) {sender's \textbf{public} key};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Digital signature. Signing uses the sender's private key, so anyone with the public key can verify it. For
+confidentiality the roles reverse: encrypt with the \emph{receiver's} public key, decrypt with the receiver's
+private key.}
+\end{figure}

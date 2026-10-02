@@ -1,0 +1,24 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[y=0.72cm]
+  \foreach \n/\t/\c [count=\i from 0] in {7/Application/fsand, 6/Presentation/fsand, 5/Session/fsand, 4/Transport/fsage, 3/Network/fslate, 2/Data link/fsteel!60, 1/Physical/fsteel!60} {
+    \filldraw[fill=\c, draw=fgink, line width=0.5pt] (0,-\i) rectangle (3.4,-\i-1);
+    \node[font=\small] at (1.7,-\i-0.5) {\n\quad \t};
+  }
+  \foreach \t/\a/\b/\c in {Application/0/3/fsand, Transport/3/4/fsage, Internet/4/5/fslate, Network access/5/7/fsteel!60} {
+    \filldraw[fill=\c, draw=fgink, line width=0.5pt] (4.6,-\a) rectangle (7.6,-\b);
+    \node[font=\small] at (6.1,{-(\a+\b)/2}) {\t};
+  }
+  \foreach \y in {3,4,5} \draw[fgink!40, line width=0.4pt, dash pattern=on 2pt off 1.5pt] (3.4,-\y) -- (4.6,-\y);
+  \node[capt] at (1.7,0.6) {OSI (7 layers)}; \node[capt] at (6.1,0.6) {TCP/IP};
+  \node[capt] at (9.0,0.6) {PDU}; \node[capt, anchor=west] at (10.2,0.6) {protocols (devices)};
+  \foreach \t/\y in {message/1.5, segment/3.5, packet/4.5, frame/5.5, bits/6.5} \node[font=\footnotesize\itshape] at (9.0,-\y) {\t};
+  \foreach \t/\y in {{HTTP, FTP, SMTP, DNS, SNMP, DHCP (gateway)}/1.5, {TCP, UDP, SCTP}/3.5, {IP, ICMP, ARP, IGMP (router)}/4.5,
+      {Ethernet, PPP, HDLC (switch, bridge)}/5.5, {(hub, repeater)}/6.5}
+    \node[font=\footnotesize, anchor=west] at (10.2,-\y) {\t};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{The OSI reference model beside the TCP/IP suite. Mnemonic, top to bottom: ``All People Seem To Need Data
+Processing''.}
+\end{figure}

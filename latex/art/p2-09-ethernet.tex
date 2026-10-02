@@ -1,0 +1,19 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \foreach \a/\b/\t/\s/\c in {0/1.9/Preamble/7/fgrey, 1.9/2.9/SFD/1/fgrey, 2.9/5.0/Destination/6/fslate, 5.0/6.9/Source/6/fslate,
+      6.9/8.5/{Type/Len}/2/fsand, 8.5/13.4/Data and padding/46--1500/fsage, 13.4/14.6/CRC/4/frose} {
+    \filldraw[fill=\c, draw=fgink, line width=0.5pt] (\a,0) rectangle (\b,0.9);
+    \node[font=\footnotesize] at ({(\a+\b)/2},0.55) {\t};
+    \node[font=\scriptsize, text=fgink!75] at ({(\a+\b)/2},0.22) {\s};
+  }
+  \draw[brace] (14.6,-0.1) -- node[lbl, below=4pt] {64--1518 bytes counted in the minimum and maximum frame size} (2.9,-0.1);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{The IEEE 802.3 (Ethernet) frame; field sizes in bytes.}
+\end{figure}
+\begin{itemize}
+\item MAC address: 48 bits (24-bit OUI + 24 bits). Broadcast \texttt{FF:FF:FF:FF:FF:FF}; multicast when the
+least-significant bit of the first byte is 1.
+\end{itemize}

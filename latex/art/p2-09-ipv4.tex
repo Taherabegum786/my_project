@@ -1,0 +1,18 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[x=0.36cm, y=0.8cm]
+  \foreach \b in {0,4,8,16,19,24,31} \node[font=\scriptsize] at (\b+0.5,0.35) {\b};
+  \foreach \a/\b/\r/\t/\c in {0/4/0/Ver/fslate, 4/8/0/HLEN/fslate, 8/16/0/{DSCP\,/\,ToS}/fslate, 16/32/0/Total length/fslate,
+      0/16/1/Identification/fsand, 16/19/1/Flags/fsand, 19/32/1/Fragment offset/fsand,
+      0/8/2/TTL/fsage, 8/16/2/Protocol/fsage, 16/32/2/Header checksum/fsage,
+      0/32/3/Source IP address/frose, 0/32/4/Destination IP address/frose, 0/32/5/Options (0--40 bytes) and padding/fgrey} {
+    \filldraw[fill=\c, draw=fgink, line width=0.5pt] (\a,-\r) rectangle (\b,-\r-1);
+    \node[font=\footnotesize] at ({(\a+\b)/2},-\r-0.5) {\t};
+  }
+  \draw[brace] (32.4,0) -- node[lbl, right=5pt] {20 bytes\\(fixed part)} (32.4,-5);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{The IPv4 header, 32 bits per row. Header length = HLEN $\times$ 4 bytes (20--60); flags are reserved, DF and
+MF; fragment offset counts 8-byte units; protocol 1 = ICMP, 6 = TCP, 17 = UDP; maximum datagram 65\,535 bytes.}
+\end{figure}

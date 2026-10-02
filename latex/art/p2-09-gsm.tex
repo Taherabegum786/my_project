@@ -1,0 +1,20 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[n/.style={box, minimum width=16mm, font=\small}, d/.style={db, minimum width=12mm, minimum height=9mm, font=\footnotesize}]
+  \node[n, fill=fsand, align=center] (MS) at (0,0) {MS\\\scriptsize ME + SIM};
+  \node[n, fill=fslate] (BTS) at (3.2,0) {BTS}; \node[n, fill=fslate] (BSC) at (5.9,0) {BSC};
+  \node[n, fill=fsage] (MSC) at (9.4,0) {MSC};
+  \node[d] (HLR) at (8.0,-1.9) {HLR}; \node[d] (VLR) at (9.4,-1.9) {VLR}; \node[d] (AUC) at (10.8,-1.9) {AuC}; \node[d] (EIR) at (12.2,-1.9) {EIR};
+  \node[n, fill=fgrey, align=center] (PSTN) at (13.2,0) {PSTN /\\\scriptsize other networks};
+  \draw[arr] (MS) -- node[lbl, above] {Um (air)} (BTS); \draw[arr] (BTS) -- node[lbl, above] {Abis} (BSC);
+  \draw[arr] (BSC) -- node[lbl, above] {A} (MSC); \draw[arr] (MSC) -- (PSTN);
+  \foreach \x in {HLR,VLR,AUC,EIR} \draw[thinline] (MSC) -- (\x);
+  \node[group, fit=(BTS)(BSC), inner sep=9pt, label={[capt]above:base station subsystem}] {};
+  \node[group, fit=(MSC)(HLR)(EIR), inner sep=7pt, label={[capt]above:network switching subsystem}] {};
+  \node[lbl] at (4.55,-1.6) {OSS / OMC manages both subsystems};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{GSM architecture. The HLR holds permanent subscriber data, the VLR data for visitors currently in the area,
+the AuC authentication keys and the EIR the identities of handsets.}
+\end{figure}

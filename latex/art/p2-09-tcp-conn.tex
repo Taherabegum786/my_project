@@ -1,0 +1,21 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[y=0.5cm, m/.style={arr, line width=0.6pt}, ml/.style={font=\footnotesize, sloped, above, inner sep=1pt}]
+  \node[box, fill=fslate, minimum width=20mm] at (0,1.0) {Client}; \node[box, fill=fsage, minimum width=20mm] at (6.4,1.0) {Server};
+  \draw[fgink, line width=0.8pt] (0,0) -- (0,-16.4); \draw[fgink, line width=0.8pt] (6.4,0) -- (6.4,-16.4);
+  \draw[m] (0,-0.4) -- node[ml] {SYN, seq $= x$} (6.4,-1.6);
+  \draw[m] (6.4,-2.6) -- node[ml] {SYN + ACK, seq $= y$, ack $= x+1$} (0,-3.8);
+  \draw[m] (0,-4.8) -- node[ml] {ACK, ack $= y+1$} (6.4,-6.0);
+  \fill[fgrey] (0.1,-6.8) rectangle (6.3,-8.0); \node[lbl] at (3.2,-7.4) {data transfer};
+  \draw[m] (0,-8.8) -- node[ml] {FIN} (6.4,-10.0);
+  \draw[m] (6.4,-11.0) -- node[ml] {ACK} (0,-12.2);
+  \draw[m] (6.4,-12.4) -- node[ml] {FIN} (0,-13.6);
+  \draw[m] (0,-14.6) -- node[ml] {ACK} (6.4,-15.8);
+  \draw[brace] (-0.2,-6.0) -- node[lbl, left=5pt] {three-way\\handshake} (-0.2,-0.4);
+  \draw[brace] (-0.2,-15.8) -- node[lbl, left=5pt] {four-way\\termination} (-0.2,-8.8);
+  \node[font=\scriptsize, anchor=north] at (0,-16.5) {TIME\_WAIT $2\cdot$MSL};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{TCP connection establishment and release.}
+\end{figure}

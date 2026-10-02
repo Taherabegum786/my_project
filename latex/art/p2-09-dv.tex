@@ -1,0 +1,10 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[v/.style={vertex, fill=fslate, minimum size=9mm}, w/.style={edgelbl}]
+  \node[v] (A) at (0,0) {A}; \node[v] (B) at (2.4,1.4) {B}; \node[v] (C) at (4.8,0) {C};
+  \draw[thinline] (A) -- node[w] {1} (B); \draw[thinline] (B) -- node[w] {2} (C); \draw[thinline] (A) -- node[w] {5} (C);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{After B advertises ``C at cost 2'', A replaces its direct route to C (cost 5) by the route via B (cost 3).}
+\end{figure}

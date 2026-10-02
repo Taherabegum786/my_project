@@ -1,0 +1,35 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[x=1.3cm, y=0.4cm, w/.style={fgink, line width=0.7pt, samples=60}]
+  \foreach \b [count=\i from 0] in {1,0,1,1,0} {
+    \node[font=\small\bfseries] at (\i+0.5,2.2) {\b};
+    \draw[fgink!25, line width=0.4pt] (\i,1.5) -- (\i,-10.5);
+  }
+  \draw[fgink!25, line width=0.4pt] (5,1.5) -- (5,-10.5);
+  % ASK
+  \node[capt, anchor=east] at (-0.15,0) {ASK};
+  \foreach \b [count=\i from 0] in {1,0,1,1,0} {
+    \pgfmathsetmacro{\amp}{\b==1 ? 1 : 0.25}
+    \draw[w, domain=\i:\i+1] plot (\x, {\amp*sin(4*360*\x)});
+  }
+  % FSK
+  \node[capt, anchor=east] at (-0.15,-3.5) {FSK};
+  \foreach \b [count=\i from 0] in {1,0,1,1,0} {
+    \pgfmathsetmacro{\fr}{\b==1 ? 5 : 2}
+    \draw[w, domain=\i:\i+1, samples=80] plot (\x, {-3.5 + sin(\fr*360*\x)});
+  }
+  % PSK
+  \node[capt, anchor=east] at (-0.15,-7) {PSK};
+  \foreach \b [count=\i from 0] in {1,0,1,1,0} {
+    \pgfmathsetmacro{\ph}{\b==1 ? 0 : 180}
+    \draw[w, domain=\i:\i+1] plot (\x, {-7 + sin(3*360*\x + \ph)});
+  }
+  \node[font=\footnotesize, anchor=west, align=left] at (5.2,0) {amplitude carries the bit};
+  \node[font=\footnotesize, anchor=west, align=left] at (5.2,-3.5) {frequency carries the bit};
+  \node[font=\footnotesize, anchor=west, align=left] at (5.2,-7) {phase carries the bit\\(BPSK; QPSK uses 4 phases)};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Digital-to-analog conversion of the bits 10110. QAM combines amplitude and phase changes to send several
+bits per signal element.}
+\end{figure}

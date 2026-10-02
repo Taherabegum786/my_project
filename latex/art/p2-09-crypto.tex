@@ -1,0 +1,16 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[d/.style={plain, minimum width=24mm, minimum height=9mm, font=\small}, op/.style={box, fill=fslate, minimum width=22mm, font=\small}]
+  \node[d] (P) at (0,0) {plaintext}; \node[op] (E) at (3.3,0) {encrypt};
+  \node[d, fill=frose] (C) at (6.6,0) {ciphertext}; \node[op] (D) at (9.9,0) {decrypt}; \node[d] (P2) at (13.2,0) {plaintext};
+  \draw[arr] (P) -- (E); \draw[arr] (E) -- (C); \draw[arr] (C) -- (D); \draw[arr] (D) -- (P2);
+  \node[font=\footnotesize, text=fwine] (k1) at (3.3,1.2) {key $K_1$}; \node[font=\footnotesize, text=fwine] (k2) at (9.9,1.2) {key $K_2$};
+  \draw[arr, fwine] (k1) -- (E); \draw[arr, fwine] (k2) -- (D);
+  \node[box, fill=fsage, text width=58mm, align=left, font=\footnotesize] at (3.0,-2.0) {\textbf{Symmetric}: $K_1 = K_2$, one shared secret key.\\DES, 3DES, AES, Blowfish, RC4, IDEA};
+  \node[box, fill=fsand, text width=58mm, align=left, font=\footnotesize] at (10.2,-2.0) {\textbf{Asymmetric}: $K_1 \ne K_2$, public/private pair.\\RSA, Diffie--Hellman, ECC, ElGamal};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Encryption and decryption. Symmetric ciphers are fast but need a shared secret; public-key ciphers solve
+key distribution and enable digital signatures.}
+\end{figure}

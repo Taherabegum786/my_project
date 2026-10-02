@@ -1,0 +1,18 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[n/.style={box, font=\small}, lf/.style={plain, align=left, font=\footnotesize, anchor=north}]
+  \node[n, fill=fochre] (M) at (0,0) {\textbf{Multiple access}};
+  \node[n, fill=fslate] (R) at (-4.6,-1.4) {Random access};
+  \node[n, fill=fsage] (C) at (0.4,-1.4) {Controlled access};
+  \node[n, fill=fsand] (H) at (4.6,-1.4) {Channelisation};
+  \draw[arr] (M) -- (R); \draw[arr] (M) -- (C); \draw[arr] (M) -- (H);
+  \node[lf, text width=44mm] (r) at (-4.6,-2.2) {pure ALOHA (18.4\,\%)\\slotted ALOHA (36.8\,\%)\\CSMA: 1-persistent, non-persistent, $p$-persistent\\CSMA/CD --- wired Ethernet\\CSMA/CA --- wireless 802.11};
+  \node[lf, text width=26mm] (c) at (0.4,-2.2) {reservation\\polling\\token passing};
+  \node[lf, text width=36mm] (h) at (4.6,-2.2) {FDMA\\TDMA\\CDMA --- orthogonal (Walsh) codes};
+  \draw[arr] (R) -- (r); \draw[arr] (C) -- (c); \draw[arr] (H) -- (h);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Medium-access protocols. Random access lets stations transmit at will and handle collisions; controlled
+access takes turns; channelisation divides the channel by frequency, time or code.}
+\end{figure}

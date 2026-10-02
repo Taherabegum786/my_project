@@ -1,0 +1,22 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[n/.style={box, minimum width=28mm, font=\small, align=center}, ml/.style={font=\scriptsize, sloped, inner sep=1.5pt}, num/.style={text=fwine, font=\scriptsize\bfseries}]
+  \node[n, fill=fsand] (H) at (0,0) {host};
+  \node[n, fill=fslate] (L) at (5.6,0) {local resolver};
+  \node[n, fill=fsage] (R) at (12.4,3.0) {root server};
+  \node[n, fill=fsage] (T) at (12.4,0) {.in TLD server};
+  \node[n, fill=fsage] (A) at (12.4,-3.0) {ac.in authoritative\\server};
+  \draw[arr] ([yshift=1.5mm]H.east) -- node[ml, above] {\textcolor{fwine}{\textbf{1}}\ www.example.ac.in?} ([yshift=1.5mm]L.west);
+  \draw[arr, dash pattern=on 3pt off 2pt] ([yshift=-1.5mm]L.west) -- node[ml, below] {\textcolor{fwine}{\textbf{8}}\ 203.0.113.10} ([yshift=-1.5mm]H.east);
+  \draw[arr] ([xshift=-2mm]L.north east) -- node[ml, above, pos=0.55] {\textcolor{fwine}{\textbf{2}}\ query} ([yshift=-1mm]R.west);
+  \draw[arr, dash pattern=on 3pt off 2pt] ([yshift=-3.5mm]R.west) -- node[ml, below, pos=0.45] {\textcolor{fwine}{\textbf{3}}\ referral to .in} ([xshift=3mm]L.north east);
+  \draw[arr] ([yshift=1.5mm]L.east) -- node[ml, above] {\textcolor{fwine}{\textbf{4}}\ query} ([yshift=1.5mm]T.west);
+  \draw[arr, dash pattern=on 3pt off 2pt] ([yshift=-1.5mm]T.west) -- node[ml, below] {\textcolor{fwine}{\textbf{5}}\ referral to ac.in} ([yshift=-1.5mm]L.east);
+  \draw[arr] ([xshift=3mm]L.south east) -- node[ml, above, pos=0.55] {\textcolor{fwine}{\textbf{6}}\ query} ([yshift=3.5mm]A.west);
+  \draw[arr, dash pattern=on 3pt off 2pt] ([yshift=1mm]A.west) -- node[ml, below, pos=0.45] {\textcolor{fwine}{\textbf{7}}\ A record} ([xshift=-2mm]L.south east);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{DNS resolution. The host asks its local resolver recursively (1, 8); the resolver queries the hierarchy
+iteratively (2--7) and caches the answer for its TTL.}
+\end{figure}
