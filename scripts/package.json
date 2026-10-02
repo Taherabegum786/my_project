@@ -1,0 +1,13 @@
+{
+  "name": "ugc-net-cs-pdf-builder",
+  "private": true,
+  "description": "Builds UGC-NET-CS-Study-Material.pdf from the Markdown notes",
+  "scripts": {
+    "build": "node build-pdf.cjs"
+  },
+  "dependencies": {
+    "marked": "^4.3.0",
+    "mermaid": "^11.4.0",
+    "puppeteer": "^25.0.0"
+  }
+}

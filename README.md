@@ -5,6 +5,10 @@ with diagrams (Mermaid + ASCII) and **previous-year-pattern questions (PYQs) for
 
 > Mermaid diagrams render automatically on GitHub. In VS Code, install "Markdown Preview Mermaid Support".
 
+📄 **Printable version:** [UGC-NET-CS-Study-Material.pdf](UGC-NET-CS-Study-Material.pdf) — all units in one A4 PDF
+(177 pages, clickable contents, diagrams rendered). After editing the notes, rebuild it with
+`cd scripts && npm install && npm run build`.
+
 ---
 
 ## 1. Exam Pattern at a Glance
