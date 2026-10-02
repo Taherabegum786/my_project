@@ -20,6 +20,7 @@ Read this the evening before and the morning of the exam. Every line here has ap
 | Higher Ed | Nalanda–Kumaragupta I · Vikramashila–Dharmapala · Wood 1854 · Radhakrishnan 1948 · Kothari 1964–66 · NEP 2020 (GER 50% by 2035) |
 
 ## Discrete Mathematics
+<!-- latex: rev-dm -->
 ```
 p → q ≡ ¬p ∨ q ≡ ¬q → ¬p           Boolean functions on n vars: 2^(2ⁿ)
 Relations on n: 2^(n²) · reflexive 2^(n²−n) · symmetric 2^(n(n+1)/2) · antisymmetric 2ⁿ·3^(n(n−1)/2)
@@ -31,6 +32,7 @@ Transportation BFS = m + n − 1 · PERT tₑ = (a + 4m + b)/6, σ² = ((b − a
 ```
 
 ## Computer Architecture
+<!-- latex: rev-arch -->
 ```
 2's complement range: −2ⁿ⁻¹ … 2ⁿ⁻¹ − 1      IEEE single 1|8|23 bias 127 ; double 1|11|52 bias 1023
 Hamming parity bits: 2ʳ ≥ m + r + 1
@@ -42,6 +44,7 @@ NAND-only XOR = 4 gates · Johnson counter n FF → 2n states · ring n FF → n
 ```
 
 ## Programming & Graphics
+<!-- latex: rev-plg -->
 ```
 Bresenham p0 = 2Δy − Δx ; pk<0 → pk + 2Δy ; else pk + 2Δy − 2Δx
 Midpoint circle p0 = 1 − r ; 8-way symmetry ; ellipse 4-way
@@ -53,6 +56,7 @@ Non-overloadable C++: ::  .  .*  ?:  sizeof
 ```
 
 ## DBMS
+<!-- latex: rev-dbms -->
 ```
 Super keys with 1 CK of 1 attr among n: 2ⁿ⁻¹ ; two single-attr CKs: 3·2ⁿ⁻²
 2NF: no partial dep · 3NF: X superkey OR A prime · BCNF: X superkey
@@ -65,6 +69,7 @@ CAP: choose 2 · HDFS block 128 MB, replication 3
 ```
 
 ## Operating Systems
+<!-- latex: rev-os -->
 ```
 n fork() → 2ⁿ processes · TAT = CT − AT · WT = TAT − BT
 Deadlock-free: R ≥ n(k − 1) + 1 · semaphore final = initial − P + V
@@ -76,6 +81,7 @@ Inode max ≈ (12 + k + k² + k³) × block, k = block/pointer size
 ```
 
 ## Software Engineering
+<!-- latex: rev-se -->
 ```
 FP = UFP × (0.65 + 0.01 ΣFᵢ), 14 GSCs, VAF 0.65–1.35
 EI 3/4/6 · EO 4/5/7 · EQ 3/4/6 · ILF 7/10/15 · EIF 5/7/10
@@ -86,6 +92,7 @@ Cohesion best Functional → worst Coincidental · Coupling best Data → worst 
 ```
 
 ## Algorithms
+<!-- latex: rev-algo -->
 ```
 Master: compare f(n) with n^(log_b a)
 Binary tree: n₀ = n₂ + 1 · max nodes height h = 2^(h+1) − 1 · null links n + 1
@@ -97,6 +104,7 @@ SAT first NPC (Cook) · 2-SAT ∈ P · halting NP-hard not NP
 ```
 
 ## TOC & Compilers
+<!-- latex: rev-toc -->
 ```
 NFA n → DFA ≤ 2ⁿ · nth-from-end DFA 2ⁿ states
 CNF derivation 2n − 1 · GNF n · CYK O(n³)
@@ -108,6 +116,7 @@ S-attributed ⊂ L-attributed · live variables backward · reaching defs forwar
 ```
 
 ## Networks
+<!-- latex: rev-net -->
 ```
 Nyquist 2B log₂L · Shannon B log₂(1 + SNR) · dB = 10 log₁₀
 a = Tp/Tt · η_SW = 1/(1 + 2a) · η = W/(1 + 2a) · GBN 2ⁿ − 1 · SR 2ⁿ⁻¹
@@ -121,6 +130,7 @@ Ports 20/21 FTP · 22 SSH · 23 Telnet · 25 SMTP · 53 DNS · 67/68 DHCP · 80 
 ```
 
 ## AI
+<!-- latex: rev-ai -->
 ```
 BFS time/space O(b^d) · DFS space O(bm) · IDDFS O(b^d) time, O(bd) space
 A*: f = g + h, admissible ⇒ optimal ; h = 0 ⇒ UCS

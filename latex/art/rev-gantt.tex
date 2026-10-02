@@ -1,0 +1,20 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[x=0.105cm, y=0.62cm]
+  \foreach \d in {0,15,...,120} { \draw[fgink!20, line width=0.4pt] (\d,0.6) -- (\d,-6.6); \node[font=\scriptsize, anchor=south] at (\d,0.6) {\d}; }
+  \node[font=\footnotesize, anchor=south] at (60,1.25) {day};
+  \foreach \t/\a/\b/\y/\c in {Paper II units 1--10 (first pass)/0/60/0/fslate, Paper I units (1 hour a day)/0/60/-1/fslate!60,
+      Unit-wise PYQs and numericals/60/90/-2.5/fsage, Sectional tests/70/90/-3.5/fsage!60,
+      Full mocks (25+) and analysis/90/115/-5/fsand, Formula sheet and weak areas/100/120/-6/frose} {
+    \filldraw[fill=\c, draw=fgink, line width=0.5pt, rounded corners=1pt] (\a,\y-0.35) rectangle (\b,\y+0.35);
+    \node[font=\footnotesize, anchor=east] at (-2,\y) {\t};
+  }
+  \node[capt, anchor=west] at (122,-0.5) {Phase 1: concepts};
+  \node[capt, anchor=west] at (122,-3.0) {Phase 2: PYQs};
+  \node[capt, anchor=west] at (122,-5.5) {Phase 3: mocks};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{The 120-day plan in three phases. The phases overlap a little: practice starts before the first pass ends, and
+revision runs alongside the mocks.}
+\end{figure}

@@ -1,0 +1,9 @@
+\begin{factsheet}
+Automata & NFA with $n$ states $\to$ DFA $\le 2^n$; ``$n$th symbol from the end'' DFA needs $2^n$ states \\
+Grammars & CNF derivation of length-$n$ string: $2n - 1$ steps; GNF: $n$; CYK $O(n^3)$ \\
+Closure & regular: all operations; CFL: not $\cap$, not complement; DCFL: complement \checkmark; RE: complement \texttimes \\
+Decidability & $L$ and $\bar L$ both RE $\Rightarrow$ recursive; halting is RE, not recursive; Rice's theorem \\
+Undecidable for CFGs & ambiguity, equivalence, $L = \Sigma^*$, intersection emptiness \\
+Parsers & LR(0) $\subset$ SLR $\subset$ LALR $\subset$ CLR; states LR(0) $=$ SLR $=$ LALR $\le$ CLR; LALR merging adds only R/R conflicts \\
+SDT and data flow & S-attributed $\subset$ L-attributed; live variables backward; reaching definitions and available expressions forward \\
+\end{factsheet}

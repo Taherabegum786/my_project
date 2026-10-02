@@ -88,6 +88,11 @@
   {\par\medskip\noindent\hfill\renewcommand{\arraystretch}{2.0}%
    \tabularx{0.96\linewidth}{@{}>{\raggedright\arraybackslash\small}X @{\hspace{1.2em}} >{\raggedright\arraybackslash$\displaystyle}p{#1\linewidth}<{$}@{}}\toprule}
   {\bottomrule\endtabularx\hfill\null\par\medskip}
+% Dense two-column fact table for the revision sheet: topic | facts (text with inline math)
+\newenvironment{factsheet}
+  {\par\smallskip\noindent\renewcommand{\arraystretch}{1.45}\small
+   \tabularx{\linewidth}{@{}>{\raggedright\arraybackslash\itshape}p{0.22\linewidth} @{\hspace{1em}} >{\raggedright\arraybackslash}X@{}}\toprule}
+  {\bottomrule\endtabularx\par\medskip}
 
 % ================================================================= headings
 \usepackage{titlesec}
@@ -120,11 +125,13 @@
 % \unitchapter{paper}{unit}{title}{id}
 \newcommand{\unitchapter}[4]{%
   \setcounter{chapter}{\numexpr#2-1\relax}\setcounter{secnumdepth}{2}%
+  \renewcommand{\thefigure}{\thechapter.\arabic{figure}}%
   \def\chapkicker{Paper \romanpaper{#1} \textperiodcentered{} Unit #2}%
   \chapter{#3}\hypertarget{#4}{}\label{#4}}
 % \plainchapter{title}{id}: unnumbered chapter that still appears in the contents
 \newcommand{\plainchapter}[2]{%
   \def\chapkicker{\ifnum\value{part}>0 Revision\else Introduction\fi}\setcounter{secnumdepth}{-1}%
+  \setcounter{figure}{0}\renewcommand{\thefigure}{\arabic{figure}}%
   \chapter*{#1}\hypertarget{#2}{}\label{#2}\addcontentsline{toc}{chapter}{#1}\markboth{#1}{#1}}
 % The "Expected questions" line under a chapter title
 \newcommand{\unitmeta}[1]{\begin{center}\itshape\color{muted}#1\end{center}\vspace{4pt}}
@@ -174,6 +181,8 @@
 \setcounter{tocdepth}{1}
 \usepackage[hidelinks,unicode]{hyperref}
 \usepackage{bookmark}
+% Paper I and Paper II reuse chapter numbers: make hyperlink anchors unique per part
+\renewcommand{\theHchapter}{\arabic{part}.\arabic{chapter}}
 \bookmarksetup{depth=3}
 \hypersetup{colorlinks=true,linkcolor=accent!85!black,urlcolor=accent!85!black,
   pdftitle={UGC NET Computer Science — Complete Study Material},
@@ -182,6 +191,7 @@
 \begin{document}
 
 % ================================================================= title page
+\pagenumbering{alph}
 \begin{titlepage}
 \centering
 \vspace*{30mm}

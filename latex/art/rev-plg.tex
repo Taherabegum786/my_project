@@ -1,0 +1,9 @@
+\begin{factsheet}
+Bresenham & $p_0 = 2\Delta y - \Delta x$; if $p_k < 0$: $p_k + 2\Delta y$, else $p_k + 2\Delta y - 2\Delta x$ \\
+Midpoint circle & $p_0 = 1 - r$; 8-way symmetry (ellipse 4-way) \\
+Frame buffer & $W \times H \times \text{bpp} / 8$ bytes \\
+Transformations & rotation about $P$: $T(P)\,R(\theta)\,T(-P)$; Cohen--Sutherland codes TBRL, AND $\ne 0 \Rightarrow$ reject \\
+Curves & B\'ezier: $n$ control points $\to$ degree $n-1$, global control; B-spline: local control \\
+Shading & Gouraud interpolates intensities, Phong interpolates normals; Z-buffer works in image space \\
+C++ & operators that cannot be overloaded: \texttt{::}\ \ \texttt{.}\ \ \texttt{.*}\ \ \texttt{?:}\ \ \texttt{sizeof} \\
+\end{factsheet}

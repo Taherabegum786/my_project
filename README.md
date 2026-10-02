@@ -13,6 +13,7 @@ A4 book (≈ 210 pages, clickable contents, per-unit mini contents, vector diagr
 
 ## 1. Exam Pattern at a Glance
 
+<!-- latex: intro-pattern -->
 ```mermaid
 flowchart LR
     A[UGC NET CS<br/>Single Session · 3 hours · CBT] --> B[Paper 1<br/>50 Qs × 2 = 100 marks]
@@ -37,6 +38,7 @@ flowchart LR
 
 250 / 300 = **125 correct out of 150** (≈ 83% accuracy).
 
+<!-- latex: intro-target -->
 ```mermaid
 pie title Target split for 250+ (marks)
     "Paper 1 (target 84/100 = 42 correct)" : 84
@@ -141,18 +143,23 @@ The Markdown files are the single source of truth; the LaTeX book is generated f
 
 ```
 latex/
-├── main.tex          ← hand-written: layout, fonts, colours, boxes, cover, part structure
-├── chapters/*.tex    ← generated, one per unit (intro, p1-01 … p1-10, p2-01 … p2-10, rev-*)
-└── figures/*.pdf     ← generated vector diagrams (from the Mermaid blocks)
+├── main.tex          ← hand-written: classic book layout, fonts, boxes, title page, part structure
+├── tikzstyles.tex    ← shared TikZ palette and styles (boxes, 3-D slabs, cylinders, Gantt rows …)
+├── art/*.tex         ← hand-drawn TikZ / pgfplots figures and typeset formula tables
+└── chapters/*.tex    ← generated, one per unit (intro, p1-01 … p1-10, p2-01 … p2-10, rev-*)
 scripts/
 ├── build.sh          ← runs everything below and copies the PDF to the repo root
-├── md2latex.py       ← Markdown → LaTeX via pandoc
-├── latex-filter.lua  ← tables, diagram blocks, boxes, cross-links, page-break rules
-└── render-diagrams.cjs ← Mermaid → PDF figures (headless Chromium)
+├── md2latex.py       ← Markdown → LaTeX via pandoc; swaps marked blocks for latex/art figures
+├── latex-filter.lua  ← tables, boxes, cross-links, page-break rules
+└── render-diagrams.cjs ← fallback: renders any *unmarked* Mermaid block to a PDF figure
 ```
 
-- **Just compile the LaTeX** (e.g. on Overleaf or local TeX Live): upload/open `latex/`, choose **LuaLaTeX**, compile `main.tex` twice.
-  Fonts used: TeX Gyre Pagella & Heros, DejaVu Sans Mono, with DejaVu / GNU FreeFont as fallbacks for symbols.
-- **Rebuild after editing the notes**: install `pandoc` (≥ 3), Node ≥ 18 and TeX Live (LuaLaTeX), then
-  `cd scripts && npm install && npm run build`.
+- **How figures work**: in a unit file, a comment `<!-- latex: NAME -->` placed just before a code block
+  tells the converter to replace that block with `latex/art/NAME.tex` in the book. GitHub keeps showing the
+  Mermaid / text version, the PDF gets the TikZ drawing. A marker with no block after it simply inserts the figure.
+- **Just compile the LaTeX** (e.g. on Overleaf or local TeX Live): upload/open `latex/`, choose **LuaLaTeX**,
+  compile `main.tex` twice. Fonts used: TeX Gyre Pagella (+ Pagella Math) and DejaVu Sans Mono, with DejaVu /
+  GNU FreeFont as fallbacks for symbols.
+- **Rebuild after editing the notes**: install `pandoc` (≥ 3) and TeX Live (LuaLaTeX), then run `scripts/build.sh`.
+  Node ≥ 18 (`cd scripts && npm install`) is needed only if a Mermaid block without a `latex:` marker is added.
 

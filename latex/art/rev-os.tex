@@ -1,0 +1,9 @@
+\begin{factsheet}
+Processes & $n$ \texttt{fork()} calls $\to 2^n$ processes; TAT $=$ CT $-$ AT; WT $=$ TAT $-$ BT \\
+Deadlock & deadlock-free if $R \ge n(k-1) + 1$; semaphore final $=$ initial $-$ P $+$ V \\
+Memory & EAT (TLB) $= h(t+m) + (1-h)(t+2m)$; EAT (faults) $= (1-p)\,ma + p \times \text{service}$ \\
+Page table & size $= (2^{\text{LA}} / \text{page size}) \times \text{PTE}$ \\
+Real time & RM bound $n(2^{1/n} - 1) \to 0.69$; EDF schedulable if $U \le 1$ \\
+Misc. & Belady's anomaly: FIFO only; RAID 5 distributed parity (min 3 disks); RAID 6 two parities (min 4) \\
+Inode & max file $\approx (12 + k + k^2 + k^3) \times$ block, $k =$ block / pointer size \\
+\end{factsheet}

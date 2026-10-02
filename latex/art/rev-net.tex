@@ -1,0 +1,11 @@
+\begin{factsheet}
+Capacity & Nyquist $2B\log_2 L$; Shannon $B\log_2(1 + \text{SNR})$; dB $= 10\log_{10}$ \\
+Flow control & $a = T_p/T_t$; $\eta_{\text{SW}} = 1/(1+2a)$; $\eta = W/(1+2a)$; GBN $W \le 2^n - 1$; SR $W \le 2^{n-1}$ \\
+MAC & pure ALOHA 18.4\,\% ($G = 0.5$); slotted 36.8\,\% ($G = 1$); CSMA/CD $L_{\min} = 2\,T_p\,B$ \\
+Addressing and codes & hosts in /$n$: $2^{32-n} - 2$; $d_{\min}$: detect $d+1$, correct $2t+1$ \\
+Counting & mesh links $n(n-1)/2$; symmetric keys $n(n-1)/2$; asymmetric keys $2n$ \\
+Rates & token bucket burst $= C/(M - \rho)$; T1 1.544 Mbps; E1 2.048 Mbps \\
+Routing & RIP: DV, 15 hops, UDP 520; OSPF: LS, IP protocol 89; BGP: PV, TCP 179 \\
+Ciphers & DES 64-bit block, 56-bit key, 16 rounds; AES 128-bit block, keys 128/192/256 $\to$ 10/12/14 rounds \\
+Ports & FTP 20/21, SSH 22, Telnet 23, SMTP 25, DNS 53, DHCP 67/68, HTTP 80, POP3 110, IMAP 143, SNMP 161, HTTPS 443 \\
+\end{factsheet}

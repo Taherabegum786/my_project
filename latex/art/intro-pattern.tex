@@ -1,0 +1,13 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \node[box, fill=fochre, text width=40mm, minimum height=14mm] (A) at (0,0) {\textbf{UGC NET CS}\\\footnotesize single session \textperiodcentered{} 3 hours \textperiodcentered{} CBT};
+  \node[box, fill=fslate, text width=34mm, minimum height=12mm] (P1) at (5.0,1.1) {\textbf{Paper I}\\\footnotesize 50 questions $\times$ 2 = 100};
+  \node[box, fill=fsage, text width=34mm, minimum height=12mm] (P2) at (5.0,-1.1) {\textbf{Paper II}\\\footnotesize 100 questions $\times$ 2 = 200};
+  \node[box, fill=fsand, text width=30mm, minimum height=14mm] (T) at (9.8,0) {\textbf{300 marks}\\\footnotesize no negative marking};
+  \draw[arr] (A) -- (P1); \draw[arr] (A) -- (P2); \draw[arr] (P1) -- (T); \draw[arr] (P2) -- (T);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{The examination at a glance: both papers are taken in one sitting, and a wrong answer costs nothing.}
+\end{figure}

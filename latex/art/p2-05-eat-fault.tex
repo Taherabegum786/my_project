@@ -1,9 +1,11 @@
 \begin{formulas}
 \begin{align*}
-\text{EAT} &= (1-p)\times ma + p \times \text{page-fault service time}\\
-\text{e.g. } ma = 200\text{ ns},\ \text{service} = 8\text{ ms},\ p = 0.001:\quad
-\text{EAT} &\approx 200 + 0.001\times 8{,}000{,}000\text{ ns} \approx 8.2\ \mu\text{s}
+\text{EAT} &= (1-p)\times ma + p \times \text{page-fault service time}
 \end{align*}
 \end{formulas}
-\noindent A fault rate of only one in a thousand slows memory down forty-fold; this is why page-fault rates
+\noindent For example, with $ma = 200$ ns, a service time of 8 ms and $p = 0.001$:
+\[
+\text{EAT} \approx 200 + 0.001\times 8{,}000{,}000\text{ ns} \approx 8.2\ \mu\text{s}.
+\]
+A fault rate of only one in a thousand slows memory down forty-fold; this is why page-fault rates
 must be kept tiny.

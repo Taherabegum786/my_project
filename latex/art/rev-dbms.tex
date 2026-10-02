@@ -1,0 +1,10 @@
+\begin{factsheet}
+Super keys & one single-attribute candidate key among $n$: $2^{n-1}$; two single-attribute keys: $3 \cdot 2^{n-2}$ \\
+Normal forms & 2NF: no partial dependency; 3NF: $X$ superkey or $A$ prime; BCNF: $X$ superkey \\
+Decomposition & lossless if $R_1 \cap R_2 \to R_1$ or $R_2$; 3NF is lossless and dependency-preserving, BCNF lossless only \\
+Transactions & conflict serializable $\Leftrightarrow$ acyclic precedence graph; $n!$ serial schedules \\
+Deadlock schemes & wait--die: old waits, young dies; wound--wait: old wounds, young waits \\
+B$^+$ tree order & internal: $p\,P_b + (p-1)\,K \le B$; leaf: $q\,(K + P_r) + P_b \le B$ \\
+Mining & support $= n(A \cup B)/N$; confidence $= \text{sup}(A \cup B)/\text{sup}(A)$; $2^n$ cuboids \\
+Big data & CAP: choose 2 of 3; HDFS block 128 MB, replication 3 \\
+\end{factsheet}

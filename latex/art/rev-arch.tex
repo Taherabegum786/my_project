@@ -1,0 +1,9 @@
+\begin{factsheet}
+Number formats & 2's complement range $-2^{n-1} \dots 2^{n-1}-1$; IEEE single 1|8|23 (bias 127), double 1|11|52 (bias 1023) \\
+Hamming & parity bits $r$: $2^r \ge m + r + 1$ \\
+Pipeline & $T = (k + n - 1)\,t$; speed-up $\to k$; Amdahl $S = 1/((1-f) + f/s)$ \\
+Cache & hierarchical $T = h\,t_c + (1-h)(t_c + t_m)$; simultaneous $T = h\,t_c + (1-h)\,t_m$ \\
+Address split & direct: TAG | LINE | OFFSET; $k$-way: TAG | SET | OFFSET with sets $=$ lines$/k$ \\
+Disk & average rotational latency $= \tfrac12 \times 60/\text{RPM}$ \\
+Circuits & XOR from NAND: 4 gates; Johnson counter $n$ flip-flops $\to 2n$ states; ring counter $\to n$ states \\
+\end{factsheet}

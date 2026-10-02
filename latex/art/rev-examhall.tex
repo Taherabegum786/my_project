@@ -1,0 +1,25 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[x=0.085cm]
+  \foreach \a/\b/\c/\t in {0/45/fslate/{\textbf{Paper I}: all 50 questions; data interpretation and comprehension first},
+      45/150/fsage/{\textbf{Paper II, pass 1}: answer every sure question, mark the rest},
+      150/170/fsand/{\textbf{Pass 2}: marked numericals}, 170/180/frose/{\textbf{Fill every blank}}} {
+    \filldraw[fill=\c, draw=fgink, line width=0.5pt] (\a,0) rectangle (\b,1.0);
+    \node[font=\scriptsize, anchor=north] at (\a,-0.05) {\a};
+  }
+  \node[font=\scriptsize, anchor=north] at (180,-0.05) {180 min};
+  \node[font=\footnotesize, align=center, text width=30mm] at (22.5,0.5) {\textbf{Paper I}};
+  \node[font=\footnotesize, align=center] at (97.5,0.5) {\textbf{Paper II, pass 1}};
+  \node[font=\scriptsize, align=center] at (160,0.5) {\textbf{pass 2}};
+  \node[font=\scriptsize, align=center] at (175,1.35) {\textbf{guess}};
+  \draw[thinline] (175,1.0) -- (175,1.2);
+  \node[font=\footnotesize, align=left, anchor=north west, text width=150mm] at (0,-0.6) {%
+    0--45 min: all 50 Paper I questions, data interpretation and comprehension first.\\
+    45--150 min: Paper II first pass --- answer every question you are sure of and mark the rest.\\
+    150--170 min: second pass on the marked numericals.\\
+    170--180 min: fill every remaining blank with your best guess; there is no negative marking.};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{A time plan for the three-hour paper.}
+\end{figure}

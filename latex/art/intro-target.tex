@@ -1,0 +1,19 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \def\R{2.2}
+  % 300 marks = 360 degrees: Paper 1 84 (100.8°), Paper 2 168 (201.6°), loss 48 (57.6°)
+  \filldraw[fill=fslate, draw=fgink, line width=0.6pt] (0,0) -- (90:\R) arc[start angle=90, end angle=-10.8, radius=\R] -- cycle;
+  \filldraw[fill=fsage, draw=fgink, line width=0.6pt] (0,0) -- (-10.8:\R) arc[start angle=-10.8, end angle=-212.4, radius=\R] -- cycle;
+  \filldraw[fill=frose, draw=fgink, line width=0.6pt] (0,0) -- (147.6:\R) arc[start angle=147.6, end angle=90, radius=\R] -- cycle;
+  \node[font=\small, align=center] at (39.6:1.35) {\textbf{84}};
+  \node[font=\small, align=center] at (-111.6:1.35) {\textbf{168}};
+  \node[font=\small, align=center] at (118.8:1.45) {\textbf{48}};
+  \node[font=\footnotesize, anchor=west, align=left] at (2.9,1.2) {\textcolor{fslate!70!black}{\rule{8pt}{8pt}} Paper I target: 84 of 100 (42 correct)};
+  \node[font=\footnotesize, anchor=west, align=left] at (2.9,0.4) {\textcolor{fsage!70!black}{\rule{8pt}{8pt}} Paper II target: 168 of 200 (84 correct)};
+  \node[font=\footnotesize, anchor=west, align=left] at (2.9,-0.4) {\textcolor{frose!80!black}{\rule{8pt}{8pt}} marks you can afford to lose: 48};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{How 250+ out of 300 is built: about 83\,\% accuracy across both papers.}
+\end{figure}

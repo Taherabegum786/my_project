@@ -4,6 +4,7 @@ Assumes ~5–6 hours/day. Compress proportionally if you have less time (e.g. 90
 
 ## Overview
 
+<!-- latex: rev-gantt -->
 ```mermaid
 gantt
     title Preparation timeline (days from start)
@@ -65,6 +66,7 @@ Target trajectory: 180 → 210 (mock 5) → 235 (mock 12) → 250+ (mock 20 onwa
 
 ## Exam-Hall Strategy (3 hours, 150 questions, no negative marking)
 
+<!-- latex: rev-examhall -->
 ```mermaid
 flowchart LR
     A[0–45 min<br/>Paper 1: all 50 Qs<br/>DI + comprehension first] --> B[45–150 min<br/>Paper 2 pass 1:<br/>answer all sure-shot Qs,<br/>mark the rest]

@@ -10,7 +10,7 @@
   \node[n, fill=fsage] (M) at (5.2,2.6) {\textbf{mutation}\\flip bits with low probability};
   \node[n, fill=fgrey] (B) at (0,-2.4) {best solution};
   \draw[arr] (I) -- (E); \draw[arr] (E) -- (T); \draw[arr] (T) -- node[lbl, above] {no} (S);
-  \draw[arr] (S) -- (C); \draw[arr] (C) -- (M); \draw[arr] (M.west) -- node[lbl, sloped, above] {next generation} (E.east);
+  \draw[arr] (S) -- (C); \draw[arr] (C) -- (M); \draw[arr] (M.west) -- node[lbl, sloped, below] {next generation} (E.east);
   \draw[arr] (T) -- node[lbl, right] {yes} (B);
 \end{tikzpicture}
 \end{adjustbox}
