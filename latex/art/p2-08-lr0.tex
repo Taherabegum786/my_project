@@ -18,7 +18,8 @@
   \draw[e] (I2) -- node[el] {$a$} (I3);
   \draw[e] (I3) -- node[el] {$A$} (I6);
   \draw[e] (I3) -- node[el] {$b$} (I4);
-  \path (I3) edge[e, loop below, looseness=5] node[el, below] {$a$} ();
+  \draw[e] ([xshift=-3mm]I3.south) .. controls +(-0.5,-1.0) and +(0.5,-1.0) .. node[el, below] {$a$} ([xshift=3mm]I3.south);
+
 
   \draw[e] (I0.south) ++(0.4,0) |- node[el, pos=0.8] {$b$} ([yshift=-3mm]I4.west) ;
 \end{tikzpicture}
