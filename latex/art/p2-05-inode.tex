@@ -1,0 +1,36 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[blk/.style={draw=fgink, line width=0.5pt, fill=fsand, minimum size=4mm, inner sep=0pt},
+    idx/.style={draw=fgink, line width=0.5pt, fill=fochre!70, minimum width=5mm, minimum height=10mm, inner sep=0pt}]
+  \def\fld#1#2#3{\draw[fgink, line width=0.5pt, fill=#3] (0,#1) rectangle (2.6,#1-0.5); \node[font=\footnotesize] at (1.3,#1-0.25) {#2};}
+  \draw[fgink, line width=0.5pt, fill=fgrey] (0,0.9) rectangle (2.6,0); \node[font=\footnotesize, align=center] at (1.3,0.45) {mode, owner, size,\\timestamps \dots};
+  \fld{0}{direct 0}{fslate} \fld{-0.5}{direct 1}{fslate} \fld{-1.0}{$\vdots$}{fslate} \fld{-1.5}{direct 11}{fslate}
+  \fld{-2.0}{single indirect}{fsage} \fld{-2.5}{double indirect}{fsage} \fld{-3.0}{triple indirect}{fsage}
+  \node[capt] at (1.3,1.25) {inode};
+  \node[blk] (d0) at (4.2,-0.25) {}; \node[blk] (d1) at (4.2,-0.85) {}; \node[blk] (d11) at (4.2,-1.75) {};
+  \draw[arr] (2.6,-0.25) -- (d0); \draw[arr] (2.6,-0.75) -- (d1); \draw[arr] (2.6,-1.75) -- (d11);
+  \node[idx] (s1) at (4.2,-3.0) {};
+  \node[idx] (t1) at (4.2,-4.4) {}; \node[idx] (t2) at (6.2,-4.4) {};
+  \node[idx] (u1) at (4.2,-5.9) {}; \node[idx] (u2) at (6.2,-5.9) {}; \node[idx] (u3) at (8.2,-5.9) {};
+  \draw[arr] (2.6,-2.25) -| (s1.north);
+  \draw[arr] (2.6,-2.75) -- (3.3,-2.75) |- (t1.west);
+  \draw[arr] (2.6,-3.25) -- (3.0,-3.25) |- (u1.west);
+  \node[blk] (sd) at (6.2,-3.0) {}; \draw[arr] (s1) -- (sd);
+  \draw[arr] (t1) -- (t2); \node[blk] (td) at (8.2,-4.4) {}; \draw[arr] (t2) -- (td);
+  \draw[arr] (u1) -- (u2); \draw[arr] (u2) -- (u3); \node[blk] (ud) at (10.2,-5.9) {}; \draw[arr] (u3) -- (ud);
+  \node[lbl, anchor=west] at (4.6,-1.0) {12 data blocks reached directly};
+  \node[lbl, anchor=west] at (6.6,-3.0) {$N$ blocks};
+  \node[lbl, anchor=west] at (8.6,-4.4) {$N^2$ blocks};
+  \node[lbl, anchor=west] at (10.6,-5.9) {$N^3$ blocks};
+  \node[smalllbl] at (4.2,-6.75) {index blocks};
+  \node[smalllbl] at (10.2,-6.5) {data block};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{The UNIX inode. With $N$ pointers per block ($N$ = block size / pointer size), each extra level of
+indirection multiplies the reachable blocks by $N$.}
+\end{figure}
+For 4 KB blocks and 4-byte pointers, $N = 1024$:
+\[
+(12 + 1024 + 1024^2 + 1024^3) \times 4\ \text{KB} \approx 1024^3 \times 4\ \text{KB} = 4\ \text{TB}.
+\]

@@ -1,0 +1,20 @@
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}c l l@{}}
+\toprule
+\textbf{Time} & \textbf{Waiting processes, response ratio $(W+S)/S$} & \textbf{Runs} \\
+\midrule
+0 & only A has arrived & A, 0--3 \\
+3 & only B has arrived & B, 3--9 \\
+9 & C: $(5+4)/4 = 2.25$,\ D: $(3+5)/5 = 1.6$,\ E: $(1+2)/2 = 1.5$ & C, 9--13 \\
+13 & D: $(7+5)/5 = 2.4$,\ E: $(5+2)/2 = 3.5$ & E, 13--15 \\
+15 & only D is left & D, 15--20 \\
+\bottomrule
+\end{tabular}
+
+\medskip
+\begin{tikzpicture}
+  \ganttrow{0.6}{0}{A/0/3/fslate, B/3/9/fsage, C/9/13/fsand, E/13/15/frose, D/15/20/fgrey}
+\end{tikzpicture}
+\end{center}
+\noindent Order \textbf{A B C E D}. A long-waiting job's ratio keeps rising, so HRRN cannot starve it.

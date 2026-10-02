@@ -1,0 +1,33 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[x=0.6cm, y=0.6cm]
+  \foreach \ox/\t in {0/Contiguous, 8/Linked, 16/Indexed} {
+    \foreach \i in {0,...,3} \foreach \j in {0,...,3}
+      \draw[fgink!55, line width=0.4pt, fill=fpaper] (\ox+\i,-\j) rectangle (\ox+\i+1,-\j-1);
+    \node[capt] at (\ox+2,1.3) {\t};
+  }
+  % contiguous: blocks 4..7
+  \foreach \i in {0,...,3} { \draw[fgink, line width=0.5pt, fill=fslate] (\i,-1) rectangle (\i+1,-2); \node[font=\footnotesize] at (\i+0.5,-1.5) {A}; }
+  \node[font=\scriptsize] at (2,0.55) {start 4, length 4};
+  % linked
+  \foreach \i/\j/\k in {0/0/1, 2/1/2, 3/3/3, 1/2/4} { \draw[fgink, line width=0.5pt, fill=fsage] (8+\i,-\j) rectangle (8+\i+1,-\j-1); \node[font=\footnotesize] at (8+\i+0.5,-\j-0.5) {A\textsubscript{\k}}; }
+  \draw[arr, fwine] (8.5,-0.5) to[bend left=20] (10.5,-1.5);
+  \draw[arr, fwine] (10.5,-1.5) to[bend left=20] (11.5,-3.5);
+  \draw[arr, fwine] (11.5,-3.5) to[bend left=20] (9.5,-2.5);
+  \node[font=\scriptsize] at (10,0.55) {start 0; last block points to nil};
+  % indexed
+  \draw[fgink, line width=0.5pt, fill=fochre] (16,0) rectangle (17,-1); \node[font=\footnotesize] at (16.5,-0.5) {idx};
+  \foreach \i/\j/\k in {3/0/1, 1/2/2, 2/3/3} { \draw[fgink, line width=0.5pt, fill=fsand] (16+\i,-\j) rectangle (16+\i+1,-\j-1); \node[font=\footnotesize] at (16+\i+0.5,-\j-0.5) {A\textsubscript{\k}}; }
+  \draw[arr, fwine] (16.5,-0.5) to[bend left=15] (19.5,-0.5);
+  \draw[arr, fwine] (16.5,-0.5) -- (17.5,-2.5);
+  \draw[arr, fwine] (16.5,-0.5) to[bend right=15] (18.5,-3.5);
+  \node[font=\scriptsize] at (18,0.55) {index block lists all blocks};
+  \node[lbl] at (2,-5.1) {fast, direct access\\external fragmentation};
+  \node[lbl] at (10,-5.1) {no external fragmentation\\sequential access only};
+  \node[lbl] at (18,-5.1) {direct access, no ext.\ frag.\\index-block overhead};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Three ways to lay a four-block file A on disk. FAT is a variant of linked allocation that keeps the
+chain in a table; the UNIX inode is a multilevel index.}
+\end{figure}

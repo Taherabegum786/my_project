@@ -1,0 +1,28 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[file/.style={plain, minimum width=24mm, font=\footnotesize},
+    tool/.style={slate, minimum width=24mm, font=\footnotesize}]
+  \node[file] (src) at (0,0)    {source program\\\texttt{prog.c}};
+  \node[tool] (pp)  at (3.3,0)  {preprocessor};
+  \node[tool] (cc)  at (6.6,0)  {compiler};
+  \node[file] (asm) at (9.9,0)  {assembly\\\texttt{prog.s}};
+  \node[tool] (as)  at (13.2,0) {assembler};
+  \node[file] (obj) at (13.2,-2.2) {object code \texttt{prog.o}\\\scriptsize relocatable};
+  \node[tool] (ld)  at (9.9,-2.2) {linker};
+  \node[file] (exe) at (6.6,-2.2) {executable\\\texttt{a.out}};
+  \node[tool] (lo)  at (3.3,-2.2) {loader};
+  \node[db, minimum width=18mm] (mem) at (0,-2.2) {main\\memory};
+  \node[db, minimum width=16mm, minimum height=9mm, cylinder body fill=fsand, cylinder end fill=fsand!55!white, font=\footnotesize] (lib) at (9.9,-4.1) {libraries};
+  \draw[arr] (src) -- (pp); \draw[arr] (pp) -- (cc); \draw[arr] (cc) -- (asm); \draw[arr] (asm) -- (as);
+  \draw[arr] (as) -- (obj); \draw[arr] (obj) -- (ld); \draw[arr] (ld) -- (exe); \draw[arr] (exe) -- (lo); \draw[arr] (lo) -- (mem);
+  \draw[arr] (lib) -- (ld);
+  \node[lbl, below=3mm of lo] {allocation · relocation\\linking · loading};
+  \node[lbl, above=1mm of pp] {macros, \texttt{\#include}};
+  \node[lbl, above=1mm of as] {two passes, symbol table};
+  \node[lbl, right=1mm of lib.east] {resolves external\\references};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{From source text to a running program. Translators (shaded) turn one file form into the next; the
+loader finally places the executable in memory.}
+\end{figure}

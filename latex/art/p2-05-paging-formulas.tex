@@ -1,0 +1,8 @@
+\begin{formulatable}
+Logical-address bits & \log_2(\text{virtual address space}) \\
+Offset bits & d = \log_2(\text{page size}) \\
+Number of pages & 2^{\,\text{LA bits} - d} \\
+Number of frames & \text{physical memory size} / \text{page size} \\
+Page-table size & \text{number of pages} \times \text{PTE size} \\
+Effective access time with a TLB (hit ratio $h$, TLB time $t$, memory time $m$) & \text{EAT} = h(t+m) + (1-h)(t+2m) \\
+\end{formulatable}

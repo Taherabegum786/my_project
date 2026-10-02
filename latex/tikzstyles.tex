@@ -83,3 +83,12 @@
 \newcommand{\ornament}{\tikz[baseline=-0.6ex]{\draw[fwine, line width=0.4pt] (0,0) -- (1.6,0);
   \fill[fwine] (1.85,0) circle[radius=0.75pt]; \fill[fwine] (2.05,0) circle[radius=1.1pt]; \fill[fwine] (2.25,0) circle[radius=0.75pt];
   \draw[fwine, line width=0.4pt] (2.5,0) -- (4.1,0);}}
+
+% Gantt chart row: \ganttrow{cm per time unit}{y}{name/start/end/colour, ...}
+\newcommand{\ganttrow}[3]{%
+  \foreach \gtP/\gtS/\gtE/\gtC in {#3} {
+    \filldraw[fill=\gtC, draw=fgink, line width=0.5pt] ({\gtS*#1},#2) rectangle ({\gtE*#1},{#2+0.75});
+    \node[font=\small] at ({(\gtS+\gtE)/2*#1},{#2+0.375}) {\gtP};
+    \node[font=\scriptsize, anchor=north] at ({\gtS*#1},{#2-0.03}) {\gtS};
+    \node[font=\scriptsize, anchor=north] at ({\gtE*#1},{#2-0.03}) {\gtE};
+  }}

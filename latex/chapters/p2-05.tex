@@ -33,12 +33,16 @@ numericals + Galvin concepts --- highly scoring}
 
 \end{sylbox}
 
-\needspace{95pt}
+\needspace{125pt}
 
 \hypertarget{p2-05--1-system-software}{%
 \section{System Software}\label{p2-05--1-system-software}}
 
-\diagram{figures/p2-05-00}
+System software is the layer of programs that makes a bare machine usable: translators that turn the
+programs we write into machine code, and the operating system that shares the hardware among them. The
+examination asks mostly about what each translator does and when it runs.
+
+\input{art/p2-05-toolchain}
 
 \begingroup\small
 
@@ -77,12 +81,16 @@ Debugger & Breakpoints, single-step, watch variables \\
   Assembler directives (pseudo-ops): START, END, ORIGIN, EQU, LTORG, DC, DS.
 \end{itemize}
 
-\needspace{95pt}
+\needspace{125pt}
 
 \hypertarget{p2-05--2-os-basics}{%
 \section{OS Basics}\label{p2-05--2-os-basics}}
 
-\diagram{figures/p2-05-01}
+An operating system has two jobs. As a \textbf{resource manager} it shares the CPU, memory and devices among
+competing programs; as an \textbf{extended machine} it hides awkward hardware behind clean abstractions such as
+processes, files and sockets. Programs ask for these services through system calls.
+
+\input{art/p2-05-layers}
 
 \begingroup\small
 
@@ -131,17 +139,21 @@ if (fork() && fork()) fork();   // count carefully: 4 processes total (parent + 
 \end{Verbatim}
 \end{listingblock}
 
-\needspace{131pt}
+\needspace{161pt}
 
 \hypertarget{p2-05--3-process-management}{%
 \section{Process Management}\label{p2-05--3-process-management}}
+
+A program is a passive file on disk; a \textbf{process} is that program in execution, together with its
+program counter, registers, stack and open files. The operating system records all of this in a
+\textbf{process control block} (PCB) and moves the process between states as it runs, waits and finishes.
 
 \needspace{95pt}
 
 \hypertarget{p2-05--31-process-states}{%
 \subsection{Process States}\label{p2-05--31-process-states}}
 
-\diagram{figures/p2-05-02}
+\input{art/p2-05-states}
 
 \begin{itemize}
 \tightlist
@@ -173,6 +185,9 @@ if (fork() && fork()) fork();   // count carefully: 4 processes total (parent + 
 \hypertarget{p2-05--33-critical-section-problem}{%
 \subsection{Critical Section Problem}\label{p2-05--33-critical-section-problem}}
 
+When processes share data, the parts of their code that touch it must not overlap in time. Any solution must
+give \textbf{mutual exclusion} (one process inside at a time), \textbf{progress} (no needless blocking when the
+section is free) and \textbf{bounded waiting} (no process waits forever).
 Requirements: \textbf{Mutual exclusion}, \textbf{Progress}, \textbf{Bounded waiting}.
 
 \textbf{Peterson\textquotesingle s solution (2 processes)}:
@@ -195,10 +210,14 @@ Satisfies all three requirements (on sequentially consistent memory).
 
 Hardware: \textbf{TestAndSet}, \textbf{CompareAndSwap} (atomic). Simple TAS lock gives ME + progress but not bounded waiting.
 
-\needspace{92pt}
+\needspace{122pt}
 
 \hypertarget{p2-05--34-semaphores}{%
 \subsection{Semaphores}\label{p2-05--34-semaphores}}
+
+A semaphore is an integer that can be changed only by two atomic operations, \texttt{wait} (P) and \texttt{signal} (V).
+Initialised to 1 it acts as a lock; initialised to 0 it forces one event to happen after another;
+initialised to \(n\) it counts free slots.
 
 \begin{listingblock}{42pt}
 \begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
@@ -250,17 +269,7 @@ Sleeping barber & customers, barbers, mutex \\
 
 \endgroup
 
-\begin{listingblock}{97pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-Producer:                       Consumer:
-  wait(empty);                    wait(full);
-  wait(mutex);                    wait(mutex);
-  add item                        remove item
-  signal(mutex);                  signal(mutex);
-  signal(full);                   signal(empty);
-(swapping the two waits in producer can cause DEADLOCK)
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-05-prodcons}
 
 \needspace{95pt}
 
@@ -283,19 +292,16 @@ Producer:                       Consumer:
   \textbf{Amdahl\textquotesingle s law} for multicore: speedup ≤ 1 / (S + (1−S)/N).
 \end{itemize}
 
-\needspace{114pt}
+\needspace{125pt}
 
 \hypertarget{p2-05--5-cpu-scheduling}{%
 \section{CPU Scheduling}\label{p2-05--5-cpu-scheduling}}
 
-\begin{listingblock}{64pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-Turnaround time (TAT) = Completion − Arrival
-Waiting time (WT)     = TAT − Burst
-Response time         = First run − Arrival
-Throughput            = #processes / total time
-\end{Verbatim}
-\end{listingblock}
+Whenever the CPU falls idle, the short-term scheduler picks the next ready process. Different policies
+favour different goals (low average waiting time, quick response, fairness), and numerical questions ask you
+to draw the Gantt chart and read the times off it.
+
+\input{art/p2-05-sched-formulas}
 
 \begingroup\small
 
@@ -358,12 +364,7 @@ P4 & 3 & 5 \\
 
 \textbf{SRTF Gantt chart}:
 
-\begin{listingblock}{42pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-| P1 | P2      | P4        | P1             | P3                  |
-0    1         5           10               17                    26
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-05-srtf}
 
 \begingroup\small
 
@@ -397,12 +398,7 @@ Average WT = 26/4 = \textbf{6.5}.
 
 \textbf{Round Robin (q = 4)} on same data:
 
-\begin{listingblock}{42pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-| P1 | P2 | P3 | P4 | P1 | P3 | P4 | P3 |
-0    4    8    12   16   20   24   25   26
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-05-rr}
 
 CT: P1 = 20, P2 = 8, P3 = 26, P4 = 25 → WT: P1 = 12, P2 = 3, P3 = 15, P4 = 17 → average = \textbf{11.75}.
 
@@ -423,30 +419,23 @@ CT: P1 = 20, P2 = 8, P3 = 26, P4 = 25 → WT: P1 = 12, P2 = 3, P3 = 15, P4 = 17 
   Linux: \textbf{CFS} (Completely Fair Scheduler, red-black tree keyed by virtual runtime). Windows: 32-level priority-based preemptive.
 \end{itemize}
 
-\needspace{224pt}
+\needspace{191pt}
 
 \hypertarget{p2-05--6-deadlocks}{%
 \section{Deadlocks}\label{p2-05--6-deadlocks}}
 
-\needspace{188pt}
+A deadlock is a set of processes each holding a resource and waiting for one held by another, so none can
+proceed. Systems either prevent one of the four necessary conditions, avoid unsafe states (Banker\textquotesingle s
+algorithm), or detect deadlock and recover.
+
+\needspace{125pt}
 
 \hypertarget{p2-05--four-necessary-conditions-coffman}{%
 \subsection{Four Necessary Conditions (Coffman)}\label{p2-05--four-necessary-conditions-coffman}}
 
 \textbf{Mutual exclusion · Hold and wait · No preemption · Circular wait} --- all four must hold.
 
-\begin{listingblock}{108pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-Resource Allocation Graph
-  P1 ──request──► [R1 •]──assigned──► P2
-   ▲                                    │
-   │                                    ▼
-  [R2 •]◄─────────request───────────────┘
-  (assigned to P1)
-  Cycle with single-instance resources ⇒ DEADLOCK
-  Cycle with multi-instance resources ⇒ deadlock POSSIBLE
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-05-rag}
 
 \begingroup\small
 
@@ -508,24 +497,19 @@ P4 & 0 0 2 & 4 3 3 & 4 3 1 \\
 
 Available = (10,5,7) − (7,2,5) = \textbf{(3,3,2)}.
 
-\begin{listingblock}{86pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-Work=(3,3,2): P1 need(1,2,2) ✓ → Work=(5,3,2)
-              P3 need(0,1,1) ✓ → Work=(7,4,3)
-              P4 need(4,3,1) ✓ → Work=(7,4,5)
-              P0 need(7,4,3) ✓ → Work=(7,5,5)
-              P2 need(6,0,0) ✓ → Work=(10,5,7)
-Safe sequence: <P1, P3, P4, P0, P2>
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-05-banker}
 
 \textbf{Deadlock-free condition formula}: n processes each needing max k instances of a resource with R instances total → deadlock-free if \textbf{R ≥ n(k − 1) + 1}.
 e.g. 3 processes each need 3 units → minimum R = 3×2 + 1 = \textbf{7}.
 
-\needspace{131pt}
+\needspace{161pt}
 
 \hypertarget{p2-05--7-memory-management}{%
 \section{Memory Management}\label{p2-05--7-memory-management}}
+
+Programs are written as if they owned a large, private, contiguous memory. Memory management maps these
+\textbf{logical} addresses onto the \textbf{physical} memory actually available, and protects each process\textquotesingle s region
+from the others.
 
 \needspace{95pt}
 
@@ -542,22 +526,18 @@ e.g. 3 processes each need 3 units → minimum R = 3×2 + 1 = \textbf{7}.
   \textbf{50-percent rule}: with first fit, N allocated blocks → 0.5N blocks lost to fragmentation.
 \end{itemize}
 
-\needspace{95pt}
+\needspace{125pt}
 
 \hypertarget{p2-05--72-paging}{%
 \subsection{Paging}\label{p2-05--72-paging}}
 
-\diagram{figures/p2-05-03}
+Paging cuts logical memory into fixed-size \textbf{pages} and physical memory into frames of the same size, so
+any page can sit in any free frame. External fragmentation disappears; the price is a page table per
+process and an extra memory access per reference, which the TLB hides.
 
-\begin{listingblock}{75pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-Logical address bits = log₂(virtual space);  offset bits d = log₂(page size)
-#pages = 2^(LA bits − d) ;  #frames = physical size / page size
-Page table size = #pages × PTE size
-EAT with TLB (hit ratio h, TLB t, memory m):
-    EAT = h(t + m) + (1 − h)(t + 2m)
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-05-paging}
+
+\input{art/p2-05-paging-formulas}
 
 \textbf{Worked}: 32-bit logical address, 4 KB pages, 4-byte PTE.
 
@@ -584,21 +564,20 @@ EAT with TLB (hit ratio h, TLB t, memory m):
   No internal fragmentation, but external fragmentation. Segmentation with paging (Intel x86).
 \end{itemize}
 
-\needspace{92pt}
+\needspace{125pt}
 
 \hypertarget{p2-05--74-virtual-memory--demand-paging}{%
 \subsection{Virtual Memory \& Demand Paging}\label{p2-05--74-virtual-memory--demand-paging}}
 
-\begin{listingblock}{42pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-EAT with page faults = (1 − p) × ma + p × page-fault service time
-e.g. ma = 200 ns, service = 8 ms, p = 0.001 → EAT ≈ 200 + 0.001 × 8,000,000 = 8.2 µs
-\end{Verbatim}
-\end{listingblock}
+Virtual memory keeps only the pages a process is actually using in RAM and loads the others on demand when
+a \textbf{page fault} occurs. Programs can therefore be larger than physical memory, but each fault costs
+milliseconds, so the fault rate dominates performance.
+
+\input{art/p2-05-eat-fault}
 
 Page fault steps: trap → check valid → find free frame → schedule disk read → update table → restart instruction.
 
-\needspace{196pt}
+\needspace{155pt}
 
 \hypertarget{p2-05--75-page-replacement--worked}{%
 \subsection{Page Replacement --- Worked}\label{p2-05--75-page-replacement--worked}}
@@ -607,16 +586,7 @@ Reference string: \textbf{7 0 1 2 0 3 0 4 2 3 0 3 2}, 3 frames.
 
 \textbf{FIFO}
 
-\begin{listingblock}{86pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-Ref:  7  0  1  2  0  3  0  4  2  3  0  3  2
-F1    7  7  7  2  2  2  2  4  4  4  0  0  0
-F2       0  0  0  0  3  3  3  2  2  2  2  2
-F3          1  1  1  1  0  0  0  3  3  3  3
-Fault ✱  ✱  ✱  ✱     ✱  ✱  ✱  ✱  ✱  ✱
-→ 10 faults
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-05-fifo}
 
 \textbf{Optimal (replace page used farthest in future)} → \textbf{7 faults}.
 \textbf{LRU (replace least recently used)} → \textbf{9 faults}.
@@ -636,10 +606,13 @@ Fault ✱  ✱  ✱  ✱     ✱  ✱  ✱  ✱  ✱  ✱
   \textbf{Copy-on-write} for \texttt{fork()}. \textbf{Memory-mapped files}.
 \end{itemize}
 
-\needspace{196pt}
+\needspace{226pt}
 
 \hypertarget{p2-05--8-disk--storage}{%
 \section{Disk \& Storage}\label{p2-05--8-disk--storage}}
+
+A magnetic disk spends most of each request moving the arm (seek) and waiting for the sector to rotate under
+the head (latency). Disk-scheduling algorithms reorder pending requests to cut total head movement.
 
 \needspace{160pt}
 
@@ -675,16 +648,7 @@ C-LOOK (up) & 53→\allowbreak{}65→\allowbreak{}67→\allowbreak{}98→\allowb
 
 \endgroup
 
-\begin{listingblock}{86pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-SSTF head path (cylinder axis →)
-0    14    37    53 65 67    98    122 124        183   199
-                 ●──►──►                                    53→65→67
-           ◄─────────────┘                                 67→37
-      ◄────┘                                               37→14
-      └──────────────────────►──────►──►──────────►         14→98→122→124→183
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-05-sstf}
 
 \begin{itemize}
 \tightlist
@@ -729,10 +693,13 @@ SSTF head path (cylinder axis →)
 
 \endgroup
 
-\needspace{95pt}
+\needspace{125pt}
 
 \hypertarget{p2-05--9-file-systems--io}{%
 \section{File Systems \& I/O}\label{p2-05--9-file-systems--io}}
+
+A file system turns a disk\textquotesingle s numbered blocks into named files and directories. Its central design choice is
+how a file\textquotesingle s blocks are found: contiguously, by a chain of pointers, or through an index.
 
 \begin{itemize}
 \tightlist
@@ -744,27 +711,16 @@ SSTF head path (cylinder axis →)
   Hard link (same inode, same FS, no dirs) vs soft/symbolic link (path, can cross FS, can dangle).
 \end{itemize}
 
-\needspace{114pt}
+\needspace{95pt}
 
 \hypertarget{p2-05--allocation-methods}{%
 \subsection{Allocation Methods}\label{p2-05--allocation-methods}}
 
-\begin{listingblock}{64pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
- Contiguous        Linked (FAT is a variant)      Indexed (inode)
- [A A A A]         A→A→A→A→nil                   index block → [b1,b2,b3,…]
- fast, direct      no ext. fragmentation          direct access, no ext. frag.
- ext. fragmentation  only sequential access        overhead of index block
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-05-allocation}
 
 \textbf{UNIX inode max file size}: 12 direct + 1 single + 1 double + 1 triple indirect. Block 4 KB, pointer 4 B → 1024 pointers per block:
 
-\begin{listingblock}{31pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-(12 + 1024 + 1024² + 1024³) × 4 KB ≈ 4 TB
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-05-inode}
 
 \begin{itemize}
 \tightlist
@@ -914,27 +870,13 @@ P5 & 0 & 5 & 2 \\
 
 \textbf{Non-preemptive priority}:
 
-\begin{listingblock}{42pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-| P2 | P5    | P1         | P3 | P4 |
-0    1       6            16   18   19
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-05-priority}
 
 Waiting times: P1 6, P2 0, P3 16, P4 18, P5 1 → average = 41/5 = \textbf{8.2}.
 
 \textbf{HRRN} (non-preemptive; response ratio RR = (W + S)/S), processes A(0, 3), B(2, 6), C(4, 4), D(6, 5), E(8, 2):
 
-\begin{listingblock}{86pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-t = 0: only A → run A to 3
-t = 3: only B arrived → run B to 9
-t = 9: C: (5 + 4)/4 = 2.25   D: (3 + 5)/5 = 1.6   E: (1 + 2)/2 = 1.5   → run C to 13
-t = 13: D: (7 + 5)/5 = 2.4   E: (5 + 2)/2 = 3.5                        → run E to 15
-t = 15: run D to 20
-Order: A B C E D
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-05-hrrn}
 
 \needspace{103pt}
 
@@ -953,28 +895,16 @@ Whatever the scheduling, P2 blocks on T until P1 signals → output \textbf{"AB"
 
 \textbf{Deadlock with wrong order}:
 
-\begin{listingblock}{42pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-P0: wait(S); wait(Q); …        P1: wait(Q); wait(S); …     (S = Q = 1)
-P0 gets S, P1 gets Q, each waits for the other → deadlock
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-05-semdeadlock}
 
-\needspace{144pt}
+\needspace{125pt}
 
 \hypertarget{p2-05--143-multilevel-paging-numericals}{%
 \subsection{Multilevel Paging Numericals}\label{p2-05--143-multilevel-paging-numericals}}
 
 48-bit virtual address, 4 KB pages, 8-byte PTEs.
 
-\begin{listingblock}{64pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-Offset = 12 bits → page-number bits = 36
-Entries per page-table page = 4096 / 8 = 512 = 2⁹ → each level indexes 9 bits
-Levels needed = ⌈36 / 9⌉ = 4  (this is x86-64 4-level paging: 9 | 9 | 9 | 9 | 12)
-Memory accesses per reference without TLB = 4 (tables) + 1 (data) = 5
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-05-multilevel}
 
 \textbf{Effective access time with TLB and 2-level paging}: TLB 10 ns, memory 100 ns, hit ratio 90\%:
 EAT = 0.9 × (10 + 100) + 0.1 × (10 + 3 × 100) = 99 + 31 = \textbf{130 ns}.
@@ -1036,39 +966,28 @@ Reference: 1 2 3 4 1 2 5 1 2 3 4 5
   LRU, 4 frames → \textbf{8} faults; Optimal, 4 frames → \textbf{6} faults.
 \end{itemize}
 
-\needspace{111pt}
+\needspace{125pt}
 
 \hypertarget{p2-05--146-file-system-numericals}{%
 \subsection{File-System Numericals}\label{p2-05--146-file-system-numericals}}
 
 \textbf{Max file size with UNIX inode}: block 1 KB, pointer 4 B → 256 pointers/block; 10 direct, 1 single, 1 double, 1 triple:
 
-\begin{listingblock}{31pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-(10 + 256 + 256² + 256³) × 1 KB = (10 + 256 + 65,536 + 16,777,216) KB ≈ 16 GB
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-05-inode-small}
 
 \textbf{FAT size}: 4 GB disk, 4 KB clusters, 32-bit entries → 2²⁰ clusters × 4 B = \textbf{4 MB} FAT.
 
 \textbf{Disk access}: 7200 RPM, average seek 8 ms, transfer rate 100 MB/s, read 4 KB block:
 seek 8 + latency 4.17 + transfer 0.04 ≈ \textbf{12.2 ms}.
 
-\needspace{144pt}
+\needspace{125pt}
 
 \hypertarget{p2-05--147-buddy-system--worked}{%
 \subsection{Buddy System --- Worked}\label{p2-05--147-buddy-system--worked}}
 
 1 MB block; requests A = 70 KB, B = 35 KB, C = 80 KB.
 
-\begin{listingblock}{64pt}
-\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
-1024 → 512 + 512 → 256 + 256 → 128 + 128          A gets 128 KB (wastes 58 KB internal)
-B (35 KB): split a 128 → 64 + 64                   B gets 64 KB
-C (80 KB): needs 128 → split the second 256 → 128 + 128, C gets 128 KB
-Release: buddies of equal size and adjacent addresses coalesce back
-\end{Verbatim}
-\end{listingblock}
+\input{art/p2-05-buddy}
 
 \needspace{147pt}
 

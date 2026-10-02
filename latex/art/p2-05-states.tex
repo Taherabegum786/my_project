@@ -1,0 +1,29 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[st/.style={ink, rounded rectangle, fill=fslate, minimum width=20mm, minimum height=8mm, font=\small, align=center,
+    blur shadow={shadow blur steps=6, shadow xshift=0.7pt, shadow yshift=-0.9pt, shadow opacity=22}}]
+  \node[st, fill=fsand] (N) at (-0.6,1.7) {new};
+  \node[st] (R) at (2.8,0) {ready};
+  \node[st, fill=fsteel] (U) at (8.8,0) {running};
+  \node[st, fill=fsage] (T) at (12.2,1.7) {terminated};
+  \node[st] (W) at (5.8,-2.6) {waiting};
+  \node[st, fill=fgrey, font=\footnotesize] (SR) at (0.6,-4.6) {suspended\\ready};
+  \node[st, fill=fgrey, font=\footnotesize] (SW) at (5.8,-4.6) {suspended\\wait};
+  \draw[arr] (N) -- node[lbl, sloped, above] {admitted} (R);
+  \draw[arr] (R) to[bend left=28] node[lbl, above] {dispatch (short-term scheduler)} (U);
+  \draw[arr] (U) -- node[lbl, below] {interrupt / time-out} (R);
+  \draw[arr] (U) -- node[lbl, right=2pt] {I/O or event wait} (W);
+  \draw[arr] (W) -- node[lbl, left=2pt] {I/O or event\\completion} (R);
+  \draw[arr] (U) -- node[lbl, sloped, above] {exit} (T);
+  \draw[arr] (R) to[bend right=18] node[lbl, left] {swap out} (SR);
+  \draw[arr] (SR) to[bend right=18] node[lbl, right] {swap in} (R);
+  \draw[arr] (W) -- node[lbl, right] {swap out} (SW);
+  \draw[arr] (SW) -- node[lbl, below] {event occurs} (SR);
+  \node[smalllbl, anchor=west] at (-1.8,0.85) {long-term\\scheduler};
+  \node[smalllbl] at (3.2,-5.6) {medium-term scheduler moves processes in and out of memory};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{The process life cycle. The lower row exists only on systems that swap whole processes out of
+main memory.}
+\end{figure}

@@ -1,0 +1,19 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[res/.style={box, fill=fsand, minimum size=9mm}]
+  \node[circ, fill=fslate, minimum size=11mm] (P0) at (0,0) {P0};
+  \node[circ, fill=fslate, minimum size=11mm] (P1) at (5,0) {P1};
+  \node[res] (S) at (2.5,1.4) {S};
+  \node[res] (Q) at (2.5,-1.4) {Q};
+  \draw[arr] (S) -- node[lbl, sloped, above] {held by} (P0);
+  \draw[dasharr] (P0) -- node[lbl, sloped, below] {waits for} (Q);
+  \draw[arr] (Q) -- node[lbl, sloped, below] {held by} (P1);
+  \draw[dasharr] (P1) -- node[lbl, sloped, above] {waits for} (S);
+  \node[font=\footnotesize\ttfamily, align=left, anchor=east] at (-1.0,0) {P0:\\wait(S);\\wait(Q);};
+  \node[font=\footnotesize\ttfamily, align=left, anchor=west] at (6.0,0) {P1:\\wait(Q);\\wait(S);};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Acquiring two semaphores in opposite orders (S = Q = 1). If P0 takes S and P1 takes Q, each waits
+for the other forever. Acquiring in one global order prevents it.}
+\end{figure}

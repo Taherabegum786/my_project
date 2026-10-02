@@ -1,0 +1,11 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \ganttrow{0.52}{0}{P1/0/1/fslate, P2/1/5/fsage, P4/5/10/frose, P1/10/17/fslate, P3/17/26/fsand}
+  \node[capt, anchor=east] at (-0.3,0.375) {SRTF};
+  \node[smalllbl, anchor=south] at (0.52,0.8) {P2 arrives with\\burst 4 < 7 left};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{SRTF Gantt chart: at every arrival the process with the shortest \emph{remaining} time runs.}
+\end{figure}

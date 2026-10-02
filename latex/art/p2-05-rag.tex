@@ -1,0 +1,19 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[res/.style={box, fill=fsand, minimum width=13mm, minimum height=9mm}]
+  \node[circ, fill=fslate, minimum size=11mm] (P1) at (0,0) {P1};
+  \node[res] (R1) at (4,0) {}; \fill[fgink] (R1.center) circle (2.2pt); \node[capt, above=1pt of R1] {R1};
+  \node[circ, fill=fslate, minimum size=11mm] (P2) at (8,0) {P2};
+  \node[res] (R2) at (4,-2.6) {}; \fill[fgink] (R2.center) circle (2.2pt); \node[capt, below=1pt of R2] {R2};
+  \draw[dasharr] (P1) -- node[lbl, above] {request} (R1);
+  \draw[arr] (R1.center) -- node[lbl, above] {assigned} (P2);
+  \draw[dasharr] (P2) |- node[lbl, pos=0.75, below] {request} (R2);
+  \draw[arr] (R2.center) -| node[lbl, pos=0.25, below] {assigned} (P1);
+  \node[align=left, font=\footnotesize, anchor=west] at (9.2,-0.9) {cycle P1 $\to$ R1 $\to$ P2 $\to$ R2 $\to$ P1\\[2pt]
+    single-instance resources: \textbf{deadlock}\\multi-instance resources: deadlock \emph{possible}};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{A resource-allocation graph. Request edges run from process to resource (dashed); assignment edges
+run from a resource instance (dot) to the process holding it.}
+\end{figure}

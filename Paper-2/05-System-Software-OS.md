@@ -19,6 +19,11 @@
 
 ## 1. System Software
 
+System software is the layer of programs that makes a bare machine usable: translators that turn the
+programs we write into machine code, and the operating system that shares the hardware among them. The
+examination asks mostly about what each translator does and when it runs.
+
+<!-- latex: p2-05-toolchain -->
 ```mermaid
 flowchart LR
     SRC[Source program .c] --> PP[Preprocessor] --> CC[Compiler] --> ASM[Assembly .s]
@@ -44,6 +49,11 @@ flowchart LR
 
 ## 2. OS Basics
 
+An operating system has two jobs. As a **resource manager** it shares the CPU, memory and devices among
+competing programs; as an **extended machine** it hides awkward hardware behind clean abstractions such as
+processes, files and sockets. Programs ask for these services through system calls.
+
+<!-- latex: p2-05-layers -->
 ```mermaid
 flowchart TB
     U[Users] --> A[Application programs]
@@ -75,8 +85,13 @@ if (fork() && fork()) fork();   // count carefully: 4 processes total (parent + 
 
 ## 3. Process Management
 
+A program is a passive file on disk; a **process** is that program in execution, together with its
+program counter, registers, stack and open files. The operating system records all of this in a
+**process control block** (PCB) and moves the process between states as it runs, waits and finishes.
+
 ### 3.1 Process States
 
+<!-- latex: p2-05-states -->
 ```mermaid
 stateDiagram-v2
     [*] --> New
@@ -102,6 +117,10 @@ stateDiagram-v2
 - Pipes (ordinary – parent-child, unidirectional; named pipes/FIFOs), sockets (IP + port), RPC (stubs, marshalling), signals.
 
 ### 3.3 Critical Section Problem
+
+When processes share data, the parts of their code that touch it must not overlap in time. Any solution must
+give **mutual exclusion** (one process inside at a time), **progress** (no needless blocking when the
+section is free) and **bounded waiting** (no process waits forever).
 Requirements: **Mutual exclusion**, **Progress**, **Bounded waiting**.
 
 **Peterson's solution (2 processes)**:
@@ -121,6 +140,10 @@ Satisfies all three requirements (on sequentially consistent memory).
 Hardware: **TestAndSet**, **CompareAndSwap** (atomic). Simple TAS lock gives ME + progress but not bounded waiting.
 
 ### 3.4 Semaphores
+
+A semaphore is an integer that can be changed only by two atomic operations, `wait` (P) and `signal` (V).
+Initialised to 1 it acts as a lock; initialised to 0 it forces one event to happen after another;
+initialised to $n$ it counts free slots.
 ```c
 wait(S)   { while (S <= 0); S--; }      // P(), down()
 signal(S) { S++; }                      // V(), up()
@@ -141,6 +164,7 @@ signal(S) { S++; }                      // V(), up()
 | Dining philosophers (5) | `chopstick[5] = 1`; deadlock if all pick left — fixes: at most 4 at table, asymmetric pick, pick both atomically |
 | Sleeping barber | customers, barbers, mutex |
 
+<!-- latex: p2-05-prodcons -->
 ```
 Producer:                       Consumer:
   wait(empty);                    wait(full);
@@ -161,6 +185,11 @@ Producer:                       Consumer:
 
 ## 5. CPU Scheduling
 
+Whenever the CPU falls idle, the short-term scheduler picks the next ready process. Different policies
+favour different goals (low average waiting time, quick response, fairness), and numerical questions ask you
+to draw the Gantt chart and read the times off it.
+
+<!-- latex: p2-05-sched-formulas -->
 ```
 Turnaround time (TAT) = Completion − Arrival
 Waiting time (WT)     = TAT − Burst
@@ -189,6 +218,7 @@ Throughput            = #processes / total time
 | P4 | 3 | 5 |
 
 **SRTF Gantt chart**:
+<!-- latex: p2-05-srtf -->
 ```
 | P1 | P2      | P4        | P1             | P3                  |
 0    1         5           10               17                    26
@@ -202,6 +232,7 @@ Throughput            = #processes / total time
 Average WT = 26/4 = **6.5**.
 
 **Round Robin (q = 4)** on same data:
+<!-- latex: p2-05-rr -->
 ```
 | P1 | P2 | P3 | P4 | P1 | P3 | P4 | P3 |
 0    4    8    12   16   20   24   25   26
@@ -216,9 +247,14 @@ CT: P1 = 20, P2 = 8, P3 = 26, P4 = 25 → WT: P1 = 12, P2 = 3, P3 = 15, P4 = 17 
 
 ## 6. Deadlocks
 
+A deadlock is a set of processes each holding a resource and waiting for one held by another, so none can
+proceed. Systems either prevent one of the four necessary conditions, avoid unsafe states (Banker's
+algorithm), or detect deadlock and recover.
+
 ### Four Necessary Conditions (Coffman)
 **Mutual exclusion · Hold and wait · No preemption · Circular wait** — all four must hold.
 
+<!-- latex: p2-05-rag -->
 ```
 Resource Allocation Graph
   P1 ──request──► [R1 •]──assigned──► P2
@@ -249,6 +285,7 @@ Resource Allocation Graph
 | P4 | 0 0 2 | 4 3 3 | 4 3 1 |
 
 Available = (10,5,7) − (7,2,5) = **(3,3,2)**.
+<!-- latex: p2-05-banker -->
 ```
 Work=(3,3,2): P1 need(1,2,2) ✓ → Work=(5,3,2)
               P3 need(0,1,1) ✓ → Work=(7,4,3)
@@ -263,6 +300,10 @@ e.g. 3 processes each need 3 units → minimum R = 3×2 + 1 = **7**.
 
 ## 7. Memory Management
 
+Programs are written as if they owned a large, private, contiguous memory. Memory management maps these
+**logical** addresses onto the **physical** memory actually available, and protects each process's region
+from the others.
+
 ### 7.1 Contiguous Allocation
 - Fixed partitions → **internal fragmentation**. Variable partitions → **external fragmentation** (fix with compaction).
 - Placement: **First fit**, **Best fit** (smallest adequate hole), **Worst fit** (largest), Next fit.
@@ -270,6 +311,11 @@ e.g. 3 processes each need 3 units → minimum R = 3×2 + 1 = **7**.
 
 ### 7.2 Paging
 
+Paging cuts logical memory into fixed-size **pages** and physical memory into frames of the same size, so
+any page can sit in any free frame. External fragmentation disappears; the price is a page table per
+process and an extra memory access per reference, which the TLB hides.
+
+<!-- latex: p2-05-paging -->
 ```mermaid
 flowchart LR
     LA[Logical address<br/>page p · offset d] --> TLB{TLB hit?}
@@ -278,6 +324,7 @@ flowchart LR
     F --> PA[Physical address<br/>frame f · offset d]
 ```
 
+<!-- latex: p2-05-paging-formulas -->
 ```
 Logical address bits = log₂(virtual space);  offset bits d = log₂(page size)
 #pages = 2^(LA bits − d) ;  #frames = physical size / page size
@@ -296,6 +343,11 @@ EAT with TLB (hit ratio h, TLB t, memory m):
 - No internal fragmentation, but external fragmentation. Segmentation with paging (Intel x86).
 
 ### 7.4 Virtual Memory & Demand Paging
+
+Virtual memory keeps only the pages a process is actually using in RAM and loads the others on demand when
+a **page fault** occurs. Programs can therefore be larger than physical memory, but each fault costs
+milliseconds, so the fault rate dominates performance.
+<!-- latex: p2-05-eat-fault -->
 ```
 EAT with page faults = (1 − p) × ma + p × page-fault service time
 e.g. ma = 200 ns, service = 8 ms, p = 0.001 → EAT ≈ 200 + 0.001 × 8,000,000 = 8.2 µs
@@ -306,6 +358,7 @@ Page fault steps: trap → check valid → find free frame → schedule disk rea
 Reference string: **7 0 1 2 0 3 0 4 2 3 0 3 2**, 3 frames.
 
 **FIFO**
+<!-- latex: p2-05-fifo -->
 ```
 Ref:  7  0  1  2  0  3  0  4  2  3  0  3  2
 F1    7  7  7  2  2  2  2  4  4  4  0  0  0
@@ -326,6 +379,9 @@ Fault ✱  ✱  ✱  ✱     ✱  ✱  ✱  ✱  ✱  ✱
 
 ## 8. Disk & Storage
 
+A magnetic disk spends most of each request moving the arm (seek) and waiting for the sector to rotate under
+the head (latency). Disk-scheduling algorithms reorder pending requests to cut total head movement.
+
 ### 8.1 Disk Scheduling — Worked
 Queue: **98, 183, 37, 122, 14, 124, 65, 67**; head at **53**; cylinders 0–199.
 
@@ -338,6 +394,7 @@ Queue: **98, 183, 37, 122, 14, 124, 65, 67**; head at **53**; cylinders 0–199.
 | LOOK (towards 0) | 53→37→14→65→…→183 | 39 + 169 = **208** |
 | C-LOOK (up) | 53→65→67→98→122→124→183→14→37 | 130 + 169 + 23 = **322** |
 
+<!-- latex: p2-05-sstf -->
 ```
 SSTF head path (cylinder axis →)
 0    14    37    53 65 67    98    122 124        183   199
@@ -363,12 +420,16 @@ SSTF head path (cylinder axis →)
 
 ## 9. File Systems & I/O
 
+A file system turns a disk's numbered blocks into named files and directories. Its central design choice is
+how a file's blocks are found: contiguously, by a chain of pointers, or through an index.
+
 - Access methods: sequential, direct (relative), indexed.
 - Directory structures: single-level → two-level → tree → **acyclic graph** (sharing via links) → general graph (cycles; needs garbage collection).
 - Hard link (same inode, same FS, no dirs) vs soft/symbolic link (path, can cross FS, can dangle).
 
 ### Allocation Methods
 
+<!-- latex: p2-05-allocation -->
 ```
  Contiguous        Linked (FAT is a variant)      Indexed (inode)
  [A A A A]         A→A→A→A→nil                   index block → [b1,b2,b3,…]
@@ -377,6 +438,7 @@ SSTF head path (cylinder axis →)
 ```
 
 **UNIX inode max file size**: 12 direct + 1 single + 1 double + 1 triple indirect. Block 4 KB, pointer 4 B → 1024 pointers per block:
+<!-- latex: p2-05-inode -->
 ```
 (12 + 1024 + 1024² + 1024³) × 4 KB ≈ 4 TB
 ```
@@ -436,6 +498,7 @@ Linux process states: Running, Interruptible sleep, Uninterruptible sleep, Stopp
 | P5 | 0 | 5 | 2 |
 
 **Non-preemptive priority**:
+<!-- latex: p2-05-priority -->
 ```
 | P2 | P5    | P1         | P3 | P4 |
 0    1       6            16   18   19
@@ -443,6 +506,7 @@ Linux process states: Running, Interruptible sleep, Uninterruptible sleep, Stopp
 Waiting times: P1 6, P2 0, P3 16, P4 18, P5 1 → average = 41/5 = **8.2**.
 
 **HRRN** (non-preemptive; response ratio RR = (W + S)/S), processes A(0, 3), B(2, 6), C(4, 4), D(6, 5), E(8, 2):
+<!-- latex: p2-05-hrrn -->
 ```
 t = 0: only A → run A to 3
 t = 3: only B arrived → run B to 9
@@ -462,6 +526,7 @@ P2: wait(T); print("B"); signal(S);
 Whatever the scheduling, P2 blocks on T until P1 signals → output **"AB"** (and the pair can repeat as A B A B … if looped). This is the standard **ordering** use of semaphores (initialise to 0 to force "happens-after").
 
 **Deadlock with wrong order**:
+<!-- latex: p2-05-semdeadlock -->
 ```
 P0: wait(S); wait(Q); …        P1: wait(Q); wait(S); …     (S = Q = 1)
 P0 gets S, P1 gets Q, each waits for the other → deadlock
@@ -470,6 +535,7 @@ P0 gets S, P1 gets Q, each waits for the other → deadlock
 ### 14.3 Multilevel Paging Numericals
 
 48-bit virtual address, 4 KB pages, 8-byte PTEs.
+<!-- latex: p2-05-multilevel -->
 ```
 Offset = 12 bits → page-number bits = 36
 Entries per page-table page = 4096 / 8 = 512 = 2⁹ → each level indexes 9 bits
@@ -503,6 +569,7 @@ Reference: 1 2 3 4 1 2 5 1 2 3 4 5
 ### 14.6 File-System Numericals
 
 **Max file size with UNIX inode**: block 1 KB, pointer 4 B → 256 pointers/block; 10 direct, 1 single, 1 double, 1 triple:
+<!-- latex: p2-05-inode-small -->
 ```
 (10 + 256 + 256² + 256³) × 1 KB = (10 + 256 + 65,536 + 16,777,216) KB ≈ 16 GB
 ```
@@ -514,6 +581,7 @@ seek 8 + latency 4.17 + transfer 0.04 ≈ **12.2 ms**.
 ### 14.7 Buddy System — Worked
 
 1 MB block; requests A = 70 KB, B = 35 KB, C = 80 KB.
+<!-- latex: p2-05-buddy -->
 ```
 1024 → 512 + 512 → 256 + 256 → 128 + 128          A gets 128 KB (wastes 58 KB internal)
 B (35 KB): split a 128 → 64 + 64                   B gets 64 KB

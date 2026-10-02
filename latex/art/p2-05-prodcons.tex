@@ -1,0 +1,17 @@
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{@{}l@{\hspace{3em}}l@{}}
+\toprule
+\textbf{Producer} & \textbf{Consumer} \\
+\midrule
+\texttt{wait(empty);} & \texttt{wait(full);} \\
+\texttt{wait(mutex);} & \texttt{wait(mutex);} \\
+\quad\textit{add item to buffer} & \quad\textit{remove item from buffer} \\
+\texttt{signal(mutex);} & \texttt{signal(mutex);} \\
+\texttt{signal(full);} & \texttt{signal(empty);} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\noindent Initial values: \texttt{mutex = 1}, \texttt{empty = n}, \texttt{full = 0}. Swapping the two
+\texttt{wait} calls in the producer can cause \textbf{deadlock}: it may hold \texttt{mutex} while waiting
+on a full buffer, so the consumer can never enter to empty it.

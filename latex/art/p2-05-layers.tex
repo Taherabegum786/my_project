@@ -1,0 +1,22 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \pic at (0,0)   {slab={9}{1.0}{1.0}{fsteel}};
+  \pic at (0,1.0) {slab={9}{1.15}{1.0}{fslate}};
+  \pic at (0,2.15){slab={9}{0.6}{1.0}{fochre}};
+  \pic at (0,2.75){slab={9}{1.0}{1.0}{fsage}};
+  \pic at (0,3.75){slab={9}{0.75}{1.0}{fgrey}};
+  \node at (4.5,0.5)   {\textbf{Hardware}\quad\footnotesize CPU, memory, I/O devices};
+  \node at (4.5,1.575) {\textbf{Kernel}\quad\footnotesize process, memory, file, I/O, security};
+  \node at (4.5,2.45)  {\footnotesize\textbf{system-call interface}};
+  \node at (4.5,3.25)  {\textbf{Application programs}\quad\footnotesize shells, compilers, editors};
+  \node at (4.5,4.125) {\textbf{Users}};
+  \draw[brace] (10.0,2.15) -- node[lbl, right=5pt, align=left] {kernel mode\\(privileged)} (10.0,0.0);
+  \draw[brace] (10.0,4.5) -- node[lbl, right=5pt, align=left] {user mode} (10.0,2.75);
+  \node[lbl, anchor=west] at (10.25,2.45) {trap / mode switch};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Layered view of a computer system. Programs reach the hardware only through the system-call
+interface, which switches the CPU from user mode to kernel mode.}
+\end{figure}

@@ -1,0 +1,13 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \ganttrow{0.52}{0}{P1/0/4/fslate, P2/4/8/fsage, P3/8/12/fsand, P4/12/16/frose, P1/16/20/fslate, P3/20/24/fsand}
+  \ganttrow{0.52}{0}{P4/24/25/frose, P3/25/26/fsand}
+  \node[capt, anchor=east] at (-0.3,0.375) {RR, $q=4$};
+  \foreach \x in {8,20,25,26} \node[smalllbl, anchor=south] at ({\x*0.52},0.78) {$\downarrow$};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Round robin with quantum 4. Arrows mark the moments a process finishes (P2 at 8, P1 at 20, P4 at
+25, P3 at 26).}
+\end{figure}

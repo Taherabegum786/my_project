@@ -1,0 +1,23 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[x=0.72cm, y=0.6cm]
+  \foreach \n/\y in {Reference/0, Frame 1/-1, Frame 2/-2, Frame 3/-3, Fault/-4}
+    \node[font=\footnotesize\scshape, anchor=east] at (0.4,\y) {\n};
+  \foreach \c/\r/\a/\b/\d/\ch in {1/7/7/{}/{}/1, 2/0/7/0/{}/2, 3/1/7/0/1/3, 4/2/2/0/1/1, 5/0/2/0/1/0,
+      6/3/2/3/1/2, 7/0/2/3/0/3, 8/4/4/3/0/1, 9/2/4/2/0/2, 10/3/4/2/3/3, 11/0/0/2/3/1, 12/3/0/2/3/0, 13/2/0/2/3/0} {
+    \node[font=\small\bfseries] at (\c,0) {\r};
+    \foreach \y in {-1,-2,-3} \draw[fgink, line width=0.45pt, fill=fpaper] (\c-0.5,\y-0.5) rectangle (\c+0.5,\y+0.5);
+    \ifnum\ch>0
+      \fill[fsand] (\c-0.5,-\ch-0.5) rectangle (\c+0.5,-\ch+0.5);
+      \draw[fgink, line width=0.45pt] (\c-0.5,-\ch-0.5) rectangle (\c+0.5,-\ch+0.5);
+      \fill[fwine] (\c,-4) circle (3pt);
+    \fi
+    \node[font=\small] at (\c,-1) {\a}; \node[font=\small] at (\c,-2) {\b}; \node[font=\small] at (\c,-3) {\d};
+  }
+  \node[font=\footnotesize, anchor=west] at (13.8,-4) {\textbf{10 faults}};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{FIFO replacement with three frames. Shaded cells show where a new page was loaded; each replaces
+the page that has been resident longest.}
+\end{figure}

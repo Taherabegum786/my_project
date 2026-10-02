@@ -1,0 +1,21 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[x=0.068cm, y=-0.48cm]
+  \draw[thinline] (0,0) -- (199,0);
+  \foreach \t/\s in {0/0,14/0,37/0,53/0,65/-2.5,67/2.5,98/0,122/-2.5,124/2.5,183/0,199/0} {
+    \draw[thinline] (\t,-0.15) -- (\t,0.15);
+    \node[font=\scriptsize, rotate=90, anchor=west, xshift=\s pt] at (\t,-0.25) {\t};
+  }
+  \node[capt, anchor=east] at (-4,0) {cylinder};
+  \foreach \t in {14,37,53,65,67,98,122,124,183} \draw[fgink!25, line width=0.4pt] (\t,0.15) -- (\t,8.6);
+  \draw[fwine, line width=0.9pt, ->] (53,0.6) -- (65,1.6) -- (67,2.6) -- (37,3.6) -- (14,4.6) -- (98,5.6) -- (122,6.6) -- (124,7.6) -- (183,8.6);
+  \foreach \x/\y in {53/0.6, 65/1.6, 67/2.6, 37/3.6, 14/4.6, 98/5.6, 122/6.6, 124/7.6, 183/8.6}
+    \fill[fwine] (\x,\y) circle (2.2pt);
+  \node[font=\scriptsize, anchor=east] at (51,0.6) {head 53};
+  \draw[arr] (-6,0.6) -- node[lbl, rotate=90, above] {time} (-6,8.6);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{SSTF head path for the queue 98, 183, 37, 122, 14, 124, 65, 67 starting at cylinder 53: total
+movement 12 + 2 + 30 + 23 + 84 + 24 + 2 + 59 = 236 cylinders.}
+\end{figure}
