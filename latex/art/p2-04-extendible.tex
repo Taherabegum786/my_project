@@ -1,0 +1,18 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[cell/.style={draw=fgink, line width=0.5pt, fill=fslate, minimum width=11mm, minimum height=7mm, font=\small\ttfamily},
+    bkt/.style={rectangle split, rectangle split horizontal, rectangle split parts=3, draw=fgink, line width=0.5pt, fill=fsand, font=\small, minimum height=7mm, inner sep=3pt}]
+  \node[cell] (d00) at (0,1.05) {00}; \node[cell] (d01) at (0,0.35) {01};
+  \node[cell] (d10) at (0,-0.35) {10}; \node[cell] (d11) at (0,-1.05) {11};
+  \node[capt] at (0,1.85) {directory (global depth 2)};
+  \node[bkt] (b1) at (5,1.4) {4 \nodepart{two} 12 \nodepart{three} 32};
+  \node[bkt] (b2) at (5,0) {1 \nodepart{two} 5 \nodepart{three} 21};
+  \node[bkt, rectangle split parts=2] (b3) at (5,-1.4) {10 \nodepart{two} 6};
+  \node[lbl, anchor=west] at (6.6,1.4) {local depth 2}; \node[lbl, anchor=west] at (6.6,0) {local depth 1 — shared by 01 and 11}; \node[lbl, anchor=west] at (6.2,-1.4) {local depth 2};
+  \draw[arr] (d00.east) -- (b1.west); \draw[arr] (d01.east) -- (b2.west); \draw[arr] (d11.east) -- (b2.west); \draw[arr] (d10.east) -- (b3.west);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Extendible hashing. An overflowing bucket whose local depth equals the global depth forces the
+directory to double; otherwise only the bucket splits.}
+\end{figure}

@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}
   \node[circ, minimum size=26mm, fill=fwine!15, font=\small\bfseries] (B) at (0,0) {Barriers};
   \foreach \a/\h/\t/\col [count=\k] in {90/Physical/{noise, distance,\\poor light}/fslate, 38.6/Semantic/{jargon,\\ambiguity}/fsage,
@@ -9,5 +10,6 @@
     \draw[thinline] (B) -- (n\k);
   }
 \end{tikzpicture}
+\end{adjustbox}
 \caption{Seven families of barriers to effective communication.}
 \end{figure}

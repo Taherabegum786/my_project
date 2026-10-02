@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}
   \foreach \y in {0,0.75,1.5} \pic at (0,\y) {disk={4.4}{0.12}{fslate}};
   \draw[fgink, line width=1.2pt] (2.2,-0.2) -- (2.2,2.2);
@@ -13,6 +14,7 @@
   \node[lbl, anchor=west] at (5.7,0.6) {cylinder = same track on every surface};
   \draw[thinline, fgink!50] (5.65,1.75) -- (3.9,1.62) (5.65,1.25) -- (3.6,1.5);
 \end{tikzpicture}
+\end{adjustbox}
 \caption{Geometry of a magnetic disk.}
 \end{figure}
 \begin{formulatable}

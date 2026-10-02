@@ -1,0 +1,22 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \node[font=\small] at (0,0) {\begin{tabular}{c|c|c}
+     \textbf{T1} & \textbf{T2} & \textbf{T3} \\\hline
+     $r_1(A)$ & & \\
+     & $w_2(A)$ & \\
+     $w_1(A)$ & & \\
+     & & $r_3(A)$ \\
+  \end{tabular}};
+  \begin{scope}[shift={(5.2,0)}]
+    \node[vertex] (t1) at (0,0.9) {T1}; \node[vertex] (t2) at (2.2,0.9) {T2}; \node[vertex] (t3) at (1.1,-1.0) {T3};
+    \draw[arr, fwine] (t1) to[bend left=22] (t2);
+    \draw[arr, fwine] (t2) to[bend left=22] (t1);
+    \draw[arr] (t1) -- (t3); \draw[arr] (t2) -- (t3);
+  \end{scope}
+\end{tikzpicture}
+\end{adjustbox}
+\caption{A schedule and its precedence graph. The cycle T1 $\leftrightarrow$ T2 (from $r_1(A)$ before $w_2(A)$ and
+$w_2(A)$ before $w_1(A)$) means the schedule is not conflict serializable.}
+\end{figure}

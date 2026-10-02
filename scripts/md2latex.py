@@ -90,6 +90,27 @@ def preprocess(rel, md, jobs):
     return re.sub(r'```mermaid\n(.*?)```', repl, md, flags=re.S)
 
 
+LONGTABLE = re.compile(r'\\begin\{longtable\}\[\]\{(.*?)\}\n(?=\\toprule)(.*?)\\end\{longtable\}', re.S)
+
+
+def short_tables(tex, max_rows=20):
+    """Short tables never need to break across pages; a fixed tabular avoids
+    longtable's page-height miscount when a float lands on the same page."""
+    def repl(m):
+        spec, body = m.groups()
+        if '\\endfirsthead' in body:
+            head, rest = body.split('\\endfirsthead', 1)
+            body = head + rest.split('\\endhead', 1)[1]
+        else:
+            body = body.replace('\\endhead\n', '', 1)
+        body = body.replace('\\bottomrule\\noalign{}\n\\endlastfoot\n', '', 1)
+        if body.count('\\\\\n') > max_rows or '\\endlastfoot' in body or '\\endfoot' in body:
+            return m.group(0)
+        return ('\\par\\medskip\\noindent\\hfil\\begin{tabular}{' + spec + '}\n' + body
+                + '\\bottomrule\\noalign{}\n\\end{tabular}\\hfil\\null\\par\\medskip\n')
+    return LONGTABLE.sub(repl, tex)
+
+
 def main():
     CHAPTERS.mkdir(parents=True, exist_ok=True)
     BUILD.mkdir(parents=True, exist_ok=True)
@@ -107,6 +128,7 @@ def main():
             '-M', f'fileid={fid}', '-M', f'filedir={str(pathlib.PurePosixPath(rel).parent).replace(".", "")}',
             '-o', str(out),
         ], input=md, text=True, check=True)
+        out.write_text(short_tables(out.read_text()))
         print(f'{rel:55s} -> chapters/{out.name}')
     (BUILD / 'diagrams.json').write_text(json.dumps(jobs, indent=1))
     print(f'{len(jobs)} Mermaid diagrams without hand-made art (rendered as fallback); {len(used)} art pieces used')

@@ -122,7 +122,7 @@ for 250+}
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4111}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1716}}@{}}
 \toprule\noalign{}
@@ -132,9 +132,6 @@ for 250+}
 \textbf{Min DFA states}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Strings of length exactly n & n + 2 \\
 Length ≥ n & n + 1 \\
 Length ≤ n & n + 2 \\
@@ -145,7 +142,9 @@ Strings starting with a given string of length n & n + 2 \\
 Number of a\textquotesingle s ≡ 0 mod m AND b\textquotesingle s ≡ 0 mod n & m·n \\
 Binary numbers divisible by n (n odd) & n \\
 n-th symbol from the end is \textquotesingle a\textquotesingle{} (DFA) & 2ⁿ (NFA: n + 1) \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -169,7 +168,7 @@ n-th symbol from the end is \textquotesingle a\textquotesingle{} (DFA) & 2ⁿ (N
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2833}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2744}}@{}}
 \toprule\noalign{}
@@ -179,14 +178,13 @@ n-th symbol from the end is \textquotesingle a\textquotesingle{} (DFA) & 2ⁿ (N
 \textbf{Mealy}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Output depends on \textbf{state} only & Output depends on \textbf{state + input} \\
 Output length = input length + 1 & Output length = input length \\
 More states usually & Fewer states \\
 - Mealy → Moore may need up to & Q \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -207,7 +205,7 @@ More states usually & Fewer states \\
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3033}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2400}}@{}}
 \toprule\noalign{}
@@ -217,16 +215,15 @@ More states usually & Fewer states \\
 \textbf{RE}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 All strings over \{a,b\} & (a + b)* \\
 Contains "aa" & (a + b)\emph{aa(a + b)} \\
 Even length & ((a + b)(a + b))* \\
 Starts and ends with same symbol & a(a+b)*a + b(a+b)*b + a + b \\
 No two consecutive a\textquotesingle s & (b + ab)*(ε + a) \\
 Exactly one \textquotesingle a\textquotesingle{} & b\emph{ab} \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -333,7 +330,7 @@ Membership for CNF grammar in \textbf{O(n³·\textbar G\textbar)}; dynamic progr
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.2773}}
   >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1074}}
   >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1006}}
@@ -358,9 +355,6 @@ Membership for CNF grammar in \textbf{O(n³·\textbar G\textbar)}; dynamic progr
 \textbf{RE}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Union & ✔ & ✘ & ✔ & ✔ & ✔ & ✔ \\
 Intersection & ✔ & ✘ & ✘ & ✔ & ✔ & ✔ \\
 Complement & ✔ & \textbf{✔} & \textbf{✘} & ✔ & ✔ & \textbf{✘} \\
@@ -371,7 +365,9 @@ Homomorphism & ✔ & ✘ & ✔ & ✘ & ✘ & ✔ \\
 Inverse homomorphism & ✔ & ✔ & ✔ & ✔ & ✔ & ✔ \\
 Intersection with regular & ✔ & ✔ & ✔ & ✔ & ✔ & ✔ \\
 Difference & ✔ & ✘ & ✘ & ✔ & ✔ & ✘ \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -379,7 +375,7 @@ Notes: CFL ∩ Regular = CFL. DCFL ∪ Regular, DCFL ∩ Regular = DCFL. If L an
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2160}}
   >{\centering\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1032}}
   >{\centering\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1679}}
@@ -401,9 +397,6 @@ Notes: CFL ∩ Regular = CFL. DCFL ∪ Regular, DCFL ∩ Regular = DCFL. If L an
 \textbf{RE}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Membership & D & D & D & D & \textbf{U} (semi-decidable) \\
 Emptiness & D & D & U & U & U \\
 Finiteness & D & D & U & U & U \\
@@ -412,7 +405,9 @@ Ambiguity & --- & U & --- & --- & --- \\
 L = Σ* & D & U & U & U & U \\
 Subset (L₁ ⊆ L₂) & D & U & U & U & U \\
 Intersection empty? & D & U & U & U & U \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -444,7 +439,7 @@ D = decidable, U = undecidable.
 \end{itemize}
 
 \begin{listingblock}{42pt}
-\begin{Verbatim}[fontsize=\fontsize{8.9}{10.8}\selectfont]
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 TM for aⁿbⁿ: repeatedly mark leftmost a as X, move right to leftmost b, mark as Y,
 return left; when no a's left, check no b's remain → accept.
 \end{Verbatim}
@@ -544,7 +539,7 @@ F  → ( E ) | id
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0520}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1041}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1316}}@{}}
@@ -557,15 +552,14 @@ F  → ( E ) | id
 \textbf{FOLLOW}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 E & \{ (, id \} & \{ ), \$ \} \\
 E\textquotesingle{} & \{ +, ε \} & \{ ), \$ \} \\
 T & \{ (, id \} & \{ +, ), \$ \} \\
 T\textquotesingle{} & \{ *, ε \} & \{ +, ), \$ \} \\
 F & \{ (, id \} & \{ *, +, ), \$ \} \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -573,7 +567,7 @@ F & \{ (, id \} & \{ *, +, ), \$ \} \\
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0487}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1020}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1233}}
@@ -597,27 +591,26 @@ F & \{ (, id \} & \{ *, +, ), \$ \} \\
 \textbf{\$}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 E & E→TE\textquotesingle{} & & & E→TE\textquotesingle{} & & \\
 E\textquotesingle{} & & E\textquotesingle→+TE\textquotesingle{} & & & E\textquotesingle→ε & E\textquotesingle→ε \\
 T & T→FT\textquotesingle{} & & & T→FT\textquotesingle{} & & \\
 T\textquotesingle{} & & T\textquotesingle→ε & T\textquotesingle→*FT\textquotesingle{} & & T\textquotesingle→ε & T\textquotesingle→ε \\
 F & F→id & & & F→(E) & & \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
 \textbf{LL(1) condition}: for A → α \textbar{} β: FIRST(α) ∩ FIRST(β) = ∅; if β ⇒* ε then FIRST(α) ∩ FOLLOW(A) = ∅. A left-recursive or ambiguous grammar is \textbf{never} LL(1).
 
-\needspace{124pt}
+\needspace{125pt}
 
 \hypertarget{p2-08--103-lr-parsing}{%
 \subsection{LR Parsing}\label{p2-08--103-lr-parsing}}
 
-\begin{listingblock}{74pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{75pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
  LR parser model
  input:  a1 a2 ... an $
            ▲
@@ -628,7 +621,7 @@ F & F→id & & & F→(E) & & \\
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1092}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3385}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2676}}@{}}
@@ -641,14 +634,13 @@ F & F→id & & & F→(E) & & \\
 \textbf{Reduce A → α· placed in}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 LR(0) & {[}A → α·β{]} & \textbf{all} terminals \\
 SLR(1) & LR(0) items & \textbf{FOLLOW(A)} \\
 LALR(1) & LR(1) items with same core merged & lookaheads \\
 CLR(1) & {[}A → α·β, a{]} & lookahead a only \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -673,7 +665,7 @@ Conflicts: \textbf{shift-reduce (S/R)} and \textbf{reduce-reduce (R/R)}.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1213}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2477}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3632}}@{}}
@@ -686,12 +678,11 @@ Conflicts: \textbf{shift-reduce (S/R)} and \textbf{reduce-reduce (R/R)}.
 \textbf{Example}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 \textbf{Synthesized} & Children (bottom-up) & E.val = E1.val + T.val \\
 \textbf{Inherited} & Parent and/or left siblings & type info in declarations: L.in = T.type \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -795,7 +786,7 @@ a  = t5
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0370}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0735}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0635}}
@@ -814,16 +805,15 @@ a  = t5
 \textbf{result}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 0 & minus & c & & t1 \\
 1 & * & b & t1 & t2 \\
 2 & minus & c & & t3 \\
 3 & * & b & t3 & t4 \\
 4 & + & t2 & t4 & t5 \\
 5 & = & t5 & & a \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -873,7 +863,7 @@ a  = t5
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0954}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5960}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3086}}@{}}
@@ -886,9 +876,6 @@ a  = t5
 \textbf{Example}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Local & Common subexpression elimination & \texttt{t1\ =\ b*c;\ t2\ =\ b*c} → reuse t1 \\
 Local & Constant folding & \texttt{x\ =\ 2\ *\ 3.14} → \texttt{x\ =\ 6.28} \\
 Local & Constant/\allowbreak{}copy propagation & \texttt{x\ =\ y;\ z\ =\ x\ +\ 1} → \texttt{z\ =\ y\ +\ 1} \\
@@ -899,7 +886,9 @@ Loop & \textbf{Strength reduction} & \texttt{i*4} → \texttt{t\ =\ t\ +\ 4} ; \
 Loop & Loop unrolling, loop fusion (jamming), loop fission & \\
 Global & Data-flow analysis based & \\
 Peephole & Redundant load/store, unreachable code, flow-of-control (jump to jump), algebraic simplification, use of machine idioms (INC) & Window over target code \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -910,7 +899,7 @@ Peephole & Redundant load/store, unreachable code, flow-of-control (jump to jump
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2131}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1132}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0659}}
@@ -926,14 +915,13 @@ Peephole & Redundant load/store, unreachable code, flow-of-control (jump to jump
 \textbf{Use}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Reaching definitions & Forward & ∪ & Constant propagation \\
 \textbf{Live variables} & \textbf{Backward} & ∪ & Register allocation, dead code \\
 Available expressions & Forward & ∩ & Global CSE \\
 Very busy expressions & Backward & ∩ & Code hoisting \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -981,7 +969,7 @@ NFA for strings over \{0, 1\} ending in "01": q0 ---0,1→ q0, q0 ---0→ q1, q1
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1285}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0958}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0958}}
@@ -997,13 +985,12 @@ NFA for strings over \{0, 1\} ending in "01": q0 ---0,1→ q0, q0 ---0→ q1, q1
 \textbf{Final?}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 → \{q0\} & \{q0, q1\} & \{q0\} & \\
 \{q0, q1\} & \{q0, q1\} & \{q0, q2\} & \\
 \{q0, q2\} & \{q0, q1\} & \{q0\} & ✔ \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -1016,7 +1003,7 @@ Only 3 of the 2³ = 8 subsets are reachable --- this is the same DFA drawn in §
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0745}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0599}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0599}}
@@ -1032,16 +1019,15 @@ Only 3 of the 2³ = 8 subsets are reachable --- this is the same DFA drawn in §
 \textbf{Final?}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 → A & B & C & \\
 B & A & D & \\
 C & E & F & ✔ \\
 D & E & F & ✔ \\
 E & E & F & ✔ \\
 F & F & F & \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -1102,7 +1088,7 @@ Grammar: (0) S′ → S (1) S → AA (2) A → aA (3) A → b
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0803}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0423}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0423}}
@@ -1124,9 +1110,6 @@ Grammar: (0) S′ → S (1) S → AA (2) A → aA (3) A → b
 \textbf{S}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 0 & s3 & s4 & & 2 & 1 \\
 1 & & & \textbf{acc} & & \\
 2 & s3 & s4 & & 5 & \\
@@ -1134,7 +1117,9 @@ Grammar: (0) S′ → S (1) S → AA (2) A → aA (3) A → b
 4 & r3 & r3 & r3 & & \\
 5 & r1 & r1 & r1 & & \\
 6 & r2 & r2 & r2 & & \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -1144,7 +1129,7 @@ Parse of \textbf{abb\$}:
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1080}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0739}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2960}}@{}}
@@ -1157,9 +1142,6 @@ Parse of \textbf{abb\$}:
 \textbf{Action}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 0 & abb\$ & shift 3 \\
 0 a 3 & bb\$ & shift 4 \\
 0 a 3 b 4 & b\$ & reduce A → b, goto(3, A) = 6 \\
@@ -1168,7 +1150,9 @@ Parse of \textbf{abb\$}:
 0 A 2 b 4 & \$ & reduce A → b, goto(2, A) = 5 \\
 0 A 2 A 5 & \$ & reduce S → AA, goto(0, S) = 1 \\
 0 S 1 & \$ & \textbf{accept} \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -1201,13 +1185,13 @@ Parse of \textbf{abb\$}:
 \end{Verbatim}
 \end{listingblock}
 
-\needspace{123pt}
+\needspace{125pt}
 
 \hypertarget{p2-08--157-dag-based-local-optimisation}{%
 \subsection{DAG-Based Local Optimisation}\label{p2-08--157-dag-based-local-optimisation}}
 
-\begin{listingblock}{73pt}
-\begin{Verbatim}[fontsize=\fontsize{8.7}{10.6}\selectfont]
+\begin{listingblock}{75pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
  Block                       DAG nodes built                         Optimised block
  a = b + c                   n1 = + (b0, c0)        label a          a = b + c
  b = a - d                   n2 = − (n1, d0)        label b          b = a - d

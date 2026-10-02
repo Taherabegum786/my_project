@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}[v/.style={circ, minimum size=6mm, font=\footnotesize}]
   \begin{scope}
     \foreach \x/\n in {0/a,1.3/b,2.6/c} \node[v, fill=fslate] (\n) at (\x,1.8) {\n};
@@ -18,5 +19,6 @@
     \node[capt] at (1.1,-0.8) {$K_4$ — planar};
   \end{scope}
 \end{tikzpicture}
+\end{adjustbox}
 \caption{$K_{3,3}$ and $K_5$ cannot be drawn without crossings; $K_4$ can, with one vertex placed inside the triangle.}
 \end{figure}

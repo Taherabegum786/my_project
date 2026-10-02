@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}
   \node[grey, minimum width=34mm] (R) at (0,0) {\textbf{Research}};
   \foreach \x/\n/\col/\head/\items in {
@@ -11,6 +12,7 @@
     \draw[arr] (R) -- (\n);
   }
 \end{tikzpicture}
+\end{adjustbox}
 \caption{Three independent ways of classifying research. A single study can be, for example, applied in
 purpose, quantitative in approach and experimental in method.}
 \end{figure}

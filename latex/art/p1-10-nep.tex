@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}
   \node[circ, minimum size=22mm, fill=fwine!15, font=\small\bfseries, align=center] (N) at (0,0) {NEP\\2020};
   \node[slate, text width=40mm, align=left, font=\footnotesize] (a) at (-4.6,1.7) {\textbf{Structure}\\5+3+3+4 schooling\\GER 50\% by 2035\\multidisciplinary institutions};
@@ -13,6 +14,7 @@
   \foreach \t in {NHERC,NAC,HEGC,GEC} \draw[arr] (H.south) -- (v\t.north);
   \draw[thinline] (N) -- (H);
 \end{tikzpicture}
+\end{adjustbox}
 \caption{The main reforms of NEP 2020 for higher education, and the four verticals of the proposed Higher
 Education Commission of India.}
 \end{figure}

@@ -1,0 +1,11 @@
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\linewidth}{@{}l X X@{}}
+\toprule
+\textbf{Scheme} & \textbf{Older asks for younger's lock} & \textbf{Younger asks for older's lock} \\
+\midrule
+Wait–die (non-pre-emptive) & older \emph{waits} & younger \emph{dies} (rolled back) \\
+Wound–wait (pre-emptive) & older \emph{wounds} (aborts) younger & younger \emph{waits} \\
+\bottomrule
+\end{tabularx}
+\end{center}

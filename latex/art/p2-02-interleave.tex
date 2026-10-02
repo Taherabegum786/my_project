@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}
   \foreach \m in {0,...,3} {
     \node[slate, minimum width=24mm, minimum height=8mm] (M\m) at (\m*3.2,0) {\textbf{M\m}};
@@ -10,5 +11,6 @@
   }
   \node[lbl, text width=110mm] at (4.8,-3.1) {module $=$ address $\bmod 4$: consecutive words lie in different modules and can be accessed in an overlapped way};
 \end{tikzpicture}
+\end{adjustbox}
 \caption{Low-order interleaving across four memory modules.}
 \end{figure}

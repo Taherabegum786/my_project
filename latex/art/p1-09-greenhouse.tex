@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}[callout/.style={circle, fill=fwine, text=white, font=\scriptsize\bfseries, inner sep=1pt, minimum size=4.6mm}]
   \fill[fsage] (0,0) rectangle (12,0.5); \draw[fgink, line width=0.5pt] (0,0.5) -- (12,0.5);
   \fill[fslate!55] (0,0.5) rectangle (12,3.2);
@@ -17,6 +18,7 @@
   \draw[->, fwine!60, line width=1.0pt, decorate, decoration={snake, amplitude=1.5pt, segment length=7pt, post length=2mm}] (9.0,0.55) -- (10.0,4.4);
   \node[callout] at (10.35,3.9) {4};
 \end{tikzpicture}
+\end{adjustbox}
 \caption{The greenhouse effect. (1) Short-wave sunlight passes through the atmosphere and warms the
 surface. (2) The warm surface radiates long-wave infrared, which greenhouse gases absorb. (3) The gases
 re-emit much of it back towards the surface. (4) The rest escapes to space. More greenhouse gas means more

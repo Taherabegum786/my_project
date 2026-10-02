@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}[node distance=6mm]
   \node[slate, text width=19mm, font=\footnotesize] (a) {modelling\\coordinates};
   \node[slate, text width=19mm, font=\footnotesize, right=of a] (b) {world\\coordinates};
@@ -8,5 +9,6 @@
   \node[rose, text width=19mm, font=\footnotesize, right=of d] (e) {device\\coordinates};
   \draw[arr] (a) -- (b); \draw[arr] (b) -- (c); \draw[arr] (c) -- (d); \draw[arr] (d) -- (e);
 \end{tikzpicture}
+\end{adjustbox}
 \caption{The two-dimensional viewing pipeline.}
 \end{figure}

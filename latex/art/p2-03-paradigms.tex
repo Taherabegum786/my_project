@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}
   \node[grey, minimum width=40mm] (P) at (0,0) {\textbf{Programming paradigms}};
   \node[slate, minimum width=40mm] (I) at (-4.2,-1.4) {\textbf{Imperative}\\\footnotesize \emph{how} to compute};
@@ -12,5 +13,6 @@
   \node[plain, text width=19mm, font=\footnotesize] (D3) at (7.4,-3.0) {\textbf{query}\\SQL};
   \draw[arr] (I) -- (I1); \draw[arr] (I) -- (I2); \draw[arr] (D) -- (D1); \draw[arr] (D) -- (D2); \draw[arr] (D) -- (D3);
 \end{tikzpicture}
+\end{adjustbox}
 \caption{The main programming paradigms. Event-driven, scripting and concurrent styles cut across both families.}
 \end{figure}

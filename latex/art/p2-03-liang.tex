@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}[scale=0.45]
   \filldraw[fill=fslate!60, draw=fgink, line width=0.6pt] (0,0) rectangle (10,10);
   \draw[fgink!60, line width=0.6pt, dashed] (-5,3) -- (15,9);
@@ -10,6 +11,7 @@
   \fill[fwine] (10,7.5) circle (5pt) node[below right, font=\footnotesize] {$u=0.75$: $(10,7.5)$};
   \node[font=\footnotesize] at (5,1) {window $(0,0)$–$(10,10)$};
 \end{tikzpicture}
+\end{adjustbox}
 \caption{Liang–Barsky clipping of the line from $(-5,3)$ to $(15,9)$.}
 \end{figure}
 \begin{formulatable}[0.62]

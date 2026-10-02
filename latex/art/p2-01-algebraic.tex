@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}
   \foreach \w/\col/\name/\prop [count=\k] in {13.6/fgrey/Groupoid (magma)/closure, 11.4/fslate/Semigroup/{+ associativity}, 9.2/fsage/Monoid/{+ identity}, 7.0/fsand/Group/{+ inverses}, 4.8/frose/Abelian group/{+ commutativity}} {
     \pgfmathsetmacro{\yb}{0.28*(\k-1)}
@@ -12,6 +13,7 @@
     \fi
   }
 \end{tikzpicture}
+\end{adjustbox}
 \caption{Algebraic structures with one operation, each adding one axiom to the one outside it.
 Every abelian group is a group, every group a monoid, and so on.}
 \end{figure}

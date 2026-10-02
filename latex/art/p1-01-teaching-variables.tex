@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}
   \node[slate, minimum width=36mm] (T) at (0,0) {\textbf{Teacher}\\\footnotesize independent variable};
   \node[sage, minimum width=36mm] (S) at (7,0) {\textbf{Student}\\\footnotesize dependent variable};
@@ -11,6 +12,7 @@
   \draw[arr] (S) -- (L);
   \node[lbl, anchor=east] at (L.west) {the outcome we measure\quad};
 \end{tikzpicture}
+\end{adjustbox}
 \caption{Teaching as a system of variables. The teacher acts, the learner responds, and everything that
 shapes the encounter — content, method, aids, environment — intervenes between the two.}
 \end{figure}

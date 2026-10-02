@@ -47,7 +47,7 @@ to recognise these decisions and their consequences.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1259}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3287}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3006}}@{}}
@@ -60,9 +60,6 @@ to recognise these decisions and their consequences.
 \textbf{Paradigm}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 FORTRAN & 1957, John Backus & First high-level, scientific \\
 LISP & 1958, John McCarthy & Functional, AI \\
 COBOL & 1959, Grace Hopper (CODASYL) & Business \\
@@ -75,7 +72,9 @@ C++ & 1979--83, Bjarne Stroustrup & OO + procedural \\
 Ada & 1980, US DoD & Concurrency (tasks, rendezvous) \\
 Java & 1995, James Gosling (Sun) & OO, platform independent \\
 Python & 1991, Guido van Rossum & Multi-paradigm \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -111,7 +110,7 @@ each mechanism.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3598}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4661}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1741}}@{}}
@@ -124,22 +123,21 @@ each mechanism.
 \textbf{Language}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Call by value & Copy of value & C (default) \\
 Call by reference & Address passed; changes visible & C++ \texttt{\&}, Pascal \texttt{var} \\
 Call by value-result (copy-in/\allowbreak{}copy-out) & Copy in, copy back at return & Ada \texttt{in\ out} \\
 Call by name & Textual substitution, evaluated each use (Jensen\textquotesingle s device) & ALGOL 60 \\
 Call by need & Lazy evaluation, memoised & Haskell \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
 \textbf{Classic question}:
 
 \begin{listingblock}{31pt}
-\begin{Verbatim}[fontsize=\fontsize{8.7}{10.6}\selectfont]
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 void swap(int x, int y) { int t = x; x = y; y = t; }   // by value: caller unchanged
 \end{Verbatim}
 \end{listingblock}
@@ -180,13 +178,13 @@ undefined. Work each example by hand before reading its comment.
 
 \input{art/p2-03-precedence}
 
-\needspace{318pt}
+\needspace{332pt}
 
 \hypertarget{p2-03--22-output-prediction-examples}{%
 \subsection{Output-prediction examples}\label{p2-03--22-output-prediction-examples}}
 
-\begin{listingblock}{268pt}
-\begin{Verbatim}[fontsize=\fontsize{8.5}{10.3}\selectfont]
+\begin{listingblock}{282pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 int i = 5;
 printf("%d %d", i++, ++i);   // UNDEFINED behaviour (unsequenced modification)
 
@@ -231,13 +229,13 @@ printf("%d", SQ(2+3));           // 2+3*2+3 = 11 (macro pitfall)
   Memory: \texttt{malloc} (uninitialised), \texttt{calloc} (zeroed, n × size), \texttt{realloc}, \texttt{free}.
 \end{itemize}
 
-\needspace{90pt}
+\needspace{92pt}
 
 \hypertarget{p2-03--24-structures-vs-unions}{%
 \subsection{Structures vs Unions}\label{p2-03--24-structures-vs-unions}}
 
-\begin{listingblock}{40pt}
-\begin{Verbatim}[fontsize=\fontsize{8.0}{9.7}\selectfont]
+\begin{listingblock}{42pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 struct S { int i; char c; double d; };  // size = sum + padding (typically 16)
 union  U { int i; char c; double d; };  // size = largest member (8) — members share memory
 \end{Verbatim}
@@ -250,7 +248,7 @@ union  U { int i; char c; double d; };  // size = largest member (8) — members
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0901}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1167}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1525}}
@@ -269,14 +267,13 @@ union  U { int i; char c; double d; };  // size = largest member (8) — members
 \textbf{Storage}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 auto & Block & Block & Garbage & Stack \\
 register & Block & Block & Garbage & CPU register (no \texttt{\&}) \\
 static & Block/file & Whole program & 0 & Data segment \\
 extern & Global & Whole program & 0 & Data segment \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -321,7 +318,7 @@ the paper.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1956}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.8044}}@{}}
 \toprule\noalign{}
@@ -331,9 +328,6 @@ the paper.
 \textbf{Key point}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Constructor & Same name as class, no return type; default, parameterised, \textbf{copy constructor} \texttt{X(const\ X\&)} \\
 Destructor & \texttt{\textasciitilde{}X()}, no args, cannot be overloaded; called in reverse order of construction \\
 Order of construction & Base → member objects → derived; destruction reverse \\
@@ -350,7 +344,9 @@ Templates & Generic programming: function \& class templates (compile-time polym
 Exceptions & \texttt{try}, \texttt{throw}, \texttt{catch(...)} catches all \\
 Streams & \texttt{cin} (istream), \texttt{cout} (ostream), \texttt{cerr} (unbuffered), \texttt{clog}; \texttt{ifstream}, \texttt{ofstream}, \texttt{fstream} \\
 Access in inheritance & public base: public→\allowbreak{}public, protected→\allowbreak{}protected; protected base: both→\allowbreak{}protected; private base: both→\allowbreak{}private; private members never accessible \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -370,7 +366,7 @@ b->show();    // "Derived" (virtual)  — without virtual: "Base"
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1500}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.8500}}@{}}
 \toprule\noalign{}
@@ -380,9 +376,6 @@ b->show();    // "Derived" (virtual)  — without virtual: "Base"
 \textbf{Key facts}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 HTML & Markup; tags \texttt{\textless{}a\ href\textgreater{}}, \texttt{\textless{}img\ src\ alt\textgreater{}}, \texttt{\textless{}table\textgreater{}\textless{}tr\textgreater{}\textless{}td\textgreater{}}, \texttt{\textless{}form\ action\ method\textgreater{}}; HTML5 adds \texttt{\textless{}canvas\textgreater{}}, \texttt{\textless{}video\textgreater{}}, \texttt{\textless{}audio\textgreater{}}, \texttt{\textless{}section\textgreater{}}, \texttt{\textless{}article\textgreater{}} \\
 DHTML & HTML + CSS + JavaScript + DOM → dynamic pages \\
 CSS & Inline \textgreater{} internal \textgreater{} external (priority); selectors \texttt{.class}, \texttt{\#id} \\
@@ -393,7 +386,9 @@ Java Applet & Runs in browser; life cycle: \texttt{init()\ →\ start()\ →\ pa
 Servlet & Runs on server; life cycle: \texttt{init()\ →\ service()\ (doGet/doPost)\ →\ destroy()}; container e.g. Tomcat \\
 Java & Bytecode on JVM ("write once run anywhere"); garbage collection; no pointers; \texttt{final}, \texttt{abstract}, \texttt{interface} \\
 HTTP methods & GET (in URL, idempotent), POST (in body), PUT, DELETE \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -413,7 +408,7 @@ the clipping and projection steps that fit a scene onto a screen.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3517}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3556}}@{}}
 \toprule\noalign{}
@@ -423,15 +418,14 @@ the clipping and projection steps that fit a scene onto a screen.
 \textbf{Random (vector) scan}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Beam sweeps every row (top to bottom) & Beam draws only the lines of the picture \\
 Uses frame buffer (refresh buffer) & Uses display file (display list) \\
 Realistic images, shading & Line drawings only, smooth lines \\
 Aliasing (jaggies) & No aliasing \\
 TV, monitors & Pen plotters, early CAD \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -553,7 +547,7 @@ whole lines with cheap tests and compute intersections only when they must.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2050}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4200}}@{}}
 \toprule\noalign{}
@@ -563,9 +557,6 @@ whole lines with cheap tests and compute intersections only when they must.
 \textbf{For}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Cohen--Sutherland & Lines (region codes) \\
 \textbf{Liang--Barsky} & Lines (parametric, faster) \\
 Cyrus--Beck & Lines vs convex polygon window \\
@@ -573,7 +564,9 @@ Nicholl--Lee--Nicholl & Lines (fewest comparisons) \\
 Mid-point subdivision & Lines (binary search) \\
 \textbf{Sutherland--Hodgman} & Polygon clipping (convex window; edge by edge) \\
 Weiler--Atherton & Polygon clipping (concave too) \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -594,7 +587,7 @@ Weiler--Atherton & Polygon clipping (concave too) \\
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4739}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4417}}@{}}
 \toprule\noalign{}
@@ -604,15 +597,14 @@ Weiler--Atherton & Polygon clipping (concave too) \\
 \textbf{B-spline curve}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Degree = n − 1 for n control points & Degree independent of number of points \\
 Passes through first \& last control points & Generally doesn\textquotesingle t pass through endpoints (uniform) \\
 \textbf{Global control} --- moving one point changes whole curve & \textbf{Local control} \\
 Lies within convex hull of control points & Lies within convex hull \\
 Bernstein basis polynomials & B-spline basis functions \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -630,7 +622,7 @@ points to apply the model and how to fill in between.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1517}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3144}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4609}}@{}}
@@ -643,13 +635,12 @@ points to apply the model and how to fill in between.
 \textbf{Quality}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Flat (constant) & One intensity per polygon & Faceted \\
 \textbf{Gouraud} & Interpolate \textbf{intensities} at vertices & Smooth, may miss specular highlights, Mach bands \\
 \textbf{Phong} & Interpolate \textbf{normals} & Best quality, costlier \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -715,13 +706,13 @@ fun(7) = 7 × fun(5) = 7 × 5 × fun(3) = 7 × 5 × 3 × fun(1) = 105
 
 \input{art/p2-03-callstack}
 
-\needspace{331pt}
+\needspace{380pt}
 
 \hypertarget{p2-03--73-more-c-output-questions-with-reasons}{%
 \subsection{More C Output Questions (with reasons)}\label{p2-03--73-more-c-output-questions-with-reasons}}
 
-\begin{listingblock}{281pt}
-\begin{Verbatim}[fontsize=\fontsize{6.9}{8.4}\selectfont]
+\begin{listingblock}{330pt}
+\begin{Verbatim}[fontsize=\fontsize{8.2}{10.0}\selectfont]
 // 1. switch fall-through
 int k = 2;
 switch (k) { case 1: printf("A"); case 2: printf("B"); case 3: printf("C"); break; default: printf("D"); }
@@ -763,7 +754,7 @@ printf("%d", *(*(m + 1) + 2));                  // 6  (m[1][2])
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1481}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1395}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1637}}
@@ -782,20 +773,19 @@ printf("%d", *(*(m + 1) + 2));                  // 6  (m[1][2])
 \textbf{World}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 private & ✔ & ✘ & ✘ & ✘ \\
 default (none) & ✔ & ✔ & ✘ & ✘ \\
 protected & ✔ & ✔ & ✔ & ✘ \\
 public & ✔ & ✔ & ✔ & ✔ \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4817}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5183}}@{}}
 \toprule\noalign{}
@@ -805,13 +795,12 @@ public & ✔ & ✔ & ✔ & ✔ \\
 \textbf{Interface}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Can have constructors, state (fields), concrete methods & Constants + abstract methods (default/\allowbreak{}static methods since Java 8) \\
 Single inheritance (\texttt{extends}) & A class can \texttt{implements} many interfaces \\
 Use for "is-a" with shared code & Use for capability contracts \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -842,7 +831,7 @@ Use for "is-a" with shared code & Use for capability contracts \\
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0357}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0459}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1225}}
@@ -858,9 +847,6 @@ Use for "is-a" with shared code & Use for capability contracts \\
 \textbf{pₖ₊₁}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 0 & −9 & (1, 10) & −6 \\
 1 & −6 & (2, 10) & −1 \\
 2 & −1 & (3, 10) & 6 \\
@@ -868,7 +854,9 @@ Use for "is-a" with shared code & Use for capability contracts \\
 4 & −3 & (5, 9) & 8 \\
 5 & 8 & (6, 8) & 5 \\
 6 & 5 & (7, 7) & stop (x ≥ y) \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 

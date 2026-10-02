@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}
 \begin{axis}[width=13cm, height=6cm, ybar, bar width=8pt, ymin=0, ymax=70, enlarge x limits=0.15,
     xtick={2019,2020,2021,2022}, xticklabel style={/pgf/number format/1000 sep={}}, ylabel={thousand cars},
@@ -12,6 +13,7 @@
   \legend{P, Q, R, S}
 \end{axis}
 \end{tikzpicture}
+\end{adjustbox}
 \caption{The worked data set as a grouped bar chart. Company P's steady growth, and R's dip in 2020, are
 visible at a glance — a reminder to sketch the data before calculating.}
 \end{figure}

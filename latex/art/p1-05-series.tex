@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}[node distance=5.5mm]
   \node[grey, minimum width=28mm] (A) {\textbf{Given series}};
   \node[diamondbox, fill=fsand, below=of A] (B) {differences\\constant?};
@@ -16,5 +17,6 @@
   \draw[arr] (A) -- (B);
   \foreach \a/\b in {B/C, C/D, D/E, E/F, F/G} \draw[arr] (\a) -- node[lbl, right] {no} (\b);
 \end{tikzpicture}
+\end{adjustbox}
 \caption{A checklist for number series: test the simple rules first and move down only when they fail.}
 \end{figure}

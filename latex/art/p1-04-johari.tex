@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}
   \fill[fsage] (0,0) rectangle (3.6,2.2); \fill[fsand] (3.6,0) rectangle (7.2,2.2);
   \fill[fslate] (0,-2.2) rectangle (3.6,0); \fill[fgrey] (3.6,-2.2) rectangle (7.2,0);
@@ -13,6 +14,7 @@
   \draw[arr, fwine] (4.6,1.9) -- node[lbl, above, text=fwine] {feedback} (3.75,1.9);
   \draw[arr, fwine] (1.8,-0.35) -- node[lbl, right, text=fwine] {self-disclosure} (1.8,0.25);
 \end{tikzpicture}
+\end{adjustbox}
 \caption{The Johari window. Feedback from others shrinks the blind area; self-disclosure shrinks the hidden
 area; both enlarge the open area in which communication is easiest.}
 \end{figure}

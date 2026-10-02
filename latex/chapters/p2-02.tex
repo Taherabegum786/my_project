@@ -49,7 +49,7 @@ their outputs also depend on the past.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0793}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1874}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2925}}@{}}
@@ -62,9 +62,6 @@ their outputs also depend on the past.
 \textbf{Output 1 when}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 AND & AB & all inputs 1 \\
 OR & A + B & any input 1 \\
 NOT & A\textquotesingle{} & input 0 \\
@@ -72,7 +69,9 @@ NAND & (AB)\textquotesingle{} & any input 0 --- \textbf{universal} \\
 NOR & (A+B)\textquotesingle{} & all inputs 0 --- \textbf{universal} \\
 XOR & A⊕B = A\textquotesingle B + AB\textquotesingle{} & inputs differ (odd number of 1s) \\
 XNOR & (A⊕B)\textquotesingle{} & inputs equal \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -110,7 +109,7 @@ The full adder below is worth being able to draw from memory.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2061}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.7939}}@{}}
 \toprule\noalign{}
@@ -120,9 +119,6 @@ The full adder below is worth being able to draw from memory.
 \textbf{Function}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Multiplexer 2ⁿ:1 & n select lines choose one of 2ⁿ inputs; any n-var function with 2ⁿ:1 MUX (or n+1 var with 2ⁿ:1 + inverter) \\
 Demultiplexer 1:2ⁿ & Routes one input to one of 2ⁿ outputs \\
 Decoder n:2ⁿ & Activates one of 2ⁿ outputs (minterm generator) \\
@@ -130,7 +126,9 @@ Encoder 2ⁿ:n & Reverse; priority encoder handles multiple inputs \\
 Comparator & A\textgreater B, A=B, A\textless B \\
 Ripple carry adder & n full adders; delay ∝ n \\
 Carry look-ahead adder & Gᵢ = AᵢBᵢ, Pᵢ = Aᵢ⊕Bᵢ; Cᵢ₊₁ = Gᵢ + PᵢCᵢ --- faster \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -145,7 +143,7 @@ inputs produce a desired transition.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0520}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2425}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4506}}@{}}
@@ -158,14 +156,13 @@ inputs produce a desired transition.
 \textbf{Notes}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 SR & Q⁺ = S + R\textquotesingle Q (SR = 0) & S=R=1 invalid \\
 JK & Q⁺ = JQ\textquotesingle{} + K\textquotesingle Q & J=K=1 toggles; race-around fixed by master-slave \\
 D & Q⁺ = D & Delay / data latch \\
 T & Q⁺ = T ⊕ Q & Toggle; used in counters \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -206,7 +203,7 @@ an enormous range.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1608}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2713}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1454}}@{}}
@@ -219,13 +216,12 @@ an enormous range.
 \textbf{Zeros}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Sign-magnitude & −(2ⁿ⁻¹−1) \ldots{} +(2ⁿ⁻¹−1) & Two (+0, −0) \\
 1\textquotesingle s complement & −(2ⁿ⁻¹−1) \ldots{} +(2ⁿ⁻¹−1) & Two \\
 \textbf{2\textquotesingle s complement} & \textbf{−2ⁿ⁻¹ \ldots{} +(2ⁿ⁻¹−1)} & One \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -329,7 +325,7 @@ directly from gates (hardwired) or by reading control words from a small memory 
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3500}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3594}}@{}}
 \toprule\noalign{}
@@ -339,14 +335,13 @@ directly from gates (hardwired) or by reading control words from a small memory 
 \textbf{Microprogrammed}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Logic gates, decoders, sequence counter & Control memory stores microinstructions \\
 Fast & Slower \\
 Difficult to modify & Flexible, easy to modify \\
 Used in RISC & Used in CISC \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -374,7 +369,7 @@ Evaluate X = (A + B) × (C + D):
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2206}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.7794}}@{}}
 \toprule\noalign{}
@@ -384,14 +379,13 @@ Evaluate X = (A + B) × (C + D):
 \textbf{Code}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 3-address & ADD R1, A, B · ADD R2, C, D · MUL X, R1, R2 \\
 2-address & MOV R1, A · ADD R1, B · MOV R2, C · ADD R2, D · MUL R1, R2 · MOV X, R1 \\
 1-address (accumulator) & LOAD A · ADD B · STORE T · LOAD C · ADD D · MUL T · STORE X \\
 0-address (stack) & PUSH A · PUSH B · ADD · PUSH C · PUSH D · ADD · MUL · POP X \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -406,7 +400,7 @@ extra one but allows pointers.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2477}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2080}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3293}}@{}}
@@ -419,9 +413,6 @@ extra one but allows pointers.
 \textbf{Use}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Implied & Operand implicit & CMA, stack ops \\
 Immediate & Operand in instruction & Constants \\
 Register & Operand in register & Fast \\
@@ -432,7 +423,9 @@ Auto-increment/\allowbreak{}decrement & EA = (R), then R±1 & Arrays, stacks \\
 Relative & EA = PC + A & Branches, \textbf{position-independent code} \\
 Indexed & EA = XR + A & Arrays \\
 Base register & EA = BR + A & Relocation \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -445,7 +438,7 @@ Memory references to get operand: immediate 0, direct 1, indirect 2.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3472}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3317}}@{}}
 \toprule\noalign{}
@@ -455,9 +448,6 @@ Memory references to get operand: immediate 0, direct 1, indirect 2.
 \textbf{CISC}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Few, simple, fixed-length instructions & Many, complex, variable length \\
 Few addressing modes & Many addressing modes \\
 Load/store architecture & Memory operands in many instructions \\
@@ -465,7 +455,9 @@ Many registers, register windows & Fewer registers \\
 Hardwired control & Microprogrammed \\
 1 instruction per cycle, pipelining easy & Multi-cycle \\
 ARM, MIPS, SPARC, RISC-V & x86, VAX, IBM 370 \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -518,7 +510,7 @@ design question is how much of the transfer the CPU itself must supervise.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2305}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4557}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2339}}@{}}
@@ -531,14 +523,13 @@ design question is how much of the transfer the CPU itself must supervise.
 \textbf{CPU involvement}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Programmed I/O & CPU polls status flag & Very high (busy waiting) \\
 Interrupt-driven & Device interrupts CPU & Per word \\
 \textbf{DMA} & DMA controller transfers block directly to memory & Only at start/end \\
 I/O processor (channel) & Dedicated processor & Minimal \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -672,7 +663,7 @@ M = 0111 (7), −M = 1001, Q = 1101 (−3), A = 0000, Q₋₁ = 0.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0709}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1219}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2321}}
@@ -694,9 +685,6 @@ M = 0111 (7), −M = 1001, Q = 1101 (−3), A = 0000, Q₋₁ = 0.
 \textbf{Q₋₁}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Init & & & 0000 & 1101 & 0 \\
 1 & 1 0 & A ← A − M & 1001 & 1101 & 0 \\
 & & Arithmetic shift right & 1100 & 1110 & 1 \\
@@ -705,7 +693,9 @@ Init & & & 0000 & 1101 & 0 \\
 3 & 1 0 & A ← A − M & 1010 & 1111 & 0 \\
 & & Arithmetic shift right & 1101 & 0111 & 1 \\
 4 & 1 1 & Shift only & 1110 & 1011 & 1 \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -743,7 +733,7 @@ Block reference string: \textbf{0, 4, 0, 4, 8, 0} with 4 cache lines.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4034}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5124}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0842}}@{}}
@@ -756,13 +746,12 @@ Block reference string: \textbf{0, 4, 0, 4, 8, 0} with 4 cache lines.
 \textbf{Misses}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Direct mapped (line = block mod 4) & 0, 4, 8 all map to line 0 → every access evicts the previous & \textbf{6} \\
 2-way set assoc., LRU (set = block mod 2) & 0 M, 4 M, 0 H, 4 H, 8 M (evict 0), 0 M (evict 4) & \textbf{4} \\
 Fully associative, LRU & 0 M, 4 M, 0 H, 4 H, 8 M, 0 H & \textbf{3} \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 

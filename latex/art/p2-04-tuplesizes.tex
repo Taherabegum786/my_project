@@ -1,0 +1,15 @@
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{l c}
+\toprule
+\textbf{Operation} ($|R| = m$, $|S| = n$) & \textbf{Number of tuples} \\
+\midrule
+$R \times S$ & $m\,n$ \\
+$R \bowtie S$ & $0 \dots m\,n$ \\
+$R \cup S$ & $\max(m, n) \dots m + n$ \\
+$R \cap S$ & $0 \dots \min(m, n)$ \\
+$R - S$ & $0 \dots m$ \\
+$R$ left outer join $S$ & at least $m$ \\
+\bottomrule
+\end{tabular}
+\end{center}

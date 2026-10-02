@@ -1,0 +1,15 @@
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\linewidth}{@{}l >{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Step} & \textbf{Result} \\
+\midrule
+1. Split right-hand sides & $A\to B,\ A\to C,\ B\to C,\ A\to B,\ AB\to C$ \\
+2. Remove duplicates & $A\to B,\ A\to C,\ B\to C,\ AB\to C$ \\
+3. Remove extraneous LHS attributes & in $AB\to C$, $B$ is extraneous since $A^{+}\ni C$; gives $A\to C$ (duplicate) \\
+4. Remove redundant FDs & $A\to C$ follows from $A\to B$ and $B\to C$ \\
+\midrule
+Minimal cover & $F_c = \{A\to B,\ B\to C\}$ \\
+\bottomrule
+\end{tabularx}
+\end{center}

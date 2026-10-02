@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}
   \node[slate, text width=24mm] (IN) at (0,0) {\textbf{Input}\\\footnotesize keyboard, mouse, scanner};
   \node[box, fill=fgrey, minimum width=46mm, minimum height=34mm] (CPU) at (5.2,0) {};
@@ -13,6 +14,7 @@
   \draw[arr] (IN) -- (CPU); \draw[arr] (CPU) -- (OUT);
   \draw[arrd] (CPU) -- (MEM); \draw[arrd] (MEM) -- (SEC);
 \end{tikzpicture}
+\end{adjustbox}
 \caption{The basic organisation of a computer. The CPU fetches instructions and data from primary memory;
 secondary storage holds them permanently.}
 \end{figure}

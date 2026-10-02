@@ -18,8 +18,13 @@
 
 ## 1. Architecture
 
+A database management system stands between users and stored data. Its central achievement is *data
+independence*: applications describe what data they want, and the system decides how it is stored and
+found, so that storage can change without rewriting programs.
+
 ### 1.1 Three-Schema (ANSI/SPARC) Architecture
 
+<!-- latex: p2-04-threeschema -->
 ```mermaid
 flowchart TB
     U1[User 1] --> E1[External view 1]
@@ -40,6 +45,11 @@ Query processor (DDL interpreter, DML compiler, query evaluation engine), storag
 
 ## 2. ER Model
 
+The entity–relationship model is a picture of the real world before any tables exist: things (entities),
+their properties (attributes) and the associations between them (relationships). Chen's notation, shown
+below, is the one used in the examination.
+
+<!-- latex: p2-04-er-notation -->
 ```
  ER notation (Chen)
  ┌────────┐   Entity              ╔════════╗  Weak entity
@@ -50,6 +60,7 @@ Query processor (DDL interpreter, DML compiler, query evaluation engine), storag
  ═══          Total participation  ───         Partial participation
 ```
 
+<!-- latex: p2-04-er-example -->
 ```mermaid
 erDiagram
     STUDENT ||--o{ ENROLLS : has
@@ -91,6 +102,10 @@ Classic: E1 —M:N— E2 —1:N— E3 → minimum tables = 3 entities + 1 (for M
 
 ## 3. Keys & Integrity
 
+Keys are how a relational database identifies rows and links tables. The three key concepts are nested, as
+the figure shows; integrity constraints then forbid NULL primary keys and dangling foreign keys.
+
+<!-- latex: p2-04-keys -->
 ```mermaid
 flowchart TB
     SK[Super key<br/>any set that uniquely identifies] --> CK[Candidate key<br/>minimal super key]
@@ -106,6 +121,10 @@ flowchart TB
 **Codd's 12 rules (13 with Rule 0)**: Rule 0 foundation; 1 information; 2 guaranteed access; 3 systematic NULLs; 4 active online catalog; 5 comprehensive data sublanguage; 6 view updating; 7 high-level insert/update/delete; 8 physical data independence; 9 logical data independence; 10 integrity independence; 11 distribution independence; 12 non-subversion.
 
 ## 4. Relational Algebra & Calculus
+
+Relational algebra is a small set of operations on tables that produce tables. Every SQL query is
+translated into an algebra expression before it is optimised, which is why the algebra is examined so
+often.
 
 | Operation | Symbol | Notes |
 |-----------|--------|-------|
@@ -123,6 +142,7 @@ flowchart TB
 
 Fundamental: **σ, π, ∪, −, ×, ρ**. Relational algebra is **procedural**; relational calculus (TRC/DRC) is **non-procedural**. Safe calculus = relational algebra in power (relational completeness).
 
+<!-- latex: p2-04-tuplesizes -->
 ```
 Tuple sizes: R has m tuples, S has n tuples
 R × S            → m·n
@@ -168,6 +188,10 @@ SELECT MAX(salary) FROM emp WHERE salary < (SELECT MAX(salary) FROM emp);   -- 2
 
 ## 6. Functional Dependencies & Normalisation
 
+A functional dependency $X \to Y$ says that the value of $X$ determines the value of $Y$. Redundancy arises
+when a table stores such facts about only part of its key, or about non-key attributes; normalisation
+removes it by splitting the table so that every fact is stored once.
+
 ### 6.1 Armstrong's Axioms
 - **Reflexivity**: Y ⊆ X ⇒ X → Y · **Augmentation**: X → Y ⇒ XZ → YZ · **Transitivity**: X → Y, Y → Z ⇒ X → Z
 - Derived: Union, Decomposition, Pseudo-transitivity (X → Y, WY → Z ⇒ WX → Z).
@@ -175,6 +199,7 @@ SELECT MAX(salary) FROM emp WHERE salary < (SELECT MAX(salary) FROM emp);   -- 2
 
 ### 6.2 Attribute Closure — Finding Candidate Keys
 R(A, B, C, D, E), F = {A → B, B → C, CD → E}
+<!-- latex: p2-04-closure -->
 ```
 A⁺   = {A, B, C}
 AD⁺  = {A, D, B, C, E}  = all → AD is a key
@@ -186,6 +211,10 @@ Trick: attributes not on any RHS must be in every key; attributes only on RHS ar
 
 ### 6.3 Normal Forms
 
+Each normal form forbids one more kind of undesirable dependency. The nested diagram is a reminder that
+higher normal forms imply all the lower ones.
+
+<!-- latex: p2-04-normalforms -->
 ```mermaid
 flowchart LR
     U[Unnormalised] -->|atomic values| N1[1NF]
@@ -223,6 +252,9 @@ flowchart LR
 
 ## 7. Transactions
 
+A transaction is a unit of work — such as a fund transfer — that must happen completely or not at all, even
+when many transactions run at once and the system may crash. The ACID properties state these guarantees.
+
 ### ACID
 | Property | Ensured by |
 |----------|-----------|
@@ -232,6 +264,7 @@ flowchart LR
 | **D**urability | Recovery manager (redo log) |
 
 ### Transaction States
+<!-- latex: p2-04-txstates -->
 ```mermaid
 stateDiagram-v2
     [*] --> Active
@@ -245,17 +278,22 @@ stateDiagram-v2
 ```
 
 ### Schedules & Serializability
+
+When transactions interleave, the result is correct if it is equivalent to some serial order. Conflict
+serializability is tested by drawing a precedence graph and looking for a cycle.
 - **Conflicting operations**: same data item, different transactions, at least one write (RW, WR, WW).
 - **Conflict serializable** ⇔ **precedence graph is acyclic** (edge Ti → Tj if Ti's op conflicts with and precedes Tj's).
 - **View serializable**: same initial reads, same reads-from, same final writes. Every conflict-serializable schedule is view serializable; a view-serializable schedule that is not conflict-serializable has **blind writes**.
 - Number of serial schedules of n transactions: **n!**.
 
+<!-- latex: p2-04-schedule -->
 ```
 Example schedule:  r1(A) w2(A) w1(A) r3(A)
 Conflicts: r1(A)→w2(A): T1→T2 ; w2(A)→w1(A): T2→T1 ⇒ cycle ⇒ NOT conflict serializable
 ```
 
 ### Recoverability hierarchy
+<!-- latex: p2-04-recoverability -->
 ```
  Serial ⊂ Strict ⊂ Cascadeless (ACA) ⊂ Recoverable ⊂ All schedules
 ```
@@ -283,13 +321,14 @@ SQL isolation levels: READ UNCOMMITTED < READ COMMITTED < REPEATABLE READ < SERI
 | Multiple granularity | Intention locks IS, IX, SIX |
 
 Deadlock prevention with timestamps:
+<!-- latex: p2-04-waitdie -->
 ```
  Wait–Die  (non-preemptive): older requests → WAITS;   younger requests → DIES (rolled back)
  Wound–Wait (preemptive):    older requests → WOUNDS (aborts) younger;  younger requests → WAITS
 ```
 
 ### Recovery
-- **Log-based**: <T start>, <T, X, old, new>, <T commit>.
+- **Log-based**: `<T start>`, `<T, X, old, new>`, `<T commit>`.
 - **Deferred update** (NO-UNDO/REDO), **Immediate update** (UNDO/REDO).
 - **Checkpoint** reduces log scanning. After crash: transactions committed after checkpoint → REDO; uncommitted → UNDO.
 - **ARIES** (WAL, LSN, repeating history): Analysis → Redo → Undo.
@@ -297,6 +336,10 @@ Deadlock prevention with timestamps:
 - Shadow paging: no log needed; copy-on-write page table.
 
 ## 8. File Organisation & Indexing
+
+An index is to a table what the index of a book is to its pages: a small, ordered structure that leads
+straight to the wanted rows. B$^{+}$-trees dominate because they stay balanced and short even for very large
+files.
 
 | Index | Description |
 |-------|-------------|
@@ -311,6 +354,7 @@ Deadlock prevention with timestamps:
 
 ### B-Tree vs B+ Tree
 
+<!-- latex: p2-04-bplustree -->
 ```
  B+ tree of order 3 (internal: keys only, leaves linked)
                  [ 30 | 60 ]
@@ -358,6 +402,10 @@ Order p (max children): every node ≤ p children; non-root internal ≥ ⌈p/2�
 
 ## 10. Data Warehousing & Mining
 
+Operational databases record today's transactions; a data warehouse collects years of history from many
+sources for analysis. Data mining then searches that history for patterns.
+
+<!-- latex: p2-04-warehouse -->
 ```mermaid
 flowchart LR
     S1[(OLTP sources)] --> ETL[ETL<br/>Extract, Transform, Load]
@@ -379,6 +427,7 @@ flowchart LR
 Selection → Pre-processing → Transformation → **Data mining** → Interpretation/Evaluation.
 
 **Association rules** (Apriori):
+<!-- latex: p2-04-association -->
 ```
 Support(A→B)    = count(A ∪ B) / N
 Confidence(A→B) = support(A ∪ B) / support(A)
@@ -391,6 +440,9 @@ FP-growth: no candidate generation (FP-tree)
 - Outlier detection, regression.
 
 ## 11. Big Data & NoSQL
+
+When data become too large, too fast or too varied for a single relational server, systems distribute them
+across many machines and often relax strict consistency in exchange for availability.
 
 - **5 Vs**: Volume, Velocity, Variety, Veracity, Value (3 Vs originally — Doug Laney).
 - Types: structured, semi-structured (JSON, XML), unstructured (text, video).
@@ -444,6 +496,7 @@ FP-growth: no candidate generation (FP-tree)
 ### 12.2 Minimal (Canonical) Cover — Worked
 
 F = {A → BC, B → C, A → B, AB → C}
+<!-- latex: p2-04-mincover -->
 ```
 1. Split RHS:            A → B, A → C, B → C, A → B, AB → C
 2. Remove duplicates:    A → B, A → C, B → C, AB → C
@@ -457,6 +510,7 @@ Minimal cover Fc = { A → B, B → C }
 R(S, C, I, P, G) — Student, Course, Instructor, instructor Phone, Grade.
 F = { SC → G, C → I, I → P }. S and C never appear on the right → **candidate key = SC**.
 
+<!-- latex: p2-04-decomp -->
 ```mermaid
 flowchart TD
     R["R(S, C, I, P, G)<br/>key SC — 1NF"] -->|"partial dependency C → I, P"| A["R1(S, C, G)"]
@@ -478,6 +532,7 @@ Final schema: **(S, C, G), (C, I), (I, P)** — every determinant is a key → B
 ### 12.5 Precedence Graphs
 
 Schedule S: R1(A) W1(A) R2(A) W2(A) R1(B) W1(B) R2(B) W2(B)
+<!-- latex: p2-04-prec-ok -->
 ```mermaid
 flowchart LR
     T1((T1)) -->|"W1(A) before R2(A); W1(B) before R2(B)"| T2((T2))
@@ -485,6 +540,7 @@ flowchart LR
 Acyclic → conflict serializable, equivalent to serial order **T1 → T2**.
 
 Schedule S′: R1(X) R2(Y) W2(X) W1(Y)
+<!-- latex: p2-04-prec-cycle -->
 ```mermaid
 flowchart LR
     T1((T1)) -->|"R1(X) before W2(X)"| T2((T2))
@@ -494,6 +550,7 @@ Cycle → **not** conflict serializable.
 
 ### 12.6 Two-Phase Locking — Lock Point
 
+<!-- latex: p2-04-2pl -->
 ```
  locks held
    │        ╱‾‾‾‾╲
@@ -507,6 +564,7 @@ Cycle → **not** conflict serializable.
 
 ### 12.7 Extendible Hashing (sketch)
 
+<!-- latex: p2-04-extendible -->
 ```
  Global depth 2                     Buckets (local depth)
  directory
@@ -520,6 +578,7 @@ Cycle → **not** conflict serializable.
 
 ### 12.8 Data Cube Lattice (3 dimensions → 2³ = 8 cuboids)
 
+<!-- latex: p2-04-cuboids -->
 ```mermaid
 flowchart TB
     A["(time, item, location)<br/>base cuboid"] --> B["(time, item)"]
@@ -590,7 +649,7 @@ flowchart TB
 35. Number of serial schedules for 4 transactions: **24**
 36. Reading uncommitted data is: **dirty read**
 37. Write-ahead logging ensures: **log record on stable storage before data item**
-38. After a crash, a transaction that has <start> and <commit> in log is: **redone**
+38. After a crash, a transaction that has `<start>` and `<commit>` in log is: **redone**
 
 **Indexing**
 

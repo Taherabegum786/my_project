@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}
   \foreach \r/\c in {3.4/fgrey, 2.5/fslate, 1.6/fsage, 0.8/frose} \filldraw[fill=\c, draw=fgink, line width=0.45pt] (0,0) circle (\r);
   \fill[fgink] (0,0.12) circle (0.12); \draw[fgink, line width=1.2pt] (0,0) -- (0,-0.35);
@@ -7,6 +8,7 @@
     \draw[thinline] (30:\r) -- (5.0,{\r*0.5+0.1}) node[right, align=left, font=\small] {\textbf{\name}\ \ \footnotesize\d};
   }
 \end{tikzpicture}
+\end{adjustbox}
 \caption{Edward T. Hall's proxemic zones: the distance people keep communicates the closeness of the
 relationship.}
 \end{figure}

@@ -1,0 +1,12 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \foreach \w/\h/\col/\name [count=\k] in {13.0/3.6/fgrey/{all schedules}, 10.6/2.85/fslate/recoverable, 8.2/2.1/fsage/{cascadeless (ACA)}, 5.8/1.35/fsand/strict, 3.0/0.6/frose/serial} {
+    \filldraw[fill=\col, draw=fgink, line width=0.5pt] (0,0) ellipse ({\w/2} and \h);
+    \ifnum\k<5 \node[font=\small] at (0,{\h-0.32}) {\name}; \else \node[font=\small] at (0,0) {\name}; \fi
+  }
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Classes of schedules: serial $\subset$ strict $\subset$ cascadeless $\subset$ recoverable.}
+\end{figure}

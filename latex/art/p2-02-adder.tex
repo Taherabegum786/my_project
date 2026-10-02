@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}[circuit logic US, every circuit symbol/.style={line width=0.6pt, fill=fpaper, draw=fgink}, tiny circuit symbols,
     w/.style={thinline}, jn/.style={circle, fill=fgink, inner sep=0pt, minimum size=3pt}]
   \node[xor gate, inputs=nn, scale=2] (x1) at (2.6,1.0) {};
@@ -23,5 +24,6 @@
   \draw[w] (x2.output) -- (9.2,0.55) node[right, font=\small] {$S = A\oplus B\oplus C_{in}$};
   \draw[w] (o.output) -- (9.2,-1.25) node[right, font=\small] {$C_{out} = AB + C_{in}(A\oplus B)$};
 \end{tikzpicture}
+\end{adjustbox}
 \caption{A full adder built from two half adders (the XOR–AND pairs) and an OR gate.}
 \end{figure}

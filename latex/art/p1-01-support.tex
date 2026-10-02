@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}
   \node[grey, minimum width=34mm, minimum height=10mm] (A) at (0,0) {\textbf{Teaching support}\\\textbf{system}};
   \node[slate, text width=58mm, align=left] (B) at (6,1.5)  {\textbf{Traditional}\quad\footnotesize blackboard, charts, models, textbook};
@@ -7,5 +8,6 @@
   \node[sand,  text width=58mm, align=left] (D) at (6,-1.5) {\textbf{ICT-based}\quad\footnotesize smart board, LMS, MOOCs, AR/VR, podcasts};
   \foreach \n in {B,C,D} \draw[arr] (A.east) -- (\n.west);
 \end{tikzpicture}
+\end{adjustbox}
 \caption{Three generations of teaching support, from chalk to cloud.}
 \end{figure}

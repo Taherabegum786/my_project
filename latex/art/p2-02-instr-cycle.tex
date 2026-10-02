@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}[node distance=7mm]
   \node[slate, text width=34mm] (F) {\textbf{Fetch}\\\footnotesize $T_0$: AR $\leftarrow$ PC\\$T_1$: IR $\leftarrow$ M[AR], PC $\leftarrow$ PC+1};
   \node[sage, text width=34mm, right=of F] (D) {\textbf{Decode}\\\footnotesize $T_2$: decode opcode,\\AR $\leftarrow$ IR(0–11), I $\leftarrow$ IR(15)};
@@ -12,5 +13,6 @@
   \draw[arr] (I.south) -- ++(0,-6mm) -| node[lbl, below, pos=0.25] {no — next instruction} (F.south);
   \draw[arr] (S) -- (S |- F.south);
 \end{tikzpicture}
+\end{adjustbox}
 \caption{The instruction cycle of the basic computer, with the interrupt check after each instruction.}
 \end{figure}

@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}[node distance=10mm]
   \node[slate, text width=34mm] (A) {\textbf{Formulate}\\\footnotesize variables, objective, constraints};
   \node[diamondbox, fill=fsand, right=of A] (B) {two\\variables?};
@@ -8,5 +9,6 @@
   \node[rose, text width=26mm, right=of D] (E) {duality,\\dual simplex};
   \draw[arr] (A) -- (B); \draw[arr] (B) |- node[lbl, above, pos=0.75] {yes} (C); \draw[arr] (B) |- node[lbl, below, pos=0.75] {no} (D); \draw[arr] (D) -- (E);
 \end{tikzpicture}
+\end{adjustbox}
 \caption{Choosing a method for a linear programme.}
 \end{figure}

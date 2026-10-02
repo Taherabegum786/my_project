@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}
 \begin{scope}
   \begin{axis}[name=bar, width=5.2cm, height=4cm, ybar, bar width=7pt, ymin=0, xtick={1,2,3,4}, xticklabels={A,B,C,D},
@@ -23,6 +24,7 @@
   \end{scope}
 \end{scope}
 \end{tikzpicture}
+\end{adjustbox}
 \caption{Choosing a chart. Bars compare separate categories; a histogram's touching bars show a continuous
 distribution; a line shows change over time; a pie shows shares of one total.}
 \end{figure}

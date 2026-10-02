@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}[node distance=6mm]
   \node[diamondbox, fill=fsand] (R) {$R = 1$?\\[-1pt]\scriptsize interrupt pending};
   \node[slate, text width=40mm, right=16mm of R] (F) {normal fetch: $T_0, T_1, T_2$};
@@ -11,5 +12,6 @@
   \draw[arr] (R) -- node[lbl, right] {yes} (I0);
   \draw[arr] (I0) -- (I1); \draw[arr] (I1) -- (I2); \draw[arr] (I2) -- (ISR);
 \end{tikzpicture}
+\end{adjustbox}
 \caption{The interrupt cycle: the return address is saved in location 0 and further interrupts are disabled.}
 \end{figure}

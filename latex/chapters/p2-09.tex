@@ -39,18 +39,18 @@ window, Shannon/Nyquist numericals + Forouzan concepts}
 
 \end{sylbox}
 
-\needspace{246pt}
+\needspace{273pt}
 
 \hypertarget{p2-09--1-network-models}{%
 \section{Network Models}\label{p2-09--1-network-models}}
 
-\needspace{210pt}
+\needspace{237pt}
 
 \hypertarget{p2-09--11-osi-vs-tcpip}{%
 \subsection{OSI vs TCP/IP}\label{p2-09--11-osi-vs-tcpip}}
 
-\begin{listingblock}{160pt}
-\begin{Verbatim}[fontsize=\fontsize{6.8}{8.2}\selectfont]
+\begin{listingblock}{187pt}
+\begin{Verbatim}[fontsize=\fontsize{8.1}{9.8}\selectfont]
    OSI (7 layers)              TCP/IP (4/5 layers)        PDU          Devices / protocols
  ┌──────────────────┐        ┌───────────────────┐
  │ 7 Application    │        │                   │
@@ -73,7 +73,7 @@ window, Shannon/Nyquist numericals + Forouzan concepts}
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1270}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.6448}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2282}}@{}}
@@ -86,9 +86,6 @@ window, Shannon/Nyquist numericals + Forouzan concepts}
 \textbf{Address}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Physical & Bit transmission, encoding, topology, data rate & --- \\
 Data link & \textbf{Framing}, physical addressing, flow \& error control (hop-to-hop), MAC & \textbf{MAC (48-bit)} \\
 Network & \textbf{Logical addressing, routing} (host-to-host / source-to-destination) & \textbf{IP} \\
@@ -96,7 +93,9 @@ Transport & \textbf{Process-to-process (end-to-end)} delivery, segmentation, flo
 Session & Dialog control, \textbf{synchronisation (checkpoints)} & --- \\
 Presentation & \textbf{Translation, encryption, compression} & --- \\
 Application & User services & Specific (URL, email) \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -107,7 +106,7 @@ Application & User services & Specific (URL, email) \\
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1385}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3994}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3448}}@{}}
@@ -120,27 +119,26 @@ Application & User services & Specific (URL, email) \\
 \textbf{Notes}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 \textbf{Mesh} & \textbf{n(n−1)/2} links; each device n−1 I/O ports & Robust, expensive \\
 Star & n links & Central hub; hub failure kills network \\
 Bus & 1 backbone + drop lines & Cheap; backbone fault fails all \\
 Ring & n links & Token passing; one break can disable \\
 Tree / Hybrid & --- & \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
 Data flow: \textbf{simplex} (keyboard), \textbf{half-duplex} (walkie-talkie), \textbf{full-duplex} (telephone).
 
-\needspace{136pt}
+\needspace{147pt}
 
 \hypertarget{p2-09--2-signals--data-rates}{%
 \section{Signals \& Data Rates}\label{p2-09--2-signals--data-rates}}
 
-\begin{listingblock}{86pt}
-\begin{Verbatim}[fontsize=\fontsize{7.7}{9.3}\selectfont]
+\begin{listingblock}{97pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 Nyquist (noiseless):    Max bit rate = 2 · B · log₂ L          (L signal levels)
 Shannon (noisy):        Capacity C = B · log₂(1 + SNR)
 SNR_dB = 10 log₁₀(SNR)  → 30 dB = 1000, 20 dB = 100, 10 dB = 10
@@ -156,18 +154,18 @@ Nyquist: B = 3000 Hz, 4 levels → 2 × 3000 × 2 = \textbf{12 kbps}.
 
 Impairments: \textbf{attenuation} (loss of energy, dB = 10 log(P₂/P₁)), \textbf{distortion} (different delays of components), \textbf{noise} (thermal, induced, crosstalk, impulse).
 
-\needspace{216pt}
+\needspace{236pt}
 
 \hypertarget{p2-09--3-digital--analog-transmission}{%
 \section{Digital \& Analog Transmission}\label{p2-09--3-digital--analog-transmission}}
 
-\needspace{180pt}
+\needspace{200pt}
 
 \hypertarget{p2-09--31-line-coding}{%
 \subsection{Line Coding}\label{p2-09--31-line-coding}}
 
-\begin{listingblock}{130pt}
-\begin{Verbatim}[fontsize=\fontsize{7.5}{9.1}\selectfont]
+\begin{listingblock}{150pt}
+\begin{Verbatim}[fontsize=\fontsize{8.9}{10.8}\selectfont]
  Bits:        1      0      1      1      0
  NRZ-L      ──────┐      ┌─────────────┐      
  (1 = high)       └──────┘             └──────
@@ -185,7 +183,7 @@ Impairments: \textbf{attenuation} (loss of energy, dB = 10 log(P₂/P₁)), \tex
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1477}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5190}}@{}}
@@ -198,16 +196,15 @@ Impairments: \textbf{attenuation} (loss of energy, dB = 10 log(P₂/P₁)), \tex
 \textbf{Notes}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 NRZ-L, NRZ-I & Polar & No self-sync; baseline wandering \\
 RZ & Polar & 3 levels; 2 transitions per bit \\
 \textbf{Manchester}, Differential Manchester & Biphase & Self-synchronising; bandwidth = 2× NRZ; Ethernet (10 Mbps) / Token ring \\
 AMI, Pseudoternary & Bipolar & No DC component \\
 2B1Q, 8B6T, 4D-PAM5 & Multilevel & \\
 MLT-3 & Multitransition & 100Base-TX \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -247,7 +244,7 @@ MLT-3 & Multitransition & 100Base-TX \\
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1759}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1960}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5787}}@{}}
@@ -260,15 +257,14 @@ MLT-3 & Multitransition & 100Base-TX \\
 \textbf{Use}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 FDM & Frequency (analog) & Radio, TV, cable \\
 WDM & Wavelength (optical) & Fibre (DWDM) \\
 Synchronous TDM & Time slots fixed & T1 (24 channels, 1.544 Mbps), E1 (32 channels, 2.048 Mbps) \\
 Statistical TDM & Slots on demand & Needs address in slot \\
 Spread spectrum & FHSS, DSSS & Wireless, security \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -280,8 +276,8 @@ Spread spectrum & FHSS, DSSS & Wireless, security \\
 
 \textbf{Transmission media}:
 
-\begin{listingblock}{71pt}
-\begin{Verbatim}[fontsize=\fontsize{7.0}{8.5}\selectfont]
+\begin{listingblock}{81pt}
+\begin{Verbatim}[fontsize=\fontsize{8.3}{10.1}\selectfont]
 Guided:   Twisted pair (UTP Cat5/6, RJ-45; twisting reduces crosstalk)
           Coaxial (BNC; cable TV)
           Optical fibre (total internal reflection; single-mode vs multimode; highest bandwidth, no EMI)
@@ -298,7 +294,7 @@ Unguided: Radio waves (3 kHz–1 GHz, omnidirectional)
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2166}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2861}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2634}}
@@ -314,14 +310,13 @@ Unguided: Radio waves (3 kHz–1 GHz, omnidirectional)
 \textbf{Message switching}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Dedicated path, setup/\allowbreak{}teardown & No setup; each packet routed independently & Setup phase; packets follow same path & Store-and-forward whole message \\
 Telephone & Internet (IP) & ATM, Frame Relay, X.25 & Telegraph \\
 In-order, constant delay & Out-of-order possible & In-order & Large buffers \\
 Physical layer & Network layer & Data link (ATM) / network & Application \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -386,7 +381,7 @@ Throughput = η × bandwidth
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1753}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1783}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1982}}
@@ -405,13 +400,12 @@ Throughput = η × bandwidth
 \textbf{ACK}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Stop-and-Wait ARQ & 1 & 1 & The one frame & Individual; seq numbers 0/1 \\
 \textbf{Go-Back-N} & 2ⁿ − 1 & 1 & Lost frame \textbf{and all after it} & Cumulative \\
 \textbf{Selective Repeat} & 2ⁿ⁻¹ & 2ⁿ⁻¹ & Only lost frame & Individual / NAK \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -438,8 +432,8 @@ Stop-and-Wait η = 1/41 ≈ \textbf{2.4\%}. Window for 100\% = 1 + 40 = 41 → s
 
 \diagram{figures/p2-09-02}
 
-\begin{listingblock}{62pt}
-\begin{Verbatim}[fontsize=\fontsize{8.6}{10.4}\selectfont]
+\begin{listingblock}{64pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 Pure ALOHA:     S = G·e^(−2G), max 1/(2e) = 0.184 at G = 0.5 ; vulnerable time = 2·Tt
 Slotted ALOHA:  S = G·e^(−G),  max 1/e  = 0.368 at G = 1   ; vulnerable time = Tt
 CSMA/CD:        minimum frame size: Tt ≥ 2·Tp  ⇒  L_min = 2 · Tp · B
@@ -459,13 +453,13 @@ CSMA/CD:        minimum frame size: Tt ≥ 2·Tp  ⇒  L_min = 2 · Tp · B
   Token ring (802.5), token bus (802.4).
 \end{itemize}
 
-\needspace{101pt}
+\needspace{103pt}
 
 \hypertarget{p2-09--ethernet-ieee-8023}{%
 \subsection{Ethernet (IEEE 802.3)}\label{p2-09--ethernet-ieee-8023}}
 
-\begin{listingblock}{51pt}
-\begin{Verbatim}[fontsize=\fontsize{8.5}{10.3}\selectfont]
+\begin{listingblock}{53pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 Frame: | Preamble 7 | SFD 1 | Dest 6 | Src 6 | Type/Len 2 | Data 46–1500 | CRC 4 |
 Min frame = 64 B (without preamble) ; Max = 1518 B ; MAC address 48 bits (OUI 24 + 24)
 Broadcast MAC: FF:FF:FF:FF:FF:FF ; multicast: LSB of first byte = 1
@@ -474,7 +468,7 @@ Broadcast MAC: FF:FF:FF:FF:FF:FF ; multicast: LSB of first byte = 1
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1943}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1011}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1661}}@{}}
@@ -487,15 +481,14 @@ Broadcast MAC: FF:FF:FF:FF:FF:FF ; multicast: LSB of first byte = 1
 \textbf{Media}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 10Base5 / 10Base2 & 10 Mbps & Thick / thin coax \\
 10Base-T & 10 Mbps & UTP \\
 100Base-TX / FX & 100 Mbps & UTP / fibre \\
 1000Base-T & 1 Gbps & UTP Cat5e \\
 10GBase & 10 Gbps & Fibre/Cat6a \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -513,7 +506,7 @@ Devices: \textbf{Repeater/hub} (L1, one collision \& broadcast domain), \textbf{
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0824}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1276}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1391}}
@@ -535,15 +528,14 @@ Devices: \textbf{Repeater/hub} (L1, one collision \& broadcast domain), \textbf{
 \textbf{Hosts/net}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 A & 0 & 0--127 & /8 255.0.0.0 & 2⁷ (126 usable) & 2²⁴ − 2 \\
 B & 10 & 128--191 & /16 & 2¹⁴ & 2¹⁶ − 2 \\
 C & 110 & 192--223 & /24 & 2²¹ & 254 \\
 D & 1110 & 224--239 & --- & Multicast & --- \\
 E & 1111 & 240--255 & --- & Reserved & --- \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -576,13 +568,13 @@ Host 192.168.10.100/26 → network 192.168.10.64, broadcast 192.168.10.127
   \textbf{NAT}: maps private addresses to public; PAT uses ports.
 \end{itemize}
 
-\needspace{124pt}
+\needspace{125pt}
 
 \hypertarget{p2-09--82-ipv4-header}{%
 \subsection{IPv4 Header}\label{p2-09--82-ipv4-header}}
 
-\begin{listingblock}{74pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{75pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 | Ver 4 | HLEN 4 | DSCP/ToS 8 | Total length 16 |
 | Identification 16 | Flags 3 (–, DF, MF) | Fragment offset 13 (units of 8 bytes) |
 | TTL 8 | Protocol 8 (1 ICMP, 6 TCP, 17 UDP) | Header checksum 16 |
@@ -614,7 +606,7 @@ fragments carry 1480, 1480, 1020 bytes; offsets \textbf{0, 185, 370}; MF = 1, 1,
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1155}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3655}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3351}}
@@ -629,15 +621,14 @@ fragments carry 1480, 1480, 1020 bytes; offsets \textbf{0, 185, 370}; MF = 1, 1,
 \textbf{Path Vector}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Algorithm & \textbf{Bellman--Ford} & \textbf{Dijkstra} & --- \\
 Knowledge & Neighbours\textquotesingle{} tables & Whole topology (LSPs flooded) & Paths (AS list) \\
 Protocol & \textbf{RIP} & \textbf{OSPF} (also IS-IS) & \textbf{BGP} \\
 Problem & \textbf{Count-to-infinity} (fix: split horizon, poison reverse, hold-down) & Heavy computation/\allowbreak{}flooding & Policy-based \\
 Scope & Intra-AS (IGP) & Intra-AS (areas, backbone area 0) & Inter-AS (EGP) \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -660,7 +651,7 @@ Scope & Intra-AS (IGP) & Intra-AS (areas, backbone area 0) & Inter-AS (EGP) \\
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2539}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.7461}}@{}}
 \toprule\noalign{}
@@ -670,14 +661,13 @@ Scope & Intra-AS (IGP) & Intra-AS (areas, backbone area 0) & Inter-AS (EGP) \\
 \textbf{Purpose}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 \textbf{ARP} & IP → MAC (broadcast request, unicast reply) \\
 RARP / BOOTP / \textbf{DHCP} & Obtain IP address (DHCP: DORA --- Discover, Offer, Request, Ack; UDP 67/68) \\
 \textbf{ICMP} & Error reporting \& query: echo (ping), destination unreachable, time exceeded (traceroute), redirect, source quench \\
 IGMP & Multicast group membership \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -688,7 +678,7 @@ IGMP & Multicast group membership \\
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2369}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2268}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2909}}
@@ -704,16 +694,15 @@ IGMP & Multicast group membership \\
 \textbf{SCTP}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Connection & Connection-oriented & Connectionless & Connection-oriented (association) \\
 Reliability & Reliable, ordered & Unreliable & Reliable, multi-stream \\
 Unit & Byte stream & Message & Message (chunks) \\
 Header & 20--60 B & \textbf{8 B} & 12 B common header \\
 Flow/\allowbreak{}congestion control & Yes & No & Yes \\
 Use & HTTP, FTP, SMTP & DNS, SNMP, DHCP, VoIP, TFTP & Signalling; multihoming \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -740,13 +729,13 @@ Use & HTTP, FTP, SMTP & DNS, SNMP, DHCP, VoIP, TFTP & Signalling; multihoming \\
   RTT estimate: EstimatedRTT = (1 − α)·EstRTT + α·SampleRTT (α = 1/8).
 \end{itemize}
 
-\needspace{161pt}
+\needspace{169pt}
 
 \hypertarget{p2-09--tcp-congestion-control}{%
 \subsection{TCP Congestion Control}\label{p2-09--tcp-congestion-control}}
 
-\begin{listingblock}{111pt}
-\begin{Verbatim}[fontsize=\fontsize{8.3}{10.1}\selectfont]
+\begin{listingblock}{119pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
  cwnd
   │                 timeout → ssthresh = cwnd/2, cwnd = 1 (Tahoe/Reno)
   │            ╱╲   3 dup ACKs → ssthresh = cwnd/2, cwnd = ssthresh (Reno fast recovery)
@@ -769,13 +758,13 @@ Use & HTTP, FTP, SMTP & DNS, SNMP, DHCP, VoIP, TFTP & Signalling; multihoming \\
   \textbf{QoS}: leaky bucket (constant output rate), \textbf{token bucket} (allows bursts: max burst S = C / (M − ρ)), IntServ (RSVP), DiffServ.
 \end{itemize}
 
-\needspace{101pt}
+\needspace{103pt}
 
 \hypertarget{p2-09--well-known-ports}{%
 \subsection{Well-known Ports}\label{p2-09--well-known-ports}}
 
-\begin{listingblock}{51pt}
-\begin{Verbatim}[fontsize=\fontsize{8.5}{10.3}\selectfont]
+\begin{listingblock}{53pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 FTP 20 (data) / 21 (control)   SSH 22   TELNET 23   SMTP 25   DNS 53   DHCP 67/68
 TFTP 69   HTTP 80   POP3 110   NTP 123   IMAP 143   SNMP 161/162   BGP 179   HTTPS 443
 Ports: well-known 0–1023, registered 1024–49151, dynamic 49152–65535
@@ -830,7 +819,7 @@ Malware: virus, worm, Trojan, ransomware, spyware, rootkit, botnet, logic bomb, 
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2609}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2897}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4494}}@{}}
@@ -843,9 +832,6 @@ Malware: virus, worm, Trojan, ransomware, spyware, rootkit, botnet, logic bomb, 
 \textbf{Key facts}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Caesar & Substitution (mono-alphabetic) & Shift by k (k = 3) \\
 Vigenère & Poly-alphabetic & Keyword shifts \\
 Playfair & Digraph substitution & 5×5 matrix \\
@@ -859,7 +845,9 @@ RC4 & Stream cipher & WEP \\
 \textbf{Diffie--Hellman} & Key exchange & Discrete log; vulnerable to man-in-the-middle \\
 ECC & Asymmetric & Smaller keys for same security \\
 MD5 / SHA-1 / SHA-256 & Hash & 128 / 160 / 256-bit digests \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -873,13 +861,13 @@ MD5 / SHA-1 / SHA-256 & Hash & 128 / 160 / 256-bit digests \\
   \textbf{Diffie--Hellman worked}: p = 23, g = 5, a = 6, b = 15 → A = 5⁶ mod 23 = 8, B = 5¹⁵ mod 23 = 19; shared key = 19⁶ mod 23 = 8¹⁵ mod 23 = \textbf{2}.
 \end{itemize}
 
-\needspace{101pt}
+\needspace{103pt}
 
 \hypertarget{p2-09--113-digital-signature--pki}{%
 \subsection{Digital Signature \& PKI}\label{p2-09--113-digital-signature--pki}}
 
-\begin{listingblock}{51pt}
-\begin{Verbatim}[fontsize=\fontsize{8.3}{10.1}\selectfont]
+\begin{listingblock}{53pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 Sign:   signature = Encrypt(hash(M), sender's PRIVATE key)
 Verify: Decrypt(signature, sender's PUBLIC key) == hash(M)
 Confidentiality: encrypt with receiver's PUBLIC key; decrypt with receiver's PRIVATE key
@@ -1017,7 +1005,7 @@ Split \textbf{192.168.1.0/24} for LANs needing 100, 50, 25 and 10 hosts (allocat
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0774}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1592}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1872}}
@@ -1039,15 +1027,14 @@ Split \textbf{192.168.1.0/24} for LANs needing 100, 50, 25 and 10 hosts (allocat
 \textbf{Broadcast}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 A & 100 & /25 (126) & 192.168.1.0 & .1 -- .126 & .127 \\
 B & 50 & /26 (62) & 192.168.1.128 & .129 -- .190 & .191 \\
 C & 25 & /27 (30) & 192.168.1.192 & .193 -- .222 & .223 \\
 D & 10 & /28 (14) & 192.168.1.224 & .225 -- .238 & .239 \\
 Free & --- & /28 & 192.168.1.240 & --- & --- \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -1060,7 +1047,7 @@ Free & --- & /28 & 192.168.1.240 & --- & --- \\
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1099}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1074}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4833}}@{}}
@@ -1073,13 +1060,12 @@ Free & --- & /28 & 192.168.1.240 & --- & --- \\
 \textbf{After receiving B\textquotesingle s vector (B: A 1, B 0, C 2)}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 to A & 0 & 0 \\
 to B & 1 (direct) & 1 (direct) \\
 to C & 5 (direct) & min(5, 1 + 2) = \textbf{3 via B} \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -1144,7 +1130,7 @@ Syndrome c4 c2 c1 = 110₂ = 6 → flip bit 6 → corrected
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4344}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2478}}@{}}
 \toprule\noalign{}
@@ -1154,13 +1140,12 @@ Syndrome c4 c2 c1 = 110₂ = 6 → flip bit 6 → corrected
 \textbf{Compressed}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 2001:0db8:0000:0000:0000:ff00:0042:8329 & 2001:db8::ff00:42:8329 \\
 fe80:0000:0000:0000:0202:b3ff:fe1e:8329 & fe80::202:b3ff:fe1e:8329 \\
 0000:0000:0000:0000:0000:0000:0000:0001 & ::1 (loopback) \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 

@@ -35,7 +35,7 @@ Russell \& Norvig)}
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0937}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4707}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4356}}@{}}
@@ -47,12 +47,11 @@ Russell \& Norvig)}
 \textbf{Rational}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 \textbf{Thinking} & Cognitive modelling (GPS --- Newell \& Simon) & Laws of thought (logic) \\
 \textbf{Acting} & \textbf{Turing test} (1950, "Computing Machinery and Intelligence") & \textbf{Rational agent} (Russell \& Norvig --- the modern approach) \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -78,7 +77,7 @@ Russell \& Norvig)}
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1733}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5822}}@{}}
 \toprule\noalign{}
@@ -88,15 +87,14 @@ Russell \& Norvig)}
 \textbf{Behaviour}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Simple reflex & condition--action rules on current percept only \\
 Model-based reflex & keeps internal state of the world \\
 Goal-based & chooses actions to reach goals (search/\allowbreak{}planning) \\
 Utility-based & maximises expected utility \\
 Learning agent & performance element + learning element + critic + problem generator \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -127,7 +125,7 @@ b = branching factor, d = depth of shallowest goal, m = max depth, l = depth lim
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.3105}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1957}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1617}}
@@ -146,28 +144,27 @@ b = branching factor, d = depth of shallowest goal, m = max depth, l = depth lim
 \textbf{Space}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 \textbf{BFS} & Yes (finite b) & Yes (unit cost) & O(b\^{}d) & \textbf{O(b\^{}d)} \\
 Uniform-cost & Yes & \textbf{Yes} & O(b\^{}(1+⌊C*/\allowbreak{}ε⌋)) & same \\
 \textbf{DFS} & No (infinite paths) & No & O(b\^{}m) & \textbf{O(bm)} \\
 Depth-limited & No & No & O(b\^{}l) & O(bl) \\
 \textbf{Iterative deepening (IDDFS)} & Yes & Yes (unit cost) & O(b\^{}d) & \textbf{O(bd)} \\
 Bidirectional & Yes & Yes & O(b\^{}(d/2)) & O(b\^{}(d/2)) \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
 IDDFS combines BFS\textquotesingle s completeness/optimality with DFS\textquotesingle s memory --- preferred uninformed method for large spaces.
 
-\needspace{129pt}
+\needspace{136pt}
 
 \hypertarget{p2-10--22-heuristic-informed-search}{%
 \subsection{Heuristic (Informed) Search}\label{p2-10--22-heuristic-informed-search}}
 
-\begin{listingblock}{79pt}
-\begin{Verbatim}[fontsize=\fontsize{8.1}{9.8}\selectfont]
+\begin{listingblock}{86pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 Greedy best-first:  f(n) = h(n)                 — fast, not optimal, not complete
 A*:                 f(n) = g(n) + h(n)          — optimal if h is ADMISSIBLE (tree search)
                                                   or CONSISTENT (graph search)
@@ -185,7 +182,7 @@ Dominance:    h₂ ≥ h₁ (both admissible) ⇒ h₂ better (expands fewer nod
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0636}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1498}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.6080}}@{}}
@@ -198,16 +195,15 @@ Dominance:    h₂ ≥ h₁ (both admissible) ⇒ h₂ better (expands fewer nod
 \textbf{Open list after expansion (g, f = g + h)}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 1 & S (0, 7) & A (1, 7), B (4, 6) \\
 2 & B (4, 6) & A (1, 7), C (6, 7) \\
 3 & A (1, 7) & \textbf{B (3, 5)} --- cheaper path found, B re-opened; C (6, 7); G (13, 13) \\
 4 & B (3, 5) & \textbf{C (5, 6)}; G (13, 13) \\
 5 & C (5, 6) & \textbf{G (8, 8)} \\
 6 & G (8, 8) & Goal reached: \textbf{S → A → B → C → G, cost 8} (optimal) \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -228,27 +224,27 @@ With a consistent heuristic, a node is never re-expanded.
   \textbf{Means--ends analysis} (GPS): reduce the difference between current and goal state.
 \end{itemize}
 
-\needspace{285pt}
+\needspace{290pt}
 
 \hypertarget{p2-10--3-game-playing}{%
 \section{Game Playing}\label{p2-10--3-game-playing}}
 
-\needspace{249pt}
+\needspace{254pt}
 
 \hypertarget{p2-10--31-minimax}{%
 \subsection{Minimax}\label{p2-10--31-minimax}}
 
 MAX picks maximum, MIN picks minimum child value; complete \& optimal against an optimal opponent. Time O(b\^{}m), space O(bm).
 
-\needspace{183pt}
+\needspace{188pt}
 
 \hypertarget{p2-10--32-alphabeta-pruning}{%
 \subsection{Alpha--Beta Pruning}\label{p2-10--32-alphabeta-pruning}}
 
 α = best value MAX can guarantee so far (lower bound); β = best value MIN can guarantee (upper bound). \textbf{Prune when α ≥ β.}
 
-\begin{listingblock}{103pt}
-\begin{Verbatim}[fontsize=\fontsize{8.5}{10.3}\selectfont]
+\begin{listingblock}{108pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
                          MAX                    A = 3
                     ┌─────┴─────┬───────────┐
                    MIN         MIN          MIN
@@ -328,7 +324,7 @@ MAX picks maximum, MIN picks minimum child value; complete \& optimal against an
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2928}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4822}}@{}}
 \toprule\noalign{}
@@ -338,26 +334,25 @@ MAX picks maximum, MIN picks minimum child value; complete \& optimal against an
 \textbf{Domain}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 \textbf{DENDRAL} (first) & Chemical structure (mass spectrometry) \\
 \textbf{MYCIN} & Blood infections --- backward chaining, \textbf{certainty factors} \\
 EMYCIN & Shell from MYCIN \\
 PROSPECTOR & Mineral exploration \\
 XCON / R1 & DEC computer configuration --- forward chaining \\
 INTERNIST / CADUCEUS & Internal medicine \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
-\needspace{121pt}
+\needspace{125pt}
 
 \hypertarget{p2-10--44-uncertainty}{%
 \subsection{Uncertainty}\label{p2-10--44-uncertainty}}
 
-\begin{listingblock}{71pt}
-\begin{Verbatim}[fontsize=\fontsize{8.3}{10.1}\selectfont]
+\begin{listingblock}{75pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 Bayes:   P(H|E) = P(E|H)·P(H) / P(E)
 Certainty factor (MYCIN): CF = MB − MD ∈ [−1, 1]
   combining two positive CFs: CF = CF1 + CF2(1 − CF1)
@@ -375,7 +370,7 @@ Other: fuzzy logic (vagueness --- §7), Markov models, HMMs.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4223}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5777}}@{}}
 \toprule\noalign{}
@@ -385,9 +380,6 @@ Other: fuzzy logic (vagueness --- §7), Markov models, HMMs.
 \textbf{Meaning}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 \textbf{STRIPS} (Fikes \& Nilsson, 1971) & Operators with \textbf{preconditions, add list, delete list}; closed-world assumption \\
 Linear planning (goal stack) & Solve goals one at a time using a stack --- can fail on interacting goals (\textbf{Sussman anomaly}) \\
 Non-linear planning & Goals interleaved; constraint posting \\
@@ -395,7 +387,9 @@ Non-linear planning & Goals interleaved; constraint posting \\
 \textbf{Hierarchical planning (HTN)} & Abstract actions decomposed into sub-tasks (ABSTRIPS) \\
 Graphplan & Planning graph with mutex links \\
 Forward (progression) vs backward (regression) state-space planning & \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -447,7 +441,7 @@ STRIPS operator (Blocks world)
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1220}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2464}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2798}}
@@ -462,13 +456,12 @@ STRIPS operator (Blocks world)
 \textbf{Expert system}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Autonomy & Methods invoked by others & Decides itself whether to act & Advises user \\
 Behaviour & Passive & Proactive, reactive, social & Passive reasoning \\
 Interaction & Method calls & Communication languages & User interface \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -589,7 +582,7 @@ A ∩ A' = {0.2, 0.3, 0} ≠ ∅
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1431}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3483}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5086}}@{}}
@@ -602,13 +595,12 @@ A ∩ A' = {0.2, 0.3, 0} ≠ ∅
 \textbf{Examples}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 \textbf{Supervised} & Labelled input--output pairs & Perceptron, back-propagation MLP, SVM, decision trees \\
 \textbf{Unsupervised} & Unlabelled & \textbf{SOM (Kohonen)}, k-means, Hebbian, competitive learning, ART \\
 \textbf{Reinforcement} & Rewards / penalties from environment & Q-learning, SARSA, TD learning; MDP (states, actions, rewards, policy) \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -717,7 +709,7 @@ Q-learning: Q(s,a) ← Q(s,a) + α{[}r + γ max\_a′ Q(s′,a′) − Q(s,a){]}
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0659}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0679}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1559}}
@@ -733,9 +725,6 @@ Q-learning: Q(s,a) ← Q(s,a) + α{[}r + γ max\_a′ Q(s′,a′) − Q(s,a){]}
 \textbf{What happens}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 1 & D & −∞, +∞ & sees 3, 5 → D = 5 \\
 2 & B & --- & β = 5 \\
 3 & E & −∞, 5 & sees 6 → α = 6 ≥ β = 5 → \textbf{prune leaf 9}; E returns 6 \\
@@ -743,7 +732,9 @@ Q-learning: Q(s,a) ← Q(s,a) + α{[}r + γ max\_a′ Q(s′,a′) − Q(s,a){]}
 5 & F & 5, +∞ & sees 1, 2 → F = 2 \\
 6 & C & 5, +∞ & β = 2 ≤ α = 5 → \textbf{prune G (leaves 0, −1)} \\
 7 & A & --- & A = max(5, 2) = \textbf{5} \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -777,7 +768,7 @@ Rules: R1: A ∧ B → C; R2: C → D; R3: D ∧ E → F. Facts: A, B, E. Goal: 
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3104}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3356}}@{}}
 \toprule\noalign{}
@@ -787,25 +778,24 @@ Rules: R1: A ∧ B → C; R2: C → D; R3: D ∧ E → F. Facts: A, B, E. Goal: 
 \textbf{Backward chaining (goal-driven)}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 A, B ⊢ C (R1) & Goal F ← need D and E (R3) \\
 C ⊢ D (R2) & E is a fact; D ← need C (R2) \\
 D, E ⊢ F (R3) ✔ & C ← need A and B (R1); both facts ✔ \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
-\needspace{128pt}
+\needspace{133pt}
 
 \hypertarget{p2-10--114-bayes--medical-test}{%
 \subsection{Bayes --- Medical Test}\label{p2-10--114-bayes--medical-test}}
 
 Disease prevalence 1\%, test sensitivity 99\%, false-positive rate 5\%.
 
-\begin{listingblock}{48pt}
-\begin{Verbatim}[fontsize=\fontsize{7.7}{9.3}\selectfont]
+\begin{listingblock}{53pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 P(D | +) = P(+ | D)·P(D) / [P(+ | D)·P(D) + P(+ | ¬D)·P(¬D)]
          = 0.99 × 0.01 / (0.0099 + 0.05 × 0.99)
          = 0.0099 / 0.0594 ≈ 0.167      → only about 17% of positives actually have the disease
@@ -840,7 +830,7 @@ Output = (0.4 × 40 + 0.6 × 80) / (0.4 + 0.6) = \textbf{64\%}.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0863}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0432}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1074}}
@@ -859,15 +849,14 @@ Output = (0.4 × 40 + 0.6 × 80) / (0.4 + 0.6) = \textbf{64\%}.
 \textbf{Expected copies (4pᵢ)}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 01101 & 13 & 169 & 0.144 & 0.58 \\
 11000 & 24 & 576 & 0.492 & 1.97 \\
 01000 & 8 & 64 & 0.055 & 0.22 \\
 10011 & 19 & 361 & 0.309 & 1.23 \\
 & & Σ = 1170 & & \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -880,7 +869,7 @@ Crossover 0110\textbar1 × 1100\textbar0 at position 4 → \textbf{01100 (12)} a
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1499}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0559}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0559}}
@@ -899,16 +888,15 @@ Crossover 0110\textbar1 × 1100\textbar0 at position 4 → \textbf{01100 (12)} a
 \textbf{Errors in epoch}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 1 & 1 & 1 & 1 & 1 \\
 2 & 2 & 1 & 0 & 3 \\
 3 & 2 & 1 & −1 & 3 \\
 4 & 2 & 2 & −1 & 2 \\
 5 & 2 & 1 & −2 & 1 \\
 6 & 2 & 1 & −2 & 0 → converged \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -937,7 +925,7 @@ net = 0.5 → o = σ(0.5) = 0.6225
 Store bipolar pattern p = {[}1, −1, 1{]}: W = p pᵀ − I.
 
 \begin{listingblock}{53pt}
-\begin{Verbatim}[fontsize=\fontsize{8.9}{10.8}\selectfont]
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 W = |  0  −1   1 |      Noisy input x = [1, 1, 1]
     | −1   0  −1 |      W x = [0, −2, 0] → sign (keep old value on 0) = [1, −1, 1]
     |  1  −1   0 |      → stored pattern recovered

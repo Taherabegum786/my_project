@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}[node distance=9mm]
   \node[slate, text width=28mm] (R) {\textbf{Ring}\\\scriptsize abelian group under $+$, semigroup under $\times$, distributive};
   \node[sage, text width=24mm, right=of R] (CR) {\textbf{Commutative ring}\\\scriptsize $ab = ba$};
@@ -7,6 +8,7 @@
   \node[rose, text width=27mm, right=of ID] (F) {\textbf{Field}\\\scriptsize every $a \ne 0$ has an inverse};
   \draw[arr] (R) -- (CR); \draw[arr] (CR) -- (ID); \draw[arr] (ID) -- (F);
 \end{tikzpicture}
+\end{adjustbox}
 \caption{Structures with two operations. $\mathbb{Z}$ is an integral domain but not a field; $\mathbb{Z}_n$ is a
 field exactly when $n$ is prime; every finite integral domain is a field.}
 \end{figure}

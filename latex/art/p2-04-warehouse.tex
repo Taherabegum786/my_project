@@ -1,0 +1,29 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \node[db, text width=16mm, font=\footnotesize] (s1) at (0,1.0) {OLTP\\sources};
+  \node[db, text width=16mm, font=\footnotesize] (s2) at (0,-1.0) {flat\\files};
+  \node[sand, text width=20mm, font=\footnotesize] (etl) at (2.9,0) {\textbf{ETL}\\extract,\\transform, load};
+  \node[db, minimum width=26mm, minimum height=18mm, text width=24mm, font=\footnotesize] (dw) at (6.1,0) {\textbf{data}\\\textbf{warehouse}};
+  \node[sage, text width=18mm, font=\footnotesize] (dm) at (9.1,1.3) {data marts};
+  \begin{scope}[shift={(8.4,-1.9)}, x={(1cm,0)}, y={(0,1cm)}, z={(0.45cm,0.3cm)}]
+    \foreach \i in {0,1,2} \foreach \j in {0,1,2} {
+      \filldraw[fill=fslate!80, draw=fgink, line width=0.35pt] (\i*0.5,\j*0.5,0) -- ++(0.5,0,0) -- ++(0,0.5,0) -- ++(-0.5,0,0) -- cycle;
+      \filldraw[fill=fslate!45, draw=fgink, line width=0.35pt] (\i*0.5,1.5,\j*0.5) -- ++(0.5,0,0) -- ++(0,0,0.5) -- ++(-0.5,0,0) -- cycle;
+      \filldraw[fill=fslate!95!black, draw=fgink, line width=0.35pt] (1.5,\i*0.5,\j*0.5) -- ++(0,0.5,0) -- ++(0,0,0.5) -- ++(0,-0.5,0) -- cycle;
+    }
+    \node[font=\scriptsize] at (0.75,-0.25,0) {item};
+    \node[font=\scriptsize, rotate=90] at (-0.25,0.75,0) {time};
+    \node[font=\scriptsize] at (2.25,0.1,0.9) {location};
+  \end{scope}
+  \node[font=\footnotesize] at (9.5,-2.85) {OLAP cube};
+  \node[rose, text width=22mm, font=\footnotesize] (bi) at (12.4,0) {reports,\\dashboards,\\mining};
+  \draw[arr] (s1) -- (etl); \draw[arr] (s2) -- (etl); \draw[arr] (etl) -- (dw);
+  \draw[arr] (dw) -- (dm); \draw[arr] (dw) -- (8.2,-1.2);
+  \draw[arr] (dm) -- (bi); \draw[arr] (10.6,-1.2) -- (bi);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Data-warehouse architecture. The warehouse is subject-oriented, integrated, time-variant and
+non-volatile (Inmon); OLAP views it as a multidimensional cube that can be sliced, diced, rolled up and drilled down.}
+\end{figure}

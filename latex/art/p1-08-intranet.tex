@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}
   \node[panel, minimum width=58mm, minimum height=36mm] (ORG) at (0,0) {};
   \node[capt, anchor=north west] at (ORG.north west) {the organisation};
@@ -12,6 +13,7 @@
   \draw[arrd] (IN) -- (FW); \draw[arrd] (FW) -- (NET);
   \draw[dasharr, <->] (IN) -- (EX);
 \end{tikzpicture}
+\end{adjustbox}
 \caption{Intranet, extranet and Internet. A firewall filters traffic between the private network and the
 public Internet.}
 \end{figure}

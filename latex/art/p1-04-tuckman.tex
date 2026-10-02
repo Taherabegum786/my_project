@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}
   \foreach \i/\n/\t/\col in {0/Forming/{polite,\\uncertain}/fslate, 1/Storming/{conflict over\\roles}/frose, 2/Norming/{rules and\\cohesion}/fsage,
       3/Performing/{productive\\teamwork}/fsand, 4/Adjourning/{task ends,\\group disbands}/fgrey} {
@@ -7,5 +8,6 @@
   }
   \foreach \i [evaluate=\i as \j using int(\i+1)] in {0,...,3} \draw[arr] (t\i.east) -- (t\j.west);
 \end{tikzpicture}
+\end{adjustbox}
 \caption{Tuckman's stages of group development.}
 \end{figure}

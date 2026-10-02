@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}[node distance=12mm]
   \node[slate, text width=30mm] (IV) {\textbf{Independent}\\\footnotesize cause — manipulated};
   \node[grey, text width=30mm, right=of IV] (MV) {\textbf{Mediating}\\\footnotesize the mechanism};
@@ -10,6 +11,7 @@
   \draw[dasharr] (MOD) -- ($(MV.north)!0.5!(DV.north)+(0,0)$);
   \draw[dasharr] (EX) -- (DV);
 \end{tikzpicture}
+\end{adjustbox}
 \caption{How variables relate in a study. Example: teaching method (independent) raises motivation
 (mediating), which raises achievement (dependent); the effect may be stronger for younger pupils
 (moderator) and can be distorted by prior knowledge (extraneous).}

@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}[scale=0.85]
   \draw[thinline, fgink!40, ->] (-0.3,0) -- (5.3,0) node[right, font=\scriptsize] {$x$};
   \draw[thinline, fgink!40, ->] (0,-0.3) -- (0,5.2) node[above, font=\scriptsize] {$y$};
@@ -11,6 +12,7 @@
   \draw[thinline] (2,2) -- (4,2) (2,2) -- (2,4);
   \node[font=\footnotesize] at (2.55,2.5) {$90^\circ$};
 \end{tikzpicture}
+\end{adjustbox}
 \caption{Rotation about a pivot: translate the pivot to the origin, rotate, translate back —
 $T(2,2)\,R(90^\circ)\,T(-2,-2)$.}
 \end{figure}

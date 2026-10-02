@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}
   \filldraw[fill=fslate!60, draw=fgink, line width=0.5pt] (0,0) rectangle (4,3);
   \node[capt, anchor=south] at (2,3.05) {window (world)};
@@ -11,6 +12,7 @@
   \fill[fwine] (9.45,1.5) circle (2pt); \node[font=\scriptsize, anchor=south west] at (9.45,1.5) {$(x_v, y_v)$};
   \draw[dasharr] (4.3,1.5) -- node[lbl, above] {scale and translate} (7.2,1.35);
 \end{tikzpicture}
+\end{adjustbox}
 \caption{Window-to-viewport mapping preserves the relative position of a point.}
 \end{figure}
 \begin{formulatable}

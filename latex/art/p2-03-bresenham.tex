@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}[x=0.72cm, y=0.72cm]
   \foreach \x/\y in {20/10, 21/11, 22/12, 23/12, 24/13, 25/14, 26/15, 27/16, 28/16, 29/17, 30/18}
     \filldraw[fill=fwine!45, draw=fgink!60, line width=0.3pt] ({\x-20-0.5},{\y-10-0.5}) rectangle ++(1,1);
@@ -9,6 +10,7 @@
   \foreach \y in {10,12,...,18} \node[font=\scriptsize, left] at (-0.5,{\y-10}) {\y};
   \node[lbl, anchor=west, text width=40mm] at (11.0,4.0) {shaded pixels chosen by Bresenham's algorithm; the true line is drawn over them};
 \end{tikzpicture}
+\end{adjustbox}
 \caption{Bresenham's algorithm for the line from (20, 10) to (30, 18): at each column it picks the pixel
 nearer the true line using only integer arithmetic.}
 \end{figure}

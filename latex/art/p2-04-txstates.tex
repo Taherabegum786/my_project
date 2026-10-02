@@ -1,0 +1,20 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[st/.style={ink, rounded rectangle, fill=fslate, minimum width=24mm, minimum height=8mm, font=\small,
+    blur shadow={shadow blur steps=6, shadow xshift=0.7pt, shadow yshift=-0.9pt, shadow opacity=22}}]
+  \node[st] (A) at (0,0) {active};
+  \node[st] (P) at (4,1.6) {partially committed};
+  \node[st, fill=fsage] (C) at (9.6,1.6) {committed};
+  \node[st, fill=frose] (F) at (4,-1.6) {failed};
+  \node[st, fill=fgrey] (B) at (9.6,-1.6) {aborted};
+  \draw[arr] (-1.6,0) -- (A);
+  \draw[arr] (A) -- node[lbl, sloped, above] {last statement} (P);
+  \draw[arr] (P) -- node[lbl, above] {written to stable storage} (C);
+  \draw[arr] (A) -- node[lbl, sloped, below] {error} (F);
+  \draw[arr] (P) -- node[lbl, right] {error} (F);
+  \draw[arr] (F) -- node[lbl, below] {rolled back} (B);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{The states of a transaction.}
+\end{figure}

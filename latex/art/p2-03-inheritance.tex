@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}[cls/.style={ink, rectangle, fill=fslate, minimum width=8mm, minimum height=6mm, font=\footnotesize\bfseries},
     inh/.style={-{Triangle[open, length=2.6mm, width=2.4mm]}, draw=fgink, line width=0.55pt}]
   \begin{scope}
@@ -24,6 +25,7 @@
     \node[capt] at (0,-0.8) {hybrid (diamond)};
   \end{scope}
 \end{tikzpicture}
+\end{adjustbox}
 \caption{Kinds of inheritance, drawn with the UML generalisation arrow (pointing to the base class). The
 diamond causes duplicate copies of A in D unless A is declared a \emph{virtual} base class in C++.}
 \end{figure}

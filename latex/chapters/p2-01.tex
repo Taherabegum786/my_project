@@ -44,7 +44,7 @@ from treating \(p \rightarrow q\) as a promise that is broken only when \(p\) ho
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0417}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0417}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0535}}
@@ -72,14 +72,13 @@ from treating \(p \rightarrow q\) as a promise that is broken only when \(p\) ho
 \textbf{p⊕q}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 T & T & F & T & T & \textbf{T} & T & F \\
 T & F & F & F & T & \textbf{F} & F & T \\
 F & T & T & F & T & \textbf{T} & F & T \\
 F & F & T & F & F & \textbf{T} & T & F \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -125,7 +124,7 @@ Proofs, resolution in artificial intelligence and many examination questions are
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2344}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1661}}@{}}
 \toprule\noalign{}
@@ -135,9 +134,6 @@ Proofs, resolution in artificial intelligence and many examination questions are
 \textbf{Form}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Modus Ponens & p, p→q ⊢ q \\
 Modus Tollens & ¬q, p→q ⊢ ¬p \\
 Hypothetical syllogism & p→q, q→r ⊢ p→r \\
@@ -147,7 +143,9 @@ Simplification & p∧q ⊢ p \\
 Resolution & p∨q, ¬p∨r ⊢ q∨r \\
 Universal instantiation & ∀x P(x) ⊢ P(c) \\
 Existential generalisation & P(c) ⊢ ∃x P(x) \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -183,7 +181,7 @@ included.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2072}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4117}}@{}}
 \toprule\noalign{}
@@ -193,9 +191,6 @@ included.
 \textbf{Count on n elements}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Reflexive & 2\^{}(n² − n) \\
 Irreflexive & 2\^{}(n² − n) \\
 Symmetric & 2\^{}(n(n+1)/\allowbreak{}2) \\
@@ -207,7 +202,9 @@ Functions A→B ( & A \\
 One-one (m ≤ n) & n!/(n−m)! \\
 Onto & Σ (−1)ᵏ C(n,k)(n−k)ᵐ \\
 Bijections (m = n) & n! \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -507,7 +504,7 @@ Paths: A-C-E = 3+5+3 = \textbf{11} (critical), B-D-E = 4+2+3 = 9. Project durati
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2689}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2806}}@{}}
 \toprule\noalign{}
@@ -517,9 +514,6 @@ Paths: A-C-E = 3+5+3 = \textbf{11} (critical), B-D-E = 4+2+3 = 9. Project durati
 \textbf{Formula}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Earliest start (forward pass) & ES = max(EF of predecessors) \\
 Latest finish (backward pass) & LF = min(LS of successors) \\
 Total float & LS − ES = LF − EF \\
@@ -527,7 +521,9 @@ Critical activity & Total float = 0 \\
 PERT expected time & tₑ = (a + 4m + b)/6 \\
 PERT variance & σ² = ((b − a)/6)² \\
 Probability & Z = (T − Tₑ)/σ\_path \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -561,7 +557,7 @@ Add slacks s₁, s₂, s₃.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0893}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0535}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0785}}
@@ -589,14 +585,13 @@ Add slacks s₁, s₂, s₃.
 \textbf{Ratio}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 s₁ & 1 & 0 & 1 & 0 & 0 & 4 & --- \\
 s₂ & 0 & \textbf{2} & 0 & 1 & 0 & 12 & 12/2 = \textbf{6} ← \\
 s₃ & 3 & 2 & 0 & 0 & 1 & 18 & 18/2 = 9 \\
 Z & −3 & \textbf{−5} ↑ & 0 & 0 & 0 & 0 & \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -606,7 +601,7 @@ x₂ enters (most negative), s₂ leaves (minimum ratio). Pivot = 2.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0893}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0785}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0535}}
@@ -634,14 +629,13 @@ x₂ enters (most negative), s₂ leaves (minimum ratio). Pivot = 2.
 \textbf{Ratio}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 s₁ & 1 & 0 & 1 & 0 & 0 & 4 & 4 \\
 x₂ & 0 & 1 & 0 & 1/2 & 0 & 6 & --- \\
 s₃ & \textbf{3} & 0 & 0 & −1 & 1 & 6 & 6/3 = \textbf{2} ← \\
 Z & \textbf{−3} ↑ & 0 & 0 & 5/2 & 0 & 30 & \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -651,7 +645,7 @@ x₁ enters, s₃ leaves.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0857}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0514}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0514}}
@@ -676,14 +670,13 @@ x₁ enters, s₃ leaves.
 \textbf{RHS}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 s₁ & 0 & 0 & 1 & 1/3 & −1/3 & 2 \\
 x₂ & 0 & 1 & 0 & 1/2 & 0 & 6 \\
 x₁ & 1 & 0 & 0 & −1/3 & 1/3 & 2 \\
 Z & 0 & 0 & 0 & 3/2 & 1 & \textbf{36} \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -696,7 +689,7 @@ Z & 0 & 0 & 0 & 3/2 & 1 & \textbf{36} \\
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0920}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0510}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0510}}
@@ -714,14 +707,13 @@ Z & 0 & 0 & 0 & 3/2 & 1 & \textbf{36} \\
 \textbf{Supply}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 S1 & 4 & 6 & 8 & 20 \\
 S2 & 5 & 8 & 7 & 30 \\
 S3 & 6 & 9 & 5 & 25 \\
 Demand & 10 & 25 & 40 & 75 (balanced) \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -742,7 +734,7 @@ Recomputing u, v gives all reduced costs ≥ 0 → \textbf{optimal cost 440}.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0357}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0492}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0492}}
@@ -757,13 +749,12 @@ Recomputing u, v gives all reduced costs ≥ 0 → \textbf{optimal cost 440}.
 \textbf{J3}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 A & 9 & 2 & 7 \\
 B & 6 & 4 & 3 \\
 C & 5 & 8 & 1 \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 

@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}
   \foreach \x/\col/\head/\items in {
       0/fslate/Air/{PM\textsubscript{2.5}, PM\textsubscript{10} — lungs, heart\\SO\textsubscript{2}, NO\textsubscript{x} — acid rain\\CO — binds haemoglobin\\ground-level O\textsubscript{3}\\lead — neurotoxic},
@@ -10,5 +11,6 @@
     \node[plain, text width=34mm, align=left, font=\footnotesize, anchor=north] at (\x*3.95,-0.6) {\items};
   }
 \end{tikzpicture}
+\end{adjustbox}
 \caption{Major forms of pollution and their best-known health effects.}
 \end{figure}

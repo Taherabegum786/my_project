@@ -1,0 +1,20 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[ent/.style={ink, rectangle, fill=fslate, minimum width=19mm, minimum height=7mm, font=\footnotesize},
+    att/.style={ink, ellipse, fill=fsand, minimum width=17mm, minimum height=7mm, font=\footnotesize, inner sep=1pt},
+    rel/.style={ink, diamond, fill=fsage, aspect=1.8, inner sep=1pt, minimum width=17mm, minimum height=9mm, font=\footnotesize}]
+  \node[ent] at (0,0) {Entity}; \node[lbl] at (0,-0.75) {entity set};
+  \node[ent, double, double distance=1.5pt] at (3.4,0) {Weak}; \node[lbl] at (3.4,-0.75) {weak entity};
+  \node[att] at (6.8,0) {attribute}; \node[lbl] at (6.8,-0.75) {simple attribute};
+  \node[att] at (10.2,0) {\underline{roll\_no}}; \node[lbl] at (10.2,-0.75) {key attribute};
+  \node[att, double, double distance=1.3pt] at (0,-2.0) {phones}; \node[lbl] at (0,-2.75) {multivalued};
+  \node[att, dashed] at (3.4,-2.0) {age}; \node[lbl] at (3.4,-2.75) {derived};
+  \node[rel] at (6.8,-2.0) {Rel}; \node[lbl] at (6.8,-2.85) {relationship};
+  \node[rel, double, double distance=1.3pt] at (10.2,-2.0) {Ident}; \node[lbl] at (10.2,-2.85) {identifying relationship};
+  \draw[fgink, line width=0.5pt] (1.0,-4.0) -- (3.6,-4.0); \node[lbl, anchor=west] at (3.8,-4.0) {partial participation};
+  \draw[fgink, line width=0.5pt, double, double distance=1.4pt] (7.2,-4.0) -- (9.8,-4.0); \node[lbl, anchor=west] at (10.0,-4.0) {total participation};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Chen's ER notation.}
+\end{figure}

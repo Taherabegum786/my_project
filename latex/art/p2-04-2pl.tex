@@ -1,0 +1,17 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \draw[arr] (0,0) -- (10.5,0) node[right, font=\footnotesize] {time};
+  \draw[arr] (0,0) -- (0,3.4) node[above, font=\footnotesize] {locks held};
+  \fill[fsage!70] (0.5,0) -- (1.5,1) -- (2.5,1) -- (2.5,2) -- (3.6,2) -- (3.6,3) -- (5.2,3) -- (5.2,2) -- (6.6,2) -- (6.6,1) -- (8.2,1) -- (8.2,0) -- cycle;
+  \draw[fgink, line width=0.6pt] (0.5,0) -- (1.5,1) -- (2.5,1) -- (2.5,2) -- (3.6,2) -- (3.6,3) -- (5.2,3) -- (5.2,2) -- (6.6,2) -- (6.6,1) -- (8.2,1) -- (8.2,0);
+  \fill[fwine] (3.6,3) circle (2.4pt);
+  \node[font=\footnotesize, text=fwine, above] at (3.6,3.05) {lock point};
+  \node[lbl] at (2.0,2.4) {growing phase};
+  \node[lbl] at (7.2,2.4) {shrinking phase};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Two-phase locking: a transaction acquires all its locks before releasing any. Serializability order
+follows the order of the lock points.}
+\end{figure}

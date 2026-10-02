@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}[node distance=17mm]
   \node[slate, minimum width=24mm] (S) {\textbf{Sender}\\\footnotesize source};
   \node[grey, minimum width=22mm, right=of S] (M) {\textbf{Message}};
@@ -12,6 +13,7 @@
   \node[cloudnode, above=8mm of C, minimum width=22mm, minimum height=11mm, fill=frose] (N) {\footnotesize\textbf{Noise}};
   \draw[decorate, decoration={zigzag, segment length=4pt, amplitude=1.5pt}, fwine, line width=0.6pt, ->] (N) -- (C);
 \end{tikzpicture}
+\end{adjustbox}
 \caption{The general model of communication. Shannon and Weaver's contribution was the noise source, which
 can distort the message at any point on the channel.}
 \end{figure}

@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}
   \foreach \x/\col/\h/\cause/\fix in {
       0/fslate/Structural/{two instructions need the same resource}/{duplicate resources; separate instruction and data caches},
@@ -9,5 +10,6 @@
     \node[plain, text width=44mm, align=left, font=\footnotesize, anchor=north, minimum height=24mm] at (\x*5.1,-0.6) {\textit{cause:} \cause\\[3pt]\textit{remedy:} \fix};
   }
 \end{tikzpicture}
+\end{adjustbox}
 \caption{The three kinds of pipeline hazard and how they are handled.}
 \end{figure}

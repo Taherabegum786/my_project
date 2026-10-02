@@ -1,0 +1,19 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \foreach \w/\col/\name/\cond [count=\k] in {14.0/fgrey/1NF/{atomic values}, 12.0/fslate/2NF/{no partial dependency}, 10.0/fsage/3NF/{no transitive dependency},
+      8.0/fsand/BCNF/{every determinant a super key}, 6.0/frose/4NF/{no non-trivial MVD}, 4.0/fochre/5NF/{no non-trivial join dependency}} {
+    \pgfmathsetmacro{\yb}{0.25*(\k-1)}
+    \pgfmathsetmacro{\yt}{5.6-0.6*(\k-1)}
+    \filldraw[fill=\col, draw=fgink, line width=0.5pt, rounded corners=4pt] ({-\w/2},\yb) rectangle ({\w/2},\yt);
+    \ifnum\k<6
+      \node[font=\small, anchor=north] at (0,{\yt-0.06}) {\textbf{\name}\ \ \textit{\footnotesize \cond}};
+    \else
+      \node[font=\small, align=center] at (0,{(\yb+\yt)/2}) {\textbf{\name}\\\textit{\footnotesize \cond}};
+    \fi
+  }
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Each normal form is stricter than the one enclosing it: a relation in BCNF is also in 3NF, 2NF and 1NF.}
+\end{figure}

@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}[node distance=9mm]
   \node[slate, text width=24mm] (A) {Instructional\\objectives};
   \node[sage,  text width=24mm, right=of A] (B) {Entering\\behaviour};
@@ -10,5 +11,6 @@
   \draw[thinline] (D.south) -- (D.south |- y) -- node[lbl, below, pos=0.5] {feedback} (A.south |- y);
   \foreach \n in {A,B,C} \draw[arr] (\n.south |- y) -- (\n.south);
 \end{tikzpicture}
+\end{adjustbox}
 \caption{Glaser's Basic Teaching Model. Assessment feeds back into every earlier component.}
 \end{figure}

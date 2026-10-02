@@ -1,0 +1,17 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \node[grey, text width=38mm] (R) at (0,0) {$R(S, C, I, P, G)$\\\footnotesize key $SC$ — 1NF only};
+  \node[sage, text width=26mm] (R1) at (-3.4,-1.8) {$R_1(S, C, G)$\\\footnotesize BCNF};
+  \node[slate, text width=32mm] (R2) at (3.2,-1.8) {$R_2(C, I, P)$\\\footnotesize 2NF; $C\to I\to P$};
+  \node[sage, text width=22mm] (R21) at (1.6,-3.6) {$R_{21}(C, I)$\\\footnotesize BCNF};
+  \node[sage, text width=22mm] (R22) at (4.8,-3.6) {$R_{22}(I, P)$\\\footnotesize BCNF};
+  \draw[arr] (R) -- node[lbl, above left] {remove partial $C\to I, P$} (R1);
+  \draw[arr] (R) -- (R2);
+  \draw[arr] (R2) -- node[lbl, left] {remove transitive} (R21); \draw[arr] (R2) -- (R22);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Decomposing $R(S,C,I,P,G)$ with $SC\to G$, $C\to I$, $I\to P$. The final schemas are lossless and
+preserve every dependency.}
+\end{figure}

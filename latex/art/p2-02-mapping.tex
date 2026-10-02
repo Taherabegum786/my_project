@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}[x=0.32cm]
   \foreach \y/\name/\fields in {0/{Direct mapped}/{0/16/fslate/tag (16), 16/27/fsage/line (11), 27/32/fsand/offset (5)},
       -1.4/{4-way set associative}/{0/18/fslate/tag (18), 18/27/fsage/set (9), 27/32/fsand/offset (5)},
@@ -12,5 +13,6 @@
   }
   \node[lbl] at (16,-3.5) {32-bit address; 64 KB cache; 32-byte blocks (2048 lines)};
 \end{tikzpicture}
+\end{adjustbox}
 \caption{How the same 32-bit address is divided under the three cache-mapping schemes.}
 \end{figure}

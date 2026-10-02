@@ -42,7 +42,7 @@ numericals + Galvin concepts --- highly scoring}
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1483}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.8517}}@{}}
 \toprule\noalign{}
@@ -52,9 +52,6 @@ numericals + Galvin concepts --- highly scoring}
 \textbf{Job}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Assembler & Assembly → machine code. \textbf{Two-pass}: pass 1 builds symbol table (location counter), pass 2 generates code. One-pass needs \textbf{back-patching} for forward references \\
 Compiler & Whole program → target code at once; faster execution \\
 Interpreter & Statement by statement; slower, easier debugging \\
@@ -62,7 +59,9 @@ Linker & Resolves external references, combines object modules \\
 Loader & Places program in memory; functions: \textbf{Allocation, Linking, Relocation, Loading} \\
 Macro processor & Expands macros (text substitution, no call overhead); macro vs subroutine \\
 Debugger & Breakpoints, single-step, watch variables \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -87,7 +86,7 @@ Debugger & Breakpoints, single-step, watch variables \\
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1894}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.7022}}@{}}
 \toprule\noalign{}
@@ -97,16 +96,15 @@ Debugger & Breakpoints, single-step, watch variables \\
 \textbf{Example}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Simple / monolithic & MS-DOS, early UNIX, Linux (monolithic + loadable modules) \\
 Layered & THE OS (Dijkstra) \\
 \textbf{Microkernel} & Mach, QNX, Minix --- minimal kernel, services in user space via message passing \\
 Modular & Solaris, Linux LKMs \\
 Hybrid & Windows NT, macOS (XNU) \\
 Exokernel & Research --- exposes hardware \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -126,8 +124,8 @@ Exokernel & Research --- exposes hardware \\
 
 \textbf{\texttt{fork()} puzzle}: \texttt{n} consecutive \texttt{fork()} calls create \textbf{2ⁿ − 1} child processes (2ⁿ total).
 
-\begin{listingblock}{40pt}
-\begin{Verbatim}[fontsize=\fontsize{8.0}{9.7}\selectfont]
+\begin{listingblock}{42pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 fork(); fork(); fork();   // 8 processes total, 7 children
 if (fork() && fork()) fork();   // count carefully: 4 processes total (parent + 3 children)
 \end{Verbatim}
@@ -232,7 +230,7 @@ signal(S) { S++; }                      // V(), up()
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3217}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.6783}}@{}}
 \toprule\noalign{}
@@ -242,14 +240,13 @@ signal(S) { S++; }                      // V(), up()
 \textbf{Semaphores}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Bounded buffer (producer--consumer) & \texttt{mutex\ =\ 1}, \texttt{empty\ =\ n}, \texttt{full\ =\ 0} \\
 Readers--writers & \texttt{rw\_mutex\ =\ 1}, \texttt{mutex\ =\ 1}, \texttt{read\_count\ =\ 0} (first readers--writers: writers may starve) \\
 Dining philosophers (5) & \texttt{chopstick{[}5{]}\ =\ 1}; deadlock if all pick left --- fixes: at most 4 at table, asymmetric pick, pick both atomically \\
 Sleeping barber & customers, barbers, mutex \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -302,7 +299,7 @@ Throughput            = #processes / total time
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2374}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2224}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5402}}@{}}
@@ -315,9 +312,6 @@ Throughput            = #processes / total time
 \textbf{Notes}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 FCFS & No & Convoy effect \\
 SJF & No & Optimal average waiting time (non-preemptive) \\
 \textbf{SRTF} & Yes (preemptive SJF) & \textbf{Optimal} average WT overall; starvation \\
@@ -326,7 +320,9 @@ Priority & Both & Starvation → \textbf{aging} \\
 Multilevel queue & --- & Fixed queues (foreground RR, background FCFS) \\
 Multilevel feedback queue & Yes & Processes move between queues; most general \\
 HRRN & No & Response ratio = (W + S)/S; favours short jobs, avoids starvation \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -337,7 +333,7 @@ HRRN & No & Response ratio = (W + S)/S; favours short jobs, avoids starvation \\
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0945}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0887}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0720}}@{}}
@@ -350,14 +346,13 @@ HRRN & No & Response ratio = (W + S)/S; favours short jobs, avoids starvation \\
 \textbf{Burst}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 P1 & 0 & 8 \\
 P2 & 1 & 4 \\
 P3 & 2 & 9 \\
 P4 & 3 & 5 \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -372,7 +367,7 @@ P4 & 3 & 5 \\
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0458}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0539}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0719}}
@@ -388,14 +383,13 @@ P4 & 3 & 5 \\
 \textbf{WT}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 P1 & 17 & 17 & 9 \\
 P2 & 5 & 4 & 0 \\
 P3 & 26 & 24 & 15 \\
 P4 & 10 & 7 & 2 \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -456,7 +450,7 @@ Resource Allocation Graph
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1867}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.8133}}@{}}
 \toprule\noalign{}
@@ -466,14 +460,13 @@ Resource Allocation Graph
 \textbf{How}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Prevention & Break one condition: e.g. request all at once (hold \& wait), allow preemption, \textbf{impose total order on resources} (circular wait) \\
 Avoidance & \textbf{Banker\textquotesingle s algorithm} --- grant only if state remains safe \\
 Detection \& recovery & Wait-for graph (single instance), detection algorithm; recover by killing processes / preemption \\
 Ignorance & Ostrich algorithm (UNIX, Windows) \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -486,7 +479,7 @@ Ignorance & Ostrich algorithm (UNIX, Windows) \\
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0458}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2212}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0667}}
@@ -502,15 +495,14 @@ Ignorance & Ostrich algorithm (UNIX, Windows) \\
 \textbf{Need = Max − Alloc}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 P0 & 0 1 0 & 7 5 3 & 7 4 3 \\
 P1 & 2 0 0 & 3 2 2 & 1 2 2 \\
 P2 & 3 0 2 & 9 0 2 & 6 0 0 \\
 P3 & 2 1 1 & 2 2 2 & 0 1 1 \\
 P4 & 0 0 2 & 4 3 3 & 4 3 1 \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -598,7 +590,7 @@ EAT with TLB (hit ratio h, TLB t, memory m):
 \subsection{Virtual Memory \& Demand Paging}\label{p2-05--74-virtual-memory--demand-paging}}
 
 \begin{listingblock}{42pt}
-\begin{Verbatim}[fontsize=\fontsize{8.7}{10.6}\selectfont]
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 EAT with page faults = (1 − p) × ma + p × page-fault service time
 e.g. ma = 200 ns, service = 8 ms, p = 0.001 → EAT ≈ 200 + 0.001 × 8,000,000 = 8.2 µs
 \end{Verbatim}
@@ -658,7 +650,7 @@ Queue: \textbf{98, 183, 37, 122, 14, 124, 65, 67}; head at \textbf{53}; cylinder
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2374}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3794}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3832}}@{}}
@@ -671,16 +663,15 @@ Queue: \textbf{98, 183, 37, 122, 14, 124, 65, 67}; head at \textbf{53}; cylinder
 \textbf{Total head movement}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 FCFS & 53→\allowbreak{}98→\allowbreak{}183→\allowbreak{}37→\allowbreak{}122→\allowbreak{}14→\allowbreak{}124→\allowbreak{}65→\allowbreak{}67 & \textbf{640} \\
 SSTF & 53→\allowbreak{}65→\allowbreak{}67→\allowbreak{}37→\allowbreak{}14→\allowbreak{}98→\allowbreak{}122→\allowbreak{}124→\allowbreak{}183 & \textbf{236} \\
 SCAN (towards 0) & 53→\allowbreak{}37→\allowbreak{}14→\allowbreak{}0→\allowbreak{}65→\allowbreak{}67→\allowbreak{}98→\allowbreak{}122→\allowbreak{}124→\allowbreak{}183 & \textbf{236} \\
 C-SCAN (towards 199) & 53→\allowbreak{}65→\allowbreak{}\ldots→\allowbreak{}183→\allowbreak{}199→\allowbreak{}0→\allowbreak{}14→\allowbreak{}37 & 146 + 199 + 37 = \textbf{382} (counting return jump) \\
 LOOK (towards 0) & 53→\allowbreak{}37→\allowbreak{}14→\allowbreak{}65→\allowbreak{}\ldots→\allowbreak{}183 & 39 + 169 = \textbf{208} \\
 C-LOOK (up) & 53→\allowbreak{}65→\allowbreak{}67→\allowbreak{}98→\allowbreak{}122→\allowbreak{}124→\allowbreak{}183→\allowbreak{}14→\allowbreak{}37 & 130 + 169 + 23 = \textbf{322} \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -708,7 +699,7 @@ SSTF head path (cylinder axis →)
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1006}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3226}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1139}}
@@ -724,9 +715,6 @@ SSTF head path (cylinder axis →)
 \textbf{Fault tolerance}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 0 & Striping (block) & 2 & None \\
 1 & Mirroring & 2 & 1 disk \\
 2 & Bit striping + Hamming ECC & --- & 1 \\
@@ -735,7 +723,9 @@ SSTF head path (cylinder axis →)
 \textbf{5} & Block striping + \textbf{distributed parity} & 3 & 1 \\
 6 & Distributed double parity (P+Q) & 4 & 2 \\
 10 (1+0) & Mirror then stripe & 4 & 1 per mirror pair \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -831,7 +821,7 @@ SSTF head path (cylinder axis →)
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1609}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4315}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4076}}@{}}
@@ -844,9 +834,6 @@ SSTF head path (cylinder axis →)
 \textbf{Windows}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Kernel & Monolithic + loadable kernel modules & Hybrid (microkernel-inspired), HAL, executive \\
 Process creation & \texttt{fork()} + \texttt{exec()} (clone for threads) & \texttt{CreateProcess()} \\
 Scheduling & CFS (normal), real-time FIFO/RR & Priority-based preemptive, 32 levels \\
@@ -854,7 +841,9 @@ Memory & Buddy system + slab allocator, demand paging & Demand paging with clust
 File system & ext2/3/4 (inodes), VFS layer; \texttt{/proc} & NTFS (MFT, journaling, ACLs), FAT32, ReFS \\
 IPC & pipes, signals, shared memory, message queues, sockets & ALPC, pipes, mailslots \\
 Other & GPL; first released 1991 (Linus Torvalds) & Terminal services, fast user switching \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -896,7 +885,7 @@ Linux process states: Running, Interruptible sleep, Uninterruptible sleep, Stopp
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0979}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0919}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0745}}
@@ -912,15 +901,14 @@ Linux process states: Running, Interruptible sleep, Uninterruptible sleep, Stopp
 \textbf{Priority (lower = higher)}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 P1 & 0 & 10 & 3 \\
 P2 & 0 & 1 & 1 \\
 P3 & 0 & 2 & 4 \\
 P4 & 0 & 1 & 5 \\
 P5 & 0 & 5 & 2 \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -937,8 +925,8 @@ Waiting times: P1 6, P2 0, P3 16, P4 18, P5 1 → average = 41/5 = \textbf{8.2}.
 
 \textbf{HRRN} (non-preemptive; response ratio RR = (W + S)/S), processes A(0, 3), B(2, 6), C(4, 4), D(6, 5), E(8, 2):
 
-\begin{listingblock}{84pt}
-\begin{Verbatim}[fontsize=\fontsize{8.7}{10.6}\selectfont]
+\begin{listingblock}{86pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 t = 0: only A → run A to 3
 t = 3: only B arrived → run B to 9
 t = 9: C: (5 + 4)/4 = 2.25   D: (3 + 5)/5 = 1.6   E: (1 + 2)/2 = 1.5   → run C to 13
@@ -998,7 +986,7 @@ EAT = 0.9 × (10 + 100) + 0.1 × (10 + 3 × 100) = 99 + 31 = \textbf{130 ns}.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1022}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0655}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0777}}@{}}
@@ -1011,14 +999,13 @@ EAT = 0.9 × (10 + 100) + 0.1 × (10 + 3 × 100) = 99 + 31 = \textbf{130 ns}.
 \textbf{Limit}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 0 & 219 & 600 \\
 1 & 2300 & 14 \\
 2 & 90 & 100 \\
 3 & 1327 & 580 \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -1067,15 +1054,15 @@ Reference: 1 2 3 4 1 2 5 1 2 3 4 5
 \textbf{Disk access}: 7200 RPM, average seek 8 ms, transfer rate 100 MB/s, read 4 KB block:
 seek 8 + latency 4.17 + transfer 0.04 ≈ \textbf{12.2 ms}.
 
-\needspace{141pt}
+\needspace{144pt}
 
 \hypertarget{p2-05--147-buddy-system--worked}{%
 \subsection{Buddy System --- Worked}\label{p2-05--147-buddy-system--worked}}
 
 1 MB block; requests A = 70 KB, B = 35 KB, C = 80 KB.
 
-\begin{listingblock}{61pt}
-\begin{Verbatim}[fontsize=\fontsize{8.4}{10.2}\selectfont]
+\begin{listingblock}{64pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 1024 → 512 + 512 → 256 + 256 → 128 + 128          A gets 128 KB (wastes 58 KB internal)
 B (35 KB): split a 128 → 64 + 64                   B gets 64 KB
 C (80 KB): needs 128 → split the second 256 → 128 + 128, C gets 128 KB
@@ -1083,13 +1070,13 @@ Release: buddies of equal size and adjacent addresses coalesce back
 \end{Verbatim}
 \end{listingblock}
 
-\needspace{143pt}
+\needspace{147pt}
 
 \hypertarget{p2-05--148-process-synchronisation-hardware}{%
 \subsection{Process Synchronisation Hardware}\label{p2-05--148-process-synchronisation-hardware}}
 
-\begin{listingblock}{93pt}
-\begin{Verbatim}[fontsize=\fontsize{8.6}{10.4}\selectfont]
+\begin{listingblock}{97pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 // Test-and-Set lock
 bool lock = false;
 do {

@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}[x=0.36cm]
   \foreach \a/\b/\col/\t in {0/1/frose/S, 1/9/fsand/{exponent (8)}, 9/32/fslate/{fraction (23)}} {
     \filldraw[fill=\col, draw=fgink, line width=0.5pt] (\a,0) rectangle (\b,0.8);
@@ -16,5 +17,6 @@
   \end{scope}
   \node[font=\small] at (16,-2.5) {value $= (-1)^{S}\times 1.F \times 2^{\,E-\text{bias}}$};
 \end{tikzpicture}
+\end{adjustbox}
 \caption{IEEE 754 formats. The leading 1 of a normalised mantissa is implicit and not stored.}
 \end{figure}

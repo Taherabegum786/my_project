@@ -1,0 +1,21 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[kn/.style={rectangle split, rectangle split horizontal, rectangle split parts=#1, draw=fgink, line width=0.5pt,
+    fill=fpaper, font=\small, inner sep=3pt, minimum height=6.5mm,
+    blur shadow={shadow blur steps=6, shadow xshift=0.7pt, shadow yshift=-0.9pt, shadow opacity=22}}]
+  \node[kn=2, fill=fslate] (root) at (0,0) {30 \nodepart{two} 60};
+  \node[kn=2, fill=fsage] (l1) at (-4.2,-1.8) {10 \nodepart{two} 20};
+  \node[kn=2, fill=fsage] (l2) at (0,-1.8) {30 \nodepart{two} 40};
+  \node[kn=3, fill=fsage] (l3) at (4.4,-1.8) {60 \nodepart{two} 70 \nodepart{three} 80};
+  \draw[arr] (root.south west) -- (l1.north);
+  \draw[arr] (root.south) -- (l2.north);
+  \draw[arr] (root.south east) -- (l3.north);
+  \draw[arr, fwine] (l1.east) -- (l2.west); \draw[arr, fwine] (l2.east) -- (l3.west);
+  \node[lbl, anchor=west] at (1.6,0) {internal node: keys only (guides the search)};
+  \node[lbl, text=fwine] at (0,-2.6) {leaves hold every key and are chained for range queries};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{A B$^{+}$-tree of order 3. Unlike a B-tree, internal keys are repeated in the leaves, and the leaf
+chain supports sequential access.}
+\end{figure}

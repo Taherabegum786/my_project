@@ -1,0 +1,16 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}
+  \filldraw[fill=fgrey, draw=fgink, line width=0.5pt] (0,0) ellipse (4.2 and 2.0);
+  \filldraw[fill=fslate, draw=fgink, line width=0.5pt] (0.7,-0.2) ellipse (2.7 and 1.35);
+  \filldraw[fill=fsand, draw=fgink, line width=0.5pt] (1.6,-0.35) ellipse (1.1 and 0.62);
+  \node[font=\small, align=center] at (-2.75,0.55) {\textbf{super keys}\\\footnotesize any set that\\\footnotesize identifies a tuple};
+  \node[font=\small, align=center] at (-0.4,0.15) {\textbf{candidate}\\\textbf{keys}\\\footnotesize minimal};
+  \node[font=\small, align=center] at (1.6,-0.35) {\textbf{primary}\\\footnotesize not NULL};
+  \node[font=\footnotesize, align=left, anchor=west] at (4.5,0.4) {alternate keys: candidate keys\\not chosen as primary};
+  \node[font=\footnotesize, align=left, anchor=west] at (4.5,-0.7) {foreign key: refers to the\\primary key of another relation};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Every primary key is a candidate key, and every candidate key is a (minimal) super key.}
+\end{figure}

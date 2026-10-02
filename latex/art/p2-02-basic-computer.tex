@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}
   \fill[fochre!60] (5.6,-0.2) rectangle (6.1,7.4);
   \draw[fgink, line width=0.5pt] (5.6,-0.2) rectangle (6.1,7.4);
@@ -16,6 +17,7 @@
   \draw[arrd] (alu.west) -- (6.1,2.3);
   \draw[arrd] (M.east) -- (5.6,6.4);
 \end{tikzpicture}
+\end{adjustbox}
 \caption{Mano's basic computer: memory and registers communicate through a single common bus; select
 lines decide which register drives the bus in each clock cycle.}
 \end{figure}

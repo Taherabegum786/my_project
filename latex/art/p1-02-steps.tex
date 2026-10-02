@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}[x=1cm,y=1cm]
   \foreach \i/\t [count=\k] in {{Identify \& define\\the problem}, {Review the\\literature}, {Formulate\\hypotheses}, {Choose the\\research design}, {Select the\\sample},
       {Collect\\data}, {Analyse \&\\interpret}, {Test the\\hypotheses}, {Generalise,\\conclude}, {Write the\\report}} {
@@ -13,6 +14,7 @@
   \foreach \a/\b in {1/2,2/3,3/4,4/5,6/7,7/8,8/9,9/10} \draw[arr] (s\a) -- (s\b);
   \draw[arr] (s5.south) -- (s6.north);
 \end{tikzpicture}
+\end{adjustbox}
 \caption{The research process as a sequence of ten steps. In practice the steps overlap and the researcher
 often loops back — for example, from the literature review to a sharper statement of the problem.}
 \end{figure}

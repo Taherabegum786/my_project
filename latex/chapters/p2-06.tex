@@ -76,13 +76,13 @@ Quick design → build prototype → customer evaluation → refine → (throwaw
   \textbf{RAD} (Rapid Application Development): 60--90 days, component reuse, multiple teams; needs modular \& well-understood requirements.
 \end{itemize}
 
-\needspace{220pt}
+\needspace{234pt}
 
 \hypertarget{p2-06--14-spiral-model-barry-boehm-1986--risk-driven}{%
 \subsection{\texorpdfstring{Spiral Model (Barry Boehm, 1986) --- \textbf{risk-driven}}{Spiral Model (Barry Boehm, 1986) --- risk-driven}}\label{p2-06--14-spiral-model-barry-boehm-1986--risk-driven}}
 
-\begin{listingblock}{170pt}
-\begin{Verbatim}[fontsize=\fontsize{8.2}{10.0}\selectfont]
+\begin{listingblock}{184pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
             1. Determine objectives,      │      2. Evaluate alternatives,
                alternatives, constraints  │         IDENTIFY & RESOLVE RISKS
                                           │
@@ -114,7 +114,7 @@ Quick design → build prototype → customer evaluation → refine → (throwaw
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2450}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.7550}}@{}}
 \toprule\noalign{}
@@ -124,15 +124,14 @@ Quick design → build prototype → customer evaluation → refine → (throwaw
 \textbf{Key idea}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Concurrent & Activities exist simultaneously in different states (state chart) \\
 Component-based (CBSE) & Assemble pre-built COTS components \\
 Formal methods & Mathematical specification (Z, VDM); \textbf{Cleanroom} SE (statistical testing, defect prevention) \\
 AOSD & Aspect-oriented: crosscutting concerns (logging, security) as aspects \\
 \textbf{Unified Process (RUP)} & Use-case driven, architecture-centric, iterative \& incremental. Phases: \textbf{Inception → Elaboration → Construction → Transition} (+ Production) \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -158,7 +157,7 @@ AOSD & Aspect-oriented: crosscutting concerns (logging, security) as aspects \\
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1583}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.8417}}@{}}
 \toprule\noalign{}
@@ -168,9 +167,6 @@ AOSD & Aspect-oriented: crosscutting concerns (logging, security) as aspects \\
 \textbf{Highlights}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 \textbf{XP} (Kent Beck) & Pair programming, \textbf{test-first (TDD)}, refactoring, continuous integration, small releases, \textbf{user stories}, spike solutions, CRC cards, collective ownership, 40-hour week \\
 \textbf{Scrum} & \textbf{Sprint} (2--4 weeks, time-boxed), \textbf{Product backlog}, Sprint backlog, \textbf{Daily Scrum} (15 min stand-up), Sprint review, retrospective; roles: \textbf{Product Owner, Scrum Master, Development Team}; burndown chart \\
 DSDM & Time-boxing, \textbf{MoSCoW} prioritisation (Must, Should, Could, Won\textquotesingle t); 80/20 principle \\
@@ -179,7 +175,9 @@ FDD & Feature Driven Development; features in ≤ 2 weeks \\
 ASD & Adaptive SD: Speculation, Collaboration, Learning (Highsmith) \\
 Kanban & Visual board, limit Work-In-Progress (WIP) \\
 Lean & Eliminate waste \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -192,7 +190,7 @@ Lean & Eliminate waste \\
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3233}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2633}}@{}}
 \toprule\noalign{}
@@ -202,16 +200,15 @@ Lean & Eliminate waste \\
 \textbf{Model}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Clear, fixed requirements & Waterfall \\
 Unclear requirements & Prototyping \\
 High risk, large & Spiral \\
 Quick delivery, modular & RAD / Incremental \\
 Changing requirements, small teams & Agile \\
 Safety-critical & Formal methods / Cleanroom \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -236,8 +233,8 @@ Safety-critical & Formal methods / Cleanroom \\
   Analysis models: \textbf{DFD} (process), ER (data), \textbf{state diagrams} (behaviour), use case diagrams, data dictionary.
 \end{itemize}
 
-\begin{listingblock}{61pt}
-\begin{Verbatim}[fontsize=\fontsize{8.4}{10.2}\selectfont]
+\begin{listingblock}{64pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
  DFD notation (Yourdon/DeMarco)
  ┌──────┐  External entity   ( ○ )  Process (bubble)   ═══  Data store   ──►  Data flow
  Level 0 DFD = Context diagram (single process, shows external entities only)
@@ -317,7 +314,7 @@ Data-centred (repository/blackboard), data-flow (\textbf{pipe \& filter}, batch 
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1617}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.8383}}@{}}
 \toprule\noalign{}
@@ -327,13 +324,12 @@ Data-centred (repository/blackboard), data-flow (\textbf{pipe \& filter}, batch 
 \textbf{Patterns}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Creational (5) & Singleton, Factory Method, Abstract Factory, Builder, Prototype \\
 Structural (7) & Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy \\
 Behavioural (11) & Observer, Strategy, Command, Iterator, State, Template Method, Visitor, Mediator, Memento, Chain of Responsibility, Interpreter \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -405,20 +401,20 @@ Reliability R(t) = e^(−λt)   (λ = failure rate)
   Risk table → \textbf{RMMM}: Risk \textbf{Mitigation} (avoid), \textbf{Monitoring}, \textbf{Management} (contingency).
 \end{itemize}
 
-\needspace{157pt}
+\needspace{158pt}
 
 \hypertarget{p2-06--5-estimation}{%
 \section{Estimation}\label{p2-06--5-estimation}}
 
-\needspace{121pt}
+\needspace{122pt}
 
 \hypertarget{p2-06--51-loc--function-points}{%
 \subsection{LOC \& Function Points}\label{p2-06--51-loc--function-points}}
 
 \textbf{Function Point (Albrecht, 1979)}:
 
-\begin{listingblock}{41pt}
-\begin{Verbatim}[fontsize=\fontsize{8.6}{10.4}\selectfont]
+\begin{listingblock}{42pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 FP = UFP × VAF        VAF = 0.65 + 0.01 × ΣFᵢ     (14 GSCs, each 0–5 → ΣFᵢ ∈ [0, 70])
 VAF range: 0.65 to 1.35
 \end{Verbatim}
@@ -426,7 +422,7 @@ VAF range: 0.65 to 1.35
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3196}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0932}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0979}}
@@ -442,15 +438,14 @@ VAF range: 0.65 to 1.35
 \textbf{Complex}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 External Inputs (EI) & 3 & 4 & 6 \\
 External Outputs (EO) & 4 & 5 & 7 \\
 External Inquiries (EQ) & 3 & 4 & 6 \\
 Internal Logical Files (ILF) & 7 & 10 & 15 \\
 External Interface Files (EIF) & 5 & 7 & 10 \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -479,7 +474,7 @@ Basic COCOMO:  Effort E = a·(KLOC)^b  person-months
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1635}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0551}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0679}}
@@ -501,13 +496,12 @@ Basic COCOMO:  Effort E = a·(KLOC)^b  person-months
 \textbf{Description}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 \textbf{Organic} & 2.4 & 1.05 & 2.5 & 0.38 & Small team, familiar, \textless{} 50 KLOC \\
 \textbf{Semi-detached} & 3.0 & 1.12 & 2.5 & 0.35 & Medium, mixed experience \\
 \textbf{Embedded} & 3.6 & 1.20 & 2.5 & 0.32 & Tight constraints, hardware \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -556,18 +550,18 @@ Staff ≈ 91 / 13.9 ≈ 6.5 persons
   40-20-40 rule: 40\% analysis \& design, 20\% coding, 40\% testing.
 \end{itemize}
 
-\needspace{116pt}
+\needspace{117pt}
 
 \hypertarget{p2-06--6-software-testing}{%
 \section{Software Testing}\label{p2-06--6-software-testing}}
 
-\needspace{80pt}
+\needspace{81pt}
 
 \hypertarget{p2-06--61-terminology}{%
 \subsection{Terminology}\label{p2-06--61-terminology}}
 
-\begin{listingblock}{30pt}
-\begin{Verbatim}[fontsize=\fontsize{7.5}{9.1}\selectfont]
+\begin{listingblock}{31pt}
+\begin{Verbatim}[fontsize=\fontsize{8.9}{10.8}\selectfont]
 Mistake/Error (human) ──► Fault/Defect/Bug (in code) ──► Failure (observed deviation at run time)
 \end{Verbatim}
 \end{listingblock}
@@ -608,7 +602,7 @@ Mistake/Error (human) ──► Fault/Defect/Bug (in code) ──► Failure (ob
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3508}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3800}}@{}}
 \toprule\noalign{}
@@ -618,16 +612,15 @@ Mistake/Error (human) ──► Fault/Defect/Bug (in code) ──► Failure (ob
 \textbf{White-box (structural, glass-box)}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Equivalence partitioning & Statement coverage \\
 \textbf{Boundary value analysis} & Branch/\allowbreak{}decision coverage \\
 Cause-effect graphing / decision tables & Condition, MC/DC coverage \\
 State transition testing & \textbf{Basis path testing} (cyclomatic complexity) \\
 Orthogonal array testing & Data-flow testing, loop testing \\
 Error guessing & Mutation testing \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -641,13 +634,13 @@ Error guessing & Mutation testing \\
   Coverage strength: Statement \textless{} Branch \textless{} Condition/Decision \textless{} MC/DC \textless{} Multiple condition \textless{} Path.
 \end{itemize}
 
-\needspace{111pt}
+\needspace{114pt}
 
 \hypertarget{p2-06--64-cyclomatic-complexity-mccabe-1976}{%
 \subsection{Cyclomatic Complexity (McCabe, 1976)}\label{p2-06--64-cyclomatic-complexity-mccabe-1976}}
 
-\begin{listingblock}{61pt}
-\begin{Verbatim}[fontsize=\fontsize{8.4}{10.2}\selectfont]
+\begin{listingblock}{64pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 V(G) = E − N + 2P        (P = connected components, usually 1)
 V(G) = number of predicate (decision) nodes + 1
 V(G) = number of bounded regions + 1  (regions of planar flow graph incl. outer)
@@ -695,7 +688,7 @@ V(G) ≤ 10 recommended.
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1801}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1717}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4057}}@{}}
@@ -708,14 +701,13 @@ V(G) ≤ 10 recommended.
 \textbf{Purpose}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Corrective & \textasciitilde20\% & Fix bugs \\
 \textbf{Adaptive} & \textasciitilde25\% & Adapt to new environment (OS, hardware) \\
 \textbf{Perfective} & \textasciitilde50\% (largest) & New features, performance \\
 Preventive & \textasciitilde5\% & Improve future maintainability (refactoring) \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -733,13 +725,13 @@ Preventive & \textasciitilde5\% & Improve future maintainability (refactoring) \
   Software maintenance cost is typically \textbf{60--80\%} of total lifecycle cost.
 \end{itemize}
 
-\needspace{127pt}
+\needspace{136pt}
 
 \hypertarget{p2-06--other-metrics}{%
 \subsection{Other Metrics}\label{p2-06--other-metrics}}
 
-\begin{listingblock}{77pt}
-\begin{Verbatim}[fontsize=\fontsize{7.8}{9.5}\selectfont]
+\begin{listingblock}{86pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 Halstead:  n1 = distinct operators, n2 = distinct operands, N1, N2 = totals
            Vocabulary n = n1 + n2 ; Length N = N1 + N2
            Volume V = N log₂ n ; Difficulty D = (n1/2)(N2/n2) ; Effort E = D × V
@@ -788,7 +780,7 @@ Function: \texttt{eligible(age,\ grade)} where age ∈ {[}18, 60{]} and grade �
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2756}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.6172}}@{}}
 \toprule\noalign{}
@@ -798,15 +790,14 @@ Function: \texttt{eligible(age,\ grade)} where age ∈ {[}18, 60{]} and grade �
 \textbf{Test values}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Equivalence classes (age) & valid 18--60 (e.g. 35); invalid \textless{} 18 (e.g. 10); invalid \textgreater{} 60 (e.g. 70) \\
 Equivalence classes (grade) & valid \{A, B, C\}; invalid (e.g. D) \\
 BVA (age, normal) & 18, 19, 39, 59, 60 \\
 Robust BVA (age) & 17, 18, 19, 39, 59, 60, 61 \\
 Worst-case BVA (2 variables) & 5² = 25 combinations; robust worst-case 7² = 49 \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -814,7 +805,7 @@ Worst-case BVA (2 variables) & 5² = 25 combinations; robust worst-case 7² = 49
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2451}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0510}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0510}}
@@ -833,27 +824,26 @@ Worst-case BVA (2 variables) & 5² = 25 combinations; robust worst-case 7² = 49
 \textbf{R4}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Valid user ID? & T & T & F & F \\
 Valid password? & T & F & T & F \\
 Grant access & ✔ & & & \\
 Show "wrong password" & & ✔ & & \\
 Show "unknown user" & & & ✔ & ✔ \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
-\needspace{140pt}
+\needspace{144pt}
 
 \hypertarget{p2-06--95-intermediate-cocomo--worked}{%
 \subsection{Intermediate COCOMO --- Worked}\label{p2-06--95-intermediate-cocomo--worked}}
 
 Semi-detached project, 50 KLOC, EAF = 1.2 (product of the 15 cost-driver multipliers).
 
-\begin{listingblock}{60pt}
-\begin{Verbatim}[fontsize=\fontsize{8.2}{10.0}\selectfont]
+\begin{listingblock}{64pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 Intermediate coefficients a: organic 3.2, semi-detached 3.0, embedded 2.8 (b as in basic)
 E = 3.0 × 50^1.12 × 1.2 ≈ 3.0 × 80 × 1.2 ≈ 288 person-months
 D = 2.5 × 288^0.35 ≈ 2.5 × 7.26 ≈ 18 months
@@ -870,7 +860,7 @@ Cost drivers include RELY (reliability), CPLX (complexity), ACAP (analyst capabi
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2483}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.7094}}@{}}
 \toprule\noalign{}
@@ -880,15 +870,14 @@ Cost drivers include RELY (reliability), CPLX (complexity), ACAP (analyst capabi
 \textbf{Idea}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 \textbf{Jelinski--Moranda} (1972) & N initial faults; each fix reduces failure rate by a constant φ: λᵢ = φ(N − i + 1) \\
 \textbf{Musa basic execution time} & λ(μ) = λ₀ (1 − μ/ν₀): failure intensity falls linearly with failures experienced \\
 Musa--Okumoto logarithmic & Failure intensity decreases exponentially with failures experienced \\
 Goel--Okumoto (NHPP) & Expected failures m(t) = a(1 − e\^{}(−bt)) \\
 Littlewood--Verrall & Bayesian; failure rates random \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -901,7 +890,7 @@ Littlewood--Verrall & Bayesian; failure rates random \\
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1861}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1147}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1427}}
@@ -923,13 +912,12 @@ Littlewood--Verrall & Bayesian; failure rates random \\
 \textbf{RMMM response}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Key developer leaves & Project & 0.3 & 2 & 0.3 × 4 L = 1.2 L & Cross-training, documentation \\
 Requirements change late & Business & 0.6 & 2 & 0.6 × 2 L = 1.2 L & Agile iterations, change control \\
 New tool unreliable & Technical & 0.2 & 3 & 0.2 × 1 L = 0.2 L & Prototype tool early \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -942,7 +930,7 @@ Risks are sorted by probability × impact; a \textbf{cut-off line} decides which
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2374}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3236}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4391}}@{}}
@@ -955,14 +943,13 @@ Risks are sorted by probability × impact; a \textbf{cut-off line} decides which
 \textbf{Example process areas}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 2 Managed & Basic project management & Requirements management, project planning, configuration management, measurement \& analysis, QA \\
 3 Defined & Organisation-wide standard process & Requirements development, technical solution, verification, validation, risk management \\
 4 Quantitatively managed & Statistical control & Organisational process performance, quantitative project management \\
 5 Optimising & Continuous improvement & Causal analysis \& resolution, organisational performance management \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 

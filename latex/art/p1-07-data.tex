@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}
   \node[grey, minimum width=24mm] (D) at (0,0) {\textbf{Data}};
   \node[slate, minimum width=32mm] (Q) at (-5,-1.5) {\textbf{Quantitative}\\\footnotesize numbers};
@@ -15,5 +16,6 @@
   \draw[arr] (Q) -- (q1); \draw[arr] (Q) -- (q2); \draw[arr] (L) -- (l1); \draw[arr] (L) -- (l2);
   \draw[arr] (S) -- (s1); \draw[arr] (S) -- (s2);
 \end{tikzpicture}
+\end{adjustbox}
 \caption{Ways of classifying data. The type of data decides which summary measures and charts are appropriate.}
 \end{figure}

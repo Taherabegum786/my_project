@@ -44,8 +44,8 @@ o  (strict upper)     lim f/g = 0
 
 Growth order (memorise):
 
-\begin{listingblock}{39pt}
-\begin{Verbatim}[fontsize=\fontsize{7.7}{9.3}\selectfont]
+\begin{listingblock}{42pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 1 < log log n < log n < (log n)^k < √n < n < n log n < n² < n³ < 2ⁿ < 3ⁿ < n! < nⁿ
 Note: log(n!) = Θ(n log n) ; n^(1/log n) = Θ(1) ; 2^(log n) = n ; n^(log n) is super-polynomial
 \end{Verbatim}
@@ -60,7 +60,7 @@ T(n) = a·T(n/b) + f(n), a ≥ 1, b \textgreater{} 1. Compare f(n) with \textbf{
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0655}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3644}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2609}}@{}}
@@ -73,19 +73,18 @@ T(n) = a·T(n/b) + f(n), a ≥ 1, b \textgreater{} 1. Compare f(n) with \textbf{
 \textbf{Result}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 1 & f(n) = O(n\^{}(log\_b a − ε)) & Θ(n\^{}(log\_b a)) \\
 2 & f(n) = Θ(n\^{}(log\_b a) · logᵏ n) & Θ(n\^{}(log\_b a) · logᵏ⁺¹ n) \\
 3 & f(n) = Ω(n\^{}(log\_b a + ε)) and regularity & Θ(f(n)) \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2741}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1931}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2575}}@{}}
@@ -98,9 +97,6 @@ T(n) = a·T(n/b) + f(n), a ≥ 1, b \textgreater{} 1. Compare f(n) with \textbf{
 \textbf{Algorithm}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 T(n) = T(n/2) + 1 & Θ(log n) & Binary search \\
 T(n) = 2T(n/2) + n & Θ(n log n) & Merge sort \\
 T(n) = 2T(n/2) + 1 & Θ(n) & Tree traversal, max-min \\
@@ -113,7 +109,9 @@ T(n) = 3T(n/2) + n & Θ(n\^{}1.585) & Karatsuba \\
 T(n) = T(√n) + 1 & Θ(log log n) & --- \\
 T(n) = 2T(√n) + log n & Θ(log n · log log n) & --- \\
 T(n) = T(n/3) + T(2n/3) + n & Θ(n log n) & Recursion tree \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -337,7 +335,7 @@ Load factor α = n/m
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2116}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1868}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2195}}@{}}
@@ -350,14 +348,13 @@ Load factor α = n/m
 \textbf{Issues}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Chaining & Linked list per slot & Expected search 1 + α \\
 Linear probing & h(k) + i & \textbf{Primary clustering} \\
 Quadratic probing & h(k) + c₁i + c₂i² & \textbf{Secondary clustering} \\
 Double hashing & h₁(k) + i·h₂(k) & Best of open addressing \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -384,7 +381,7 @@ Index: 0   1   2   3   4   5   6   7   8   9
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1357}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1520}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1096}}
@@ -409,9 +406,6 @@ Index: 0   1   2   3   4   5   6   7   8   9
 \textbf{In-place}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Bubble & n (with flag) & n² & n² & 1 & ✔ & ✔ \\
 Selection & n² & n² & n² & 1 & ✘ & ✔ \\
 Insertion & n & n² & n² & 1 & ✔ & ✔ \\
@@ -422,7 +416,9 @@ Shell & n log n & \textasciitilde n\^{}1.3 & n² (gap-dependent) & 1 & ✘ & ✔
 Counting & n + k & n + k & n + k & k & ✔ & ✘ \\
 Radix & d(n + k) & d(n + k) & d(n + k) & n + k & ✔ & ✘ \\
 Bucket & n + k & n + k & n² & n & ✔ & ✘ \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -474,7 +470,7 @@ Quick sort partition (Lomuto, pivot = last)
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3983}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4139}}@{}}
 \toprule\noalign{}
@@ -484,14 +480,13 @@ Quick sort partition (Lomuto, pivot = last)
 \textbf{Dynamic programming}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Locally optimal choice, never reconsidered & Solves overlapping subproblems, stores results \\
 \textbf{Greedy-choice property} + optimal substructure & \textbf{Optimal substructure + overlapping subproblems} \\
 Faster, not always optimal & Always optimal (if formulated correctly) \\
 Fractional knapsack ✔ ; 0/1 knapsack ✘ & 0/1 knapsack ✔ O(nW) --- pseudo-polynomial \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -568,25 +563,25 @@ Number of parenthesisations of n matrices = Catalan C(n−1)
   Uses BFS / \textbf{least-cost (LC) search} with bounds; FIFO B\&B, LIFO B\&B, LC B\&B. Used for optimisation (TSP, 0/1 knapsack, assignment).
 \end{itemize}
 
-\needspace{237pt}
+\needspace{238pt}
 
 \hypertarget{p2-07--8-graph-algorithms}{%
 \section{Graph Algorithms}\label{p2-07--8-graph-algorithms}}
 
-\needspace{201pt}
+\needspace{202pt}
 
 \hypertarget{p2-07--81-representations}{%
 \subsection{Representations}\label{p2-07--81-representations}}
 
 Adjacency matrix: O(V²) space, O(1) edge check. Adjacency list: O(V + E).
 
-\needspace{135pt}
+\needspace{136pt}
 
 \hypertarget{p2-07--82-bfs--dfs}{%
 \subsection{BFS \& DFS}\label{p2-07--82-bfs--dfs}}
 
-\begin{listingblock}{85pt}
-\begin{Verbatim}[fontsize=\fontsize{8.9}{10.8}\selectfont]
+\begin{listingblock}{86pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
  Graph:  A ── B ── E
          │    │
          C ── D
@@ -615,7 +610,7 @@ Adjacency matrix: O(V²) space, O(1) edge check. Adjacency list: O(V + E).
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1863}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2577}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2732}}
@@ -631,16 +626,15 @@ Adjacency matrix: O(V²) space, O(1) edge check. Adjacency list: O(V + E).
 \textbf{Complexity}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 BFS & Single-source, unweighted & --- & O(V + E) \\
 \textbf{Dijkstra} & Single-source & \textbf{No} & O((V + E) log V) binary heap; O(V²) array; O(E + V log V) Fibonacci \\
 \textbf{Bellman--Ford} & Single-source & Yes; detects negative cycles & O(VE) \\
 DAG shortest path & Single-source & Yes & O(V + E) \\
 \textbf{Floyd--Warshall} & All-pairs (DP) & Yes (no neg. cycles) & O(V³) \\
 Johnson & All-pairs, sparse & Yes & O(V² log V + VE) \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -672,7 +666,7 @@ Step  Visited     dist(A, B, C, D)
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5200}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4800}}@{}}
 \toprule\noalign{}
@@ -682,14 +676,13 @@ Step  Visited     dist(A, B, C, D)
 \textbf{Prim}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Sort edges, add smallest that doesn\textquotesingle t form a cycle (union-find) & Grow tree from a vertex, add cheapest edge leaving tree \\
 O(E log E) & O(E log V) heap; O(V²) matrix \\
 Better for sparse graphs & Better for dense graphs \\
 Forest during execution & Always a single tree \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -765,7 +758,7 @@ Forest during execution & Always a single tree \\
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2389}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.7611}}@{}}
 \toprule\noalign{}
@@ -775,9 +768,6 @@ Forest during execution & Always a single tree \\
 \textbf{Key result}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 GCD (Euclid) & gcd(a, b) = gcd(b, a mod b); O(log min(a,b)); extended Euclid gives x, y with ax + by = gcd \\
 Modular exponentiation & Repeated squaring O(log e) \\
 RSA & n = pq, φ = (p−1)(q−1), ed ≡ 1 mod φ \\
@@ -788,7 +778,9 @@ Naive string match & O((n − m + 1)m) \\
 \textbf{KMP} & Prefix (failure) function; \textbf{O(n + m)} \\
 Boyer--Moore & Bad-character \& good-suffix; sub-linear in practice \\
 Finite automaton matcher & O(n) matching after O(m· \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -832,13 +824,13 @@ Total = n × (log₂ n + 1) = Θ(n log n)
 
 For T(n) = T(n − 1) + n: unrolling gives n + (n − 1) + \ldots{} + 1 = n(n + 1)/2 = \textbf{Θ(n²)}.
 
-\needspace{253pt}
+\needspace{278pt}
 
 \hypertarget{p2-07--132-avl-insertion-trace-10-20-30-40-50-25}{%
 \subsection{AVL Insertion Trace: 10, 20, 30, 40, 50, 25}\label{p2-07--132-avl-insertion-trace-10-20-30-40-50-25}}
 
-\begin{listingblock}{203pt}
-\begin{Verbatim}[fontsize=\fontsize{7.9}{9.6}\selectfont]
+\begin{listingblock}{228pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 Insert 10, 20, 30 → RR imbalance at 10 → left rotation
       20
      ╱  ╲
@@ -868,7 +860,7 @@ Step 1: right-rotate 40        Step 2: left-rotate 20
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2121}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5207}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2149}}@{}}
@@ -881,15 +873,14 @@ Step 1: right-rotate 40        Step 2: left-rotate 20
 \textbf{Note}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 Build heap & {[}4, 10, 3, 5, 1{]} → {[}10, 4, 3, 5, 1{]} → {[}10, 5, 3, 4, 1{]} & heapify index 1, then 0 \\
 Swap 10 ↔ 1, heapify & {[}5, 4, 3, 1 \textbar{} 10{]} & \\
 Swap 5 ↔ 1, heapify & {[}4, 1, 3 \textbar{} 5, 10{]} & \\
 Swap 4 ↔ 3, heapify & {[}3, 1 \textbar{} 4, 5, 10{]} & \\
 Swap 3 ↔ 1 & {[}1 \textbar{} 3, 4, 5, 10{]} & sorted \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -902,7 +893,7 @@ Swap 3 ↔ 1 & {[}1 \textbar{} 3, 4, 5, 10{]} & sorted \\
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2452}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1256}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1732}}
@@ -918,15 +909,14 @@ Swap 3 ↔ 1 & {[}1 \textbar{} 3, 4, 5, 10{]} & sorted \\
 \textbf{Edge added}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 A--C 1 & take & \{A\} & A--C 1 \\
 B--C 2 & take & \{A, C\} & B--C 2 \\
 D--E 3 & take & \{A, B, C\} & B--D 5 \\
 A--B 4 & skip (cycle) & \{A, B, C, D\} & D--E 3 \\
 B--D 5 & take → done & & \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 
@@ -959,7 +949,7 @@ Capacity W = 5; items (weight, value): (2, 3), (3, 4), (4, 5), (5, 6).
 
 \begingroup\small
 
-\begin{longtable}[]{@{}
+\par\medskip\noindent\hfil\begin{tabular}{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1067}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0400}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0400}}
@@ -984,15 +974,14 @@ Capacity W = 5; items (weight, value): (2, 3), (3, 4), (4, 5), (5, 6).
 \textbf{5}
 \end{minipage} \\
 \midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
 1 (2, 3) & 0 & 0 & 3 & 3 & 3 & 3 \\
 2 (3, 4) & 0 & 0 & 3 & 4 & 4 & \textbf{7} \\
 3 (4, 5) & 0 & 0 & 3 & 4 & 5 & 7 \\
 4 (5, 6) & 0 & 0 & 3 & 4 & 5 & 7 \\
-\end{longtable}
+\bottomrule\noalign{}
+\end{tabular}\hfil\null\par\medskip
+
 
 \endgroup
 

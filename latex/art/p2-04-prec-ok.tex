@@ -1,0 +1,17 @@
+\begin{figure}[!htbp]
+\centering
+\begin{adjustbox}{max width=\linewidth}
+\begin{tikzpicture}[vertex/.append style={minimum size=10mm, font=\normalsize}]
+  \node[vertex] (t1) at (0,0) {T1}; \node[vertex] (t2) at (5,0) {T2};
+  \draw[arr] (t1) -- node[lbl, above, align=center] {$w_1(A)$ before $r_2(A)$\\$w_1(B)$ before $r_2(B)$} (t2);
+  \node[capt] at (2.5,-1.6) {(a) acyclic: equivalent to T1 $\to$ T2};
+  \begin{scope}[shift={(8,0)}]
+    \node[vertex] (u1) at (0,0) {T1}; \node[vertex] (u2) at (5,0) {T2};
+    \draw[arr, fwine] (u1) to[bend left=30] node[lbl, above] {$r_1(X)$ before $w_2(X)$} (u2);
+    \draw[arr, fwine] (u2) to[bend left=30] node[lbl, below] {$r_2(Y)$ before $w_1(Y)$} (u1);
+    \node[capt] at (2.5,-1.6) {(b) cycle: not conflict serializable};
+  \end{scope}
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Precedence graphs for the two schedules S and S$'$ below.}
+\end{figure}

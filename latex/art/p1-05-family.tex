@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}[m/.style={ink, rectangle, fill=fslate, minimum size=9mm, font=\small\bfseries},
                     f/.style={ink, circle, fill=frose, minimum size=9.5mm, font=\small\bfseries}]
   \node[m] (C) at (0,0) {C}; \node[f] (D) at (2.6,0) {D};
@@ -14,6 +15,7 @@
   \node[m, minimum size=5mm, font=\scriptsize] at (7.9,0.2) {}; \node[lbl, anchor=west] at (8.25,0.2) {male};
   \node[f, minimum size=5.5mm, font=\scriptsize] at (7.9,-0.5) {}; \node[lbl, anchor=west] at (8.25,-0.5) {female};
 \end{tikzpicture}
+\end{adjustbox}
 \caption{"A is the brother of B; B is the daughter of C; C is the husband of D." Drawn as a family tree, the
 answer is immediate: D is A's mother. Use squares for males and circles for females.}
 \end{figure}

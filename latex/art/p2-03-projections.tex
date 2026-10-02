@@ -1,5 +1,6 @@
 \begin{figure}[!htbp]
 \centering
+\begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}
   \node[grey, minimum width=26mm] (P) at (0,0) {\textbf{Projection}};
   \node[slate, text width=36mm] (PA) at (-4,-1.4) {\textbf{Parallel}\\\footnotesize projectors parallel};
@@ -10,5 +11,6 @@
   \node[plain, text width=40mm, font=\footnotesize] (V) at (4,-3.3) {one-, two- or three-point perspective (number of vanishing points)};
   \draw[arr] (PA) -- (O); \draw[arr] (PA) -- (OB); \draw[arr] (PE) -- (V);
 \end{tikzpicture}
+\end{adjustbox}
 \caption{The family of planar geometric projections.}
 \end{figure}
