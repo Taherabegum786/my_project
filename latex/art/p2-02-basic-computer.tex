@@ -1,0 +1,21 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \fill[fochre!60] (5.6,-0.2) rectangle (6.1,7.4);
+  \draw[fgink, line width=0.5pt] (5.6,-0.2) rectangle (6.1,7.4);
+  \node[rotate=90, font=\footnotesize] at (5.85,3.6) {16-bit common bus};
+  \node[db, minimum width=26mm, minimum height=14mm, text width=24mm] (M) at (2.2,6.4) {\textbf{Memory}\\\footnotesize 4096 $\times$ 16};
+  \foreach \y/\n/\d [count=\k] in {5.0/AR/{12-bit address}, 4.1/PC/{12-bit counter}, 3.2/DR/{16-bit data}, 2.3/AC/{16-bit accumulator}, 1.4/IR/{16-bit instruction}, 0.5/TR/{16-bit temporary}} {
+    \node[slate, minimum width=22mm, font=\footnotesize] (r\k) at (2.2,\y) {\textbf{\n}\ \ \d};
+    \draw[arrd] (r\k.east) -- (5.6,\y);
+  }
+  \node[sage, minimum width=22mm, font=\footnotesize] (inp) at (9.0,5.0) {\textbf{INPR} 8-bit};
+  \node[sage, minimum width=22mm, font=\footnotesize] (out) at (9.0,4.1) {\textbf{OUTR} 8-bit};
+  \node[sand, minimum width=22mm, font=\footnotesize] (alu) at (9.0,2.3) {adder \& logic};
+  \draw[arr] (inp.west) -- (6.1,5.0); \draw[arr] (6.1,4.1) -- (out.west);
+  \draw[arrd] (alu.west) -- (6.1,2.3);
+  \draw[arrd] (M.east) -- (5.6,6.4);
+\end{tikzpicture}
+\caption{Mano's basic computer: memory and registers communicate through a single common bus; select
+lines decide which register drives the bus in each clock cycle.}
+\end{figure}

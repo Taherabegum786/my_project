@@ -1,0 +1,22 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \foreach \y in {0,0.75,1.5} \pic at (0,\y) {disk={4.4}{0.12}{fslate}};
+  \draw[fgink, line width=1.2pt] (2.2,-0.2) -- (2.2,2.2);
+  \draw[fgink, line width=0.4pt] (2.2,1.62) ellipse (1.55 and 0.24) (2.2,1.62) ellipse (1.0 and 0.155);
+  \draw[fill=fwine!40, draw=fgink, line width=0.4pt] (2.2,1.62) -- (3.75,1.62) arc (0:-25:1.55 and 0.24) -- (3.08,1.535) arc (-25:0:1.0 and 0.155) -- cycle;
+  \draw[fgink, line width=1.6pt] (5.6,2.4) -- (3.4,1.72);
+  \fill[fgink] (3.4,1.72) circle (2pt);
+  \node[lbl, anchor=west] at (5.7,2.45) {arm and read/write head};
+  \node[lbl, anchor=west] at (5.7,1.75) {track (one ring)};
+  \node[lbl, anchor=west] at (5.7,1.25) {sector (shaded)};
+  \node[lbl, anchor=west] at (5.7,0.6) {cylinder = same track on every surface};
+  \draw[thinline, fgink!50] (5.65,1.75) -- (3.9,1.62) (5.65,1.25) -- (3.6,1.5);
+\end{tikzpicture}
+\caption{Geometry of a magnetic disk.}
+\end{figure}
+\begin{formulatable}
+Access time & \text{seek} + \text{rotational latency} + \text{transfer} \\
+Average rotational latency & \tfrac12 \times \frac{60}{\text{RPM}}\ \text{seconds} \\
+Capacity & \text{surfaces}\times\text{tracks}\times\text{sectors per track}\times\text{bytes per sector} \\
+\end{formulatable}

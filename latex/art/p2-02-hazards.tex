@@ -1,0 +1,13 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \foreach \x/\col/\h/\cause/\fix in {
+      0/fslate/Structural/{two instructions need the same resource}/{duplicate resources; separate instruction and data caches},
+      1/fsage/Data/{an instruction needs a result not yet written (RAW; WAR and WAW when out of order)}/{operand forwarding; stalls; register renaming},
+      2/fsand/Control/{branch outcome unknown when the next instruction is fetched}/{branch prediction; delayed branch; flushing}} {
+    \node[box, fill=\col, minimum width=46mm] at (\x*5.1,0) {\textbf{\h\ hazard}};
+    \node[plain, text width=44mm, align=left, font=\footnotesize, anchor=north, minimum height=24mm] at (\x*5.1,-0.6) {\textit{cause:} \cause\\[3pt]\textit{remedy:} \fix};
+  }
+\end{tikzpicture}
+\caption{The three kinds of pipeline hazard and how they are handled.}
+\end{figure}

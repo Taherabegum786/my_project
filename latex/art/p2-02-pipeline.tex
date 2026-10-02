@@ -1,0 +1,19 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[x=1.15cm, y=0.62cm]
+  \foreach \c in {1,...,8} \node[font=\footnotesize] at ({\c+0.5},0.6) {\c};
+  \node[font=\footnotesize, anchor=east] at (0.9,0.6) {cycle};
+  \foreach \i in {1,...,5} {
+    \node[font=\footnotesize, anchor=east] at (0.9,{-\i+0.5}) {$I_{\i}$};
+    \foreach \s/\n/\col [count=\k from 0] in {IF/IF/fslate, ID/ID/fsage, EX/EX/fsand, WB/WB/frose} {
+      \pgfmathtruncatemacro{\c}{\i+\k}
+      \filldraw[fill=\col, draw=fgink, line width=0.45pt] (\c,-\i) rectangle ++(1,1);
+      \node[font=\footnotesize] at ({\c+0.5},{-\i+0.5}) {\n};
+    }
+  }
+  \draw[thinline, dashed] (5,0.2) -- (5,-5.2);
+  \node[lbl, anchor=west] at (9.2,-2.5) {from cycle 4 on, one\\instruction completes\\every cycle};
+  \node[font=\small] at (5,-5.9) {total $= k + (n-1) = 4 + 4 = 8$ cycles};
+\end{tikzpicture}
+\caption{Space–time diagram of a four-stage pipeline executing five instructions.}
+\end{figure}

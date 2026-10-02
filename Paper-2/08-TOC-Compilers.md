@@ -301,15 +301,15 @@ F  → ( E ) | id
 
 | NT | FIRST | FOLLOW |
 |----|-------|--------|
-| E | { (, id } | { ), $ } |
-| E' | { +, ε } | { ), $ } |
-| T | { (, id } | { +, ), $ } |
-| T' | { *, ε } | { +, ), $ } |
-| F | { (, id } | { *, +, ), $ } |
+| E | { (, id } | { ), \$ } |
+| E' | { +, ε } | { ), \$ } |
+| T | { (, id } | { +, ), \$ } |
+| T' | { *, ε } | { +, ), \$ } |
+| F | { (, id } | { *, +, ), \$ } |
 
 **LL(1) parsing table**:
 
-| | id | + | * | ( | ) | $ |
+| | id | + | * | ( | ) | \$ |
 |-|----|---|---|---|---|---|
 | E | E→TE' | | | E→TE' | | |
 | E' | | E'→+TE' | | | E'→ε | E'→ε |
@@ -570,7 +570,7 @@ stateDiagram-v2
     I3 --> I4: b
 ```
 
-| State | a | b | $ | A | S |
+| State | a | b | \$ | A | S |
 |-------|---|---|---|---|---|
 | 0 | s3 | s4 | | 2 | 1 |
 | 1 | | | **acc** | | |
@@ -582,18 +582,18 @@ stateDiagram-v2
 
 No state contains both a shift and a complete item → the grammar is **LR(0)** (hence also SLR, LALR, CLR).
 
-Parse of **abb$**:
+Parse of **abb\$**:
 
 | Stack | Input | Action |
 |-------|-------|--------|
-| 0 | abb$ | shift 3 |
-| 0 a 3 | bb$ | shift 4 |
-| 0 a 3 b 4 | b$ | reduce A → b, goto(3, A) = 6 |
-| 0 a 3 A 6 | b$ | reduce A → aA, goto(0, A) = 2 |
-| 0 A 2 | b$ | shift 4 |
-| 0 A 2 b 4 | $ | reduce A → b, goto(2, A) = 5 |
-| 0 A 2 A 5 | $ | reduce S → AA, goto(0, S) = 1 |
-| 0 S 1 | $ | **accept** |
+| 0 | abb\$ | shift 3 |
+| 0 a 3 | bb\$ | shift 4 |
+| 0 a 3 b 4 | b\$ | reduce A → b, goto(3, A) = 6 |
+| 0 a 3 A 6 | b\$ | reduce A → aA, goto(0, A) = 2 |
+| 0 A 2 | b\$ | shift 4 |
+| 0 A 2 b 4 | \$ | reduce A → b, goto(2, A) = 5 |
+| 0 A 2 A 5 | \$ | reduce S → AA, goto(0, S) = 1 |
+| 0 S 1 | \$ | **accept** |
 
 **A grammar that is LALR(1) but not SLR(1)**: S → L = R | R, L → *R | id, R → L. In the state containing S → L·= R and R → L·, '=' ∈ FOLLOW(R), so SLR has a shift/reduce conflict on '='; LR(1) lookaheads resolve it.
 
@@ -682,7 +682,7 @@ Parse of **abb$**:
 35. Number of states: SLR vs LALR for the same grammar: **equal**
 36. Left-recursive grammar cannot be parsed by: **top-down (LL / recursive descent) parsers**
 37. Merging CLR(1) states to LALR(1) may introduce: **reduce-reduce conflicts**
-38. FOLLOW of the start symbol always contains: **$**
+38. FOLLOW of the start symbol always contains: **\$**
 39. A bottom-up parser produces: **reverse of the rightmost derivation**
 40. S-attributed definitions use only: **synthesized attributes**
 41. Inherited attributes from parent and left siblings: **L-attributed**

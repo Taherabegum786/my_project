@@ -1,0 +1,11 @@
+\[
+\underbrace{\begin{pmatrix} 9 & 2 & 7\\ 6 & 4 & 3\\ 5 & 8 & 1 \end{pmatrix}}_{\text{cost}}
+\ \xrightarrow{\ \text{rows } -2,-3,-1\ }\
+\begin{pmatrix} 7 & 0 & 5\\ 3 & 1 & 0\\ 4 & 7 & 0 \end{pmatrix}
+\ \xrightarrow{\ \text{columns } -3,0,0\ }\
+\begin{pmatrix} 4 & \boxed{0} & 5\\ \boxed{0} & 1 & 0\\ 1 & 7 & \boxed{0} \end{pmatrix}
+\]
+\begin{center}\small
+Three lines cover all zeros ($= n$), so an optimal assignment exists among the zeros:
+A$\to$J2, B$\to$J1, C$\to$J3, with minimum cost $2 + 6 + 1 = 9$.
+\end{center}

@@ -18,7 +18,14 @@
 
 ## 1. Digital Logic
 
+Every computer is ultimately built from logic gates that combine binary signals. Combinational circuits
+compute outputs purely from present inputs; sequential circuits add memory in the form of flip-flops, so
+their outputs also depend on the past.
+
 ### 1.1 Gates
+
+
+<!-- latex: p2-02-gates -->
 
 | Gate | Expression | Output 1 when |
 |------|-----------|---------------|
@@ -35,6 +42,11 @@ Using only NOR: NOT = 1, OR = 2, AND = 3, XNOR = **4**, XOR = 5.
 
 ### 1.2 K-Map Simplification
 
+A Karnaugh map rearranges a truth table so that terms differing in a single variable sit side by side.
+Grouping adjacent 1s in blocks of 1, 2, 4 or 8 then eliminates the variables that change within the
+block, giving a minimal sum of products by inspection.
+
+<!-- latex: p2-02-kmap -->
 ```
  4-variable K-map (Gray code order)          Example: F = Σm(0,2,5,7,8,10,13,15)
           CD                                             CD
@@ -49,6 +61,10 @@ Rules: group 1, 2, 4, 8, 16 adjacent cells (wrap-around allowed); larger groups 
 
 ### 1.3 Combinational Circuits
 
+Adders, multiplexers, decoders and comparators are the standard building blocks of a processor's data path.
+The full adder below is worth being able to draw from memory.
+
+<!-- latex: p2-02-adder -->
 ```
  Half adder                       Full adder
  S = A ⊕ B                        S    = A ⊕ B ⊕ Cin
@@ -68,6 +84,10 @@ Rules: group 1, 2, 4, 8, 16 adjacent cells (wrap-around allowed); larger groups 
 
 ### 1.4 Flip-Flops
 
+A flip-flop stores one bit and changes state only on a clock edge. Its *characteristic* equation predicts
+the next state from the inputs; its *excitation* table answers the designer's reverse question — which
+inputs produce a desired transition.
+
 | FF | Characteristic equation | Notes |
 |----|------------------------|-------|
 | SR | Q⁺ = S + R'Q (SR = 0) | S=R=1 invalid |
@@ -75,6 +95,7 @@ Rules: group 1, 2, 4, 8, 16 adjacent cells (wrap-around allowed); larger groups 
 | D | Q⁺ = D | Delay / data latch |
 | T | Q⁺ = T ⊕ Q | Toggle; used in counters |
 
+<!-- latex: p2-02-excitation -->
 ```
  Excitation table (what inputs give Q → Q⁺)
  Q Q⁺ │ S R │ J K │ D │ T
@@ -93,6 +114,10 @@ Rules: group 1, 2, 4, 8, 16 adjacent cells (wrap-around allowed); larger groups 
 
 ## 2. Data Representation
 
+Computers represent integers in two's complement because it makes subtraction the same circuit as addition
+and gives a single zero. Real numbers use the IEEE 754 floating-point formats, which trade exactness for
+an enormous range.
+
 ### 2.1 Signed numbers (n bits)
 
 | Representation | Range | Zeros |
@@ -107,6 +132,7 @@ r's complement of N (n digits) = rⁿ − N; (r−1)'s complement = rⁿ − 1 �
 
 ### 2.2 Floating Point — IEEE 754
 
+<!-- latex: p2-02-ieee -->
 ```
  Single precision (32 bits)
  ┌───┬──────────────┬────────────────────────────────┐
@@ -136,6 +162,10 @@ Example: −6.25 = −110.01₂ = −1.1001 × 2² → S=1, E = 129 = 10000001, 
 
 ## 4. Basic Computer (Mano)
 
+Morris Mano's "basic computer" is the textbook model behind many questions: a 16-bit machine with eight
+registers and 4096 words of memory, all connected by one common bus.
+
+<!-- latex: p2-02-basic-computer -->
 ```mermaid
 flowchart LR
     subgraph Registers
@@ -157,6 +187,7 @@ Instruction format (16 bits): `I (1) | Opcode (3) | Address (12)` — I = 0 dire
 
 ### Instruction Cycle
 
+<!-- latex: p2-02-instr-cycle -->
 ```mermaid
 flowchart LR
     F[Fetch<br/>T0: AR←PC<br/>T1: IR←M AR, PC←PC+1] --> D[Decode<br/>T2: decode opcode, AR←IR 0-11, I←IR 15]
@@ -169,6 +200,9 @@ flowchart LR
 ```
 
 ## 5. Control Unit
+
+The control unit issues the sequence of control signals that makes each instruction happen. It can be built
+directly from gates (hardwired) or by reading control words from a small memory (microprogrammed).
 
 | Hardwired | Microprogrammed |
 |-----------|-----------------|
@@ -194,6 +228,10 @@ Evaluate X = (A + B) × (C + D):
 | 0-address (stack) | PUSH A · PUSH B · ADD · PUSH C · PUSH D · ADD · MUL · POP X |
 
 ### 6.2 Addressing Modes (very frequent)
+
+An addressing mode tells the processor how to find an operand. The choice trades instruction length
+against flexibility: immediate operands need no memory access at all, whereas indirect addressing needs an
+extra one but allows pointers.
 
 | Mode | Effective address | Use |
 |------|------------------|-----|
@@ -224,6 +262,11 @@ Memory references to get operand: immediate 0, direct 1, indirect 2.
 
 ## 7. Pipelining
 
+Pipelining overlaps the execution of successive instructions, like an assembly line: while one instruction
+executes, the next is decoded and the one after is fetched. It does not make a single instruction faster,
+but it raises throughput towards one instruction per cycle.
+
+<!-- latex: p2-02-pipeline -->
 ```
  4-stage instruction pipeline (IF, ID, EX, WB), 5 instructions
  Cycle:   1    2    3    4    5    6    7    8
@@ -235,6 +278,7 @@ Memory references to get operand: immediate 0, direct 1, indirect 2.
  Total = k + (n − 1) = 4 + 4 = 8 cycles
 ```
 
+<!-- latex: p2-02-pipeline-formulas -->
 ```
 Pipelined time   T_pipe = (k + n − 1) × t_p        (t_p = max stage delay + latch delay)
 Non-pipelined    T_seq  = n × t_n                   (t_n = sum of stage delays)
@@ -246,6 +290,10 @@ With stalls:     CPI_pipe = 1 + stall cycles per instruction ;  S = CPI_nonpipe 
 
 ### Hazards
 
+A hazard is any situation that prevents the next instruction from entering the pipeline in its expected
+cycle. Each type has its own family of remedies.
+
+<!-- latex: p2-02-hazards -->
 ```mermaid
 flowchart TB
     H[Pipeline hazards] --> S[Structural<br/>resource conflict]
@@ -264,6 +312,10 @@ flowchart TB
 
 ## 8. I/O Organisation
 
+Input–output devices are slow and varied, so the processor talks to them through interfaces. The key
+design question is how much of the transfer the CPU itself must supervise.
+
+<!-- latex: p2-02-io -->
 ```mermaid
 flowchart LR
     CPU <--> BUS[System bus]
@@ -290,6 +342,11 @@ flowchart LR
 
 ## 9. Memory Hierarchy
 
+Programs tend to reuse recently used data (temporal locality) and data near it (spatial locality). The
+memory hierarchy exploits this by keeping copies of active data in small, fast memories close to the
+processor.
+
+<!-- latex: p2-02-hierarchy -->
 ```
  ┌─────────────────────────────┐  ▲  faster, costlier, smaller
  │ Registers                   │  │
@@ -310,6 +367,11 @@ flowchart LR
 
 ### 9.1 Cache Mapping
 
+A cache is far smaller than main memory, so each memory block must be assigned somewhere in it. The mapping
+scheme decides where a block may go — exactly one line, any line, or any line of one set — and so how the
+address is split into tag, index and offset.
+
+<!-- latex: p2-02-mapping -->
 ```mermaid
 flowchart LR
     A[Main memory address] --> D[Direct mapped<br/>TAG · LINE · OFFSET]
@@ -318,6 +380,7 @@ flowchart LR
 ```
 
 **Worked example**: Main memory 4 GB (32-bit address), cache 64 KB, block 32 B.
+<!-- latex: p2-02-cache-worked -->
 ```
 Offset bits  = log₂ 32 = 5
 Lines        = 64 KB / 32 B = 2048 → 11 bits
@@ -327,6 +390,7 @@ Fully:   TAG = 32 − 5 = 27
 Tag directory size (direct) = 2048 × 16 bits (+ valid/dirty bits)
 ```
 
+<!-- latex: p2-02-amat -->
 ```
 Hit ratio h ;  cache access tc ; memory access tm
 Avg access time (simultaneous/parallel)   T = h·tc + (1 − h)·tm
@@ -343,6 +407,7 @@ Covered in depth in [Unit 5 (OS)](05-System-Software-OS.md): paging, TLB, page r
 - Effective access with TLB: EAT = h(t_TLB + t_m) + (1 − h)(t_TLB + 2t_m) (single-level page table).
 
 ### 9.3 Magnetic Disk
+<!-- latex: p2-02-disk -->
 ```
 Disk access time = Seek time + Rotational latency + Transfer time
 Avg rotational latency = ½ × (60/RPM) s
@@ -351,6 +416,9 @@ Capacity = surfaces × tracks × sectors/track × bytes/sector
 e.g. 7200 RPM → one rotation 8.33 ms → avg latency **4.17 ms**.
 
 ## 10. Multiprocessors
+
+Multiprocessors raise performance by running work in parallel. Their central difficulties are connecting
+processors to memory without bottlenecks and keeping their private caches consistent.
 - **Tightly coupled** (shared memory, UMA/NUMA) vs **loosely coupled** (distributed memory, message passing).
 - Interconnection structures: time-shared common bus, multiport memory, **crossbar switch** (n² switches, non-blocking), multistage networks (Omega: (n/2) log₂ n 2×2 switches), hypercube (n-cube: 2ⁿ nodes, each with n links, diameter n).
 - Inter-processor arbitration: serial (daisy chain), parallel, dynamic (time-slice, polling, LRU, FIFO, rotating daisy chain).
@@ -381,12 +449,14 @@ Booth reduces additions for runs of 1s; worst case is alternating bits (0101…)
 ### 11.2 Instruction Encoding Numericals
 
 **Fixed format**: 32-bit instructions, 64 registers, 45 distinct opcodes, format `opcode | Rd | Rs | immediate`.
+<!-- latex: p2-02-format -->
 ```
 opcode bits = ⌈log₂ 45⌉ = 6        register field = log₂ 64 = 6 each
 immediate   = 32 − 6 − 6 − 6 = 14 bits  → signed range −8192 … +8191
 ```
 
 **Expanding opcode**: 16-bit instruction, 4-bit address fields.
+<!-- latex: p2-02-expanding -->
 ```
 3-address: 4-bit opcode → 2⁴ = 16 patterns; use 15, keep 1 as escape
 2-address: escape (4 bits) + 4 more opcode bits → 16 patterns; use 14, keep 2
@@ -398,6 +468,7 @@ General rule: unused patterns at level k × 2^(field width) = patterns available
 ### 11.3 Mapping an Address into a Set-Associative Cache
 
 2-way set associative, 128 lines, 16-byte blocks, 16-bit byte address **0x1A2B**.
+<!-- latex: p2-02-setassoc -->
 ```
 Sets = 128 / 2 = 64 → 6 set bits ; offset = 4 bits ; tag = 16 − 6 − 4 = 6 bits
 Block number = 0x1A2B >> 4 = 0x1A2 = 418
@@ -418,6 +489,7 @@ Higher associativity removes **conflict misses**; the three first-time misses ar
 
 ### 11.5 Interrupt Cycle (Mano basic computer)
 
+<!-- latex: p2-02-interrupt -->
 ```mermaid
 flowchart TD
     A{R = 1?<br/>interrupt pending} -->|No| F[Normal fetch cycle T0 T1 T2]
@@ -440,6 +512,7 @@ Mano's microinstruction: `F1 (3) | F2 (3) | F3 (3) | CD (2) | BR (2) | AD (7)` =
 
 ### 11.8 Memory Interleaving
 
+<!-- latex: p2-02-interleave -->
 ```
  Low-order interleaving (4 modules): module = address mod 4
  Address:  0  1  2  3  4  5  6  7  8 …

@@ -1,0 +1,22 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[v/.style={circ, minimum size=6mm, font=\footnotesize}]
+  \begin{scope}
+    \foreach \x/\n in {0/a,1.3/b,2.6/c} \node[v, fill=fslate] (\n) at (\x,1.8) {\n};
+    \foreach \x/\n in {0/x,1.3/y,2.6/z} \node[v, fill=fsand] (\n) at (\x,0) {\n};
+    \foreach \u in {a,b,c} \foreach \w in {x,y,z} \draw[thinline] (\u) -- (\w);
+    \node[capt] at (1.3,-0.8) {$K_{3,3}$ — non-planar};
+  \end{scope}
+  \begin{scope}[shift={(5.2,0.9)}]
+    \foreach \i in {0,...,4} \node[v, fill=frose] (k\i) at ({90+72*\i}:1.15) {};
+    \foreach \i in {0,...,4} \foreach \j in {0,...,4} {\ifnum\i<\j \draw[thinline] (k\i) -- (k\j);\fi}
+    \node[capt] at (0,-1.7) {$K_5$ — non-planar};
+  \end{scope}
+  \begin{scope}[shift={(9.6,0)}]
+    \node[v, fill=fsage] (1) at (1.1,2.0) {1}; \node[v, fill=fsage] (2) at (0,0) {2}; \node[v, fill=fsage] (3) at (2.2,0) {3}; \node[v, fill=fsage] (4) at (1.1,0.75) {4};
+    \draw[thinline] (1) -- (2) -- (3) -- (1) (4) -- (1) (4) -- (2) (4) -- (3);
+    \node[capt] at (1.1,-0.8) {$K_4$ — planar};
+  \end{scope}
+\end{tikzpicture}
+\caption{$K_{3,3}$ and $K_5$ cannot be drawn without crossings; $K_4$ can, with one vertex placed inside the triangle.}
+\end{figure}

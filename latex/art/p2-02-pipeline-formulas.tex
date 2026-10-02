@@ -1,0 +1,7 @@
+\begin{formulatable}
+Pipelined time for $n$ instructions, $k$ stages & T_{\text{pipe}} = (k+n-1)\,t_p,\quad t_p = \max(\text{stage}) + \text{latch} \\
+Non-pipelined time & T_{\text{seq}} = n\,t_n,\quad t_n = \textstyle\sum \text{stage delays} \\
+Speedup & S = \frac{n\,t_n}{(k+n-1)\,t_p}\ \longrightarrow\ k\quad(n\to\infty,\ \text{equal stages}) \\
+Efficiency and throughput & \eta = \frac{S}{k},\qquad \text{throughput} = \frac{n}{T_{\text{pipe}}} \\
+With stalls & CPI_{\text{pipe}} = 1 + \text{stalls per instruction},\quad S = \frac{CPI_{\text{non-pipe}}}{CPI_{\text{pipe}}} \\
+\end{formulatable}

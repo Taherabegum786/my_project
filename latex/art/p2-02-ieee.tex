@@ -1,0 +1,20 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[x=0.36cm]
+  \foreach \a/\b/\col/\t in {0/1/frose/S, 1/9/fsand/{exponent (8)}, 9/32/fslate/{fraction (23)}} {
+    \filldraw[fill=\col, draw=fgink, line width=0.5pt] (\a,0) rectangle (\b,0.8);
+    \node[font=\footnotesize] at ({(\a+\b)/2},0.4) {\t};
+  }
+  \foreach \p/\l in {0/31, 1/30, 9/22, 32/0} \node[font=\scriptsize, above] at (\p,0.8) {\l};
+  \node[anchor=west, font=\small] at (33,0.4) {single precision, bias 127};
+  \begin{scope}[yshift=-1.6cm, x=0.18cm]
+    \foreach \a/\b/\col/\t in {0/1/frose/S, 1/12/fsand/{exponent (11)}, 12/64/fslate/{fraction (52)}} {
+      \filldraw[fill=\col, draw=fgink, line width=0.5pt] (\a,0) rectangle (\b,0.8);
+      \node[font=\footnotesize] at ({(\a+\b)/2},0.4) {\t};
+    }
+    \node[anchor=west, font=\small] at (66,0.4) {double precision, bias 1023};
+  \end{scope}
+  \node[font=\small] at (16,-2.5) {value $= (-1)^{S}\times 1.F \times 2^{\,E-\text{bias}}$};
+\end{tikzpicture}
+\caption{IEEE 754 formats. The leading 1 of a normalised mantissa is implicit and not stored.}
+\end{figure}

@@ -1,0 +1,18 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \fill[fochre!60] (0,0) rectangle (12,0.4); \draw[fgink, line width=0.5pt] (0,0) rectangle (12,0.4);
+  \node[font=\footnotesize] at (6,0.2) {system bus};
+  \node[slate, minimum width=22mm] (cpu) at (1.4,1.6) {\textbf{CPU}};
+  \node[db, minimum width=22mm] (mem) at (4.6,1.6) {\textbf{Memory}};
+  \node[sand, text width=24mm] (dma) at (7.8,1.6) {\textbf{DMA}\\\footnotesize controller};
+  \node[sage, text width=24mm] (iface) at (10.6,1.6) {\textbf{I/O interface}\\\footnotesize data, status, control};
+  \node[grey, minimum width=22mm] (dev) at (10.6,3.4) {\textbf{Device}};
+  \foreach \n/\x in {cpu/1.4, mem/4.6, dma/7.8, iface/10.6} \draw[arrd] (\n.south) -- (\x,0.4);
+  \draw[arrd] (iface) -- (dev);
+  \draw[dasharr] (dma.north) .. controls (7.8,2.7) and (4.6,2.7) .. node[lbl, below=1pt] {block transfer} (mem.north);
+  \draw[dasharr, <->] (cpu.north) .. controls (1.4,3.9) and (7.8,3.9) .. node[lbl, above] {bus request / bus grant} (dma.north west);
+\end{tikzpicture}
+\caption{I/O organisation. A DMA controller borrows the bus (after a bus request and grant) to move whole
+blocks between a device and memory.}
+\end{figure}

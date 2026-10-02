@@ -1,0 +1,17 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[circuit logic US, every circuit symbol/.style={line width=0.6pt, fill=fpaper, draw=fgink},
+    tiny circuit symbols]
+  \foreach \g/\lab/\expr [count=\k] in {and gate/AND/{AB}, or gate/OR/{A+B}, nand gate/NAND/{\overline{AB}}, nor gate/NOR/{\overline{A+B}}, xor gate/XOR/{A\oplus B}, xnor gate/XNOR/{\overline{A\oplus B}}} {
+    \pgfmathsetmacro{\x}{mod(\k-1,3)*4.6}
+    \pgfmathsetmacro{\y}{-floor((\k-1)/3)*2.4}
+    \node[\g, inputs=nn, scale=2.2] (g\k) at (\x,\y) {};
+    \draw[thinline] (g\k.input 1) -- ++(-0.5,0) node[left, font=\footnotesize] {$A$};
+    \draw[thinline] (g\k.input 2) -- ++(-0.5,0) node[left, font=\footnotesize] {$B$};
+    \draw[thinline] (g\k.output) -- ++(0.5,0) node[right, font=\footnotesize] {$\expr$};
+    \node[capt] at (\x,{\y-0.85}) {\lab};
+  }
+\end{tikzpicture}
+\caption{The two-input logic gates in the distinctive (US) shapes. NAND and NOR are \emph{universal}:
+each alone can build every other gate.}
+\end{figure}

@@ -1,0 +1,12 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[x=0.6cm]
+  \foreach \a/\b/\col/\t/\v in {0/6/fslate/{tag (6)}/{000110 = 6}, 6/12/fsage/{set (6)}/{100010 = 34}, 12/16/fsand/{offset (4)}/{1011 = 11}} {
+    \filldraw[fill=\col, draw=fgink, line width=0.5pt] (\a,0) rectangle (\b,0.8);
+    \node[font=\footnotesize] at ({(\a+\b)/2},0.4) {\t};
+    \node[font=\footnotesize, below=1mm] at ({(\a+\b)/2},0) {\v};
+  }
+  \node[anchor=west, font=\small] at (16.6,0.4) {address \texttt{0x1A2B}};
+\end{tikzpicture}
+\caption{Address \texttt{0x1A2B} in a 2-way set-associative cache of 128 lines with 16-byte blocks.}
+\end{figure}

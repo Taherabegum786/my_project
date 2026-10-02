@@ -1,0 +1,18 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[v/.style={circ, minimum size=6.5mm, font=\footnotesize}]
+  \begin{scope}
+    \node[v, fill=fwine!25] (a) at (0,2) {a}; \node[v] (b) at (2,2) {b}; \node[v, fill=fwine!25] (c) at (2,0) {c}; \node[v] (d) at (0,0) {d};
+    \draw[thinline] (a) -- (b) -- (c) -- (d) -- (a) (a) -- (c);
+    \node[capt] at (1,-0.8) {$G_1$};
+  \end{scope}
+  \begin{scope}[shift={(5.5,0)}]
+    \node[v] (p) at (1,2.2) {p}; \node[v, fill=fwine!25] (q) at (2.2,1) {q}; \node[v] (r) at (1,-0.2) {r}; \node[v, fill=fwine!25] (s) at (-0.2,1) {s};
+    \draw[thinline] (p) -- (q) -- (r) -- (s) -- (p) (q) -- (s);
+    \node[capt] at (1,-0.8) {$G_2$};
+  \end{scope}
+  \node[lbl, anchor=west, text width=40mm, align=left] at (9.2,1) {$a\mapsto q,\ c\mapsto s$\\$b\mapsto p,\ d\mapsto r$\\[3pt]degree-3 vertices shaded};
+\end{tikzpicture}
+\caption{Two drawings of the same graph ($K_4$ minus one edge). Matching degree sequences suggest the
+isomorphism; exhibiting the mapping proves it.}
+\end{figure}

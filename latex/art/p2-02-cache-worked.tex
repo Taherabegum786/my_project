@@ -1,0 +1,10 @@
+\begin{formulas}
+\begin{align*}
+\text{offset bits} &= \log_2 32 = 5\\
+\text{lines} &= \frac{64\ \text{KB}}{32\ \text{B}} = 2048 = 2^{11} \;\Rightarrow\; 11 \text{ line bits}\\
+\text{direct mapped:}\quad \text{tag} &= 32 - 11 - 5 = 16\\
+\text{4-way:}\quad \text{sets} &= 2048/4 = 512 = 2^9,\qquad \text{tag} = 32 - 9 - 5 = 18\\
+\text{fully associative:}\quad \text{tag} &= 32 - 5 = 27\\
+\text{tag directory (direct)} &= 2048 \times 16 \text{ bits} \;(+\text{valid and dirty bits})
+\end{align*}
+\end{formulas}

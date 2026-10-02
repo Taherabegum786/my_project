@@ -243,7 +243,7 @@ flowchart TB
 | Ctrl + A | Select all | F7 | Spell check (Word) |
 | F5 | Slideshow / refresh | Alt + F4 | Close window |
 
-Spreadsheet: cell address = column letter + row number (B3); **absolute reference** $B$3; functions SUM, AVERAGE, COUNT, IF, VLOOKUP.
+Spreadsheet: cell address = column letter + row number (B3); **absolute reference** \$B\$3; functions SUM, AVERAGE, COUNT, IF, VLOOKUP.
 
 ### 8.4 Emerging Technologies (frequently asked one-liners)
 
@@ -299,7 +299,7 @@ Spreadsheet: cell address = column letter + row number (B3); **absolute referenc
 24. The first Indian supercomputer: **PARAM 8000**
 25. Integrated circuits were used in: **third-generation computers**
 26. Which is open-source software? (a) MS Word (b) LibreOffice Writer (c) Photoshop (d) Windows — **Ans: (b)**
-27. Absolute cell reference in a spreadsheet: **$A$1**
+27. Absolute cell reference in a spreadsheet: **\$A\$1**
 28. Shortcut to undo: **Ctrl + Z**
 29. A .csv file stores: **tabular data as comma-separated text**
 30. Web 2.0 is characterised by: **user-generated content and interactivity**

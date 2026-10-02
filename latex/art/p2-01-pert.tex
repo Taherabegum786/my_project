@@ -1,0 +1,21 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[ev/.style={ink, circle split, fill=fpaper, minimum size=12mm, inner sep=1pt, font=\scriptsize,
+    blur shadow={shadow blur steps=6, shadow xshift=0.7pt, shadow yshift=-0.9pt, shadow opacity=22}}]
+  \node[ev] (1) at (0,0) {\textbf{1} \nodepart{lower} 0 | 0};
+  \node[ev] (2) at (3,1.6) {\textbf{2} \nodepart{lower} 3 | 3};
+  \node[ev] (3) at (3,-1.6) {\textbf{3} \nodepart{lower} 4 | 6};
+  \node[ev] (4) at (6.4,0) {\textbf{4} \nodepart{lower} 8 | 8};
+  \node[ev] (5) at (9.4,0) {\textbf{5} \nodepart{lower} 11 | 11};
+  \draw[arr, fwine, line width=1.2pt] (1) -- node[edgelbl, above left] {A = 3} (2);
+  \draw[arr] (1) -- node[edgelbl, below left] {B = 4} (3);
+  \draw[arr, fwine, line width=1.2pt] (2) -- node[edgelbl, above right] {C = 5} (4);
+  \draw[arr] (3) -- node[edgelbl, below right] {D = 2} (4);
+  \draw[arr, fwine, line width=1.2pt] (4) -- node[edgelbl, above] {E = 3} (5);
+  \node[lbl, anchor=west] at (10.3,0.4) {earliest | latest};
+  \node[lbl, anchor=west, text=fwine] at (10.3,-0.2) {critical path};
+\end{tikzpicture}
+\caption{An activity-on-arrow network. Each event shows its earliest and latest times; where they are
+equal the event is critical. The critical path A–C–E (11 days) fixes the project duration, and activities
+B and D share 2 days of float.}
+\end{figure}

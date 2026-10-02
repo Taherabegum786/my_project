@@ -1,0 +1,15 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[node distance=6mm]
+  \node[diamondbox, fill=fsand] (R) {$R = 1$?\\[-1pt]\scriptsize interrupt pending};
+  \node[slate, text width=40mm, right=16mm of R] (F) {normal fetch: $T_0, T_1, T_2$};
+  \node[rose, text width=58mm, below=of R] (I0) {$RT_0$:\ AR $\leftarrow$ 0,\ \ TR $\leftarrow$ PC};
+  \node[rose, text width=58mm, below=of I0] (I1) {$RT_1$:\ M[AR] $\leftarrow$ TR,\ \ PC $\leftarrow$ 0};
+  \node[rose, text width=58mm, below=of I1] (I2) {$RT_2$:\ PC $\leftarrow$ PC + 1,\ IEN $\leftarrow$ 0,\ R $\leftarrow$ 0,\ SC $\leftarrow$ 0};
+  \node[grey, text width=58mm, below=of I2] (ISR) {branch at location 1 to the interrupt service routine};
+  \draw[arr] (R) -- node[lbl, above] {no} (F);
+  \draw[arr] (R) -- node[lbl, right] {yes} (I0);
+  \draw[arr] (I0) -- (I1); \draw[arr] (I1) -- (I2); \draw[arr] (I2) -- (ISR);
+\end{tikzpicture}
+\caption{The interrupt cycle: the return address is saved in location 0 and further interrupts are disabled.}
+\end{figure}

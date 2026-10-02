@@ -101,7 +101,7 @@ def main():
         fid = file_id(rel)
         out = CHAPTERS / f'{fid}.tex'
         subprocess.run([
-            'pandoc', '-f', 'gfm+raw_attribute-tex_math_dollars', '-t', 'latex',
+            'pandoc', '-f', 'gfm+raw_attribute+tex_math_dollars', '-t', 'latex',
             '--top-level-division=chapter', '--wrap=preserve',
             '--lua-filter', str(FILTER),
             '-M', f'fileid={fid}', '-M', f'filedir={str(pathlib.PurePosixPath(rel).parent).replace(".", "")}',

@@ -1,0 +1,11 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[x=0.36cm]
+  \foreach \a/\b/\col/\t in {0/6/frose/{opcode (6)}, 6/12/fslate/{$R_d$ (6)}, 12/18/fslate/{$R_s$ (6)}, 18/32/fsage/{immediate (14)}} {
+    \filldraw[fill=\col, draw=fgink, line width=0.5pt] (\a,0) rectangle (\b,0.8);
+    \node[font=\footnotesize] at ({(\a+\b)/2},0.4) {\t};
+  }
+  \node[lbl, anchor=west] at (33,0.4) {immediate range $-8192 \dots +8191$};
+\end{tikzpicture}
+\caption{A 32-bit instruction with 45 opcodes ($\lceil\log_2 45\rceil = 6$ bits) and 64 registers (6 bits each).}
+\end{figure}

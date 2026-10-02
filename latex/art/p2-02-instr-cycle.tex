@@ -1,0 +1,16 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[node distance=7mm]
+  \node[slate, text width=34mm] (F) {\textbf{Fetch}\\\footnotesize $T_0$: AR $\leftarrow$ PC\\$T_1$: IR $\leftarrow$ M[AR], PC $\leftarrow$ PC+1};
+  \node[sage, text width=34mm, right=of F] (D) {\textbf{Decode}\\\footnotesize $T_2$: decode opcode,\\AR $\leftarrow$ IR(0–11), I $\leftarrow$ IR(15)};
+  \node[sand, text width=30mm, right=of D] (E) {\textbf{Effective address}\\\footnotesize read operand address if indirect};
+  \node[rose, text width=22mm, below=12mm of E] (X) {\textbf{Execute}};
+  \node[diamondbox, fill=fgrey, left=14mm of X] (I) {interrupt?};
+  \node[grey, text width=26mm, left=14mm of I] (S) {save PC,\\go to ISR};
+  \draw[arr] (F) -- (D); \draw[arr] (D) -- (E); \draw[arr] (E) -- (X); \draw[arr] (X) -- (I);
+  \draw[arr] (I) -- node[lbl, above] {yes} (S);
+  \draw[arr] (I.south) -- ++(0,-6mm) -| node[lbl, below, pos=0.25] {no — next instruction} (F.south);
+  \draw[arr] (S) -- (S |- F.south);
+\end{tikzpicture}
+\caption{The instruction cycle of the basic computer, with the interrupt check after each instruction.}
+\end{figure}

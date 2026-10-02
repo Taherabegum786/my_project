@@ -1,0 +1,12 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[node distance=10mm]
+  \node[slate, text width=34mm] (A) {\textbf{Formulate}\\\footnotesize variables, objective, constraints};
+  \node[diamondbox, fill=fsand, right=of A] (B) {two\\variables?};
+  \node[sage, text width=30mm, right=14mm of B, yshift=8mm] (C) {\textbf{Graphical method}\\\footnotesize test corner points};
+  \node[sage, text width=30mm, right=14mm of B, yshift=-8mm] (D) {\textbf{Simplex method}};
+  \node[rose, text width=26mm, right=of D] (E) {duality,\\dual simplex};
+  \draw[arr] (A) -- (B); \draw[arr] (B) |- node[lbl, above, pos=0.75] {yes} (C); \draw[arr] (B) |- node[lbl, below, pos=0.75] {no} (D); \draw[arr] (D) -- (E);
+\end{tikzpicture}
+\caption{Choosing a method for a linear programme.}
+\end{figure}

@@ -1,0 +1,17 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[v/.style={circ, minimum size=7mm, font=\small}]
+  \begin{scope}
+    \node[v] (0) at (0,0) {0}; \node[v] (a) at (-1.3,1.3) {$a$}; \node[v] (b) at (0,1.3) {$b$}; \node[v] (c) at (1.3,1.3) {$c$}; \node[v] (1) at (0,2.6) {1};
+    \draw[thinline] (0) -- (a) -- (1) (0) -- (b) -- (1) (0) -- (c) -- (1);
+    \node[capt] at (0,-0.8) {$M_3$ — the diamond};
+  \end{scope}
+  \begin{scope}[shift={(5,0)}]
+    \node[v] (0) at (0,0) {0}; \node[v] (b) at (-1.1,0.95) {$b$}; \node[v] (a) at (-1.1,1.9) {$a$}; \node[v] (c) at (1.1,1.3) {$c$}; \node[v] (1) at (0,2.9) {1};
+    \draw[thinline] (0) -- (b) -- (a) -- (1) (0) -- (c) -- (1);
+    \node[capt] at (0,-0.8) {$N_5$ — the pentagon};
+  \end{scope}
+\end{tikzpicture}
+\caption{The two smallest non-distributive lattices. A lattice is distributive exactly when it contains
+neither as a sublattice.}
+\end{figure}

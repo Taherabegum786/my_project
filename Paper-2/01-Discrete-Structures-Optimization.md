@@ -15,7 +15,15 @@
 
 ## 1. Mathematical Logic
 
+Logic is the grammar of mathematical reasoning and of computing: every condition in a program and every
+gate in a circuit is a logical connective. In the examination, logic questions test three skills — reading
+a truth table, transforming formulas by known equivalences, and translating English into symbols.
+
 ### 1.1 Connectives & Truth Table
+
+The only row that makes $p \rightarrow q$ false is the one where a true premise leads to a false
+conclusion. A conditional with a false antecedent is "vacuously" true, which surprises students but follows
+from treating $p \rightarrow q$ as a promise that is broken only when $p$ holds and $q$ fails.
 
 | p | q | ¬p | p∧q | p∨q | p→q | p↔q | p⊕q |
 |---|---|----|-----|-----|-----|-----|-----|
@@ -26,6 +34,7 @@
 
 **p → q is false ONLY when p is true and q is false.**
 
+<!-- latex: p2-01-implication -->
 ```
 Implication family (p → q)
  Converse        q → p
@@ -35,6 +44,7 @@ Implication family (p → q)
 ```
 
 ### 1.2 Important Equivalences
+<!-- latex: p2-01-equivalences -->
 ```
 p → q        ≡ ¬p ∨ q
 p ↔ q        ≡ (p → q) ∧ (q → p)
@@ -53,6 +63,9 @@ Exportation  (p ∧ q) → r ≡ p → (q → r)
 
 ### 1.4 Rules of Inference
 
+Rules of inference are valid argument patterns: whenever the premises are true, the conclusion must be.
+Proofs, resolution in artificial intelligence and many examination questions are chains of these few rules.
+
 | Rule | Form |
 |------|------|
 | Modus Ponens | p, p→q ⊢ q |
@@ -68,6 +81,11 @@ Exportation  (p ∧ q) → r ≡ p → (q → r)
 Fallacies: affirming the consequent (q, p→q ⊢ p ✗), denying the antecedent (¬p, p→q ⊢ ¬q ✗).
 
 ### 1.5 Predicates & Quantifiers
+
+Predicates make statements about objects, and quantifiers say how many objects satisfy them. The most
+common error is in translation: a universal statement uses implication, an existential one uses
+conjunction.
+<!-- latex: p2-01-quantifiers -->
 ```
 ¬∀x P(x) ≡ ∃x ¬P(x)        ¬∃x P(x) ≡ ∀x ¬P(x)
 ∀x (P ∧ Q) ≡ ∀x P ∧ ∀x Q    ∃x (P ∨ Q) ≡ ∃x P ∨ ∃x Q
@@ -77,6 +95,10 @@ Fallacies: affirming the consequent (q, p→q ⊢ p ✗), denying the antecedent
 ```
 
 ## 2. Sets & Relations
+
+A relation on a set $A$ is simply a subset of $A \times A$, so with $n$ elements there are $2^{n^2}$ of
+them. The counting formulas in the table follow by asking, for each ordered pair, how freely it may be
+included.
 
 - |A ∪ B| = |A| + |B| − |A ∩ B|; |P(A)| = 2ⁿ; |A × B| = mn.
 - Number of relations on A (|A| = n) = **2^(n²)**.
@@ -99,6 +121,7 @@ Fallacies: affirming the consequent (q, p→q ⊢ p ✗), denying the antecedent
 ### Partial order (POSET) = Reflexive + Antisymmetric + Transitive.
 
 **Hasse diagram** of divisibility on {1, 2, 3, 6, 12}:
+<!-- latex: p2-01-hasse -->
 ```
         12
         │
@@ -113,6 +136,7 @@ Fallacies: affirming the consequent (q, p→q ⊢ p ✗), denying the antecedent
 - **Boolean algebra** = complemented + distributive lattice. Divisor lattice Dₙ is Boolean iff n is square-free.
 - Total order (chain): every pair comparable. Well-ordered: every nonempty subset has least element.
 
+<!-- latex: p2-01-lattices -->
 ```
  M3 (diamond)          N5 (pentagon)
       1                     1
@@ -127,6 +151,10 @@ Fallacies: affirming the consequent (q, p→q ⊢ p ✗), denying the antecedent
 
 ## 3. Counting & Probability
 
+Counting questions reduce to one of a few models: ordered or unordered selection, with or without
+repetition, in a line or a circle. Identify the model before reaching for a formula.
+
+<!-- latex: p2-01-counting -->
 ```
 Permutations  nPr = n!/(n−r)!       Combinations  nCr = n!/(r!(n−r)!)
 Circular arrangements  (n−1)!       Necklace/garland (n−1)!/2
@@ -147,6 +175,7 @@ Catalan Cₙ = C(2n,n)/(n+1)  → 1, 1, 2, 5, 14, 42 (BSTs with n keys, valid pa
 - Fibonacci: Fₙ = Fₙ₋₁ + Fₙ₋₂. Tower of Hanoi: Tₙ = 2Tₙ₋₁ + 1 = 2ⁿ − 1.
 
 ### Probability
+<!-- latex: p2-01-probability -->
 ```
 P(A ∪ B) = P(A) + P(B) − P(A ∩ B)
 P(A | B) = P(A ∩ B) / P(B)
@@ -159,6 +188,10 @@ Expectation E[X] = Σ x·P(x) ; E[aX+b] = aE[X]+b ; Var = E[X²] − (E[X])²
 
 ## 4. Algebraic Structures
 
+Abstract algebra studies sets with operations by listing the laws they obey. The same names recur in
+computing: groups in cryptography, fields in error-correcting codes, Boolean algebras in circuit design.
+
+<!-- latex: p2-01-algebraic -->
 ```mermaid
 flowchart LR
     G0[Groupoid / Magma<br/>closure] --> SG[Semigroup<br/>+ associative]
@@ -167,6 +200,7 @@ flowchart LR
     G --> AG[Abelian group<br/>+ commutative]
 ```
 
+<!-- latex: p2-01-rings -->
 ```mermaid
 flowchart LR
     R[Ring<br/>abelian group under +, semigroup under ×, distributive] --> CR[Commutative ring]
@@ -187,7 +221,12 @@ Key facts:
 
 ## 5. Graph Theory
 
+A graph is a set of vertices joined by edges — an abstraction that models road networks, computer networks,
+dependencies and scheduling conflicts. Most examination questions turn on a handful of counting results and
+the characterisations of Euler graphs, planar graphs and bipartite graphs.
+
 ### 5.1 Basic results
+<!-- latex: p2-01-graphfacts -->
 ```
 Handshaking lemma: Σ deg(v) = 2|E|  ⇒ number of odd-degree vertices is EVEN
 Max edges in simple graph with n vertices = n(n−1)/2
@@ -200,6 +239,7 @@ Number of simple labelled graphs on n vertices: 2^(n(n−1)/2)
 
 ### 5.2 Euler vs Hamilton
 
+<!-- latex: p2-01-euler-hamilton -->
 ```mermaid
 flowchart TB
     E[Euler: every EDGE exactly once] --> E1[Euler circuit ⇔ connected & all degrees even]
@@ -211,6 +251,11 @@ flowchart TB
 - Kₙ is Eulerian iff n is odd. Kₙ has (n−1)!/2 Hamiltonian cycles.
 
 ### 5.3 Planar Graphs
+
+A graph is planar if it can be drawn in the plane without edges crossing. Euler's formula links the
+numbers of vertices, edges and faces of any such drawing, and the edge bounds derived from it give a quick
+test for non-planarity.
+<!-- latex: p2-01-planarity -->
 ```
 Euler's formula (connected planar):  V − E + F = 2       (k components: V − E + F = k + 1)
 Simple planar, V ≥ 3:          E ≤ 3V − 6
@@ -219,6 +264,7 @@ Kuratowski: G is planar ⇔ no subdivision of K₅ or K₃,₃
 K₅ and K₃,₃ are the smallest non-planar graphs; K₄ is planar.
 ```
 
+<!-- latex: p2-01-k33 -->
 ```
  K₃,₃ (non-planar)          K₄ (planar drawing)
  a   b   c                     1
@@ -229,6 +275,9 @@ K₅ and K₃,₃ are the smallest non-planar graphs; K₄ is planar.
 ```
 
 ### 5.4 Colouring
+
+Colouring assigns colours to vertices so that adjacent vertices differ — the model behind timetabling and
+register allocation. The chromatic number is easy to bound but hard to compute in general.
 - **Chromatic number χ(G)**: min colours so adjacent vertices differ.
 - χ(Kₙ) = n; χ(bipartite with ≥1 edge) = 2; χ(tree, n ≥ 2) = 2; χ(cycle Cₙ) = 2 if n even, 3 if odd; χ(Wheel Wₙ) = 3 or 4.
 - **Four colour theorem**: planar ⇒ χ ≤ 4.
@@ -243,6 +292,7 @@ K₅ and K₃,₃ are the smallest non-planar graphs; K₄ is planar.
 - **Prefix codes**: Huffman coding gives optimal prefix-free code using a binary tree.
 
 ## 6. Boolean Algebra
+<!-- latex: p2-01-boolean -->
 ```
 Idempotent  x + x = x,  x·x = x
 Absorption  x + xy = x,  x(x + y) = x
@@ -254,8 +304,13 @@ K-maps and minimisation are covered in [Unit 2](02-Computer-System-Architecture.
 
 ## 7. Optimization
 
+Optimization chooses the best value of an objective subject to constraints. In linear programming both
+objective and constraints are linear, so the feasible region is a convex polygon (or polyhedron) and the
+optimum lies at a corner — the insight on which the simplex method is built.
+
 ### 7.1 Linear Programming (LPP)
 
+<!-- latex: p2-01-lpflow -->
 ```mermaid
 flowchart LR
     A[Formulate:<br/>decision variables,<br/>objective, constraints] --> B{2 variables?}
@@ -265,6 +320,7 @@ flowchart LR
 ```
 
 **Graphical example**: Max Z = 3x + 5y, s.t. x + 2y ≤ 8, 3x + 2y ≤ 12, x, y ≥ 0.
+<!-- latex: p2-01-lpgraph -->
 ```
  y
  6│\
@@ -284,12 +340,19 @@ flowchart LR
 - **Dual simplex**: starts optimal but infeasible, keeps optimality till feasibility.
 
 ### 7.2 Transportation Problem
+
+The transportation problem ships goods from sources to destinations at minimum cost. It is a linear
+programme with special structure, solved in two stages: find a starting allocation, then improve it until
+no cheaper route exists.
 - m sources, n destinations; balanced if supply = demand (else add dummy).
 - A basic feasible solution has **m + n − 1** allocations (fewer → degenerate).
 - Initial solution: **North-West Corner**, **Least Cost**, **Vogel's Approximation (VAM — best)**.
 - Optimality: **MODI (u-v) method** or Stepping stone.
 
 ### 7.3 Assignment Problem
+
+Assigning $n$ jobs to $n$ people one-to-one is a transportation problem with every supply and demand equal
+to one; the Hungarian method exploits this to solve it by simple row and column reductions.
 - n jobs to n persons, one-to-one; solved by **Hungarian method** (row reduction, column reduction, cover zeros with min lines; if lines = n ⇒ optimal).
 - Special case of transportation (all supplies/demands = 1); highly degenerate.
 
@@ -298,6 +361,10 @@ flowchart LR
 
 ### 7.5 PERT-CPM
 
+Large projects are planned as networks of activities. The critical path is the longest path through the
+network: any delay on it delays the whole project, whereas activities off the path have slack (float).
+
+<!-- latex: p2-01-pert -->
 ```mermaid
 flowchart LR
     S((1)) -->|A 3| B((2))
@@ -325,6 +392,9 @@ Paths: A-C-E = 3+5+3 = **11** (critical), B-D-E = 4+2+3 = 9. Project duration = 
 ## 8. Deeper Dive — Worked Simplex, Transportation, Assignment, Groups & Recurrences
 
 ### 8.1 Simplex Method — Full Worked Example
+
+The simplex method moves from corner to corner of the feasible region, always improving the objective, and
+stops when no adjacent corner is better. Each tableau below is one such corner.
 
 Max Z = 3x₁ + 5x₂ subject to x₁ ≤ 4, 2x₂ ≤ 12, 3x₁ + 2x₂ ≤ 18, x₁, x₂ ≥ 0.
 Add slacks s₁, s₂, s₃.
@@ -389,6 +459,7 @@ Recomputing u, v gives all reduced costs ≥ 0 → **optimal cost 440**.
 | B | 6 | 4 | 3 |
 | C | 5 | 8 | 1 |
 
+<!-- latex: p2-01-hungarian -->
 ```
 Row reduction (subtract row minima 2, 3, 1)     Column reduction (col minima 3, 0, 0)
    A  7  0  5                                       A  4  0  5
@@ -400,6 +471,7 @@ Minimum cost = 2 + 6 + 1 = 9
 
 ### 8.4 Groups — Cayley Tables
 
+<!-- latex: p2-01-cayley -->
 ```
 (Z₄, +₄)                        Klein four-group V₄ = {e, a, b, c}
  +  │ 0 1 2 3                     ·  │ e a b c
@@ -417,6 +489,7 @@ Minimum cost = 2 + 6 + 1 = 9
 ### 8.5 Solving a Recurrence
 
 aₙ = 5aₙ₋₁ − 6aₙ₋₂, a₀ = 1, a₁ = 0.
+<!-- latex: p2-01-recurrence -->
 ```
 Characteristic equation: r² − 5r + 6 = 0 → r = 2, 3
 General: aₙ = α·2ⁿ + β·3ⁿ
@@ -429,6 +502,7 @@ Non-homogeneous: aₙ = 2aₙ₋₁ + 1 (Hanoi) → particular solution constant
 
 ### 8.6 Graph Isomorphism & Colouring Checks
 
+<!-- latex: p2-01-isomorphism -->
 ```
  G1: square a-b-c-d with diagonal a–c      G2: vertices p, q, r, s with edges
      a ───── b                                 p–q, q–r, r–s, s–p, q–s

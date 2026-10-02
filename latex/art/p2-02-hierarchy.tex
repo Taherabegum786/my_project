@@ -1,0 +1,14 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \foreach \i/\w/\name/\t/\col in {0/9.0/{Tape / optical}/{seconds}/fgrey, 1/7.4/{SSD / magnetic disk}/{µs – ms}/fslate, 2/5.8/{Main memory (DRAM)}/{≈ 50–100 ns}/fsage, 3/4.2/{Cache L1–L3 (SRAM)}/{≈ 1–10 ns}/fsand, 4/2.6/{Registers}/{< 1 ns}/frose} {
+    \pic at ({(9-\w)/2},{\i*0.9}) {slab={\w}{0.9}{1.0}{\col}};
+    \node[font=\small] at (4.5,{\i*0.9+0.45}) {\name};
+    \node[lbl, anchor=west] at (10.9,{\i*0.9+0.45}) {\t};
+  }
+  \draw[arr] (-0.6,0) -- node[lbl, rotate=90, above] {faster, costlier, smaller} (-0.6,4.5);
+  \node[capt] at (11.6,4.9) {access time};
+\end{tikzpicture}
+\caption{The memory hierarchy with typical access times. Locality of reference lets a small fast level
+satisfy most accesses.}
+\end{figure}
