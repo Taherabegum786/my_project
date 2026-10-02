@@ -391,7 +391,7 @@ CK (OO) metrics: WMC, DIT, NOC, CBO, RFC, LCOM
 16. Passing a flag to control another module's logic: **control coupling**
 17. Information hiding was proposed by: **David Parnas**
 18. Which UML diagram shows the time-ordered interaction of objects? **Sequence diagram**
-19. «include» vs «extend": include is **mandatory**, extend is **optional/conditional**
+19. «include» vs «extend»: include is **mandatory**, extend is **optional/conditional**
 20. Singleton pattern belongs to: **creational patterns**
 21. Filled diamond in UML indicates: **composition**
 
