@@ -1,0 +1,19 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \node[grey, minimum width=24mm] (D) at (0,0) {\textbf{Data}};
+  \node[slate, minimum width=32mm] (Q) at (-5,-1.5) {\textbf{Quantitative}\\\footnotesize numbers};
+  \node[sage,  minimum width=32mm] (L) at (0,-1.5) {\textbf{Qualitative}\\\footnotesize categories, words};
+  \node[sand,  minimum width=32mm] (S) at (5,-1.5) {\textbf{By source}};
+  \foreach \n in {Q,L,S} \draw[arr] (D) -- (\n);
+  \node[plain, text width=22mm, font=\footnotesize] (q1) at (-6.2,-3.1) {\textbf{discrete}\\countable};
+  \node[plain, text width=22mm, font=\footnotesize] (q2) at (-3.8,-3.1) {\textbf{continuous}\\measurable};
+  \node[plain, text width=22mm, font=\footnotesize] (l1) at (-1.2,-3.1) {\textbf{nominal}\\labels};
+  \node[plain, text width=22mm, font=\footnotesize] (l2) at (1.2,-3.1) {\textbf{ordinal}\\ranks};
+  \node[plain, text width=22mm, font=\footnotesize] (s1) at (3.8,-3.1) {\textbf{primary}\\first-hand};
+  \node[plain, text width=22mm, font=\footnotesize] (s2) at (6.2,-3.1) {\textbf{secondary}\\published};
+  \draw[arr] (Q) -- (q1); \draw[arr] (Q) -- (q2); \draw[arr] (L) -- (l1); \draw[arr] (L) -- (l2);
+  \draw[arr] (S) -- (s1); \draw[arr] (S) -- (s2);
+\end{tikzpicture}
+\caption{Ways of classifying data. The type of data decides which summary measures and charts are appropriate.}
+\end{figure}

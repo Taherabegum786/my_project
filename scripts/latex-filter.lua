@@ -1,14 +1,14 @@
 -- Pandoc Lua filter used by md2latex.py to turn the Markdown notes into book chapters.
---  * chapter heading → \unitchapter{kicker}{title}{id}
---  * ASCII diagrams / code → monospaced box whose font size is chosen so the widest line fits
---    (keeps box-drawing figures aligned instead of wrapping or overflowing)
+--  * "# Paper 2 · Unit 7 — Title"  → \unitchapter{2}{7}{Title}{id}  (other chapters → \plainchapter)
+--  * "## 3. Keys" → \section{Keys}: manual numbers are dropped, LaTeX numbers sections itself
+--  * hand-made art (\input{art/…}, inserted by md2latex.py) passes through untouched
+--  * remaining code blocks → listing environment, font size chosen so the widest line fits
 --  * tables → column widths from content length, bold header
---  * "Syllabus Checklist" and "Quick Revision Box" sections → coloured boxes
+--  * "Syllabus Checklist" / "Quick Revision Box" sections → framed environments
 --  * links between notes → internal PDF links
 
 local fileid, filedir
 
--- Same naming scheme as md2latex.py
 local function id_for(path)
   local p, n = path:match('^Paper%-(%d)/(%d%d)')
   if p then return 'p' .. p .. '-' .. n end
@@ -27,12 +27,12 @@ local function normalize(path)
 end
 
 local function latex_inlines(inlines)
-  return pandoc.write(pandoc.Pandoc({ pandoc.Plain(inlines) }), 'latex'):gsub('%s+$', '')
+  return (pandoc.write(pandoc.Pandoc({ pandoc.Plain(inlines) }), 'latex'):gsub('%s+$', ''))
 end
 
--- ---------- text width model ----------
-local TEXT_PT = 484   -- usable width inside a code box (\linewidth minus padding), in pt
-local MONO_EM = 0.602 -- advance width of DejaVu Sans Mono in em
+-- ---------- code / listing blocks ----------
+local TEXT_PT = 440   -- usable width of a listing (text width minus indentation), pt
+local MONO_EM = 0.6   -- advance width of the monospaced font, em
 
 local function code_block(el)
   local lines, maxlen = {}, 1
@@ -41,25 +41,23 @@ local function code_block(el)
     local n = utf8.len(line) or #line
     if n > maxlen then maxlen = n end
   end
-  local size = math.min(8.8, TEXT_PT / (MONO_EM * maxlen))
+  local size = math.min(9, TEXT_PT / (MONO_EM * maxlen))
   size = math.max(5.2, math.floor(size * 10) / 10)
   local lead = math.floor(size * 1.22 * 10) / 10
-  local height = math.ceil(#lines * lead + 24)
-  local out = string.format('\\begin{asciiblock}{%dpt}\n\\begin{Verbatim}[fontsize=\\fontsize{%.1f}{%.1f}\\selectfont]\n%s\n\\end{Verbatim}\n\\end{asciiblock}',
-    height, size, lead, table.concat(lines, '\n'))
-  return pandoc.RawBlock('latex', out)
+  local height = math.ceil(#lines * lead + 20)
+  return pandoc.RawBlock('latex', string.format(
+    '\\begin{listingblock}{%dpt}\n\\begin{Verbatim}[fontsize=\\fontsize{%.1f}{%.1f}\\selectfont]\n%s\n\\end{Verbatim}\n\\end{listingblock}',
+    height, size, lead, table.concat(lines, '\n')))
 end
 
 -- ---------- tables ----------
-local CAP = 112 -- line width at \small, measured in "average lowercase letter" units
+local CAP = 96 -- line width at \small, in "average lowercase letter" units
 
--- Width of a string in average-letter units: capitals, digits and symbols are wider
--- than lowercase letters, narrow letters are narrower.
 local function wlen(s)
   local n = 0
   for _, c in utf8.codes(s) do
     if c >= 65 and c <= 90 then n = n + 1.35
-    elseif c == 109 or c == 119 then n = n + 1.4          -- m, w
+    elseif c == 109 or c == 119 then n = n + 1.4
     elseif c == 105 or c == 108 or c == 106 or c == 116 or c == 102 or c == 114 then n = n + 0.65
     elseif c == 32 then n = n + 0.55
     elseif c >= 48 and c <= 57 then n = n + 1.0
@@ -94,7 +92,6 @@ local function table_widths(tbl)
   end
   scan(tbl.head.rows, true)
   for _, body in ipairs(tbl.bodies) do scan(body.body) end
-
   local avail = CAP - 3 * n
   local total = 0
   for i = 1, n do total = total + nat[i] end
@@ -103,10 +100,7 @@ local function table_widths(tbl)
     for i = 1, n do width[i] = nat[i] / avail end
     return width
   end
-  -- water-filling: columns narrower than an equal share keep their natural width,
-  -- the wide columns split what is left in proportion to their content length
-  local fixed, remaining = {}, avail
-  local changed = true
+  local fixed, remaining, changed = {}, avail, true
   while changed do
     changed = false
     local k = 0
@@ -121,9 +115,7 @@ local function table_widths(tbl)
   end
   local sum = 0
   for i = 1, n do if not fixed[i] then sum = sum + nat[i] end end
-  for i = 1, n do
-    width[i] = fixed[i] or math.max(minw[i] + 1, remaining * nat[i] / sum)
-  end
+  for i = 1, n do width[i] = fixed[i] or math.max(minw[i] + 1, remaining * nat[i] / sum) end
   local s = 0
   for i = 1, n do s = s + width[i] end
   for i = 1, n do width[i] = width[i] / s end
@@ -141,7 +133,6 @@ local function bold_header(tbl)
   end
 end
 
--- Allow line breaks after arrows and slashes inside table cells (long "53→65→67…" sequences).
 local function breakable(tbl)
   return tbl:walk({
     Str = function(el)
@@ -168,22 +159,28 @@ local function do_table(tbl)
 end
 
 -- ---------- headers & links ----------
+local function strip_number(inlines)
+  -- drop a leading "3." / "1.4" / "12.3.1" and the following space
+  if #inlines >= 2 and inlines[1].t == 'Str' and inlines[1].text:match('^%d+[%.%d]*$') and inlines[2].t == 'Space' then
+    local out = {}
+    for i = 3, #inlines do out[#out + 1] = inlines[i] end
+    return out
+  end
+  return inlines
+end
+
 local function do_header(h)
   if h.level == 1 then
     local text = pandoc.utils.stringify(h.content)
-    local kicker, title = text:match('^(.-)%s+—%s+(.+)$')
-    local title_tex
-    if kicker then
-      -- rebuild the title from the part after the dash so formatting is kept
-      title_tex = latex_inlines(pandoc.read(title, 'gfm').blocks[1].content)
-    else
-      kicker = (fileid == 'intro') and 'Strategy' or 'Revision'
-      title_tex = latex_inlines(h.content)
+    local paper, unit, title = text:match('^Paper (%d) · Unit (%d+) — (.+)$')
+    if paper then
+      local title_tex = latex_inlines(pandoc.read(title, 'gfm').blocks[1].content)
+      return pandoc.RawBlock('latex', string.format('\\unitchapter{%s}{%s}{%s}{%s}', paper, unit, title_tex, fileid))
     end
-    local kicker_tex = latex_inlines(pandoc.read(kicker, 'gfm').blocks[1].content)
-    return pandoc.RawBlock('latex', string.format('\\unitchapter{%s}{%s}{%s}', kicker_tex, title_tex, fileid))
+    return pandoc.RawBlock('latex', string.format('\\plainchapter{%s}{%s}', latex_inlines(h.content), fileid))
   end
   h.identifier = fileid .. '--' .. h.identifier
+  h.content = strip_number(h.content)
   return h
 end
 
@@ -222,6 +219,29 @@ local function box_sections(blocks)
   return out
 end
 
+-- Keep a heading with what follows: reserve the height of a listing that directly follows,
+-- or a few lines otherwise, so a heading never ends a page.
+local function keep_headings(blocks)
+  local out = {}
+  for i, b in ipairs(blocks) do
+    if b.t == 'Header' then
+      local extra, paras, reserve = 50, 0, nil
+      for j = i + 1, math.min(i + 5, #blocks) do
+        local nb = blocks[j]
+        local h = nb.t == 'RawBlock' and nb.text:match('^\\begin{listingblock}{(%d+)pt}')
+        if h then reserve = math.min(tonumber(h) + extra, 560); break
+        elseif nb.t == 'RawBlock' and nb.text:match('^\\begingroup\\small') then reserve = extra + 80; break
+        elseif nb.t == 'Header' then extra = extra + 36
+        elseif (nb.t == 'Para' or nb.t == 'Plain') and paras < 2 then extra = extra + 30; paras = paras + 1
+        else break end
+      end
+      table.insert(out, pandoc.RawBlock('latex', string.format('\\needspace{%dpt}', reserve or (extra + 45))))
+    end
+    table.insert(out, b)
+  end
+  return out
+end
+
 function Pandoc(doc)
   fileid = pandoc.utils.stringify(doc.meta.fileid)
   filedir = pandoc.utils.stringify(doc.meta.filedir or '')
@@ -233,45 +253,14 @@ function Pandoc(doc)
     HorizontalRule = function() return {} end,
   })
   doc = doc:walk({ Header = do_header })
-  -- Keep a heading together with a diagram block that immediately follows it (possibly after
-  -- one short paragraph), so the heading is never stranded at the bottom of a page.
-  local blocks, out = doc.blocks, {}
-  for i, b in ipairs(blocks) do
-    if b.t == 'Header' then
-      local extra, paras, reserved = 55, 0, false
-      for j = i + 1, math.min(i + 5, #blocks) do
-        local nb = blocks[j]
-        local h = nb.t == 'RawBlock' and nb.text:match('^\\begin{asciiblock}{(%d+)pt}')
-        local fig = nb.t == 'RawBlock' and nb.text:match('^\\diagram{([^}]+)}')
-        if h then
-          table.insert(out, pandoc.RawBlock('latex', string.format('\\needspace{%dpt}', math.min(tonumber(h) + extra, 600))))
-          reserved = true
-          break
-        elseif fig then
-          -- a diagram right after a heading stays in place (no float) and the heading reserves its height
-          table.insert(out, pandoc.RawBlock('latex', '\\needdiagram{' .. fig .. '}{' .. extra .. 'pt}'))
-          blocks[j] = pandoc.RawBlock('latex', '\\diagramhere{' .. fig .. '}')
-          reserved = true
-          break
-        elseif nb.t == 'RawBlock' and nb.text:match('^\\begingroup\\small') then
-          table.insert(out, pandoc.RawBlock('latex', string.format('\\needspace{%dpt}', extra + 80)))
-          reserved = true
-          break
-        elseif nb.t == 'Header' then
-          extra = extra + 40
-        elseif (nb.t == 'Para' or nb.t == 'Plain') and paras < 2 then
-          extra = extra + 35; paras = paras + 1
-        else
-          break
-        end
-      end
-      -- default: at least a few lines of whatever follows must fit under the heading
-      if not reserved then
-        table.insert(out, pandoc.RawBlock('latex', string.format('\\needspace{%dpt}', extra + 45)))
-      end
+  -- "Expected questions: …" line under the chapter title → \unitmeta
+  for i, b in ipairs(doc.blocks) do
+    if (b.t == 'Para' or b.t == 'Plain') and pandoc.utils.stringify(b.content):match('^Expected questions') then
+      local inl = (#b.content == 1 and b.content[1].t == 'Strong') and b.content[1].content or b.content
+      doc.blocks[i] = pandoc.RawBlock('latex', '\\unitmeta{' .. latex_inlines(inl) .. '}')
+      break
     end
-    table.insert(out, b)
   end
-  doc.blocks = out
+  doc.blocks = keep_headings(doc.blocks)
   return doc
 end

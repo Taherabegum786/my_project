@@ -14,11 +14,21 @@
 
 ## 1. Meaning & Characteristics
 
+Research is curiosity disciplined by method. Everyday knowledge comes from habit, authority or intuition;
+research knowledge comes from evidence gathered in a way that another person could check and repeat. That
+is why the defining words are *systematic* (it follows a plan), *empirical* (it rests on observation) and
+*replicable* (others can verify it).
+
 Research = **systematic, objective, controlled, empirical, critical** investigation to discover new facts or verify old ones.
 (*Re + search* = search again.) Characteristics: systematic, logical, empirical, replicable, reductive, controlled, generalisable.
 
 ## 2. Types of Research
 
+Students often memorise the types as one long list and then confuse them. It is clearer to see that research
+is classified along three separate axes — its *purpose*, its broad *approach* and its specific *method* —
+and that each study takes one value on every axis.
+
+<!-- latex: p1-02-types -->
 ```mermaid
 flowchart TB
     R[Research] --> P[By purpose]
@@ -53,6 +63,11 @@ flowchart TB
 
 ### Positivism vs Post-positivism
 
+Behind every method lies a philosophy about what reality is and how we can know it. Positivism, founded by
+Auguste Comte, treats the social world like the physical world: objective, measurable and governed by laws.
+Interpretivist and post-positivist traditions reply that human behaviour carries meanings that must be
+*understood* from the inside, not merely counted.
+
 | Positivism (Auguste Comte) | Post-positivism / Interpretivism |
 |---------------------------|----------------------------------|
 | Reality is objective, single | Reality is multiple, constructed |
@@ -64,6 +79,15 @@ Paradigm (Thomas Kuhn) = ontology (nature of reality) + epistemology (nature of 
 
 ## 3. Variables & Hypothesis
 
+A variable is any characteristic that can take different values — marks, attitude, income. Research tries
+to explain how changes in one variable go with changes in another. A hypothesis states this expected
+relationship in a form that data can support or contradict, and the logic of testing it leads to the two
+kinds of error shown in the decision matrix below.
+
+<!-- latex: p1-02-errors -->
+
+
+<!-- latex: p1-02-variables -->
 ```mermaid
 flowchart LR
     IV[Independent variable<br/>cause, manipulated] --> MV[Mediating / Intervening] --> DV[Dependent variable<br/>effect, measured]
@@ -78,6 +102,11 @@ flowchart LR
 
 ## 4. Steps of Research
 
+The steps below are the skeleton of every thesis and research proposal. Questions usually present the
+steps jumbled and ask for the correct order; remember that the problem comes first, the hypothesis comes
+only after the literature has been reviewed, and the report comes last.
+
+<!-- latex: p1-02-steps -->
 ```mermaid
 flowchart TD
     S1[1. Identify & define problem] --> S2[2. Review of literature]
@@ -93,6 +122,12 @@ flowchart TD
 
 ## 5. Sampling
 
+Studying every member of a population is rarely possible, so researchers study a sample and generalise.
+The quality of that generalisation depends on how the sample was drawn. If each unit had a known chance of
+selection, statistics can tell us how far the sample might differ from the population; otherwise we rely on
+judgement.
+
+<!-- latex: p1-02-sampling -->
 ```mermaid
 flowchart TB
     S[Sampling] --> P[Probability]
@@ -119,6 +154,10 @@ flowchart TB
 
 ## 6. Thesis & Article Writing
 
+Writing is part of research, not an afterthought: findings that are not reported clearly cannot be checked,
+cited or used. Academic writing follows conventional structures so that readers know where to find the
+problem, the method, the evidence and the conclusions.
+
 Thesis format: Preliminary pages (title, declaration, certificate, acknowledgement, contents, list of tables) →
 Main body (Introduction, Review of Literature, Methodology, Results, Discussion, Conclusion) → References → Appendices.
 
@@ -139,6 +178,10 @@ Main body (Introduction, Review of Literature, Methodology, Results, Discussion,
 
 ## 7. ICT in Research
 
+Information technology now touches every stage of research — finding literature, managing references,
+collecting data online, analysing it statistically, checking originality and publishing. The exam expects
+you to match each task with a representative tool.
+
 | Need | Tool |
 |------|------|
 | Literature search | Google Scholar, Scopus, Web of Science, PubMed, Shodhganga, INFLIBNET N-LIST, e-ShodhSindhu |
@@ -154,6 +197,10 @@ Main body (Introduction, Review of Literature, Methodology, Results, Discussion,
 **Impact factor (2024)** = citations in 2024 to items published in 2022–23 ÷ citable items published in 2022–23.
 
 ## 8. Research Ethics
+
+Ethics protects both the people who take part in research and the trust society places in its results. The
+core duties are honesty in reporting, respect for participants (informed consent, privacy, no harm) and fair
+credit to others' work.
 
 - **Plagiarism**: UGC Regulations 2018 (Promotion of Academic Integrity and Prevention of Plagiarism):
 
@@ -173,6 +220,10 @@ Main body (Introduction, Review of Literature, Methodology, Results, Discussion,
 
 ### 9.1 Experimental Designs (Campbell & Stanley notation: R = random assignment, O = observation, X = treatment)
 
+An experiment is persuasive only if alternative explanations have been ruled out. Designs differ in how
+well they do this: random assignment (R) and a control group are the two features that move a design from
+*pre-experimental* to *true experimental*.
+
 | Design | Notation | Notes |
 |--------|----------|-------|
 | One-shot case study (pre-experimental) | X O | No comparison; weakest |
@@ -190,6 +241,11 @@ Main body (Introduction, Review of Literature, Methodology, Results, Discussion,
 
 ### 9.2 Reliability & Validity
 
+A measuring tool must give the same result when nothing has changed (reliability) and must measure the
+thing it claims to measure (validity). The target figure shows why the first is necessary but not
+sufficient for the second.
+
+<!-- latex: p1-02-reliability-validity -->
 ```mermaid
 flowchart TB
     Q[Quality of a research tool] --> R[Reliability<br/>consistency]
@@ -208,6 +264,7 @@ flowchart TB
 - **Spearman–Brown**: full-test reliability r_full = 2r_half / (1 + r_half).
 - Cronbach's α ≥ 0.7 is usually acceptable.
 
+<!-- latex: p1-02-targets -->
 ```
  Target analogy
   Reliable, not valid      Valid & reliable        Neither
@@ -220,6 +277,13 @@ flowchart TB
 ```
 
 ### 9.3 Statistics for Researchers
+
+Statistics summarise data and tell us how much confidence to place in a result. For the exam you need the
+meaning of the common measures and the shape of the normal distribution, on which most parametric tests
+rest.
+
+<!-- latex: p1-02-normal -->
+
 
 | Concept | Key point |
 |---------|----------|
@@ -236,6 +300,9 @@ flowchart TB
 **Worked (Spearman ρ)**: n = 5, Σd² = 4 → ρ = 1 − (6 × 4)/(5 × 24) = 1 − 0.2 = **0.8**.
 
 ### 9.4 Research Proposal (Synopsis) Structure
+
+A proposal is a promise: it tells a committee what will be studied, why it matters and how it will be done,
+before any data are collected. Its sections mirror the steps of research.
 Title → Introduction & background → Review of literature & research gap → Statement of the problem → Objectives → Hypotheses → Methodology (design, population, sample, tools, analysis) → Delimitations → Significance → Chapterisation → Time-frame → References.
 
 - **Delimitations** = boundaries set by the researcher; **Limitations** = constraints beyond the researcher's control.

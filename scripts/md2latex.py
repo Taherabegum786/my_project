@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 """Convert the Markdown notes into LaTeX chapters for latex/main.tex.
 
-Mermaid diagrams are replaced by \\diagram{figures/<id>-NN} (rendered to PDF by
-render-diagrams.cjs); Mermaid timelines become tables because they are unreadable
-when shrunk to page width. Everything else goes through pandoc + latex-filter.lua.
+Hand-made LaTeX (TikZ figures, typeset formulas and tables) lives in latex/art/<name>.tex.
+A Markdown comment `<!-- latex: name -->` placed before a fenced block replaces that block
+with \\input{art/name} in the book (GitHub still shows the Markdown/Mermaid version); a marker
+not followed by a block simply inserts the art at that point.
+
+Unmarked Mermaid diagrams fall back to \\diagram{figures/<id>-NN} (rendered to PDF by
+render-diagrams.cjs). Everything else goes through pandoc + latex-filter.lua.
 """
 import json
 import pathlib
@@ -56,6 +60,20 @@ def timeline_table(src):
     return f'**{title}**\n\n| Year | Event |\n|------|-------|\n' + '\n'.join(rows) + '\n'
 
 
+ART = LATEX / 'art'
+MARKER = re.compile(r'<!--\s*latex:\s*([\w-]+)\s*-->[ \t]*\n(?:[ \t]*\n)*(```[^\n]*\n.*?```)?', re.S)
+
+
+def substitute_art(rel, md, used):
+    def repl(m):
+        name = m.group(1)
+        if not (ART / f'{name}.tex').exists():
+            raise SystemExit(f'{rel}: missing latex/art/{name}.tex')
+        used.add(name)
+        return f'```{{=latex}}\n\\input{{art/{name}}}\n```\n'
+    return MARKER.sub(repl, md)
+
+
 def preprocess(rel, md, jobs):
     fid = file_id(rel)
     counter = iter(range(1000))
@@ -75,9 +93,10 @@ def preprocess(rel, md, jobs):
 def main():
     CHAPTERS.mkdir(parents=True, exist_ok=True)
     BUILD.mkdir(parents=True, exist_ok=True)
-    jobs = []
+    jobs, used = [], set()
     for rel in sources():
         md = intro_markdown() if rel == 'README.md' else (ROOT / rel).read_text()
+        md = substitute_art(rel, md, used)
         md = preprocess(rel, md, jobs)
         fid = file_id(rel)
         out = CHAPTERS / f'{fid}.tex'
@@ -90,7 +109,10 @@ def main():
         ], input=md, text=True, check=True)
         print(f'{rel:55s} -> chapters/{out.name}')
     (BUILD / 'diagrams.json').write_text(json.dumps(jobs, indent=1))
-    print(f'{len(jobs)} diagrams queued in build/diagrams.json')
+    print(f'{len(jobs)} Mermaid diagrams without hand-made art (rendered as fallback); {len(used)} art pieces used')
+    unused = sorted(p.stem for p in ART.glob('*.tex') if p.stem not in used)
+    if unused:
+        print('art files not referenced by any marker:', ', '.join(unused))
 
 
 if __name__ == '__main__':

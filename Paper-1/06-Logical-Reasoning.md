@@ -13,6 +13,11 @@
 
 ## 1. Argument Basics
 
+Logic studies the relation between evidence and conclusion. It does not ask whether premises happen to be
+true — that is the business of science or experience — but whether, *if* they are true, the conclusion
+must or probably follows. Keep these two questions apart: an argument can be perfectly valid and still
+have a false conclusion, because one of its premises is false.
+
 An **argument** = premises + conclusion. Premise indicators: *since, because, for*. Conclusion indicators: *therefore, hence, thus, so*.
 
 | | Deductive | Inductive |
@@ -26,6 +31,11 @@ Validity is about **form**, not truth. An argument with false premises can be va
 
 ## 2. Categorical Propositions (A E I O)
 
+Traditional (Aristotelian) logic analyses sentences that relate two classes: a subject class S and a
+predicate class P. There are only four standard forms, named by the vowels of the Latin *AffIrmo* ("I
+affirm") and *nEgO* ("I deny"). Whether a term is *distributed* — whether the proposition says something
+about every member of that class — governs nearly every rule of the syllogism.
+
 | Code | Form | Quantity | Quality | Distributes |
 |------|------|----------|---------|-------------|
 | **A** | All S are P | Universal | Affirmative | S only |
@@ -37,6 +47,11 @@ Memory: **A**ff**I**rmo (A, I affirmative), n**E**g**O** (E, O negative). Distri
 
 ### Square of Opposition
 
+The square arranges the four propositions so that their truth relations can be read at a glance.
+Questions give the truth or falsity of one proposition and ask about another; locate both corners on the
+square and apply the relation that joins them.
+
+<!-- latex: p1-06-square -->
 ```
         A ─────────── contraries ─────────── E
         │  ╲                               ╱  │
@@ -70,8 +85,13 @@ If given FALSE: A false → O true, E?, I?; E false → I true; I false → E tr
 
 ## 3. Categorical Syllogism — Mood & Figure
 
+A categorical syllogism has two premises and a conclusion, and exactly three terms. The *mood* lists the
+types (A, E, I, O) of its three propositions; the *figure* records where the middle term stands in the
+premises.
+
 Three terms: Major (P – predicate of conclusion), Minor (S – subject of conclusion), Middle (M – in both premises, not conclusion).
 
+<!-- latex: p1-06-figures -->
 ```
 Figure 1      Figure 2      Figure 3      Figure 4
 M – P         P – M         M – P         P – M
@@ -91,6 +111,11 @@ S – P         S – P         S – P         S – P
 
 ### Venn Diagram Method (for syllogism questions)
 
+Venn diagrams turn syllogisms into pictures of overlapping classes. Draw the universal premise first, then
+the particular one, always choosing the arrangement that commits you to the *least*. If the conclusion is
+visible even in that weakest picture, it follows.
+
+<!-- latex: p1-06-venn-method -->
 ```
  Premise: All A are B       Premise: Some B are C      Possible conclusions:
      ┌───────────┐                                    "Some A are C"  → NOT definite
@@ -102,6 +127,10 @@ S – P         S – P         S – P         S – P
 Technique: draw the **minimum overlap** diagram; a conclusion follows only if it is true in **every** possible diagram.
 
 ## 4. Fallacies
+
+A fallacy is an argument that looks persuasive but is defective. *Formal* fallacies break a rule of logical
+form and can be detected without knowing what the argument is about; *informal* fallacies depend on the
+content — an appeal to pity, a personal attack, an irrelevant distraction.
 
 ### Formal fallacies
 Undistributed middle, illicit major, illicit minor, affirming the consequent (p→q, q ∴ p), denying the antecedent (p→q, ¬p ∴ ¬q), four terms.
@@ -137,8 +166,14 @@ A : B :: C : ? — identify relation: part-whole, cause-effect, tool-worker, syn
 
 ## 7. Indian Logic (Nyaya) — Very High Weightage
 
+The Indian tradition of logic (*nyāya*, *tarka*, *ānvīkṣikī*) asks how valid knowledge (*pramā*) is
+obtained. Its central topics — the means of knowledge, the structure of inference and the fallacies of
+inference — appear in almost every Paper I. Note that Indian inference always includes an *example*,
+which makes it more empirical than the Aristotelian syllogism.
+
 ### Pramanas (means of valid knowledge)
 
+<!-- latex: p1-06-pramanas -->
 ```mermaid
 flowchart LR
     P[Pramanas] --> P1[1. Pratyaksha<br/>Perception]
@@ -163,6 +198,10 @@ flowchart LR
 
 ### Anumana — Five-membered syllogism (Panchavayava)
 
+Inference for others (*parārthānumāna*) is set out in five members so that a listener can follow and check
+each step. The classic example concerns smoke and fire on a distant hill.
+
+<!-- latex: p1-06-panchavayava -->
 ```
 1. Pratijna   (Proposition)  : The hill has fire.
 2. Hetu       (Reason)       : Because it has smoke.
@@ -180,6 +219,10 @@ Kinds of anumana:
 
 ### Hetvabhasa (fallacies of inference — 5)
 
+A *hetvābhāsa* is a reason that only appears to be a reason. Each of the five arises when the middle term
+(*hetu*) fails one of the conditions that a sound reason must satisfy — for instance, being present
+wherever the probandum is, or not being contradicted by another means of knowledge.
+
 | Hetvabhasa | Meaning |
 |-----------|---------|
 | **Savyabhichara** (Anaikantika) | Irregular / inconclusive middle — hetu found with and without sadhya |
@@ -192,6 +235,7 @@ Kinds of anumana:
 
 ### 8.1 Six Standard Venn Situations
 
+<!-- latex: p1-06-venn-standard -->
 ```
  All A are B        No A is B          Some A are B
  ┌───────────┐      ┌─────┐ ┌─────┐    ┌──────┬──┬──────┐
@@ -223,6 +267,10 @@ Kinds of anumana:
 O-propositions cannot be converted.
 
 ### 8.3 Conditional (Hypothetical) Statements
+
+Conditional arguments are tested constantly, often disguised in everyday language. Two forms are valid and
+two are tempting fallacies; learn them as a set of four.
+<!-- latex: p1-06-conditionals -->
 ```
 Valid:    If P then Q; P; ∴ Q          (Modus ponens)
 Valid:    If P then Q; not Q; ∴ not P  (Modus tollens)

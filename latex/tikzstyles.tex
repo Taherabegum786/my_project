@@ -1,0 +1,85 @@
+% Shared TikZ style library for all figures in latex/art/.
+% Classic look: thin ink lines, soft paper-tone fills, gentle shadows, serif labels.
+\usetikzlibrary{positioning,arrows.meta,calc,fit,backgrounds,shapes.geometric,shapes.multipart,
+  shapes.misc,shapes.arrows,shadows,shadows.blur,decorations.pathreplacing,decorations.markings,
+  matrix,mindmap,trees,automata,chains,quotes,patterns,3d,fadings,shapes.symbols}
+
+% ---- palette (muted, print-friendly)
+\definecolor{fgink}{HTML}{262626}
+\definecolor{fpaper}{HTML}{FBF8F2}
+\definecolor{fslate}{HTML}{DCE4EC}
+\definecolor{fsteel}{HTML}{AFC0D1}
+\definecolor{fsage}{HTML}{DFE7D6}
+\definecolor{fmoss}{HTML}{B7C7A4}
+\definecolor{fsand}{HTML}{F2E6D2}
+\definecolor{fochre}{HTML}{DCC08E}
+\definecolor{frose}{HTML}{F0DDD6}
+\definecolor{fbrick}{HTML}{C99586}
+\definecolor{fwine}{HTML}{7A2E2E}
+\definecolor{fgrey}{HTML}{EDEBE7}
+
+\tikzset{
+  every picture/.append style={font=\small, line join=round, >={Stealth[length=2.3mm,width=1.7mm]}},
+  ink/.style={draw=fgink, line width=0.55pt},
+  % boxes
+  box/.style={ink, rectangle, rounded corners=1.6pt, fill=fpaper, align=center, inner sep=4pt,
+    minimum height=7.5mm, minimum width=20mm,
+    blur shadow={shadow blur steps=6, shadow xshift=0.8pt, shadow yshift=-1pt, shadow opacity=22}},
+  slate/.style={box, fill=fslate}, sage/.style={box, fill=fsage}, sand/.style={box, fill=fsand},
+  rose/.style={box, fill=frose}, grey/.style={box, fill=fgrey},
+  steel/.style={box, fill=fsteel}, moss/.style={box, fill=fmoss}, ochre/.style={box, fill=fochre},
+  brick/.style={box, fill=fbrick},
+  plain/.style={draw=fgink!40, line width=0.45pt, rectangle, rounded corners=1.2pt, fill=fpaper!70, align=center, inner sep=4pt, minimum height=6mm},
+  pill/.style={box, rounded rectangle, minimum width=14mm},
+  diamondbox/.style={box, diamond, aspect=2.2, inner sep=1.5pt, minimum width=0mm, minimum height=0mm},
+  circ/.style={ink, circle, fill=fpaper, minimum size=8mm, inner sep=1pt,
+    blur shadow={shadow blur steps=6, shadow xshift=0.7pt, shadow yshift=-0.9pt, shadow opacity=22}},
+  vertex/.style={circ, minimum size=7mm, font=\small},
+  dot/.style={circle, fill=fgink, inner sep=0pt, minimum size=3.2pt},
+  db/.style={ink, cylinder, shape border rotate=90, aspect=0.22, minimum width=16mm, minimum height=11mm,
+    cylinder uses custom fill, cylinder body fill=fslate, cylinder end fill=fslate!55!white, align=center,
+    blur shadow={shadow blur steps=6, shadow xshift=0.8pt, shadow yshift=-1pt, shadow opacity=22}},
+  cloudnode/.style={ink, cloud, cloud puffs=11, aspect=2, fill=fgrey, inner sep=0pt, align=center},
+  % text & lines
+  lbl/.style={font=\footnotesize\itshape, text=fgink!85, align=center},
+  smalllbl/.style={font=\scriptsize\itshape, text=fgink!85, align=center},
+  capt/.style={font=\footnotesize\scshape, text=fgink, align=center},
+  arr/.style={->, draw=fgink, line width=0.6pt},
+  arrd/.style={<->, draw=fgink, line width=0.6pt},
+  dasharr/.style={->, draw=fgink!80, line width=0.55pt, dash pattern=on 2.5pt off 1.8pt},
+  thinline/.style={draw=fgink, line width=0.45pt},
+  brace/.style={decorate, decoration={brace, amplitude=4pt, raise=1pt}, thinline},
+  group/.style={draw=fgink!60, line width=0.45pt, rounded corners=3pt, dash pattern=on 3pt off 2pt, inner sep=6pt},
+  panel/.style={draw=fgink!50, line width=0.45pt, rounded corners=3pt, fill=fgrey!45, inner sep=6pt},
+  % trees and graphs
+  tnode/.style={circ, minimum size=7mm, inner sep=0.5pt, font=\small},
+  edgelbl/.style={font=\scriptsize, fill=white, inner sep=1.2pt},
+}
+
+% 3-D slab: \pic at (x,y) {slab={width}{height}{depth}{colour}};  front-lower-left corner at the pic origin.
+\tikzset{
+  pics/slab/.style n args={4}{code={
+    \fill[#4] (0,0) rectangle (#1,#2);
+    \fill[#4!60!white] (0,#2) -- ++({0.55*#3},{0.35*#3}) -- ++(#1,0) -- ++({-0.55*#3},{-0.35*#3}) -- cycle;
+    \fill[#4!78!black] (#1,0) -- ++({0.55*#3},{0.35*#3}) -- ++(0,#2) -- ++({-0.55*#3},{-0.35*#3}) -- cycle;
+    \draw[fgink, line width=0.5pt] (0,0) rectangle (#1,#2)
+      (0,#2) -- ++({0.55*#3},{0.35*#3}) -- ++(#1,0) -- ++({-0.55*#3},{-0.35*#3})
+      (#1,0) -- ++({0.55*#3},{0.35*#3}) -- ++(0,#2);
+  }},
+  % 3-D disk / cylinder seen slightly from above
+  pics/disk/.style n args={3}{code={% width, height, colour
+    \fill[#3!85!black] (0,0) arc[start angle=180, end angle=360, x radius={#1/2}, y radius={#1/7}]
+      -- ++(0,#2) arc[start angle=0, end angle=-180, x radius={#1/2}, y radius={#1/7}] -- cycle;
+    \shade[left color=#3!70!black, right color=#3!70!black, middle color=#3!35!white]
+      (0,0) arc[start angle=180, end angle=360, x radius={#1/2}, y radius={#1/7}]
+      -- ++(0,#2) arc[start angle=0, end angle=-180, x radius={#1/2}, y radius={#1/7}] -- cycle;
+    \fill[#3!40!white] ({#1/2},#2) ellipse[x radius={#1/2}, y radius={#1/7}];
+    \draw[fgink, line width=0.5pt] ({#1/2},#2) ellipse[x radius={#1/2}, y radius={#1/7}]
+      (0,#2) -- (0,0) arc[start angle=180, end angle=360, x radius={#1/2}, y radius={#1/7}] -- (#1,#2);
+  }},
+}
+
+% Ornamental rule used in chapter openings and boxes
+\newcommand{\ornament}{\tikz[baseline=-0.6ex]{\draw[fwine, line width=0.4pt] (0,0) -- (1.6,0);
+  \fill[fwine] (1.85,0) circle[radius=0.75pt]; \fill[fwine] (2.05,0) circle[radius=1.1pt]; \fill[fwine] (2.25,0) circle[radius=0.75pt];
+  \draw[fwine, line width=0.4pt] (2.5,0) -- (4.1,0);}}

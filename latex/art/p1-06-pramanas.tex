@@ -1,0 +1,18 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[x=1.8cm, y=0.62cm]
+  \foreach \p [count=\i] in {Pratyakṣa\\perception, Anumāna\\inference, Śabda\\testimony, Upamāna\\comparison, Arthāpatti\\postulation, Anupalabdhi\\non-perception} {
+    \node[font=\scriptsize, align=center, anchor=south, text width=17mm] at (\i,7.1) {\p};
+  }
+  \foreach \s/\n [count=\r] in {Cārvāka/1, {Buddhism, Vaiśeṣika}/2, {Sāṅkhya, Yoga, Jainism}/3, Nyāya/4, {Prābhākara Mīmāṃsā}/5, {Bhāṭṭa Mīmāṃsā, Advaita}/6} {
+    \node[anchor=east, font=\footnotesize] at (0.45,7-\r) {\s};
+    \foreach \c in {1,...,6} {
+      \ifnum\c>\n \fill[fgrey] (\c,7-\r) circle (5pt); \else \filldraw[fill=fwine!70, draw=fgink, line width=0.4pt] (\c,7-\r) circle (5pt); \fi
+    }
+    \node[font=\small\bfseries, anchor=west] at (6.4,7-\r) {\n};
+  }
+  \draw[thinline] (0.55,6.55) -- (6.45,6.55);
+\end{tikzpicture}
+\caption{How many means of valid knowledge (\emph{pramāṇa}) each school accepts. Note the order in which
+they are added: Śabda (3) comes before Upamāna (4) because Sāṅkhya accepts testimony but not comparison.}
+\end{figure}

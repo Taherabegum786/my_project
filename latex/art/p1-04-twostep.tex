@@ -1,0 +1,14 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \node[slate, minimum width=26mm, minimum height=12mm] (M) at (0,0) {\textbf{Mass media}};
+  \foreach \y/\n in {1.3/O1, -1.3/O2} \node[circ, fill=fsand, minimum size=14mm, font=\footnotesize, align=center] (\n) at (4,\y) {opinion\\leader};
+  \foreach \y [count=\k] in {2.1,1.3,0.5} \node[circ, minimum size=6mm] (a\k) at (7,\y) {};
+  \foreach \y [count=\k] in {-0.5,-1.3,-2.1} \node[circ, minimum size=6mm] (b\k) at (7,\y) {};
+  \draw[arr] (M) -- node[lbl, above, sloped] {step 1} (O1); \draw[arr] (M) -- (O2);
+  \foreach \k in {1,2,3} \draw[arr] (O1) -- (a\k);
+  \foreach \k in {1,2,3} \draw[arr] (O2) -- (b\k);
+  \node[lbl] at (5.7,2.65) {step 2}; \node[capt] at (7,-2.85) {the public};
+\end{tikzpicture}
+\caption{Lazarsfeld and Katz's two-step flow: media influence passes through opinion leaders to the wider public.}
+\end{figure}

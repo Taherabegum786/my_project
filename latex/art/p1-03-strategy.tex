@@ -1,0 +1,17 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[node distance=7mm]
+  \node[slate, text width=60mm] (A) {\textbf{1. Read the five questions first} (30 s)};
+  \node[slate, text width=60mm, below=of A] (B) {\textbf{2. Skim the passage} — topic and role of each paragraph};
+  \node[slate, text width=60mm, below=of B] (C) {\textbf{3. Read actively} — keywords, contrasts (\emph{but, however})};
+  \node[diamondbox, fill=fsand, below=8mm of C] (D) {question\\type?};
+  \foreach \x/\n/\h/\t in {-6/E/Fact/{locate the line;\\match its meaning}, -3/F/Inference/{what \emph{must}\\be true}, 0/G/{Main idea}/{covers the\\whole passage}, 3/H/Tone/{adjectives and\\opinion words}, 6/I/Vocabulary/{substitute in\\the sentence}} {
+    \node[sage, text width=24mm, font=\footnotesize] (\n) at ($(D)+(\x,-2.3)$) {\textbf{\h}\\\t};
+    \draw[arr] (D.south) -- (\n.north);
+  }
+  \node[rose, text width=96mm, below=16mm of G] (J) {\textbf{4. Eliminate} options with extreme words — \emph{always, never, only, all}};
+  \foreach \n in {E,F,G,H,I} \draw[arr] (\n.south) -- (\n.south |- J.north);
+  \draw[arr] (A) -- (B); \draw[arr] (B) -- (C); \draw[arr] (C) -- (D);
+\end{tikzpicture}
+\caption{A reliable routine for reading-comprehension questions.}
+\end{figure}

@@ -1,0 +1,20 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[
+  mindmap, every node/.style={concept, execute at begin node=\hskip0pt, font=\footnotesize, align=center},
+  concept color=fsteel, text=fgink,
+  root concept/.append style={concept color=fsteel, font=\small\bfseries, minimum size=24mm},
+  level 1 concept/.append style={level distance=38mm, sibling angle=120, minimum size=21mm, font=\small\bfseries},
+  level 2 concept/.append style={level distance=25mm, sibling angle=40, minimum size=16.5mm, text width=14mm, font=\scriptsize},
+  every annotation/.style={fill=white}]
+  \node[root concept] {The learner}
+    child[concept color=fsage, grow=90] {node {Adolescent\\(12–18)}
+      child {node {identity\\(Erikson)}} child {node {peer\\influence}} child {node {emotional\\swings}} child {node {abstract\\thought}}}
+    child[concept color=fsand, grow=-30] {node {Adult\\learner}
+      child {node {self-\\directed}} child {node {experience\\as resource}} child {node {problem-\\centred}} child {node {inner\\motivation}}}
+    child[concept color=frose, grow=210] {node {Individual\\differences}
+      child {node {intelli-\\gence}} child {node {learning\\style (VAK)}} child {node {socio-\\economic}} child {node {multiple\\intelligences}}};
+\end{tikzpicture}
+\caption{Learner characteristics. Adolescents are shaped by identity and peers; adults (andragogy) bring
+experience and self-direction; every class shows individual differences.}
+\end{figure}

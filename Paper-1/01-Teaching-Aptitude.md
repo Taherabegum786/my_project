@@ -14,9 +14,16 @@
 
 ## 1. What is Teaching?
 
+Teaching is far more than "telling". A lecture delivered to an empty hall is not teaching, because nothing has
+changed in anyone's mind. We therefore judge teaching by its effect on the learner: has the student come to
+know, do or value something new? Seen this way, teaching is a *system* with inputs (the teacher's planning
+and personality, the content, the resources), a process (interaction in the classroom) and an output
+(learning). Examiners often test this systems view through the language of variables.
+
 Teaching is a **purposeful, interactive process** that brings a desirable change in the learner's behaviour
 (knowledge, skills, attitudes).
 
+<!-- latex: p1-01-teaching-variables -->
 ```mermaid
 flowchart LR
     T[Teacher<br/>independent variable] -->|Interaction| S[Student<br/>dependent variable]
@@ -33,6 +40,11 @@ flowchart LR
 
 ### Phases of Teaching (Philip W. Jackson)
 
+Philip W. Jackson, observing real classrooms in *Life in Classrooms* (1968), noticed that a teacher's work
+does not begin when the bell rings or end when it rings again. Good teaching is planned beforehand,
+improvised sensitively during the lesson, and reviewed afterwards.
+
+<!-- latex: p1-01-phases -->
 ```mermaid
 flowchart LR
     P[Pre-active<br/>Planning] --> I[Inter-active<br/>Execution in class] --> PO[Post-active<br/>Evaluation]
@@ -44,6 +56,12 @@ flowchart LR
 
 ### Levels of Teaching (most asked!)
 
+A useful way to remember the three levels is to ask *how much thinking the learner does*. At the memory level
+the learner reproduces; at the understanding level the learner sees relationships and principles; at the
+reflective level the learner questions, solves problems and creates. Each higher level contains the lower
+ones, which is why the levels are drawn as a stack rather than as alternatives.
+
+<!-- latex: p1-01-levels -->
 ```
                  ┌────────────────────────────────────────────┐
   Level 3        │ REFLECTIVE level — Hunt (1971)             │  Student-centred, problem solving,
@@ -68,6 +86,13 @@ Morrison's steps: **Exploration → Presentation → Assimilation → Organisati
 
 ### Bloom's Taxonomy (Cognitive domain, revised 2001 by Anderson & Krathwohl)
 
+Benjamin Bloom's committee (1956) classified educational objectives so that teachers and examiners could
+write questions at a deliberate level of difficulty. The 2001 revision made two changes that are examined
+repeatedly: the category names became **verbs** (what the learner *does*), and **Creating** replaced
+Synthesis at the very top, above Evaluating. When you meet a question that lists action verbs ("design",
+"justify", "classify"), map each verb to its level using the figure below.
+
+<!-- latex: p1-01-bloom -->
 ```
                         ▲  Creating      (design, construct, produce)
                        ▲▲  Evaluating    (judge, critique, justify)
@@ -83,6 +108,10 @@ Three domains: **Cognitive** (Bloom), **Affective** (Krathwohl: Receiving → Re
 **Psychomotor** (Simpson / Dave: Imitation → Manipulation → Precision → Articulation → Naturalisation).
 
 ### Maxims of Teaching
+
+Maxims are the time-tested rules of thumb that turn principles into classroom practice. Each one moves the
+learner from what is familiar and easy towards what is new and demanding — so the order of the pair is
+what examiners check (it is always *known → unknown*, never the reverse).
 - Known → Unknown · Simple → Complex · Concrete → Abstract · Particular → General · Whole → Part
 - Analysis → Synthesis · Empirical → Rational · Psychological → Logical · Induction → Deduction
 
@@ -90,6 +119,12 @@ Three domains: **Cognitive** (Bloom), **Affective** (Krathwohl: Receiving → Re
 
 ## 2. Learner's Characteristics
 
+No method works equally well for every learner. Questions in this area usually ask you to recognise which
+characteristic belongs to which group — for example, that adults are *self-directed* and use their
+*experience as a resource* (Malcolm Knowles's andragogy), or that adolescents are absorbed in forming an
+*identity* (Erik Erikson).
+
+<!-- latex: p1-01-learner -->
 ```mermaid
 mindmap
   root((Learner))
@@ -119,6 +154,11 @@ mindmap
 
 ## 3. Factors Affecting Teaching
 
+Teaching succeeds or fails through many interacting influences. It helps to group them as in the table:
+the people involved (teacher and learner), the materials and facilities they use, and the wider
+environment and institution in which they work. A question may describe a classroom problem and ask
+which factor is responsible.
+
 | Factor | Examples |
 |--------|----------|
 | Teacher | Subject knowledge, communication, personality, motivation |
@@ -130,6 +170,12 @@ mindmap
 
 ## 4. Methods of Teaching
 
+The central distinction is *who is active*. In teacher-centred methods the teacher transmits and the learner
+receives; in learner-centred methods the learner investigates, discovers and constructs while the teacher
+guides. Modern policy (including NEP 2020) favours learner-centred and blended approaches, but every method
+has its place — a demonstration is still the quickest way to show a laboratory technique.
+
+<!-- latex: p1-01-methods -->
 ```mermaid
 flowchart TB
     M[Methods of teaching] --> TC[Teacher-centred]
@@ -165,6 +211,10 @@ Panel discussion (informal conversation among experts before audience), Workshop
 
 ### Online Teaching — Government Initiatives (asked every cycle)
 
+India has built a large public infrastructure for digital learning. Almost every NET paper contains at least
+one question on these initiatives, usually asking what a platform does or which body runs it. Learn the
+table as pairs: *platform → purpose → coordinating agency*.
+
 | Initiative | What it is |
 |-----------|------------|
 | **SWAYAM** | Study Webs of Active-Learning for Young Aspiring Minds — MOOC platform (2017), 4 quadrants |
@@ -186,6 +236,11 @@ Panel discussion (informal conversation among experts before audience), Workshop
 
 ## 5. Teaching Support System
 
+Support systems are the tools that carry a teacher's message. They range from the blackboard to virtual
+reality, and the choice among them should follow the learning objective, not fashion. Edgar Dale's cone,
+shown below, explains why concrete, hands-on experiences are remembered longer than words alone.
+
+<!-- latex: p1-01-support -->
 ```mermaid
 flowchart LR
     A[Support System] --> B[Traditional<br/>Blackboard, chart, models, textbook]
@@ -194,6 +249,7 @@ flowchart LR
 ```
 
 **Edgar Dale's Cone of Experience** (most concrete at base):
+<!-- latex: p1-01-dale-cone -->
 ```
                /\        Verbal symbols         ← most abstract
               /  \       Visual symbols
@@ -214,6 +270,11 @@ Projected aids: OHP, LCD; Non-projected: blackboard, charts, models.
 
 ## 6. Evaluation Systems
 
+Evaluation answers two separate questions: *when* do we evaluate, and *against what* do we compare the
+result? Keeping these two axes apart removes most of the confusion in examination questions — a test can
+be both formative (timing) and criterion-referenced (interpretation).
+
+<!-- latex: p1-01-evaluation -->
 ```mermaid
 flowchart TB
     E[Evaluation] --> F[Formative<br/>during instruction<br/>improves learning]
@@ -248,6 +309,12 @@ exams, online proctoring, e-portfolios, rubrics, peer assessment, grading instea
 
 ### 7.1 Learning Theories (asked in almost every cycle)
 
+A learning theory is an explanation of *how* learning happens. Behaviourists study only what can be
+observed and shaped by reinforcement; cognitivists look inside the mind at perception, memory and insight;
+constructivists hold that learners actively build their own understanding, often through social
+interaction; humanists emphasise the learner's needs, feelings and growth as a whole person.
+
+<!-- latex: p1-01-learning-theories -->
 ```mermaid
 flowchart TB
     L[Learning theories] --> B[Behaviourism<br/>learning = observable change in behaviour]
@@ -283,8 +350,13 @@ flowchart TB
 
 ### 7.2 Micro-teaching
 
+Micro-teaching shrinks teaching down — fewer students, less time, a single skill — so that a trainee
+teacher can practise, receive precise feedback and try again immediately. It is the teacher-training
+counterpart of a musician practising one difficult passage rather than the whole piece.
+
 Developed at **Stanford University (1961–63) by Dwight Allen** and colleagues. A scaled-down teaching encounter: one skill, 5–10 students, 5–10 minutes.
 
+<!-- latex: p1-01-microteaching -->
 ```mermaid
 flowchart LR
     P[Plan] --> T[Teach<br/>6 min] --> F[Feedback<br/>6 min] --> R[Re-plan<br/>12 min] --> RT[Re-teach<br/>6 min] --> RF[Re-feedback<br/>6 min]
@@ -296,6 +368,10 @@ flowchart LR
 - **Simulated teaching** = role play of teaching in a training situation; **team teaching** = two or more teachers plan and teach together.
 
 ### 7.3 Models of Teaching
+
+A model of teaching is a complete plan for a type of lesson: its goals, the sequence of activities, the
+roles of teacher and learner, and how success will be judged. Bruce Joyce and Marsha Weil grouped the many
+models into four families according to the kind of learning they aim at.
 
 | Model | Proponent | Key steps / idea |
 |-------|-----------|------------------|
@@ -309,6 +385,7 @@ flowchart LR
 
 Families of teaching models (**Joyce & Weil**): Information processing, Social interaction, Personal, Behavioural systems.
 
+<!-- latex: p1-01-glaser -->
 ```
 Glaser's Basic Teaching Model
  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐   ┌──────────────┐
@@ -319,6 +396,10 @@ Glaser's Basic Teaching Model
 ```
 
 ### 7.4 Questioning & Classroom Management
+
+Questions are the teacher's most flexible tool: they check understanding, provoke thinking and keep a
+class involved. Classroom management, in turn, creates the conditions in which questions can be asked and
+answered without disorder.
 - **Convergent** questions (one correct answer, lower order) vs **divergent** (many answers, creativity).
 - **Wait time** (Mary Budd Rowe): waiting 3–5 seconds after a question improves answer quality.
 - **Kounin**: "withitness" (teacher aware of everything), overlapping, momentum, smoothness.

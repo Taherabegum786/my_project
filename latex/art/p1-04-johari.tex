@@ -1,0 +1,18 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \fill[fsage] (0,0) rectangle (3.6,2.2); \fill[fsand] (3.6,0) rectangle (7.2,2.2);
+  \fill[fslate] (0,-2.2) rectangle (3.6,0); \fill[fgrey] (3.6,-2.2) rectangle (7.2,0);
+  \draw[fgink, line width=0.55pt] (0,-2.2) rectangle (7.2,2.2) (3.6,-2.2) -- (3.6,2.2) (0,0) -- (7.2,0);
+  \node[align=center] at (1.8,1.1) {\textbf{Open}\\\footnotesize arena};
+  \node[align=center] at (5.4,1.1) {\textbf{Blind}\\\footnotesize spot};
+  \node[align=center] at (1.8,-1.1) {\textbf{Hidden}\\\footnotesize façade};
+  \node[align=center] at (5.4,-1.1) {\textbf{Unknown}};
+  \node[capt] at (1.8,2.55) {known to self}; \node[capt] at (5.4,2.55) {not known to self};
+  \node[capt, rotate=90] at (-0.4,1.1) {known to others}; \node[capt, rotate=90] at (-0.4,-1.1) {not known to others};
+  \draw[arr, fwine] (4.6,1.9) -- node[lbl, above, text=fwine] {feedback} (3.75,1.9);
+  \draw[arr, fwine] (1.8,-0.35) -- node[lbl, right, text=fwine] {self-disclosure} (1.8,0.25);
+\end{tikzpicture}
+\caption{The Johari window. Feedback from others shrinks the blind area; self-disclosure shrinks the hidden
+area; both enlarge the open area in which communication is easiest.}
+\end{figure}

@@ -1,0 +1,28 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+\begin{scope}
+  \begin{axis}[name=bar, width=5.2cm, height=4cm, ybar, bar width=7pt, ymin=0, xtick={1,2,3,4}, xticklabels={A,B,C,D},
+      ytick=\empty, axis lines*=left, title={\footnotesize bar chart: categories}, tick label style={font=\scriptsize}]
+    \addplot[fill=fslate, draw=fgink] coordinates {(1,4) (2,7) (3,5) (4,3)};
+  \end{axis}
+  \begin{axis}[at={(bar.east)}, anchor=west, xshift=12mm, width=5.2cm, height=4cm, ybar interval, ymin=0,
+      xtick={0,10,20,30,40,50}, ytick=\empty, axis lines*=left, title={\footnotesize histogram: class intervals}, tick label style={font=\scriptsize}]
+    \addplot[fill=fsage, draw=fgink] coordinates {(0,3) (10,6) (20,8) (30,5) (40,2) (50,2)};
+  \end{axis}
+\end{scope}
+\begin{scope}[yshift=-4.6cm]
+  \begin{axis}[name=line, width=5.2cm, height=4cm, ymin=0, xtick={2019,2020,2021,2022}, xticklabel style={/pgf/number format/1000 sep={}},
+      ytick=\empty, axis lines*=left, title={\footnotesize line chart: trend over time}, tick label style={font=\scriptsize}]
+    \addplot[fwine, line width=0.8pt, mark=*, mark options={fill=white}] coordinates {(2019,3) (2020,4.5) (2021,4) (2022,6)};
+  \end{axis}
+  \begin{scope}[shift={(8.1,1.35)}]
+    \foreach \a/\b/\c in {0/162/fslate, 162/234/fsage, 234/288/fsand, 288/360/frose}
+      \filldraw[fill=\c, draw=fgink, line width=0.45pt] (0,0) -- (\a:1.25) arc (\a:\b:1.25) -- cycle;
+    \node[font=\footnotesize] at (0,1.75) {pie chart: parts of a whole};
+  \end{scope}
+\end{scope}
+\end{tikzpicture}
+\caption{Choosing a chart. Bars compare separate categories; a histogram's touching bars show a continuous
+distribution; a line shows change over time; a pie shows shares of one total.}
+\end{figure}

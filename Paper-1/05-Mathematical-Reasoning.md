@@ -14,6 +14,12 @@
 
 ## 1. Number Series — Pattern Checklist
 
+A number series hides a rule that generates each term from the ones before it. The quickest way to find it is
+to test the simplest rules first — constant differences, then constant ratios — and only then look for
+squares, alternating patterns or mixed operations. Writing the differences beneath the series takes a few
+seconds and solves most questions.
+
+<!-- latex: p1-05-series -->
 ```mermaid
 flowchart TD
     A[Given series] --> B{Differences constant?}
@@ -40,7 +46,12 @@ Examples:
 
 ## 2. Letter Series & Coding
 
+Letter questions become number questions once each letter is replaced by its position in the alphabet.
+Memorise the positions and their reverses so that no time is lost counting; the reference table below is
+worth learning by heart.
+
 Position table (memorise both directions):
+<!-- latex: p1-05-alphabet -->
 ```
 A B C D E F G H I J K  L  M  N  O  P  Q  R  S  T  U  V  W  X  Y  Z
 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26
@@ -54,7 +65,11 @@ Trick: **EJOTY** = 5, 10, 15, 20, 25. Opposite pairs sum to 27 (A↔Z, M↔N).
 
 ## 3. Blood Relations
 
+Relationship puzzles are confusing in words and trivial on paper. Draw a small family tree as you read each
+clause, marking gender and generation, and the answer can simply be read off.
+
 Use a **family tree diagram** with symbols:
+<!-- latex: p1-05-family -->
 ```
   +  male    −  female    ═  married    │ parent-child    ─ siblings
 
@@ -68,12 +83,23 @@ Use a **family tree diagram** with symbols:
 Coded relations: "P + Q means P is father of Q; P × Q means P is sister of Q" → draw step-by-step.
 
 ## 4. Classification (Odd one out)
+
+Look for the property shared by all options but one: being prime, a perfect square, a multiple of a number,
+a vowel, a member of a category. When two different properties seem to work, prefer the more specific one.
 Find the common property in 3 of 4: primes, squares, multiples, vowels, same-category items.
 Example: 121, 144, 169, **190** → 190 is not a perfect square.
 
 ## 5. Arithmetic Aptitude — Formula Bank
 
+Arithmetic questions in Paper I are not difficult, but they reward speed. Each formula below replaces several
+lines of working; understand where it comes from once, then use it directly in the examination.
+
 ### Percentage
+
+Percentages express every quantity as a fraction of 100, which makes comparison easy. Successive changes do
+*not* simply add: a 20% rise followed by a 20% fall leaves you 4% poorer, because the fall is taken on a
+larger base.
+<!-- latex: p1-05-percent -->
 ```
 x% of y = y% of x
 Increase by a% then b% ⇒ net = a + b + ab/100
@@ -82,6 +108,10 @@ Successive discount d1, d2 ⇒ d1 + d2 − d1·d2/100
 ```
 
 ### Profit & Loss
+
+Profit and loss percentages are always calculated on the **cost price** unless the question says otherwise;
+discounts are always calculated on the **marked price**.
+<!-- latex: p1-05-profit -->
 ```
 Profit% = (SP − CP)/CP × 100
 SP = CP × (100 + P%)/100
@@ -91,6 +121,11 @@ Dishonest dealer (uses 900g for 1kg) ⇒ gain = 100/900 × 100 = 11.11%
 ```
 
 ### Simple & Compound Interest
+
+Simple interest is earned only on the original principal; compound interest is also earned on interest
+already added. The difference between them grows with time, and the two-year difference formula is the most
+frequently used shortcut.
+<!-- latex: p1-05-interest -->
 ```
 SI = P·R·T/100
 CI: A = P(1 + R/100)^T ;  CI = A − P
@@ -100,6 +135,11 @@ Money doubles in T years at SI ⇒ R = 100/T
 ```
 
 ### Ratio, Proportion, Averages
+
+A ratio compares two quantities; a proportion states that two ratios are equal. Averages smooth a set of
+values into one representative number — but note that the average *speed* over equal distances is a
+harmonic mean, not the simple average of the speeds.
+<!-- latex: p1-05-ratio -->
 ```
 a : b = c : d  ⇒ ad = bc
 Mean proportional of a, b = √(ab);  Third proportional to a, b = b²/a
@@ -109,6 +149,10 @@ Average speed (equal distances) = 2xy/(x + y)
 ```
 
 ### Time, Speed, Distance
+
+Nearly every motion problem — trains, boats, races — reduces to the single relation distance = speed ×
+time, applied carefully with consistent units and, where two bodies move, with their *relative* speed.
+<!-- latex: p1-05-tsd -->
 ```mermaid
 flowchart LR
     D[Distance] --- S[Speed × Time]
@@ -119,6 +163,10 @@ flowchart LR
 - Boats: downstream = u + v, upstream = u − v; still water speed = (D + U)/2, stream = (D − U)/2.
 
 ### Time & Work
+
+Think of work as a rate: if A finishes a job in *a* days, A does 1/*a* of it each day. Rates of people (or
+pipes) working together simply add.
+<!-- latex: p1-05-work -->
 ```
 A does work in a days, B in b days ⇒ together = ab/(a + b) days
 Pipes: inlet +, outlet − (rates add)
@@ -142,6 +190,10 @@ M1·D1·H1 / W1 = M2·D2·H2 / W2
 
 ### 6.2 Mixtures & Alligation
 
+Alligation is a quick way of finding the ratio in which two ingredients at different prices (or
+concentrations) must be mixed to give a mixture of a desired mean value.
+
+<!-- latex: p1-05-alligation -->
 ```
    Cheaper (c)            Dearer (d)
          ╲                ╱
@@ -163,6 +215,7 @@ A = 2B, A − 10 = 3(B − 10) → 2B − 10 = 3B − 30 → **B = 20, A = 40**.
 Profit shared in ratio of **capital × time**. A invests ₹5000 for 12 months, B ₹6000 for 8 months → 60000 : 48000 = **5 : 4**.
 
 ### 6.5 Discounting (banker's & true discount)
+<!-- latex: p1-05-discount -->
 ```
 True discount TD = (Amount × R × T) / (100 + R·T)
 Banker's discount BD = SI on the amount = A·R·T/100

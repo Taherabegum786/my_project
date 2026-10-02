@@ -1,6 +1,7 @@
-\unitchapter{Paper 2 · Unit 2}{Computer System Architecture}{p2-02}
+\unitchapter{2}{2}{Computer System Architecture}{p2-02}
 
-\textbf{Expected questions: 8--10 · Target: 8+ · Type: numericals (cache, pipeline, number systems) + concepts (Morris Mano)}
+\unitmeta{Expected questions: 8--10 · Target: 8+ · Type: numericals (cache,
+pipeline, number systems) + concepts (Morris Mano)}
 
 \begin{sylbox}
 
@@ -30,22 +31,22 @@
 
 \end{sylbox}
 
-\needspace{175pt}
+\needspace{166pt}
 
 \hypertarget{p2-02--1-digital-logic}{%
-\section{1. Digital Logic}\label{p2-02--1-digital-logic}}
+\section{Digital Logic}\label{p2-02--1-digital-logic}}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-02--11-gates}{%
-\subsection{1.1 Gates}\label{p2-02--11-gates}}
+\subsection{Gates}\label{p2-02--11-gates}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0670}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1583}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2471}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0793}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1874}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2925}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Gate}
@@ -72,13 +73,13 @@ XNOR & (A⊕B)\textquotesingle{} & inputs equal \\
 Gates needed using only NAND: NOT = 1, AND = 2, OR = 3, XOR = \textbf{4}, XNOR = 5.
 Using only NOR: NOT = 1, OR = 2, AND = 3, XNOR = \textbf{4}, XOR = 5.
 
-\needspace{152pt}
+\needspace{137pt}
 
 \hypertarget{p2-02--12-k-map-simplification}{%
-\subsection{1.2 K-Map Simplification}\label{p2-02--12-k-map-simplification}}
+\subsection{K-Map Simplification}\label{p2-02--12-k-map-simplification}}
 
-\begin{asciiblock}{97pt}
-\begin{Verbatim}[fontsize=\fontsize{8.6}{10.4}\selectfont]
+\begin{listingblock}{87pt}
+\begin{Verbatim}[fontsize=\fontsize{7.8}{9.5}\selectfont]
  4-variable K-map (Gray code order)          Example: F = Σm(0,2,5,7,8,10,13,15)
           CD                                             CD
  AB    00  01  11  10                          AB    00  01  11  10
@@ -87,7 +88,7 @@ Using only NOR: NOT = 1, OR = 2, AND = 3, XNOR = \textbf{4}, XOR = 5.
  11  │ m12 m13 m15 m14                         11  │ 0   1   1   0
  10  │ m8  m9  m11 m10                         10  │ 1   0   0   1      F = BD + B'D' = B ⊙ D
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 Rules: group 1, 2, 4, 8, 16 adjacent cells (wrap-around allowed); larger groups = fewer literals; use don\textquotesingle t-cares (X) when helpful.
 
@@ -97,25 +98,25 @@ Rules: group 1, 2, 4, 8, 16 adjacent cells (wrap-around allowed); larger groups 
   \textbf{Prime implicant}: largest possible group. \textbf{Essential PI}: covers a minterm no other PI covers.
 \end{itemize}
 
-\needspace{122pt}
+\needspace{114pt}
 
 \hypertarget{p2-02--13-combinational-circuits}{%
-\subsection{1.3 Combinational Circuits}\label{p2-02--13-combinational-circuits}}
+\subsection{Combinational Circuits}\label{p2-02--13-combinational-circuits}}
 
-\begin{asciiblock}{67pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{64pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
  Half adder                       Full adder
  S = A ⊕ B                        S    = A ⊕ B ⊕ Cin
  C = AB                           Cout = AB + Cin(A ⊕ B)
                                   (2 half adders + 1 OR gate)
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1750}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.7896}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2061}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.7939}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Circuit}
@@ -137,17 +138,17 @@ Carry look-ahead adder & Gᵢ = AᵢBᵢ, Pᵢ = Aᵢ⊕Bᵢ; Cᵢ₊₁ = Gᵢ 
 
 \endgroup
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-02--14-flip-flops}{%
-\subsection{1.4 Flip-Flops}\label{p2-02--14-flip-flops}}
+\subsection{Flip-Flops}\label{p2-02--14-flip-flops}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0439}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2049}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3806}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0520}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2425}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4506}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{FF}
@@ -168,8 +169,8 @@ T & Q⁺ = T ⊕ Q & Toggle; used in counters \\
 
 \endgroup
 
-\begin{asciiblock}{89pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{86pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
  Excitation table (what inputs give Q → Q⁺)
  Q Q⁺ │ S R │ J K │ D │ T
  0 0  │ 0 X │ 0 X │ 0 │ 0
@@ -177,12 +178,12 @@ T & Q⁺ = T ⊕ Q & Toggle; used in counters \\
  1 0  │ 0 1 │ X 1 │ 0 │ 1
  1 1  │ X 0 │ X 0 │ 1 │ 0
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-02--15-counters--registers}{%
-\subsection{1.5 Counters \& Registers}\label{p2-02--15-counters--registers}}
+\subsection{Counters \& Registers}\label{p2-02--15-counters--registers}}
 
 \begin{itemize}
 \tightlist
@@ -198,22 +199,22 @@ T & Q⁺ = T ⊕ Q & Toggle; used in counters \\
   Number of 1K × 4 chips to build 16K × 8: (16 × 8)/(1 × 4) = \textbf{32}.
 \end{itemize}
 
-\needspace{175pt}
+\needspace{166pt}
 
 \hypertarget{p2-02--2-data-representation}{%
-\section{2. Data Representation}\label{p2-02--2-data-representation}}
+\section{Data Representation}\label{p2-02--2-data-representation}}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-02--21-signed-numbers-n-bits}{%
-\subsection{2.1 Signed numbers (n bits)}\label{p2-02--21-signed-numbers-n-bits}}
+\subsection{Signed numbers (n bits)}\label{p2-02--21-signed-numbers-n-bits}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1358}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2291}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1228}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1608}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2713}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1454}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Representation}
@@ -237,13 +238,13 @@ Sign-magnitude & −(2ⁿ⁻¹−1) \ldots{} +(2ⁿ⁻¹−1) & Two (+0, −0) \
 \textbf{Overflow} in 2\textquotesingle s-complement addition: carry into MSB ≠ carry out of MSB (or adding two same-sign numbers gives opposite sign).
 r\textquotesingle s complement of N (n digits) = rⁿ − N; (r−1)\textquotesingle s complement = rⁿ − 1 − N.
 
-\needspace{144pt}
+\needspace{136pt}
 
 \hypertarget{p2-02--22-floating-point--ieee-754}{%
-\subsection{2.2 Floating Point --- IEEE 754}\label{p2-02--22-floating-point--ieee-754}}
+\subsection{Floating Point --- IEEE 754}\label{p2-02--22-floating-point--ieee-754}}
 
-\begin{asciiblock}{89pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{86pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
  Single precision (32 bits)
  ┌───┬──────────────┬────────────────────────────────┐
  │ S │ Exponent (8) │ Mantissa / fraction (23)       │   bias = 127
@@ -251,7 +252,7 @@ r\textquotesingle s complement of N (n digits) = rⁿ − N; (r−1)\textquotesi
  Double precision (64 bits): 1 | 11 | 52            bias = 1023
  Value = (−1)^S × 1.M × 2^(E − bias)
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 Example: −6.25 = −110.01₂ = −1.1001 × 2² → S=1, E = 129 = 10000001, M = 1001000\ldots{}
 → \textbf{C0C80000} (hex).
@@ -262,10 +263,10 @@ Example: −6.25 = −110.01₂ = −1.1001 × 2² → S=1, E = 129 = 10000001, 
   E = 0, M = 0 → ±0; E = all 1s, M = 0 → ±∞; E = all 1s, M ≠ 0 → NaN; E = 0, M ≠ 0 → denormal.
 \end{itemize}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-02--23-codes}{%
-\subsection{2.3 Codes}\label{p2-02--23-codes}}
+\subsection{Codes}\label{p2-02--23-codes}}
 
 \begin{itemize}
 \tightlist
@@ -279,10 +280,10 @@ Example: −6.25 = −110.01₂ = −1.1001 × 2² → S=1, E = 129 = 10000001, 
   \textbf{CRC}: polynomial division; used in networks.
 \end{itemize}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-02--24-arithmetic}{%
-\subsection{2.4 Arithmetic}\label{p2-02--24-arithmetic}}
+\subsection{Arithmetic}\label{p2-02--24-arithmetic}}
 
 \begin{itemize}
 \tightlist
@@ -292,10 +293,10 @@ Example: −6.25 = −110.01₂ = −1.1001 × 2² → S=1, E = 129 = 10000001, 
   Division: restoring and non-restoring.
 \end{itemize}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-02--3-register-transfer--micro-operations}{%
-\section{3. Register Transfer \& Micro-operations}\label{p2-02--3-register-transfer--micro-operations}}
+\section{Register Transfer \& Micro-operations}\label{p2-02--3-register-transfer--micro-operations}}
 
 \begin{itemize}
 \tightlist
@@ -307,12 +308,12 @@ Example: −6.25 = −110.01₂ = −1.1001 × 2² → S=1, E = 129 = 10000001, 
   Common bus with k registers of n bits: n multiplexers of k×1 each, log₂k select lines.
 \end{itemize}
 
-\needdiagram{figures/p2-02-00}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-02--4-basic-computer-mano}{%
-\section{4. Basic Computer (Mano)}\label{p2-02--4-basic-computer-mano}}
+\section{Basic Computer (Mano)}\label{p2-02--4-basic-computer-mano}}
 
-\diagramhere{figures/p2-02-00}
+\diagram{figures/p2-02-00}
 
 Instruction format (16 bits): \texttt{I\ (1)\ \textbar{}\ Opcode\ (3)\ \textbar{}\ Address\ (12)} --- I = 0 direct, 1 indirect.
 
@@ -322,23 +323,23 @@ Instruction format (16 bits): \texttt{I\ (1)\ \textbar{}\ Opcode\ (3)\ \textbar{
   Instruction types: memory-reference (opcode 000--110), register-reference (0111\ldots), I/O (1111\ldots).
 \end{itemize}
 
-\needdiagram{figures/p2-02-01}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-02--instruction-cycle}{%
 \subsection{Instruction Cycle}\label{p2-02--instruction-cycle}}
 
-\diagramhere{figures/p2-02-01}
+\diagram{figures/p2-02-01}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-02--5-control-unit}{%
-\section{5. Control Unit}\label{p2-02--5-control-unit}}
+\section{Control Unit}\label{p2-02--5-control-unit}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2972}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3052}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3594}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Hardwired}
@@ -367,23 +368,23 @@ Used in RISC & Used in CISC \\
   Control memory size = (\#microinstructions) × (width).
 \end{itemize}
 
-\needspace{210pt}
+\needspace{196pt}
 
 \hypertarget{p2-02--6-cpu-organisation}{%
-\section{6. CPU Organisation}\label{p2-02--6-cpu-organisation}}
+\section{CPU Organisation}\label{p2-02--6-cpu-organisation}}
 
-\needspace{170pt}
+\needspace{160pt}
 
 \hypertarget{p2-02--61-instruction-formats-by-number-of-addresses}{%
-\subsection{6.1 Instruction formats (by number of addresses)}\label{p2-02--61-instruction-formats-by-number-of-addresses}}
+\subsection{Instruction formats (by number of addresses)}\label{p2-02--61-instruction-formats-by-number-of-addresses}}
 
 Evaluate X = (A + B) × (C + D):
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1873}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.6830}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2206}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.7794}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Type}
@@ -402,17 +403,17 @@ Evaluate X = (A + B) × (C + D):
 
 \endgroup
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-02--62-addressing-modes-very-frequent}{%
-\subsection{6.2 Addressing Modes (very frequent)}\label{p2-02--62-addressing-modes-very-frequent}}
+\subsection{Addressing Modes (very frequent)}\label{p2-02--62-addressing-modes-very-frequent}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2092}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1757}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2782}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2477}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2080}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3293}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Mode}
@@ -441,16 +442,16 @@ Base register & EA = BR + A & Relocation \\
 
 Memory references to get operand: immediate 0, direct 1, indirect 2.
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-02--63-risc-vs-cisc}{%
-\subsection{6.3 RISC vs CISC}\label{p2-02--63-risc-vs-cisc}}
+\subsection{RISC vs CISC}\label{p2-02--63-risc-vs-cisc}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2948}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2816}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3472}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3317}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{RISC}
@@ -472,13 +473,13 @@ ARM, MIPS, SPARC, RISC-V & x86, VAX, IBM 370 \\
 
 \endgroup
 
-\needspace{165pt}
+\needspace{158pt}
 
 \hypertarget{p2-02--7-pipelining}{%
-\section{7. Pipelining}\label{p2-02--7-pipelining}}
+\section{Pipelining}\label{p2-02--7-pipelining}}
 
-\begin{asciiblock}{110pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{108pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
  4-stage instruction pipeline (IF, ID, EX, WB), 5 instructions
  Cycle:   1    2    3    4    5    6    7    8
  I1      IF   ID   EX   WB
@@ -488,10 +489,10 @@ ARM, MIPS, SPARC, RISC-V & x86, VAX, IBM 370 \\
  I5                          IF   ID   EX   WB
  Total = k + (n − 1) = 4 + 4 = 8 cycles
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\begin{asciiblock}{89pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{79pt}
+\begin{Verbatim}[fontsize=\fontsize{8.1}{9.8}\selectfont]
 Pipelined time   T_pipe = (k + n − 1) × t_p        (t_p = max stage delay + latch delay)
 Non-pipelined    T_seq  = n × t_n                   (t_n = sum of stage delays)
 Speedup          S = n·t_n / ((k + n − 1)·t_p)  → k  as n → ∞ (ideal, equal stages)
@@ -499,14 +500,14 @@ Efficiency       η = S / k
 Throughput       n / T_pipe
 With stalls:     CPI_pipe = 1 + stall cycles per instruction ;  S = CPI_nonpipe / CPI_pipe
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needdiagram{figures/p2-02-02}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-02--hazards}{%
 \subsection{Hazards}\label{p2-02--hazards}}
 
-\diagramhere{figures/p2-02-02}
+\diagram{figures/p2-02-02}
 
 \begin{itemize}
 \tightlist
@@ -522,19 +523,19 @@ With stalls:     CPI_pipe = 1 + stall cycles per instruction ;  S = CPI_nonpipe 
   Superscalar (multiple issue), VLIW, superpipelining.
 \end{itemize}
 
-\needdiagram{figures/p2-02-03}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-02--8-io-organisation}{%
-\section{8. I/O Organisation}\label{p2-02--8-io-organisation}}
+\section{I/O Organisation}\label{p2-02--8-io-organisation}}
 
-\diagramhere{figures/p2-02-03}
+\diagram{figures/p2-02-03}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1947}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3850}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1976}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2305}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4557}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2339}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Mode}
@@ -573,13 +574,13 @@ I/O processor (channel) & Dedicated processor & Minimal \\
   Serial communication: asynchronous (start bit, data, parity, stop bits) --- UART; synchronous --- USRT.
 \end{itemize}
 
-\needspace{197pt}
+\needspace{190pt}
 
 \hypertarget{p2-02--9-memory-hierarchy}{%
-\section{9. Memory Hierarchy}\label{p2-02--9-memory-hierarchy}}
+\section{Memory Hierarchy}\label{p2-02--9-memory-hierarchy}}
 
-\begin{asciiblock}{142pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{140pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
  ┌─────────────────────────────┐  ▲  faster, costlier, smaller
  │ Registers                   │  │
  ├─────────────────────────────┤  │
@@ -592,7 +593,7 @@ I/O processor (channel) & Dedicated processor & Minimal \\
  │ Tape / Optical              │  ▼  slower, cheaper, larger
  └─────────────────────────────┘
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begin{itemize}
 \tightlist
@@ -606,17 +607,17 @@ I/O processor (channel) & Dedicated processor & Minimal \\
   \textbf{Locality of reference}: temporal (same item soon) \& spatial (nearby items soon).
 \end{itemize}
 
-\needdiagram{figures/p2-02-04}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-02--91-cache-mapping}{%
-\subsection{9.1 Cache Mapping}\label{p2-02--91-cache-mapping}}
+\subsection{Cache Mapping}\label{p2-02--91-cache-mapping}}
 
-\diagramhere{figures/p2-02-04}
+\diagram{figures/p2-02-04}
 
 \textbf{Worked example}: Main memory 4 GB (32-bit address), cache 64 KB, block 32 B.
 
-\begin{asciiblock}{89pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{86pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 Offset bits  = log₂ 32 = 5
 Lines        = 64 KB / 32 B = 2048 → 11 bits
 Direct:  TAG = 32 − 11 − 5 = 16 | LINE 11 | OFFSET 5
@@ -624,16 +625,16 @@ Direct:  TAG = 32 − 11 − 5 = 16 | LINE 11 | OFFSET 5
 Fully:   TAG = 32 − 5 = 27
 Tag directory size (direct) = 2048 × 16 bits (+ valid/dirty bits)
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\begin{asciiblock}{67pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{64pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 Hit ratio h ;  cache access tc ; memory access tm
 Avg access time (simultaneous/parallel)   T = h·tc + (1 − h)·tm
 Avg access time (hierarchical/serial)     T = h·tc + (1 − h)(tc + tm)
 AMAT = Hit time + Miss rate × Miss penalty
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begin{itemize}
 \tightlist
@@ -647,10 +648,10 @@ AMAT = Hit time + Miss rate × Miss penalty
   Misses: \textbf{Compulsory} (cold), \textbf{Capacity}, \textbf{Conflict} (3 Cs).
 \end{itemize}
 
-\needspace{135pt}
+\needspace{125pt}
 
 \hypertarget{p2-02--92-virtual-memory}{%
-\subsection{9.2 Virtual Memory}\label{p2-02--92-virtual-memory}}
+\subsection{Virtual Memory}\label{p2-02--92-virtual-memory}}
 
 Covered in depth in \protect\hyperlink{p2-05}{Unit 5 (OS)}: paging, TLB, page replacement.
 
@@ -660,25 +661,25 @@ Covered in depth in \protect\hyperlink{p2-05}{Unit 5 (OS)}: paging, TLB, page re
   Effective access with TLB: EAT = h(t\_TLB + t\_m) + (1 − h)(t\_TLB + 2t\_m) (single-level page table).
 \end{itemize}
 
-\needspace{112pt}
+\needspace{103pt}
 
 \hypertarget{p2-02--93-magnetic-disk}{%
-\subsection{9.3 Magnetic Disk}\label{p2-02--93-magnetic-disk}}
+\subsection{Magnetic Disk}\label{p2-02--93-magnetic-disk}}
 
-\begin{asciiblock}{57pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{53pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 Disk access time = Seek time + Rotational latency + Transfer time
 Avg rotational latency = ½ × (60/RPM) s
 Capacity = surfaces × tracks × sectors/track × bytes/sector
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 e.g. 7200 RPM → one rotation 8.33 ms → avg latency \textbf{4.17 ms}.
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-02--10-multiprocessors}{%
-\section{10. Multiprocessors}\label{p2-02--10-multiprocessors}}
+\section{Multiprocessors}\label{p2-02--10-multiprocessors}}
 
 \begin{itemize}
 \tightlist
@@ -696,27 +697,27 @@ e.g. 7200 RPM → one rotation 8.33 ms → avg latency \textbf{4.17 ms}.
   \textbf{Multicore}: multiple cores on one chip sharing L2/L3 cache; hyper-threading (SMT).
 \end{itemize}
 
-\needspace{210pt}
+\needspace{196pt}
 
 \hypertarget{p2-02--11-deeper-dive--booth-trace-instruction-encoding-cache-behaviour--interrupts}{%
-\section{11. Deeper Dive --- Booth Trace, Instruction Encoding, Cache Behaviour \& Interrupts}\label{p2-02--11-deeper-dive--booth-trace-instruction-encoding-cache-behaviour--interrupts}}
+\section{Deeper Dive --- Booth Trace, Instruction Encoding, Cache Behaviour \& Interrupts}\label{p2-02--11-deeper-dive--booth-trace-instruction-encoding-cache-behaviour--interrupts}}
 
-\needspace{170pt}
+\needspace{160pt}
 
 \hypertarget{p2-02--111-booths-algorithm--full-trace-7--3-4-bits}{%
-\subsection{11.1 Booth\textquotesingle s Algorithm --- Full Trace: 7 × (−3), 4 bits}\label{p2-02--111-booths-algorithm--full-trace-7--3-4-bits}}
+\subsection{Booth\textquotesingle s Algorithm --- Full Trace: 7 × (−3), 4 bits}\label{p2-02--111-booths-algorithm--full-trace-7--3-4-bits}}
 
 M = 0111 (7), −M = 1001, Q = 1101 (−3), A = 0000, Q₋₁ = 0.
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0589}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1011}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1926}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0585}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0585}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0630}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0709}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1219}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2321}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0705}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0705}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0759}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Step}
@@ -750,60 +751,60 @@ Init & & & 0000 & 1101 & 0 \\
 Result A Q = \textbf{1110 1011} = −21 in 8-bit 2\textquotesingle s complement ✔.
 Booth reduces additions for runs of 1s; worst case is alternating bits (0101\ldots).
 
-\needspace{136pt}
+\needspace{122pt}
 
 \hypertarget{p2-02--112-instruction-encoding-numericals}{%
-\subsection{11.2 Instruction Encoding Numericals}\label{p2-02--112-instruction-encoding-numericals}}
+\subsection{Instruction Encoding Numericals}\label{p2-02--112-instruction-encoding-numericals}}
 
 \textbf{Fixed format}: 32-bit instructions, 64 registers, 45 distinct opcodes, format \texttt{opcode\ \textbar{}\ Rd\ \textbar{}\ Rs\ \textbar{}\ immediate}.
 
-\begin{asciiblock}{46pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{42pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 opcode bits = ⌈log₂ 45⌉ = 6        register field = log₂ 64 = 6 each
 immediate   = 32 − 6 − 6 − 6 = 14 bits  → signed range −8192 … +8191
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \textbf{Expanding opcode}: 16-bit instruction, 4-bit address fields.
 
-\begin{asciiblock}{77pt}
-\begin{Verbatim}[fontsize=\fontsize{8.7}{10.6}\selectfont]
+\begin{listingblock}{68pt}
+\begin{Verbatim}[fontsize=\fontsize{7.9}{9.6}\selectfont]
 3-address: 4-bit opcode → 2⁴ = 16 patterns; use 15, keep 1 as escape
 2-address: escape (4 bits) + 4 more opcode bits → 16 patterns; use 14, keep 2
 1-address: 2 escapes × 16 = 32 patterns; use 31, keep 1
 0-address: 1 escape × 16 = 16 instructions
 General rule: unused patterns at level k × 2^(field width) = patterns available at level k+1
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{147pt}
+\needspace{133pt}
 
 \hypertarget{p2-02--113-mapping-an-address-into-a-set-associative-cache}{%
-\subsection{11.3 Mapping an Address into a Set-Associative Cache}\label{p2-02--113-mapping-an-address-into-a-set-associative-cache}}
+\subsection{Mapping an Address into a Set-Associative Cache}\label{p2-02--113-mapping-an-address-into-a-set-associative-cache}}
 
 2-way set associative, 128 lines, 16-byte blocks, 16-bit byte address \textbf{0x1A2B}.
 
-\begin{asciiblock}{57pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{53pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 Sets = 128 / 2 = 64 → 6 set bits ; offset = 4 bits ; tag = 16 − 6 − 4 = 6 bits
 Block number = 0x1A2B >> 4 = 0x1A2 = 418
 Set   = 418 mod 64 = 34           Tag = 418 div 64 = 6         Offset = 0xB = 11
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{170pt}
+\needspace{160pt}
 
 \hypertarget{p2-02--114-hits--misses-for-three-organisations}{%
-\subsection{11.4 Hits \& Misses for Three Organisations}\label{p2-02--114-hits--misses-for-three-organisations}}
+\subsection{Hits \& Misses for Three Organisations}\label{p2-02--114-hits--misses-for-three-organisations}}
 
 Block reference string: \textbf{0, 4, 0, 4, 8, 0} with 4 cache lines.
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3408}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4515}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0711}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4034}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5124}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0842}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Organisation}
@@ -825,19 +826,19 @@ Fully associative, LRU & 0 M, 4 M, 0 H, 4 H, 8 M, 0 H & \textbf{3} \\
 
 Higher associativity removes \textbf{conflict misses}; the three first-time misses are \textbf{compulsory}.
 
-\needdiagram{figures/p2-02-05}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-02--115-interrupt-cycle-mano-basic-computer}{%
-\subsection{11.5 Interrupt Cycle (Mano basic computer)}\label{p2-02--115-interrupt-cycle-mano-basic-computer}}
+\subsection{Interrupt Cycle (Mano basic computer)}\label{p2-02--115-interrupt-cycle-mano-basic-computer}}
 
-\diagramhere{figures/p2-02-05}
+\diagram{figures/p2-02-05}
 
 Return address is saved in memory location 0; the ISR ends with an indirect branch through location 0 (BUN 0 I), re-enabling interrupts with ION.
 
-\needspace{135pt}
+\needspace{125pt}
 
 \hypertarget{p2-02--116-microprogrammed-control-numericals}{%
-\subsection{11.6 Microprogrammed Control Numericals}\label{p2-02--116-microprogrammed-control-numericals}}
+\subsection{Microprogrammed Control Numericals}\label{p2-02--116-microprogrammed-control-numericals}}
 
 Mano\textquotesingle s microinstruction: \texttt{F1\ (3)\ \textbar{}\ F2\ (3)\ \textbar{}\ F3\ (3)\ \textbar{}\ CD\ (2)\ \textbar{}\ BR\ (2)\ \textbar{}\ AD\ (7)} = \textbf{20 bits}; control memory 128 × 20.
 
@@ -849,10 +850,10 @@ Mano\textquotesingle s microinstruction: \texttt{F1\ (3)\ \textbar{}\ F2\ (3)\ \
   \textbf{Example}: 48 control signals in 4 mutually-exclusive groups of 12 → vertical needs 4 × ⌈log₂ 13⌉ = 4 × 4 = 16 bits (vs 48 horizontal).
 \end{itemize}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-02--117-dma--io-numericals}{%
-\subsection{11.7 DMA \& I/O Numericals}\label{p2-02--117-dma--io-numericals}}
+\subsection{DMA \& I/O Numericals}\label{p2-02--117-dma--io-numericals}}
 
 \begin{itemize}
 \tightlist
@@ -863,22 +864,22 @@ Mano\textquotesingle s microinstruction: \texttt{F1\ (3)\ \textbar{}\ F2\ (3)\ \
   Programmed I/O polling overhead: polling 100 times/s × 500 cycles each = 50,000 cycles/s → \textbf{0.05\%} of a 100 MHz CPU.
 \end{itemize}
 
-\needspace{133pt}
+\needspace{123pt}
 
 \hypertarget{p2-02--118-memory-interleaving}{%
-\subsection{11.8 Memory Interleaving}\label{p2-02--118-memory-interleaving}}
+\subsection{Memory Interleaving}\label{p2-02--118-memory-interleaving}}
 
-\begin{asciiblock}{78pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{73pt}
+\begin{Verbatim}[fontsize=\fontsize{8.7}{10.6}\selectfont]
  Low-order interleaving (4 modules): module = address mod 4
  Address:  0  1  2  3  4  5  6  7  8 …
  Module:   M0 M1 M2 M3 M0 M1 M2 M3 M0 …
  Consecutive words come from different modules → overlapped access, higher bandwidth
  High-order interleaving: module = high bits → consecutive words in the same module
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{135pt}
+\needspace{125pt}
 
 \hypertarget{p2-02--previous-year-questions-pyq-pattern}{%
 \section{Previous Year Questions (PYQ pattern)}\label{p2-02--previous-year-questions-pyq-pattern}}

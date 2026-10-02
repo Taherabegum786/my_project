@@ -11,11 +11,20 @@
 ---
 
 ## 1. Meaning
+
+At its simplest, communication succeeds when the receiver understands what the sender meant. Every model
+in this unit is an attempt to explain how that shared meaning is achieved — and why it so often is not.
 Latin *communis / communicare* = "to make common / to share". Communication is the process of transmitting
 information, ideas and feelings to create **shared understanding**.
 
 ## 2. Models of Communication
 
+Models simplify a complex process so that its parts can be studied. Early *linear* models (Aristotle,
+Lasswell, Shannon–Weaver) treat communication as a one-way transmission. *Interactive* models add feedback,
+and *transactional* models see both parties sending and receiving at once. The single most examined idea is
+**noise**, introduced by Shannon and Weaver: anything that distorts the message on its way.
+
+<!-- latex: p1-04-model -->
 ```mermaid
 flowchart LR
     S[Sender / Source] -->|Encoding| M[Message]
@@ -37,6 +46,7 @@ flowchart LR
 | **Dance (helical)** | Transactional | Communication grows like a helix |
 | **Barnlund** | Transactional | Simultaneous sending & receiving |
 
+<!-- latex: p1-04-schramm -->
 ```
  Schramm's model — meaning is shared only where fields of experience overlap
 
@@ -52,6 +62,11 @@ flowchart LR
 
 ## 3. Types of Communication
 
+Communication can be classified by the channel used, the number of people involved, the direction of flow
+in an organisation, and its degree of formality. A single act — a principal's circular to teachers, for
+example — is written, downward, formal and group communication all at once.
+
+<!-- latex: p1-04-types -->
 ```mermaid
 mindmap
   root((Communication))
@@ -77,6 +92,13 @@ mindmap
 
 ### Non-verbal communication (frequently asked)
 
+Much of what we communicate is carried not by words but by the body, the voice, space and time. The
+technical names (kinesics, proxemics, haptics, chronemics) are frequently asked; Edward T. Hall's zones of
+personal space are illustrated below.
+
+<!-- latex: p1-04-proxemics -->
+
+
 | Kind | Meaning |
 |------|---------|
 | **Kinesics** | Body movements, gestures, facial expressions, posture |
@@ -99,6 +121,11 @@ Hall's proxemic zones: Intimate (0–1.5 ft), Personal (1.5–4 ft), Social (4�
 
 ## 4. Barriers to Communication
 
+A barrier is anything that prevents the intended meaning from reaching the receiver. Questions usually
+describe a situation — jargon in a lecture, a noisy hall, a student's prejudice — and ask you to name the
+barrier, so learn the categories with an example of each.
+
+<!-- latex: p1-04-barriers -->
 ```mermaid
 flowchart TB
     B[Barriers] --> P[Physical<br/>noise, distance, poor lighting]
@@ -113,12 +140,26 @@ flowchart TB
 7 Cs of effective communication: **Clear, Concise, Concrete, Correct, Coherent, Complete, Courteous**.
 
 ## 5. Inter-cultural & Group Communication
+
+When sender and receiver come from different cultures, their fields of experience overlap less, and
+misunderstanding becomes more likely. Groups add their own dynamics: they pass through recognisable stages
+before they work well together.
 - **Hofstede's cultural dimensions**: power distance, individualism–collectivism, masculinity–femininity, uncertainty avoidance, long-term orientation, indulgence.
 - **High-context** cultures (India, Japan) rely on implicit cues; **low-context** (USA, Germany) are explicit (E.T. Hall).
 - Ethnocentrism = judging other cultures by one's own — barrier.
 - Tuckman's group stages: **Forming → Storming → Norming → Performing → Adjourning**.
 
+<!-- latex: p1-04-tuckman -->
+
+
 ## 6. Mass Media & Society
+
+Theories of mass communication have swung between two views of the audience: as passive targets of
+powerful media (the "magic bullet") and as active users who select, interpret and resist. The two-step flow
+model introduced the influential middle layer of *opinion leaders*.
+
+<!-- latex: p1-04-twostep -->
+
 
 | Theory | Idea |
 |--------|------|
@@ -139,6 +180,9 @@ All India Radio (1936, named; Akashvani 1957); Press Council of India (1966); Pr
 
 ### 7.1 Listening
 
+Listening is the neglected half of communication. A message is complete only when it has been heard,
+understood and responded to, which is why the stages of listening end with *responding*.
+
 Hearing is physiological; **listening** is psychological (attending, understanding, remembering, responding).
 
 | Type of listening | Purpose |
@@ -152,10 +196,14 @@ Hearing is physiological; **listening** is psychological (attending, understandi
 Stages (HURIER model, Brownell): **Hearing → Understanding → Remembering → Interpreting → Evaluating → Responding**.
 
 ### 7.2 Feedback
+
+Feedback turns a monologue into a dialogue. For the sender it confirms whether the message was understood;
+for the receiver it is information about how others see them — the idea captured by the Johari window.
 - **Positive** (reinforces), **negative / corrective** (points out errors), **descriptive** (specific, non-judgemental), **evaluative** (judgement).
 - Good feedback is specific, timely, focused on behaviour (not the person), and actionable.
 - **Johari window** (Joseph Luft & Harrington Ingham): self-awareness in communication.
 
+<!-- latex: p1-04-johari -->
 ```
                  Known to self        Not known to self
               ┌───────────────────┬────────────────────┐
@@ -170,6 +218,11 @@ Stages (HURIER model, Brownell): **Hearing → Understanding → Remembering →
 
 ### 7.3 Communication Networks (small groups)
 
+Small-group experiments (Bavelas, Leavitt) showed that the *pattern* of who may talk to whom affects speed,
+accuracy, leadership and morale. Centralised networks are efficient for simple tasks; decentralised ones
+suit complex problems and keep members more satisfied.
+
+<!-- latex: p1-04-networks -->
 ```mermaid
 flowchart LR
     subgraph Wheel[Wheel - most centralised, fastest]

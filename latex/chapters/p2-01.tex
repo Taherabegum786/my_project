@@ -1,6 +1,6 @@
-\unitchapter{Paper 2 · Unit 1}{Discrete Structures \& Optimization}{p2-01}
+\unitchapter{2}{1}{Discrete Structures \& Optimization}{p2-01}
 
-\textbf{Expected questions: 10--12 · Target: 9+ · Type: numerical + concept}
+\unitmeta{Expected questions: 10--12 · Target: 9+ · Type: numerical + concept}
 
 \begin{sylbox}
 
@@ -24,27 +24,27 @@
 
 \end{sylbox}
 
-\needspace{175pt}
+\needspace{166pt}
 
 \hypertarget{p2-01--1-mathematical-logic}{%
-\section{1. Mathematical Logic}\label{p2-01--1-mathematical-logic}}
+\section{Mathematical Logic}\label{p2-01--1-mathematical-logic}}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-01--11-connectives--truth-table}{%
-\subsection{1.1 Connectives \& Truth Table}\label{p2-01--11-connectives--truth-table}}
+\subsection{Connectives \& Truth Table}\label{p2-01--11-connectives--truth-table}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0341}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0341}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0438}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0540}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0540}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0540}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0540}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0540}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0417}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0417}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0535}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0659}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0659}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0659}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0659}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0659}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{p}
@@ -77,23 +77,23 @@ F & F & T & F & F & \textbf{T} & T & F \\
 
 \textbf{p → q is false ONLY when p is true and q is false.}
 
-\begin{asciiblock}{78pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{75pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 Implication family (p → q)
  Converse        q → p
  Inverse        ¬p → ¬q
  Contrapositive ¬q → ¬p   ≡ p → q   (logically equivalent)
  Converse ≡ Inverse
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{154pt}
+\needspace{147pt}
 
 \hypertarget{p2-01--12-important-equivalences}{%
-\subsection{1.2 Important Equivalences}\label{p2-01--12-important-equivalences}}
+\subsection{Important Equivalences}\label{p2-01--12-important-equivalences}}
 
-\begin{asciiblock}{99pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{97pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 p → q        ≡ ¬p ∨ q
 p ↔ q        ≡ (p → q) ∧ (q → p)
 De Morgan    ¬(p ∧ q) ≡ ¬p ∨ ¬q ;  ¬(p ∨ q) ≡ ¬p ∧ ¬q
@@ -102,7 +102,7 @@ Exportation  (p ∧ q) → r ≡ p → (q → r)
 (p → q) ∧ (p → r) ≡ p → (q ∧ r)
 (p → r) ∧ (q → r) ≡ (p ∨ q) → r
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begin{itemize}
 \tightlist
@@ -112,10 +112,10 @@ Exportation  (p ∧ q) → r ≡ p → (q → r)
   Functionally complete sets: \{∧, ¬\}, \{∨, ¬\}, \{NAND\}, \{NOR\}, \{→, ¬\}, \{→, F\}.
 \end{itemize}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-01--13-normal-forms}{%
-\subsection{1.3 Normal Forms}\label{p2-01--13-normal-forms}}
+\subsection{Normal Forms}\label{p2-01--13-normal-forms}}
 
 \begin{itemize}
 \tightlist
@@ -125,16 +125,16 @@ Exportation  (p ∧ q) → r ≡ p → (q → r)
   Number of Boolean functions on n variables = \textbf{2\^{}(2ⁿ)}.
 \end{itemize}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-01--14-rules-of-inference}{%
-\subsection{1.4 Rules of Inference}\label{p2-01--14-rules-of-inference}}
+\subsection{Rules of Inference}\label{p2-01--14-rules-of-inference}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1991}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1410}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2344}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1661}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Rule}
@@ -160,25 +160,25 @@ Existential generalisation & P(c) ⊢ ∃x P(x) \\
 
 Fallacies: affirming the consequent (q, p→q ⊢ p ✗), denying the antecedent (¬p, p→q ⊢ ¬q ✗).
 
-\needspace{133pt}
+\needspace{125pt}
 
 \hypertarget{p2-01--15-predicates--quantifiers}{%
-\subsection{1.5 Predicates \& Quantifiers}\label{p2-01--15-predicates--quantifiers}}
+\subsection{Predicates \& Quantifiers}\label{p2-01--15-predicates--quantifiers}}
 
-\begin{asciiblock}{78pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{75pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 ¬∀x P(x) ≡ ∃x ¬P(x)        ¬∃x P(x) ≡ ∀x ¬P(x)
 ∀x (P ∧ Q) ≡ ∀x P ∧ ∀x Q    ∃x (P ∨ Q) ≡ ∃x P ∨ ∃x Q
 ∃x∀y P(x,y) → ∀y∃x P(x,y)   (valid; converse NOT valid)
 "All students are smart"     ∀x (S(x) → M(x))    ← use →  with ∀
 "Some students are smart"    ∃x (S(x) ∧ M(x))    ← use ∧  with ∃
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-01--2-sets--relations}{%
-\section{2. Sets \& Relations}\label{p2-01--2-sets--relations}}
+\section{Sets \& Relations}\label{p2-01--2-sets--relations}}
 
 \begin{itemize}
 \tightlist
@@ -191,8 +191,8 @@ Fallacies: affirming the consequent (q, p→q ⊢ p ✗), denying the antecedent
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1759}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3495}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2072}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4117}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Relation type}
@@ -218,20 +218,20 @@ Bijections (m = n) & n! \\
 
 \endgroup
 
-\needspace{229pt}
+\needspace{213pt}
 
 \hypertarget{p2-01--equivalence-relation--reflexive--symmetric--transitive--partitions-the-set-into-equivalence-classes}{%
 \subsection{\texorpdfstring{Equivalence relation = Reflexive + Symmetric + Transitive → partitions the set into \textbf{equivalence classes}.}{Equivalence relation = Reflexive + Symmetric + Transitive → partitions the set into equivalence classes.}}\label{p2-01--equivalence-relation--reflexive--symmetric--transitive--partitions-the-set-into-equivalence-classes}}
 
-\needspace{189pt}
+\needspace{177pt}
 
 \hypertarget{p2-01--partial-order-poset--reflexive--antisymmetric--transitive}{%
 \subsection{Partial order (POSET) = Reflexive + Antisymmetric + Transitive.}\label{p2-01--partial-order-poset--reflexive--antisymmetric--transitive}}
 
 \textbf{Hasse diagram} of divisibility on \{1, 2, 3, 6, 12\}:
 
-\begin{asciiblock}{99pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{97pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
         12
         │
         6
@@ -240,7 +240,7 @@ Bijections (m = n) & n! \\
        ╲ ╱
         1
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begin{itemize}
 \tightlist
@@ -254,8 +254,8 @@ Bijections (m = n) & n! \\
   Total order (chain): every pair comparable. Well-ordered: every nonempty subset has least element.
 \end{itemize}
 
-\begin{asciiblock}{121pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{119pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
  M3 (diamond)          N5 (pentagon)
       1                     1
     ╱ │ ╲                 ╱   ╲
@@ -266,15 +266,15 @@ Bijections (m = n) & n! \\
                             0
  → Neither is distributive
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{144pt}
+\needspace{132pt}
 
 \hypertarget{p2-01--3-counting--probability}{%
-\section{3. Counting \& Probability}\label{p2-01--3-counting--probability}}
+\section{Counting \& Probability}\label{p2-01--3-counting--probability}}
 
-\begin{asciiblock}{89pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{82pt}
+\begin{Verbatim}[fontsize=\fontsize{8.5}{10.3}\selectfont]
 Permutations  nPr = n!/(n−r)!       Combinations  nCr = n!/(r!(n−r)!)
 Circular arrangements  (n−1)!       Necklace/garland (n−1)!/2
 Permutations with repetition of types: n!/(p! q! r!)
@@ -282,7 +282,7 @@ r objects from n types with repetition: C(n+r−1, r)    (stars & bars)
 Derangements  Dₙ = n! [1 − 1/1! + 1/2! − … + (−1)ⁿ/n!]   D1=0 D2=1 D3=2 D4=9 D5=44
 Catalan Cₙ = C(2n,n)/(n+1)  → 1, 1, 2, 5, 14, 42 (BSTs with n keys, valid parentheses)
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begin{itemize}
 \tightlist
@@ -295,7 +295,7 @@ Catalan Cₙ = C(2n,n)/(n+1)  → 1, 1, 2, 5, 14, 42 (BSTs with n keys, valid pa
   \textbf{Mathematical induction}: base case + (P(k) ⇒ P(k+1)). Strong induction assumes all P(1)\ldots P(k).
 \end{itemize}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-01--recurrence-relations}{%
 \subsection{Recurrence relations}\label{p2-01--recurrence-relations}}
@@ -309,13 +309,13 @@ Catalan Cₙ = C(2n,n)/(n+1)  → 1, 1, 2, 5, 14, 42 (BSTs with n keys, valid pa
   Fibonacci: Fₙ = Fₙ₋₁ + Fₙ₋₂. Tower of Hanoi: Tₙ = 2Tₙ₋₁ + 1 = 2ⁿ − 1.
 \end{itemize}
 
-\needspace{154pt}
+\needspace{147pt}
 
 \hypertarget{p2-01--probability}{%
 \subsection{Probability}\label{p2-01--probability}}
 
-\begin{asciiblock}{99pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{97pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 P(A ∪ B) = P(A) + P(B) − P(A ∩ B)
 P(A | B) = P(A ∩ B) / P(B)
 Independent: P(A ∩ B) = P(A)·P(B)
@@ -324,14 +324,14 @@ Binomial: P(X=k) = C(n,k) pᵏ (1−p)ⁿ⁻ᵏ ; mean np, variance npq
 Poisson: P(X=k) = e^(−λ) λᵏ / k! ; mean = variance = λ
 Expectation E[X] = Σ x·P(x) ; E[aX+b] = aE[X]+b ; Var = E[X²] − (E[X])²
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needdiagram{figures/p2-01-00}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-01--4-algebraic-structures}{%
-\section{4. Algebraic Structures}\label{p2-01--4-algebraic-structures}}
+\section{Algebraic Structures}\label{p2-01--4-algebraic-structures}}
 
-\diagramhere{figures/p2-01-00}
+\diagram{figures/p2-01-00}
 
 \diagram{figures/p2-01-01}
 
@@ -359,18 +359,18 @@ Key facts:
   Order of an element a = smallest k with aᵏ = e.
 \end{itemize}
 
-\needspace{194pt}
+\needspace{183pt}
 
 \hypertarget{p2-01--5-graph-theory}{%
-\section{5. Graph Theory}\label{p2-01--5-graph-theory}}
+\section{Graph Theory}\label{p2-01--5-graph-theory}}
 
-\needspace{154pt}
+\needspace{147pt}
 
 \hypertarget{p2-01--51-basic-results}{%
-\subsection{5.1 Basic results}\label{p2-01--51-basic-results}}
+\subsection{Basic results}\label{p2-01--51-basic-results}}
 
-\begin{asciiblock}{99pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{97pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 Handshaking lemma: Σ deg(v) = 2|E|  ⇒ number of odd-degree vertices is EVEN
 Max edges in simple graph with n vertices = n(n−1)/2
 Complete graph Kₙ: n(n−1)/2 edges, each vertex degree n−1
@@ -379,14 +379,14 @@ Tree with n vertices: n − 1 edges ; forest with k trees: n − k edges
 Number of labelled trees on n vertices (Cayley): nⁿ⁻²  = spanning trees of Kₙ
 Number of simple labelled graphs on n vertices: 2^(n(n−1)/2)
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needdiagram{figures/p2-01-02}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-01--52-euler-vs-hamilton}{%
-\subsection{5.2 Euler vs Hamilton}\label{p2-01--52-euler-vs-hamilton}}
+\subsection{Euler vs Hamilton}\label{p2-01--52-euler-vs-hamilton}}
 
-\diagramhere{figures/p2-01-02}
+\diagram{figures/p2-01-02}
 
 \begin{itemize}
 \tightlist
@@ -394,23 +394,23 @@ Number of simple labelled graphs on n vertices: 2^(n(n−1)/2)
   Kₙ is Eulerian iff n is odd. Kₙ has (n−1)!/2 Hamiltonian cycles.
 \end{itemize}
 
-\needspace{133pt}
+\needspace{119pt}
 
 \hypertarget{p2-01--53-planar-graphs}{%
-\subsection{5.3 Planar Graphs}\label{p2-01--53-planar-graphs}}
+\subsection{Planar Graphs}\label{p2-01--53-planar-graphs}}
 
-\begin{asciiblock}{78pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{69pt}
+\begin{Verbatim}[fontsize=\fontsize{8.1}{9.8}\selectfont]
 Euler's formula (connected planar):  V − E + F = 2       (k components: V − E + F = k + 1)
 Simple planar, V ≥ 3:          E ≤ 3V − 6
 Planar with no triangles:      E ≤ 2V − 4
 Kuratowski: G is planar ⇔ no subdivision of K₅ or K₃,₃
 K₅ and K₃,₃ are the smallest non-planar graphs; K₄ is planar.
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\begin{asciiblock}{89pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{86pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
  K₃,₃ (non-planar)          K₄ (planar drawing)
  a   b   c                     1
  │╲ ╱│╲ ╱│                    ╱│╲
@@ -418,12 +418,12 @@ K₅ and K₃,₃ are the smallest non-planar graphs; K₄ is planar.
  │╱ ╲│╱ ╲│                  ╱ ╱ ╲ ╲
  x   y   z                 2───────3
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-01--54-colouring}{%
-\subsection{5.4 Colouring}\label{p2-01--54-colouring}}
+\subsection{Colouring}\label{p2-01--54-colouring}}
 
 \begin{itemize}
 \tightlist
@@ -439,10 +439,10 @@ K₅ and K₃,₃ are the smallest non-planar graphs; K₄ is planar.
   Chromatic polynomial of tree with n vertices: k(k−1)ⁿ⁻¹; of Kₙ: k(k−1)\ldots(k−n+1).
 \end{itemize}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-01--55-other-definitions}{%
-\subsection{5.5 Other definitions}\label{p2-01--55-other-definitions}}
+\subsection{Other definitions}\label{p2-01--55-other-definitions}}
 
 \begin{itemize}
 \tightlist
@@ -458,39 +458,39 @@ K₅ and K₃,₃ are the smallest non-planar graphs; K₄ is planar.
   \textbf{Prefix codes}: Huffman coding gives optimal prefix-free code using a binary tree.
 \end{itemize}
 
-\needspace{133pt}
+\needspace{125pt}
 
 \hypertarget{p2-01--6-boolean-algebra}{%
-\section{6. Boolean Algebra}\label{p2-01--6-boolean-algebra}}
+\section{Boolean Algebra}\label{p2-01--6-boolean-algebra}}
 
-\begin{asciiblock}{78pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{75pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 Idempotent  x + x = x,  x·x = x
 Absorption  x + xy = x,  x(x + y) = x
 x + x'y = x + y          (x + y)(x + z) = x + yz
 Consensus   xy + x'z + yz = xy + x'z
 Duality: swap + ↔ · and 0 ↔ 1
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 K-maps and minimisation are covered in \protect\hyperlink{p2-02}{Unit 2}.
 
-\needdiagram{figures/p2-01-03}{95pt}
+\needspace{131pt}
 
 \hypertarget{p2-01--7-optimization}{%
-\section{7. Optimization}\label{p2-01--7-optimization}}
+\section{Optimization}\label{p2-01--7-optimization}}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-01--71-linear-programming-lpp}{%
-\subsection{7.1 Linear Programming (LPP)}\label{p2-01--71-linear-programming-lpp}}
+\subsection{Linear Programming (LPP)}\label{p2-01--71-linear-programming-lpp}}
 
-\diagramhere{figures/p2-01-03}
+\diagram{figures/p2-01-03}
 
 \textbf{Graphical example}: Max Z = 3x + 5y, s.t. x + 2y ≤ 8, 3x + 2y ≤ 12, x, y ≥ 0.
 
-\begin{asciiblock}{121pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{119pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
  y
  6│\
  4│ \.        3x+2y=12
@@ -501,7 +501,7 @@ K-maps and minimisation are covered in \protect\hyperlink{p2-02}{Unit 2}.
  0└──────────•(4,0)──────── x
  Corner points: (0,0)→0, (4,0)→12, (2,3)→21, (0,4)→20  ⇒ Max Z = 21 at (2,3)
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begin{itemize}
 \tightlist
@@ -519,10 +519,10 @@ K-maps and minimisation are covered in \protect\hyperlink{p2-02}{Unit 2}.
   \textbf{Dual simplex}: starts optimal but infeasible, keeps optimality till feasibility.
 \end{itemize}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-01--72-transportation-problem}{%
-\subsection{7.2 Transportation Problem}\label{p2-01--72-transportation-problem}}
+\subsection{Transportation Problem}\label{p2-01--72-transportation-problem}}
 
 \begin{itemize}
 \tightlist
@@ -536,10 +536,10 @@ K-maps and minimisation are covered in \protect\hyperlink{p2-02}{Unit 2}.
   Optimality: \textbf{MODI (u-v) method} or Stepping stone.
 \end{itemize}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-01--73-assignment-problem}{%
-\subsection{7.3 Assignment Problem}\label{p2-01--73-assignment-problem}}
+\subsection{Assignment Problem}\label{p2-01--73-assignment-problem}}
 
 \begin{itemize}
 \tightlist
@@ -549,10 +549,10 @@ K-maps and minimisation are covered in \protect\hyperlink{p2-02}{Unit 2}.
   Special case of transportation (all supplies/demands = 1); highly degenerate.
 \end{itemize}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-01--74-integer-programming}{%
-\subsection{7.4 Integer Programming}\label{p2-01--74-integer-programming}}
+\subsection{Integer Programming}\label{p2-01--74-integer-programming}}
 
 \begin{itemize}
 \tightlist
@@ -560,20 +560,20 @@ K-maps and minimisation are covered in \protect\hyperlink{p2-02}{Unit 2}.
   Variables restricted to integers: \textbf{Branch and Bound}, \textbf{Gomory\textquotesingle s cutting plane}.
 \end{itemize}
 
-\needdiagram{figures/p2-01-04}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-01--75-pert-cpm}{%
-\subsection{7.5 PERT-CPM}\label{p2-01--75-pert-cpm}}
+\subsection{PERT-CPM}\label{p2-01--75-pert-cpm}}
 
-\diagramhere{figures/p2-01-04}
+\diagram{figures/p2-01-04}
 
 Paths: A-C-E = 3+5+3 = \textbf{11} (critical), B-D-E = 4+2+3 = 9. Project duration = 11.
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2283}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2382}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2689}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2806}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Concept}
@@ -605,15 +605,15 @@ Probability & Z = (T − Tₑ)/σ\_path \\
   \textbf{Resource levelling}: smooth resource usage without changing project duration (use floats).
 \end{itemize}
 
-\needspace{245pt}
+\needspace{226pt}
 
 \hypertarget{p2-01--8-deeper-dive--worked-simplex-transportation-assignment-groups--recurrences}{%
-\section{8. Deeper Dive --- Worked Simplex, Transportation, Assignment, Groups \& Recurrences}\label{p2-01--8-deeper-dive--worked-simplex-transportation-assignment-groups--recurrences}}
+\section{Deeper Dive --- Worked Simplex, Transportation, Assignment, Groups \& Recurrences}\label{p2-01--8-deeper-dive--worked-simplex-transportation-assignment-groups--recurrences}}
 
-\needspace{205pt}
+\needspace{190pt}
 
 \hypertarget{p2-01--81-simplex-method--full-worked-example}{%
-\subsection{8.1 Simplex Method --- Full Worked Example}\label{p2-01--81-simplex-method--full-worked-example}}
+\subsection{Simplex Method --- Full Worked Example}\label{p2-01--81-simplex-method--full-worked-example}}
 
 Max Z = 3x₁ + 5x₂ subject to x₁ ≤ 4, 2x₂ ≤ 12, 3x₁ + 2x₂ ≤ 18, x₁, x₂ ≥ 0.
 Add slacks s₁, s₂, s₃.
@@ -623,14 +623,14 @@ Add slacks s₁, s₂, s₃.
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0730}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0438}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0642}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0438}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0438}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0438}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0686}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1142}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0893}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0535}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0785}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0535}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0535}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0535}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0838}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1396}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Basic}
@@ -668,14 +668,14 @@ x₂ enters (most negative), s₂ leaves (minimum ratio). Pivot = 2.
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0730}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0642}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0438}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0438}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0489}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0438}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0686}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1028}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0893}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0785}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0535}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0535}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0597}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0535}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0838}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1257}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Basic}
@@ -713,13 +713,13 @@ x₁ enters, s₃ leaves.
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0706}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0423}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0423}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0423}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0615}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0615}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0663}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0857}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0514}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0514}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0514}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0747}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0747}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0805}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Basic}
@@ -750,19 +750,19 @@ Z & 0 & 0 & 0 & 3/2 & 1 & \textbf{36} \\
 
 \textbf{Optimal: x₁ = 2, x₂ = 6, Z = 36.} Shadow prices (dual solution) are read from the Z row under the slacks: y₁ = 0, y₂ = 3/2, y₃ = 1 --- and 4(0) + 12(3/2) + 18(1) = 36 confirms strong duality.
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-01--82-transportation-problem--nwc--modi}{%
-\subsection{8.2 Transportation Problem --- NWC + MODI}\label{p2-01--82-transportation-problem--nwc--modi}}
+\subsection{Transportation Problem --- NWC + MODI}\label{p2-01--82-transportation-problem--nwc--modi}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0768}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0426}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0426}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0426}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1227}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0920}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0510}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0510}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0510}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1469}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -796,18 +796,18 @@ Closed loop for S2D1: S2D1(+) → S1D1(−) → S1D2(+) → S2D2(−); θ = min(
 New allocation: S1D2 = 20, S2D1 = 10, S2D2 = 5, S2D3 = 15, S3D3 = 25 → cost = 120 + 50 + 40 + 105 + 125 = \textbf{440}.
 Recomputing u, v gives all reduced costs ≥ 0 → \textbf{optimal cost 440}.
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-01--83-assignment-problem--hungarian-method}{%
-\subsection{8.3 Assignment Problem --- Hungarian Method}\label{p2-01--83-assignment-problem--hungarian-method}}
+\subsection{Assignment Problem --- Hungarian Method}\label{p2-01--83-assignment-problem--hungarian-method}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0300}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0413}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0413}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0413}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0357}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0492}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0492}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0492}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -828,8 +828,8 @@ C & 5 & 8 & 1 \\
 
 \endgroup
 
-\begin{asciiblock}{89pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{83pt}
+\begin{Verbatim}[fontsize=\fontsize{8.6}{10.4}\selectfont]
 Row reduction (subtract row minima 2, 3, 1)     Column reduction (col minima 3, 0, 0)
    A  7  0  5                                       A  4  0  5
    B  3  1  0                                       B  0  1  0
@@ -837,15 +837,15 @@ Row reduction (subtract row minima 2, 3, 1)     Column reduction (col minima 3, 
 Zeros can be covered by 3 lines = n ⇒ optimal: A→J2, B→J1, C→J3
 Minimum cost = 2 + 6 + 1 = 9
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{165pt}
+\needspace{158pt}
 
 \hypertarget{p2-01--84-groups--cayley-tables}{%
-\subsection{8.4 Groups --- Cayley Tables}\label{p2-01--84-groups--cayley-tables}}
+\subsection{Groups --- Cayley Tables}\label{p2-01--84-groups--cayley-tables}}
 
-\begin{asciiblock}{110pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{108pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 (Z₄, +₄)                        Klein four-group V₄ = {e, a, b, c}
  +  │ 0 1 2 3                     ·  │ e a b c
  ───┼────────                     ───┼────────
@@ -855,7 +855,7 @@ Minimum cost = 2 + 6 + 1 = 9
  3  │ 3 0 1 2                     c  │ c b a e
  cyclic (generators 1, 3)        not cyclic; every element has order 2
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begin{itemize}
 \tightlist
@@ -867,33 +867,33 @@ Minimum cost = 2 + 6 + 1 = 9
   Every group of order 4 is isomorphic to Z₄ or V₄; every group of order 6 is Z₆ or S₃.
 \end{itemize}
 
-\needspace{157pt}
+\needspace{144pt}
 
 \hypertarget{p2-01--85-solving-a-recurrence}{%
-\subsection{8.5 Solving a Recurrence}\label{p2-01--85-solving-a-recurrence}}
+\subsection{Solving a Recurrence}\label{p2-01--85-solving-a-recurrence}}
 
 aₙ = 5aₙ₋₁ − 6aₙ₋₂, a₀ = 1, a₁ = 0.
 
-\begin{asciiblock}{67pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{64pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 Characteristic equation: r² − 5r + 6 = 0 → r = 2, 3
 General: aₙ = α·2ⁿ + β·3ⁿ
 a₀: α + β = 1 ;  a₁: 2α + 3β = 0  ⇒ β = −2, α = 3
 aₙ = 3·2ⁿ − 2·3ⁿ          check: a₂ = 12 − 18 = −6 = 5(0) − 6(1) ✔
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 Non-homogeneous: aₙ = 2aₙ₋₁ + 1 (Hanoi) → particular solution constant c = 2c + 1 ⇒ c = −1; aₙ = A·2ⁿ − 1; a₁ = 1 ⇒ aₙ = 2ⁿ − 1.
 
 \textbf{Generating functions}: the sequence 1, 1, 1, \ldots{} ↔ 1/(1 − x); aₙ = C(n + k − 1, k − 1) ↔ 1/(1 − x)ᵏ. Used to count integer solutions and to solve recurrences.
 
-\needspace{144pt}
+\needspace{136pt}
 
 \hypertarget{p2-01--86-graph-isomorphism--colouring-checks}{%
-\subsection{8.6 Graph Isomorphism \& Colouring Checks}\label{p2-01--86-graph-isomorphism--colouring-checks}}
+\subsection{Graph Isomorphism \& Colouring Checks}\label{p2-01--86-graph-isomorphism--colouring-checks}}
 
-\begin{asciiblock}{89pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{86pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
  G1: square a-b-c-d with diagonal a–c      G2: vertices p, q, r, s with edges
      a ───── b                                 p–q, q–r, r–s, s–p, q–s
      │ ╲     │
@@ -901,7 +901,7 @@ Non-homogeneous: aₙ = 2aₙ₋₁ + 1 (Hanoi) → particular solution constant
      │     ╲ │
      d ───── c                              Degrees: a 3, b 2, c 3, d 2
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begin{itemize}
 \tightlist
@@ -915,7 +915,7 @@ Non-homogeneous: aₙ = 2aₙ₋₁ + 1 (Hanoi) → particular solution constant
 
 Quick invariant checklist for isomorphism: number of vertices and edges, degree sequence, number of cycles of each length, connectivity, bipartiteness. Matching invariants are necessary, not sufficient --- finish by exhibiting a mapping.
 
-\needspace{135pt}
+\needspace{125pt}
 
 \hypertarget{p2-01--previous-year-questions-pyq-pattern}{%
 \section{Previous Year Questions (PYQ pattern)}\label{p2-01--previous-year-questions-pyq-pattern}}

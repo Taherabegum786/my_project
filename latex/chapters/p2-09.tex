@@ -1,6 +1,7 @@
-\unitchapter{Paper 2 · Unit 9}{Data Communication \& Computer Networks}{p2-09}
+\unitchapter{2}{9}{Data Communication \& Computer Networks}{p2-09}
 
-\textbf{Expected questions: 10--12 · Target: 10+ · Type: subnetting, sliding window, Shannon/Nyquist numericals + Forouzan concepts}
+\unitmeta{Expected questions: 10--12 · Target: 10+ · Type: subnetting, sliding
+window, Shannon/Nyquist numericals + Forouzan concepts}
 
 \begin{sylbox}
 
@@ -38,18 +39,18 @@
 
 \end{sylbox}
 
-\needspace{274pt}
+\needspace{246pt}
 
 \hypertarget{p2-09--1-network-models}{%
-\section{1. Network Models}\label{p2-09--1-network-models}}
+\section{Network Models}\label{p2-09--1-network-models}}
 
-\needspace{234pt}
+\needspace{210pt}
 
 \hypertarget{p2-09--11-osi-vs-tcpip}{%
-\subsection{1.1 OSI vs TCP/IP}\label{p2-09--11-osi-vs-tcpip}}
+\subsection{OSI vs TCP/IP}\label{p2-09--11-osi-vs-tcpip}}
 
-\begin{asciiblock}{179pt}
-\begin{Verbatim}[fontsize=\fontsize{7.5}{9.1}\selectfont]
+\begin{listingblock}{160pt}
+\begin{Verbatim}[fontsize=\fontsize{6.8}{8.2}\selectfont]
    OSI (7 layers)              TCP/IP (4/5 layers)        PDU          Devices / protocols
  ┌──────────────────┐        ┌───────────────────┐
  │ 7 Application    │        │                   │
@@ -68,14 +69,14 @@
  └──────────────────┘        └───────────────────┘
  Mnemonic (top→bottom): "All People Seem To Need Data Processing"
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1073}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.6612}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1927}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1270}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.6448}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2282}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Layer}
@@ -99,17 +100,17 @@ Application & User services & Specific (URL, email) \\
 
 \endgroup
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-09--12-topologies}{%
-\subsection{1.2 Topologies}\label{p2-09--12-topologies}}
+\subsection{Topologies}\label{p2-09--12-topologies}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1170}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3374}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2913}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1385}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3994}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3448}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Topology}
@@ -133,13 +134,13 @@ Tree / Hybrid & --- & \\
 
 Data flow: \textbf{simplex} (keyboard), \textbf{half-duplex} (walkie-talkie), \textbf{full-duplex} (telephone).
 
-\needspace{151pt}
+\needspace{136pt}
 
 \hypertarget{p2-09--2-signals--data-rates}{%
-\section{2. Signals \& Data Rates}\label{p2-09--2-signals--data-rates}}
+\section{Signals \& Data Rates}\label{p2-09--2-signals--data-rates}}
 
-\begin{asciiblock}{96pt}
-\begin{Verbatim}[fontsize=\fontsize{8.4}{10.2}\selectfont]
+\begin{listingblock}{86pt}
+\begin{Verbatim}[fontsize=\fontsize{7.7}{9.3}\selectfont]
 Nyquist (noiseless):    Max bit rate = 2 · B · log₂ L          (L signal levels)
 Shannon (noisy):        Capacity C = B · log₂(1 + SNR)
 SNR_dB = 10 log₁₀(SNR)  → 30 dB = 1000, 20 dB = 100, 10 dB = 10
@@ -148,25 +149,25 @@ Propagation delay = distance / propagation speed ;  Transmission delay = frame s
 Throughput, latency = propagation + transmission + queuing + processing
 Baud rate (signal rate) S = N / r  where r = bits per signal element
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \textbf{Worked}: telephone line B = 3000 Hz, SNR = 3162 (≈ 35 dB): C = 3000 × log₂(3163) ≈ 3000 × 11.62 = \textbf{34.86 kbps}.
 Nyquist: B = 3000 Hz, 4 levels → 2 × 3000 × 2 = \textbf{12 kbps}.
 
 Impairments: \textbf{attenuation} (loss of energy, dB = 10 log(P₂/P₁)), \textbf{distortion} (different delays of components), \textbf{noise} (thermal, induced, crosstalk, impulse).
 
-\needspace{239pt}
+\needspace{216pt}
 
 \hypertarget{p2-09--3-digital--analog-transmission}{%
-\section{3. Digital \& Analog Transmission}\label{p2-09--3-digital--analog-transmission}}
+\section{Digital \& Analog Transmission}\label{p2-09--3-digital--analog-transmission}}
 
-\needspace{199pt}
+\needspace{180pt}
 
 \hypertarget{p2-09--31-line-coding}{%
-\subsection{3.1 Line Coding}\label{p2-09--31-line-coding}}
+\subsection{Line Coding}\label{p2-09--31-line-coding}}
 
-\begin{asciiblock}{144pt}
-\begin{Verbatim}[fontsize=\fontsize{8.2}{10.0}\selectfont]
+\begin{listingblock}{130pt}
+\begin{Verbatim}[fontsize=\fontsize{7.5}{9.1}\selectfont]
  Bits:        1      0      1      1      0
  NRZ-L      ──────┐      ┌─────────────┐      
  (1 = high)       └──────┘             └──────
@@ -180,14 +181,14 @@ Impairments: \textbf{attenuation} (loss of energy, dB = 10 log(P₂/P₁)), \tex
  Differential Manchester: transition at START of bit for 0, none for 1; mid-bit transition always
  AMI (bipolar): 0 → zero voltage; successive 1s alternate +V and −V (no DC component)
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2816}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1248}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5782}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1477}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5190}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Scheme}
@@ -224,12 +225,12 @@ MLT-3 & Multitransition & 100Base-TX \\
   Transmission modes: \textbf{parallel}; \textbf{serial} --- asynchronous (start/stop bits, gaps), synchronous, isochronous.
 \end{itemize}
 
-\needdiagram{figures/p2-09-00}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--32-digital-to-analog}{%
-\subsection{3.2 Digital-to-Analog}\label{p2-09--32-digital-to-analog}}
+\subsection{Digital-to-Analog}\label{p2-09--32-digital-to-analog}}
 
-\diagramhere{figures/p2-09-00}
+\diagram{figures/p2-09-00}
 
 \begin{itemize}
 \tightlist
@@ -239,17 +240,17 @@ MLT-3 & Multitransition & 100Base-TX \\
   Analog-to-analog: AM, FM, PM. FM bandwidth (Carson) = 2(1 + β)B.
 \end{itemize}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-09--4-multiplexing--media}{%
-\section{4. Multiplexing \& Media}\label{p2-09--4-multiplexing--media}}
+\section{Multiplexing \& Media}\label{p2-09--4-multiplexing--media}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1485}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1655}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4888}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1759}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1960}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5787}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Technique}
@@ -279,8 +280,8 @@ Spread spectrum & FHSS, DSSS & Wireless, security \\
 
 \textbf{Transmission media}:
 
-\begin{asciiblock}{80pt}
-\begin{Verbatim}[fontsize=\fontsize{7.7}{9.3}\selectfont]
+\begin{listingblock}{71pt}
+\begin{Verbatim}[fontsize=\fontsize{7.0}{8.5}\selectfont]
 Guided:   Twisted pair (UTP Cat5/6, RJ-45; twisting reduces crosstalk)
           Coaxial (BNC; cable TV)
           Optical fibre (total internal reflection; single-mode vs multimode; highest bandwidth, no EMI)
@@ -288,12 +289,12 @@ Unguided: Radio waves (3 kHz–1 GHz, omnidirectional)
           Microwaves (1–300 GHz, unidirectional, line-of-sight)
           Infrared (300 GHz–400 THz, short range, can't penetrate walls)
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-09--5-switching}{%
-\section{5. Switching}\label{p2-09--5-switching}}
+\section{Switching}\label{p2-09--5-switching}}
 
 \begingroup\small
 
@@ -326,23 +327,23 @@ Physical layer & Network layer & Data link (ATM) / network & Application \\
 
 \textbf{Delay for packet switching}: message split into k packets over h hops: total ≈ (k + h − 1) × transmission time per packet (+ propagation).
 
-\needspace{215pt}
+\needspace{197pt}
 
 \hypertarget{p2-09--6-data-link-layer}{%
-\section{6. Data Link Layer}\label{p2-09--6-data-link-layer}}
+\section{Data Link Layer}\label{p2-09--6-data-link-layer}}
 
-\needspace{175pt}
+\needspace{161pt}
 
 \hypertarget{p2-09--61-framing}{%
-\subsection{6.1 Framing}\label{p2-09--61-framing}}
+\subsection{Framing}\label{p2-09--61-framing}}
 
 Character count, \textbf{byte stuffing} (ESC/FLAG), \textbf{bit stuffing} (insert 0 after five consecutive 1s --- HDLC flag 01111110), physical layer coding violations.
 Bit-stuffing example: data \texttt{0111111111110} → \texttt{011111011111010}.
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--62-error-detection--correction}{%
-\subsection{6.2 Error Detection \& Correction}\label{p2-09--62-error-detection--correction}}
+\subsection{Error Detection \& Correction}\label{p2-09--62-error-detection--correction}}
 
 \begin{itemize}
 \tightlist
@@ -364,13 +365,13 @@ Bit-stuffing example: data \texttt{0111111111110} → \texttt{011111011111010}.
   Hamming code (7,4): r parity bits with 2ʳ ≥ m + r + 1.
 \end{itemize}
 
-\needspace{154pt}
+\needspace{147pt}
 
 \hypertarget{p2-09--63-flow--error-control-sliding-window}{%
-\subsection{6.3 Flow \& Error Control (Sliding Window)}\label{p2-09--63-flow--error-control-sliding-window}}
+\subsection{Flow \& Error Control (Sliding Window)}\label{p2-09--63-flow--error-control-sliding-window}}
 
-\begin{asciiblock}{99pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{97pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 a = propagation delay / transmission time = Tp / Tt
 Stop-and-Wait efficiency   η = 1 / (1 + 2a)
 Sliding window (size W)    η = W / (1 + 2a)   if W < 1 + 2a, else 1
@@ -379,18 +380,18 @@ Sequence number bits n:    Go-Back-N  W_s ≤ 2ⁿ − 1, W_r = 1
                            Selective Repeat  W_s = W_r ≤ 2ⁿ⁻¹
 Throughput = η × bandwidth
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \diagram{figures/p2-09-01}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1768}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1494}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1661}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2216}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2402}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1753}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1783}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1982}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2151}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2331}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Protocol}
@@ -417,10 +418,10 @@ Stop-and-Wait ARQ & 1 & 1 & The one frame & Individual; seq numbers 0/1 \\
 \textbf{Worked}: 1 Mbps link, frame 1000 bits, Tp = 20 ms. Tt = 1 ms, a = 20.
 Stop-and-Wait η = 1/41 ≈ \textbf{2.4\%}. Window for 100\% = 1 + 40 = 41 → sequence bits = ⌈log₂ 41⌉ = \textbf{6} (GBN; 2⁶ − 1 = 63 ≥ 41).
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--64-hdlc--ppp}{%
-\subsection{6.4 HDLC \& PPP}\label{p2-09--64-hdlc--ppp}}
+\subsection{HDLC \& PPP}\label{p2-09--64-hdlc--ppp}}
 
 \begin{itemize}
 \tightlist
@@ -430,21 +431,21 @@ Stop-and-Wait η = 1/41 ≈ \textbf{2.4\%}. Window for 100\% = 1 + 40 = 41 → s
   \textbf{PPP}: byte-oriented, point-to-point (dial-up, DSL); LCP (link control), NCP, authentication \textbf{PAP} (plain-text) and \textbf{CHAP} (challenge-handshake, more secure). No flow control/sequence numbers by default.
 \end{itemize}
 
-\needdiagram{figures/p2-09-02}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--7-medium-access-control}{%
-\section{7. Medium Access Control}\label{p2-09--7-medium-access-control}}
+\section{Medium Access Control}\label{p2-09--7-medium-access-control}}
 
-\diagramhere{figures/p2-09-02}
+\diagram{figures/p2-09-02}
 
-\begin{asciiblock}{67pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{62pt}
+\begin{Verbatim}[fontsize=\fontsize{8.6}{10.4}\selectfont]
 Pure ALOHA:     S = G·e^(−2G), max 1/(2e) = 0.184 at G = 0.5 ; vulnerable time = 2·Tt
 Slotted ALOHA:  S = G·e^(−G),  max 1/e  = 0.368 at G = 1   ; vulnerable time = Tt
 CSMA/CD:        minimum frame size: Tt ≥ 2·Tp  ⇒  L_min = 2 · Tp · B
                 Efficiency = 1 / (1 + 6.44a)
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \textbf{Worked}: 10 Mbps Ethernet, max RTT 51.2 µs → L\_min = 10⁷ × 51.2 × 10⁻⁶ = \textbf{512 bits = 64 bytes}.
 
@@ -458,25 +459,25 @@ CSMA/CD:        minimum frame size: Tt ≥ 2·Tp  ⇒  L_min = 2 · Tp · B
   Token ring (802.5), token bus (802.4).
 \end{itemize}
 
-\needspace{112pt}
+\needspace{101pt}
 
 \hypertarget{p2-09--ethernet-ieee-8023}{%
 \subsection{Ethernet (IEEE 802.3)}\label{p2-09--ethernet-ieee-8023}}
 
-\begin{asciiblock}{57pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{51pt}
+\begin{Verbatim}[fontsize=\fontsize{8.5}{10.3}\selectfont]
 Frame: | Preamble 7 | SFD 1 | Dest 6 | Src 6 | Type/Len 2 | Data 46–1500 | CRC 4 |
 Min frame = 64 B (without preamble) ; Max = 1518 B ; MAC address 48 bits (OUI 24 + 24)
 Broadcast MAC: FF:FF:FF:FF:FF:FF ; multicast: LSB of first byte = 1
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1641}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0854}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1403}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1943}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1011}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1661}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Standard}
@@ -500,25 +501,25 @@ Broadcast MAC: FF:FF:FF:FF:FF:FF ; multicast: LSB of first byte = 1
 
 Devices: \textbf{Repeater/hub} (L1, one collision \& broadcast domain), \textbf{Bridge/switch} (L2, separates collision domains, one broadcast domain; learning, STP), \textbf{Router} (L3, separates broadcast domains), \textbf{Gateway} (all layers / protocol conversion). VLANs split broadcast domains on switches.
 
-\needspace{175pt}
+\needspace{166pt}
 
 \hypertarget{p2-09--8-network-layer}{%
-\section{8. Network Layer}\label{p2-09--8-network-layer}}
+\section{Network Layer}\label{p2-09--8-network-layer}}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-09--81-ipv4-addressing}{%
-\subsection{8.1 IPv4 Addressing}\label{p2-09--81-ipv4-addressing}}
+\subsection{IPv4 Addressing}\label{p2-09--81-ipv4-addressing}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0684}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1059}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1154}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1357}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1505}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1047}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0824}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1276}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1391}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1635}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1814}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1262}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Class}
@@ -554,8 +555,8 @@ E & 1111 & 240--255 & --- & Reserved & --- \\
   \textbf{Subnetting worked}: 192.168.10.0/26
 \end{itemize}
 
-\begin{asciiblock}{89pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{86pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 Mask 255.255.255.192 → 4 subnets of 64 addresses (62 usable hosts each)
 Subnet 1: 192.168.10.0   – .63   (broadcast .63)
 Subnet 2: 192.168.10.64  – .127
@@ -563,7 +564,7 @@ Subnet 3: 192.168.10.128 – .191
 Subnet 4: 192.168.10.192 – .255
 Host 192.168.10.100/26 → network 192.168.10.64, broadcast 192.168.10.127
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begin{itemize}
 \tightlist
@@ -575,12 +576,12 @@ Host 192.168.10.100/26 → network 192.168.10.64, broadcast 192.168.10.127
   \textbf{NAT}: maps private addresses to public; PAT uses ports.
 \end{itemize}
 
-\needspace{133pt}
+\needspace{124pt}
 
 \hypertarget{p2-09--82-ipv4-header}{%
-\subsection{8.2 IPv4 Header}\label{p2-09--82-ipv4-header}}
+\subsection{IPv4 Header}\label{p2-09--82-ipv4-header}}
 
-\begin{asciiblock}{78pt}
+\begin{listingblock}{74pt}
 \begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
 | Ver 4 | HLEN 4 | DSCP/ToS 8 | Total length 16 |
 | Identification 16 | Flags 3 (–, DF, MF) | Fragment offset 13 (units of 8 bytes) |
@@ -588,15 +589,15 @@ Host 192.168.10.100/26 → network 192.168.10.64, broadcast 192.168.10.127
 | Source IP 32 | Destination IP 32 | Options (0–40 B) |
 Header 20–60 bytes (HLEN × 4) ; max datagram 65,535 bytes
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \textbf{Fragmentation worked}: 4000-byte datagram (20 B header) over MTU 1500 → data per fragment = 1480 (multiple of 8):
 fragments carry 1480, 1480, 1020 bytes; offsets \textbf{0, 185, 370}; MF = 1, 1, 0.
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--83-ipv6}{%
-\subsection{8.3 IPv6}\label{p2-09--83-ipv6}}
+\subsection{IPv6}\label{p2-09--83-ipv6}}
 
 \begin{itemize}
 \tightlist
@@ -606,18 +607,18 @@ fragments carry 1480, 1480, 1020 bytes; offsets \textbf{0, 185, 370}; MF = 1, 1,
   Transition: dual stack, tunnelling, header translation.
 \end{itemize}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-09--84-routing}{%
-\subsection{8.4 Routing}\label{p2-09--84-routing}}
+\subsection{Routing}\label{p2-09--84-routing}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0970}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.4670}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2815}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1545}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1155}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3655}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3351}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1839}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -652,16 +653,16 @@ Scope & Intra-AS (IGP) & Intra-AS (areas, backbone area 0) & Inter-AS (EGP) \\
   Multicast routing: DVMRP, MOSPF, PIM; \textbf{IGMP} for group membership.
 \end{itemize}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-09--85-support-protocols}{%
-\subsection{8.5 Support Protocols}\label{p2-09--85-support-protocols}}
+\subsection{Support Protocols}\label{p2-09--85-support-protocols}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2156}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.7844}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2539}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.7461}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Protocol}
@@ -680,18 +681,18 @@ IGMP & Multicast group membership \\
 
 \endgroup
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-09--9-transport-layer}{%
-\section{9. Transport Layer}\label{p2-09--9-transport-layer}}
+\section{Transport Layer}\label{p2-09--9-transport-layer}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1990}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1905}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3200}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2700}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2369}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2268}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2909}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2454}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Feature}
@@ -716,12 +717,12 @@ Use & HTTP, FTP, SMTP & DNS, SNMP, DHCP, VoIP, TFTP & Signalling; multihoming \\
 
 \endgroup
 
-\needdiagram{figures/p2-09-03}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--tcp-connection-management}{%
 \subsection{TCP Connection Management}\label{p2-09--tcp-connection-management}}
 
-\diagramhere{figures/p2-09-03}
+\diagram{figures/p2-09-03}
 
 \begin{itemize}
 \tightlist
@@ -739,13 +740,13 @@ Use & HTTP, FTP, SMTP & DNS, SNMP, DHCP, VoIP, TFTP & Signalling; multihoming \\
   RTT estimate: EstimatedRTT = (1 − α)·EstRTT + α·SampleRTT (α = 1/8).
 \end{itemize}
 
-\needspace{176pt}
+\needspace{161pt}
 
 \hypertarget{p2-09--tcp-congestion-control}{%
 \subsection{TCP Congestion Control}\label{p2-09--tcp-congestion-control}}
 
-\begin{asciiblock}{121pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{111pt}
+\begin{Verbatim}[fontsize=\fontsize{8.3}{10.1}\selectfont]
  cwnd
   │                 timeout → ssthresh = cwnd/2, cwnd = 1 (Tahoe/Reno)
   │            ╱╲   3 dup ACKs → ssthresh = cwnd/2, cwnd = ssthresh (Reno fast recovery)
@@ -756,7 +757,7 @@ Use & HTTP, FTP, SMTP & DNS, SNMP, DHCP, VoIP, TFTP & Signalling; multihoming \\
   │  ╱
   └─────────────────────────────────── RTT
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \textbf{Worked}: ssthresh = 16, starting cwnd = 1 MSS: 1, 2, 4, 8, 16 (slow start), then 17, 18, 19 \ldots{} (congestion avoidance). If timeout at cwnd = 20: ssthresh = 10, cwnd = 1.
 
@@ -768,23 +769,23 @@ Use & HTTP, FTP, SMTP & DNS, SNMP, DHCP, VoIP, TFTP & Signalling; multihoming \\
   \textbf{QoS}: leaky bucket (constant output rate), \textbf{token bucket} (allows bursts: max burst S = C / (M − ρ)), IntServ (RSVP), DiffServ.
 \end{itemize}
 
-\needspace{112pt}
+\needspace{101pt}
 
 \hypertarget{p2-09--well-known-ports}{%
 \subsection{Well-known Ports}\label{p2-09--well-known-ports}}
 
-\begin{asciiblock}{57pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{51pt}
+\begin{Verbatim}[fontsize=\fontsize{8.5}{10.3}\selectfont]
 FTP 20 (data) / 21 (control)   SSH 22   TELNET 23   SMTP 25   DNS 53   DHCP 67/68
 TFTP 69   HTTP 80   POP3 110   NTP 123   IMAP 143   SNMP 161/162   BGP 179   HTTPS 443
 Ports: well-known 0–1023, registered 1024–49151, dynamic 49152–65535
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--10-application-layer}{%
-\section{10. Application Layer}\label{p2-09--10-application-layer}}
+\section{Application Layer}\label{p2-09--10-application-layer}}
 
 \begin{itemize}
 \tightlist
@@ -806,33 +807,33 @@ Ports: well-known 0–1023, registered 1024–49151, dynamic 49152–65535
   \textbf{Bluetooth} (IEEE 802.15.1): piconet (1 primary + up to \textbf{7 active} secondaries), scatternet; 2.4 GHz FHSS.
 \end{itemize}
 
-\needdiagram{figures/p2-09-04}{170pt}
+\needspace{197pt}
 
 \hypertarget{p2-09--11-network-security}{%
-\section{11. Network Security}\label{p2-09--11-network-security}}
+\section{Network Security}\label{p2-09--11-network-security}}
 
-\needspace{175pt}
+\needspace{161pt}
 
 \hypertarget{p2-09--111-goals--attacks}{%
-\subsection{11.1 Goals \& Attacks}\label{p2-09--111-goals--attacks}}
+\subsection{Goals \& Attacks}\label{p2-09--111-goals--attacks}}
 
 CIA: \textbf{Confidentiality, Integrity, Availability} + authentication, non-repudiation.
 Passive attacks (eavesdropping, traffic analysis) vs active (masquerade, replay, modification, DoS).
 Malware: virus, worm, Trojan, ransomware, spyware, rootkit, botnet, logic bomb, keylogger.
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--112-cryptography}{%
-\subsection{11.2 Cryptography}\label{p2-09--112-cryptography}}
+\subsection{Cryptography}\label{p2-09--112-cryptography}}
 
-\diagramhere{figures/p2-09-04}
+\diagram{figures/p2-09-04}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2204}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2447}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4146}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2609}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2897}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4494}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Algorithm}
@@ -872,18 +873,18 @@ MD5 / SHA-1 / SHA-256 & Hash & 128 / 160 / 256-bit digests \\
   \textbf{Diffie--Hellman worked}: p = 23, g = 5, a = 6, b = 15 → A = 5⁶ mod 23 = 8, B = 5¹⁵ mod 23 = 19; shared key = 19⁶ mod 23 = 8¹⁵ mod 23 = \textbf{2}.
 \end{itemize}
 
-\needspace{112pt}
+\needspace{101pt}
 
 \hypertarget{p2-09--113-digital-signature--pki}{%
-\subsection{11.3 Digital Signature \& PKI}\label{p2-09--113-digital-signature--pki}}
+\subsection{Digital Signature \& PKI}\label{p2-09--113-digital-signature--pki}}
 
-\begin{asciiblock}{57pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{51pt}
+\begin{Verbatim}[fontsize=\fontsize{8.3}{10.1}\selectfont]
 Sign:   signature = Encrypt(hash(M), sender's PRIVATE key)
 Verify: Decrypt(signature, sender's PUBLIC key) == hash(M)
 Confidentiality: encrypt with receiver's PUBLIC key; decrypt with receiver's PRIVATE key
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 Provides authentication, integrity, \textbf{non-repudiation}. Certificates (X.509) issued by \textbf{CA}; MAC/HMAC for message integrity with shared key.
 
@@ -893,10 +894,10 @@ Provides authentication, integrity, \textbf{non-repudiation}. Certificates (X.50
   \textbf{Steganography}: hiding the existence of a message (e.g. in image LSBs), vs cryptography (hides meaning).
 \end{itemize}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--114-security-protocols--devices}{%
-\subsection{11.4 Security Protocols \& Devices}\label{p2-09--114-security-protocols--devices}}
+\subsection{Security Protocols \& Devices}\label{p2-09--114-security-protocols--devices}}
 
 \begin{itemize}
 \tightlist
@@ -912,15 +913,15 @@ Provides authentication, integrity, \textbf{non-repudiation}. Certificates (X.50
   Kerberos (tickets, KDC: AS + TGS).
 \end{itemize}
 
-\needspace{140pt}
+\needspace{131pt}
 
 \hypertarget{p2-09--12-mobile--wireless}{%
-\section{12. Mobile \& Wireless}\label{p2-09--12-mobile--wireless}}
+\section{Mobile \& Wireless}\label{p2-09--12-mobile--wireless}}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--121-cellular-concepts}{%
-\subsection{12.1 Cellular Concepts}\label{p2-09--121-cellular-concepts}}
+\subsection{Cellular Concepts}\label{p2-09--121-cellular-concepts}}
 
 \begin{itemize}
 \tightlist
@@ -930,12 +931,12 @@ Provides authentication, integrity, \textbf{non-repudiation}. Certificates (X.50
   Handoff (hard --- GSM, soft --- CDMA). Generations: 1G (analog AMPS), 2G (GSM/CDMA digital voice, SMS), 2.5G (\textbf{GPRS}), 2.75G (EDGE), 3G (UMTS/WCDMA, CDMA2000), 4G (LTE, all-IP, OFDMA), 5G (mmWave, massive MIMO, URLLC, eMBB, mMTC).
 \end{itemize}
 
-\needdiagram{figures/p2-09-05}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--122-gsm-architecture}{%
-\subsection{12.2 GSM Architecture}\label{p2-09--122-gsm-architecture}}
+\subsection{GSM Architecture}\label{p2-09--122-gsm-architecture}}
 
-\diagramhere{figures/p2-09-05}
+\diagram{figures/p2-09-05}
 
 \begin{itemize}
 \tightlist
@@ -947,10 +948,10 @@ Provides authentication, integrity, \textbf{non-repudiation}. Certificates (X.50
   \textbf{CDMA} (IS-95): spread spectrum, unique codes, soft handoff, RAKE receiver.
 \end{itemize}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--123-mobile-ip--others}{%
-\subsection{12.3 Mobile IP \& Others}\label{p2-09--123-mobile-ip--others}}
+\subsection{Mobile IP \& Others}\label{p2-09--123-mobile-ip--others}}
 
 \begin{itemize}
 \tightlist
@@ -968,13 +969,13 @@ Provides authentication, integrity, \textbf{non-repudiation}. Certificates (X.50
   \textbf{Wireless geolocation}: GPS (trilateration, ≥ 4 satellites for 3-D fix), cell-ID, AoA, ToA, TDoA, RSSI. India: \textbf{NavIC (IRNSS, 7 satellites)}.
 \end{itemize}
 
-\needspace{165pt}
+\needspace{158pt}
 
 \hypertarget{p2-09--13-cloud-computing--iot}{%
-\section{13. Cloud Computing \& IoT}\label{p2-09--13-cloud-computing--iot}}
+\section{Cloud Computing \& IoT}\label{p2-09--13-cloud-computing--iot}}
 
-\begin{asciiblock}{110pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{108pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
    ┌─────────────────────────────────────────────────────────────┐
    │ SaaS  (Gmail, Salesforce, Office 365)    — user uses app    │
    ├─────────────────────────────────────────────────────────────┤
@@ -984,7 +985,7 @@ Provides authentication, integrity, \textbf{non-repudiation}. Certificates (X.50
    └─────────────────────────────────────────────────────────────┘
    Customer manages more as you go down ; provider manages more as you go up
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begin{itemize}
 \tightlist
@@ -1002,27 +1003,27 @@ Provides authentication, integrity, \textbf{non-repudiation}. Certificates (X.50
   \textbf{IoT}: things with sensors + connectivity. Architecture (3-layer): \textbf{Perception (sensing) → Network → Application} (5-layer adds processing/middleware \& business). Protocols: \textbf{MQTT} (publish--subscribe over TCP), \textbf{CoAP} (REST over UDP), 6LoWPAN, Zigbee (802.15.4), BLE, LoRaWAN, NB-IoT, RFID/NFC. Edge/fog computing reduces latency.
 \end{itemize}
 
-\needspace{210pt}
+\needspace{196pt}
 
 \hypertarget{p2-09--14-deeper-dive--vlsm-routing-tables-tcp-numbers-hamming--ciphers}{%
-\section{14. Deeper Dive --- VLSM, Routing Tables, TCP Numbers, Hamming \& Ciphers}\label{p2-09--14-deeper-dive--vlsm-routing-tables-tcp-numbers-hamming--ciphers}}
+\section{Deeper Dive --- VLSM, Routing Tables, TCP Numbers, Hamming \& Ciphers}\label{p2-09--14-deeper-dive--vlsm-routing-tables-tcp-numbers-hamming--ciphers}}
 
-\needspace{170pt}
+\needspace{160pt}
 
 \hypertarget{p2-09--141-vlsm--worked}{%
-\subsection{14.1 VLSM --- Worked}\label{p2-09--141-vlsm--worked}}
+\subsection{VLSM --- Worked}\label{p2-09--141-vlsm--worked}}
 
 Split \textbf{192.168.1.0/24} for LANs needing 100, 50, 25 and 10 hosts (allocate largest first):
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0642}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1321}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1554}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1479}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1223}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1047}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0774}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1592}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1872}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1782}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1474}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1262}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{LAN}
@@ -1050,19 +1051,19 @@ Free & --- & /28 & 192.168.1.240 & --- & --- \\
 
 \endgroup
 
-\needdiagram{figures/p2-09-06}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--142-distance-vector-update--worked}{%
-\subsection{14.2 Distance-Vector Update --- Worked}\label{p2-09--142-distance-vector-update--worked}}
+\subsection{Distance-Vector Update --- Worked}\label{p2-09--142-distance-vector-update--worked}}
 
-\diagramhere{figures/p2-09-06}
+\diagram{figures/p2-09-06}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0929}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0907}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4082}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1099}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1074}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4833}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{A\textquotesingle s table}
@@ -1086,27 +1087,27 @@ Bellman--Ford equation: Dₓ(y) = minᵥ \{ c(x, v) + Dᵥ(y) \}.
 
 \textbf{Count-to-infinity}: suppose link B--C fails. B may then believe A\textquotesingle s stale advertisement "C at cost 3" (which was itself via B) and set C = 1 + 3 = 4 via A; A then updates to 1 + 4 = 5 via B, and the two keep raising each other\textquotesingle s cost one step at a time. Here the climb stops once it exceeds A\textquotesingle s direct link (cost 5), but with no alternative path it would continue until "infinity" (16 in RIP). \textbf{Split horizon} (never advertise a route back to the neighbour it was learned from) and \textbf{poison reverse} (advertise it as ∞) cure this two-node loop.
 
-\needdiagram{figures/p2-09-07}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--143-tcp-sequence-and-acknowledgement-numbers}{%
-\subsection{14.3 TCP Sequence and Acknowledgement Numbers}\label{p2-09--143-tcp-sequence-and-acknowledgement-numbers}}
+\subsection{TCP Sequence and Acknowledgement Numbers}\label{p2-09--143-tcp-sequence-and-acknowledgement-numbers}}
 
-\diagramhere{figures/p2-09-07}
+\diagram{figures/p2-09-07}
 
 Next expected byte = last seq + length; SYN and FIN consume one number each.
 
 \textbf{Go-Back-N count}: window 4, frames 0--6, frame 2 lost once (no other losses). Assume frames 0--4 have been sent when frame 2\textquotesingle s timer expires (ACKs for 0 and 1 slid the window to 2--5).
 Sent 0, 1, 2 (lost), 3, 4 → on timeout resend 2, 3, 4, then send 5, 6. Total transmissions = 5 + 3 + 2 = \textbf{10}. Selective Repeat resends only frame 2: 7 + 1 = \textbf{8}.
 
-\needspace{232pt}
+\needspace{220pt}
 
 \hypertarget{p2-09--144-hamming-7-4--encode-and-correct}{%
-\subsection{14.4 Hamming (7, 4) --- Encode and Correct}\label{p2-09--144-hamming-7-4--encode-and-correct}}
+\subsection{Hamming (7, 4) --- Encode and Correct}\label{p2-09--144-hamming-7-4--encode-and-correct}}
 
 Data 1011 → positions: 1 p1, 2 p2, 3 d1, 4 p4, 5 d2, 6 d3, 7 d4 (even parity).
 
-\begin{asciiblock}{142pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{140pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 d1 d2 d3 d4 = 1 0 1 1
 p1 covers 1,3,5,7 → d1 d2 d4 = 1 0 1 → p1 = 0
 p2 covers 2,3,6,7 → d1 d3 d4 = 1 1 1 → p2 = 1
@@ -1119,12 +1120,12 @@ c2 = b2 b3 b6 b7 = 1 1 0 1 → 1
 c4 = b4 b5 b6 b7 = 0 0 0 1 → 1
 Syndrome c4 c2 c1 = 110₂ = 6 → flip bit 6 → corrected
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--145-delay-calculations}{%
-\subsection{14.5 Delay Calculations}\label{p2-09--145-delay-calculations}}
+\subsection{Delay Calculations}\label{p2-09--145-delay-calculations}}
 
 \begin{itemize}
 \tightlist
@@ -1136,16 +1137,16 @@ Syndrome c4 c2 c1 = 110₂ = 6 → flip bit 6 → corrected
   Circuit switching instead: setup time + message/bandwidth + propagation.
 \end{itemize}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-09--146-ipv6-address-compression}{%
-\subsection{14.6 IPv6 Address Compression}\label{p2-09--146-ipv6-address-compression}}
+\subsection{IPv6 Address Compression}\label{p2-09--146-ipv6-address-compression}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3689}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2104}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4344}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2478}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Full}
@@ -1165,17 +1166,17 @@ fe80:0000:0000:0000:0202:b3ff:fe1e:8329 & fe80::202:b3ff:fe1e:8329 \\
 
 Rules: drop leading zeros in each group; replace \textbf{one} longest run of all-zero groups with \texttt{::}.
 
-\needdiagram{figures/p2-09-08}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--147-dns-resolution}{%
-\subsection{14.7 DNS Resolution}\label{p2-09--147-dns-resolution}}
+\subsection{DNS Resolution}\label{p2-09--147-dns-resolution}}
 
-\diagramhere{figures/p2-09-08}
+\diagram{figures/p2-09-08}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-09--148-classical-ciphers--worked}{%
-\subsection{14.8 Classical Ciphers --- Worked}\label{p2-09--148-classical-ciphers--worked}}
+\subsection{Classical Ciphers --- Worked}\label{p2-09--148-classical-ciphers--worked}}
 
 \begin{itemize}
 \tightlist
@@ -1189,13 +1190,13 @@ Rules: drop leading zeros in each group; replace \textbf{one} longest run of all
   \textbf{Columnar transposition} rearranges letters by a key order; \textbf{substitution} replaces letters. Product ciphers (DES, AES) combine both (confusion + diffusion --- Shannon).
 \end{itemize}
 
-\needspace{144pt}
+\needspace{136pt}
 
 \hypertarget{p2-09--149-http-exchange-what-a-request-looks-like}{%
-\subsection{14.9 HTTP Exchange (what a request looks like)}\label{p2-09--149-http-exchange-what-a-request-looks-like}}
+\subsection{HTTP Exchange (what a request looks like)}\label{p2-09--149-http-exchange-what-a-request-looks-like}}
 
-\begin{asciiblock}{89pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{86pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 GET /index.html HTTP/1.1                 HTTP/1.1 200 OK
 Host: www.ugcnet.example                 Content-Type: text/html
 User-Agent: Mozilla/5.0                  Content-Length: 3421
@@ -1203,9 +1204,9 @@ Accept: text/html                        Set-Cookie: sid=abc123
 Connection: keep-alive
                                          <html> … </html>
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{135pt}
+\needspace{125pt}
 
 \hypertarget{p2-09--previous-year-questions-pyq-pattern}{%
 \section{Previous Year Questions (PYQ pattern)}\label{p2-09--previous-year-questions-pyq-pattern}}

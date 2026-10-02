@@ -1,6 +1,7 @@
-\unitchapter{Paper 2 · Unit 4}{Database Management Systems}{p2-04}
+\unitchapter{2}{4}{Database Management Systems}{p2-04}
 
-\textbf{Expected questions: 10--12 · Target: 10+ · Type: normalisation, keys, SQL output, transactions, concepts --- very scoring}
+\unitmeta{Expected questions: 10--12 · Target: 10+ · Type: normalisation, keys,
+SQL output, transactions, concepts --- very scoring}
 
 \begin{sylbox}
 
@@ -30,17 +31,17 @@
 
 \end{sylbox}
 
-\needdiagram{figures/p2-04-00}{95pt}
+\needspace{131pt}
 
 \hypertarget{p2-04--1-architecture}{%
-\section{1. Architecture}\label{p2-04--1-architecture}}
+\section{Architecture}\label{p2-04--1-architecture}}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-04--11-three-schema-ansisparc-architecture}{%
-\subsection{1.1 Three-Schema (ANSI/SPARC) Architecture}\label{p2-04--11-three-schema-ansisparc-architecture}}
+\subsection{Three-Schema (ANSI/SPARC) Architecture}\label{p2-04--11-three-schema-ansisparc-architecture}}
 
-\diagramhere{figures/p2-04-00}
+\diagram{figures/p2-04-00}
 
 \begin{itemize}
 \tightlist
@@ -58,20 +59,20 @@
   Architectures: centralised, \textbf{2-tier} client/server, \textbf{3-tier} (client -- application server -- DB server).
 \end{itemize}
 
-\needspace{229pt}
+\needspace{207pt}
 
 \hypertarget{p2-04--12-dbms-components}{%
-\subsection{1.2 DBMS Components}\label{p2-04--12-dbms-components}}
+\subsection{DBMS Components}\label{p2-04--12-dbms-components}}
 
 Query processor (DDL interpreter, DML compiler, query evaluation engine), storage manager (authorisation, transaction manager, file manager, buffer manager), data dictionary (metadata).
 
-\needspace{154pt}
+\needspace{141pt}
 
 \hypertarget{p2-04--2-er-model}{%
-\section{2. ER Model}\label{p2-04--2-er-model}}
+\section{ER Model}\label{p2-04--2-er-model}}
 
-\begin{asciiblock}{99pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{91pt}
+\begin{Verbatim}[fontsize=\fontsize{8.3}{10.1}\selectfont]
  ER notation (Chen)
  ┌────────┐   Entity              ╔════════╗  Weak entity
  └────────┘                       ╚════════╝
@@ -80,7 +81,7 @@ Query processor (DDL interpreter, DML compiler, query evaluation engine), storag
   ◇           Relationship        ◈            Identifying relationship (double diamond)
  ═══          Total participation  ───         Partial participation
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \diagram{figures/p2-04-01}
 
@@ -94,7 +95,7 @@ Query processor (DDL interpreter, DML compiler, query evaluation engine), storag
   \textbf{Specialisation} (top-down), \textbf{generalisation} (bottom-up), \textbf{aggregation} (relationship as entity). Disjoint/overlapping, total/partial constraints.
 \end{itemize}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-04--er--relational-mapping-minimum-tables}{%
 \subsection{ER → Relational mapping (minimum tables)}\label{p2-04--er--relational-mapping-minimum-tables}}
@@ -102,8 +103,8 @@ Query processor (DDL interpreter, DML compiler, query evaluation engine), storag
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1627}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4184}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1917}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4928}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Case}
@@ -126,12 +127,12 @@ Weak entity & Table with owner\textquotesingle s PK + partial key \\
 
 Classic: E1 ---M:N--- E2 ---1:N--- E3 → minimum tables = 3 entities + 1 (for M:N) = \textbf{4}.
 
-\needdiagram{figures/p2-04-02}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-04--3-keys--integrity}{%
-\section{3. Keys \& Integrity}\label{p2-04--3-keys--integrity}}
+\section{Keys \& Integrity}\label{p2-04--3-keys--integrity}}
 
-\diagramhere{figures/p2-04-02}
+\diagram{figures/p2-04-02}
 
 \begin{itemize}
 \tightlist
@@ -147,17 +148,17 @@ Classic: E1 ---M:N--- E2 ---1:N--- E3 → minimum tables = 3 entities + 1 (for M
 
 \textbf{Codd\textquotesingle s 12 rules (13 with Rule 0)}: Rule 0 foundation; 1 information; 2 guaranteed access; 3 systematic NULLs; 4 active online catalog; 5 comprehensive data sublanguage; 6 view updating; 7 high-level insert/update/delete; 8 physical data independence; 9 logical data independence; 10 integrity independence; 11 distribution independence; 12 non-subversion.
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-04--4-relational-algebra--calculus}{%
-\section{4. Relational Algebra \& Calculus}\label{p2-04--4-relational-algebra--calculus}}
+\section{Relational Algebra \& Calculus}\label{p2-04--4-relational-algebra--calculus}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1422}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1840}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2354}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1684}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2178}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2787}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Operation}
@@ -187,8 +188,8 @@ Outer joins & ⟕ ⟖ ⟗ & Keep unmatched with NULLs \\
 
 Fundamental: \textbf{σ, π, ∪, −, ×, ρ}. Relational algebra is \textbf{procedural}; relational calculus (TRC/DRC) is \textbf{non-procedural}. Safe calculus = relational algebra in power (relational completeness).
 
-\begin{asciiblock}{99pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{97pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 Tuple sizes: R has m tuples, S has n tuples
 R × S            → m·n
 R ⋈ S            → 0 … m·n
@@ -197,19 +198,19 @@ R ∩ S            → 0 … min(m,n)
 R − S            → 0 … m
 R ⟕ S (left outer) → at least m
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 Division example: "students who took \textbf{all} courses": π\_\{sid,cid\}(Enrolled) ÷ π\_\{cid\}(Course).
 
 TRC: \texttt{\{\ t\ \textbar{}\ t\ ∈\ Student\ ∧\ t.age\ \textgreater{}\ 20\ \}} · DRC: \texttt{\{\ \textless{}n\textgreater{}\ \textbar{}\ ∃a\ (\textless{}n,a\textgreater{}\ ∈\ Student\ ∧\ a\ \textgreater{}\ 20)\ \}}.
 
-\needspace{144pt}
+\needspace{136pt}
 
 \hypertarget{p2-04--5-sql}{%
-\section{5. SQL}\label{p2-04--5-sql}}
+\section{SQL}\label{p2-04--5-sql}}
 
-\begin{asciiblock}{89pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{86pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 SELECT dept, COUNT(*) AS n, AVG(salary)
 FROM   employee
 WHERE  salary > 20000          -- filters rows (before grouping)
@@ -217,7 +218,7 @@ GROUP  BY dept
 HAVING COUNT(*) > 2            -- filters groups
 ORDER  BY n DESC;
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 Logical order of execution: \textbf{FROM → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → LIMIT}.
 
@@ -249,21 +250,21 @@ Logical order of execution: \textbf{FROM → WHERE → GROUP BY → HAVING → S
 
 \textbf{Nth highest salary}:
 
-\begin{asciiblock}{35pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{30pt}
+\begin{Verbatim}[fontsize=\fontsize{8.1}{9.8}\selectfont]
 SELECT MAX(salary) FROM emp WHERE salary < (SELECT MAX(salary) FROM emp);   -- 2nd highest
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{140pt}
+\needspace{131pt}
 
 \hypertarget{p2-04--6-functional-dependencies--normalisation}{%
-\section{6. Functional Dependencies \& Normalisation}\label{p2-04--6-functional-dependencies--normalisation}}
+\section{Functional Dependencies \& Normalisation}\label{p2-04--6-functional-dependencies--normalisation}}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-04--61-armstrongs-axioms}{%
-\subsection{6.1 Armstrong\textquotesingle s Axioms}\label{p2-04--61-armstrongs-axioms}}
+\subsection{Armstrong\textquotesingle s Axioms}\label{p2-04--61-armstrongs-axioms}}
 
 \begin{itemize}
 \tightlist
@@ -275,37 +276,37 @@ SELECT MAX(salary) FROM emp WHERE salary < (SELECT MAX(salary) FROM emp);   -- 2
   Sound and complete.
 \end{itemize}
 
-\needspace{146pt}
+\needspace{129pt}
 
 \hypertarget{p2-04--62-attribute-closure--finding-candidate-keys}{%
-\subsection{6.2 Attribute Closure --- Finding Candidate Keys}\label{p2-04--62-attribute-closure--finding-candidate-keys}}
+\subsection{Attribute Closure --- Finding Candidate Keys}\label{p2-04--62-attribute-closure--finding-candidate-keys}}
 
 R(A, B, C, D, E), F = \{A → B, B → C, CD → E\}
 
-\begin{asciiblock}{56pt}
-\begin{Verbatim}[fontsize=\fontsize{8.7}{10.6}\selectfont]
+\begin{listingblock}{49pt}
+\begin{Verbatim}[fontsize=\fontsize{7.9}{9.6}\selectfont]
 A⁺   = {A, B, C}
 AD⁺  = {A, D, B, C, E}  = all → AD is a key
 A and D never appear on the RHS → every key must contain both → AD is the ONLY candidate key
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 Trick: attributes not on any RHS must be in every key; attributes only on RHS are never in a key.
 
 \textbf{Minimal (canonical) cover}: single attribute on RHS → remove extraneous LHS attributes → remove redundant FDs.
 
-\needdiagram{figures/p2-04-03}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-04--63-normal-forms}{%
-\subsection{6.3 Normal Forms}\label{p2-04--63-normal-forms}}
+\subsection{Normal Forms}\label{p2-04--63-normal-forms}}
 
-\diagramhere{figures/p2-04-03}
+\diagram{figures/p2-04-03}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.0651}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.6127}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.0767}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.7217}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{NF}
@@ -336,16 +337,16 @@ BCNF & X is a \textbf{super key} \\
   If all attributes are prime ⇒ automatically 3NF.
 \end{itemize}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-04--64-decomposition-properties}{%
-\subsection{6.4 Decomposition Properties}\label{p2-04--64-decomposition-properties}}
+\subsection{Decomposition Properties}\label{p2-04--64-decomposition-properties}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2552}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5099}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3006}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.6006}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Property}
@@ -372,12 +373,12 @@ BCNF & X is a \textbf{super key} \\
 
 \textbf{Worked}: R(A,B,C), F = \{AB → C, C → B\}. Keys: AB, AC. C → B: C not super key but B is prime → \textbf{3NF, not BCNF}. BCNF decomposition (C,B), (A,C) loses AB → C.
 
-\needspace{175pt}
+\needspace{166pt}
 
 \hypertarget{p2-04--7-transactions}{%
-\section{7. Transactions}\label{p2-04--7-transactions}}
+\section{Transactions}\label{p2-04--7-transactions}}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-04--acid}{%
 \subsection{ACID}\label{p2-04--acid}}
@@ -385,8 +386,8 @@ BCNF & X is a \textbf{super key} \\
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2014}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2632}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2372}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3100}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Property}
@@ -405,14 +406,14 @@ BCNF & X is a \textbf{super key} \\
 
 \endgroup
 
-\needdiagram{figures/p2-04-04}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-04--transaction-states}{%
 \subsection{Transaction States}\label{p2-04--transaction-states}}
 
-\diagramhere{figures/p2-04-04}
+\diagram{figures/p2-04-04}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-04--schedules--serializability}{%
 \subsection{Schedules \& Serializability}\label{p2-04--schedules--serializability}}
@@ -429,23 +430,23 @@ BCNF & X is a \textbf{super key} \\
   Number of serial schedules of n transactions: \textbf{n!}.
 \end{itemize}
 
-\begin{asciiblock}{46pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{41pt}
+\begin{Verbatim}[fontsize=\fontsize{8.5}{10.3}\selectfont]
 Example schedule:  r1(A) w2(A) w1(A) r3(A)
 Conflicts: r1(A)→w2(A): T1→T2 ; w2(A)→w1(A): T2→T1 ⇒ cycle ⇒ NOT conflict serializable
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{90pt}
+\needspace{81pt}
 
 \hypertarget{p2-04--recoverability-hierarchy}{%
 \subsection{Recoverability hierarchy}\label{p2-04--recoverability-hierarchy}}
 
-\begin{asciiblock}{35pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{31pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
  Serial ⊂ Strict ⊂ Cascadeless (ACA) ⊂ Recoverable ⊂ All schedules
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begin{itemize}
 \tightlist
@@ -457,7 +458,7 @@ Conflicts: r1(A)→w2(A): T1→T2 ; w2(A)→w1(A): T2→T1 ⇒ cycle ⇒ NOT con
   \textbf{Strict}: no read/write of item until the last writer commits/aborts.
 \end{itemize}
 
-\needspace{210pt}
+\needspace{196pt}
 
 \hypertarget{p2-04--concurrency-problems}{%
 \subsection{Concurrency problems}\label{p2-04--concurrency-problems}}
@@ -465,7 +466,7 @@ Conflicts: r1(A)→w2(A): T1→T2 ; w2(A)→w1(A): T2→T1 ⇒ cycle ⇒ NOT con
 Lost update (WW), dirty read (WR --- uncommitted dependency), unrepeatable read (RW), phantom read (insertions).
 SQL isolation levels: READ UNCOMMITTED \textless{} READ COMMITTED \textless{} REPEATABLE READ \textless{} SERIALIZABLE.
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-04--concurrency-control-protocols}{%
 \subsection{Concurrency Control Protocols}\label{p2-04--concurrency-control-protocols}}
@@ -473,8 +474,8 @@ SQL isolation levels: READ UNCOMMITTED \textless{} READ COMMITTED \textless{} RE
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1835}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.8165}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2161}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.7839}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Protocol}
@@ -501,14 +502,14 @@ Multiple granularity & Intention locks IS, IX, SIX \\
 
 Deadlock prevention with timestamps:
 
-\begin{asciiblock}{45pt}
-\begin{Verbatim}[fontsize=\fontsize{8.3}{10.1}\selectfont]
+\begin{listingblock}{39pt}
+\begin{Verbatim}[fontsize=\fontsize{7.6}{9.2}\selectfont]
  Wait–Die  (non-preemptive): older requests → WAITS;   younger requests → DIES (rolled back)
  Wound–Wait (preemptive):    older requests → WOUNDS (aborts) younger;  younger requests → WAITS
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-04--recovery}{%
 \subsection{Recovery}\label{p2-04--recovery}}
@@ -529,16 +530,16 @@ Deadlock prevention with timestamps:
   Shadow paging: no log needed; copy-on-write page table.
 \end{itemize}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-04--8-file-organisation--indexing}{%
-\section{8. File Organisation \& Indexing}\label{p2-04--8-file-organisation--indexing}}
+\section{File Organisation \& Indexing}\label{p2-04--8-file-organisation--indexing}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.0892}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3698}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1050}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4356}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Index}
@@ -565,26 +566,26 @@ Multilevel & Index on index --- log\_fo(blocks) levels \\
   A file can have \textbf{at most one primary or clustering index} but many secondary indexes.
 \end{itemize}
 
-\needspace{133pt}
+\needspace{125pt}
 
 \hypertarget{p2-04--b-tree-vs-b-tree}{%
 \subsection{B-Tree vs B+ Tree}\label{p2-04--b-tree-vs-b-tree}}
 
-\begin{asciiblock}{78pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{75pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
  B+ tree of order 3 (internal: keys only, leaves linked)
                  [ 30 | 60 ]
                /      |      \
         [10|20]    [30|40]   [60|70|80]   ← leaves contain all keys,
            └──────►───┘──────►────┘          linked for range queries
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1962}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4052}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2311}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4772}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{B-Tree}
@@ -618,7 +619,7 @@ Order p (max children): every node ≤ p children; non-root internal ≥ ⌈p/2�
 
 \textbf{Hashing}: static (overflow chains), dynamic --- extendible hashing (directory doubles, global/local depth), linear hashing.
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-04--query-optimisation}{%
 \subsection{Query Optimisation}\label{p2-04--query-optimisation}}
@@ -633,16 +634,16 @@ Order p (max children): every node ≤ p children; non-root internal ≥ ⌈p/2�
   Query tree; equivalence rules (σ commutes, cascade of π, joins associative/commutative).
 \end{itemize}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-04--9-advanced--enhanced-databases}{%
-\section{9. Advanced \& Enhanced Databases}\label{p2-04--9-advanced--enhanced-databases}}
+\section{Advanced \& Enhanced Databases}\label{p2-04--9-advanced--enhanced-databases}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1259}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.8741}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1483}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.8517}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Model}
@@ -669,12 +670,12 @@ Genome & Biological sequence data \\
 
 \textbf{Security}: discretionary (GRANT/REVOKE, \texttt{WITH\ GRANT\ OPTION}), mandatory (Bell-LaPadula: no read up, no write down), role-based access control, statistical DB inference control, encryption.
 
-\needdiagram{figures/p2-04-05}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-04--10-data-warehousing--mining}{%
-\section{10. Data Warehousing \& Mining}\label{p2-04--10-data-warehousing--mining}}
+\section{Data Warehousing \& Mining}\label{p2-04--10-data-warehousing--mining}}
 
-\diagramhere{figures/p2-04-05}
+\diagram{figures/p2-04-05}
 
 \begin{itemize}
 \tightlist
@@ -692,7 +693,7 @@ Genome & Biological sequence data \\
   OLTP (current, detailed, many short transactions, normalised) vs OLAP (historical, summarised, complex queries, denormalised).
 \end{itemize}
 
-\needspace{203pt}
+\needspace{185pt}
 
 \hypertarget{p2-04--data-mining-kdd-process}{%
 \subsection{Data mining (KDD process)}\label{p2-04--data-mining-kdd-process}}
@@ -701,15 +702,15 @@ Selection → Pre-processing → Transformation → \textbf{Data mining} → Int
 
 \textbf{Association rules} (Apriori):
 
-\begin{asciiblock}{78pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{75pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 Support(A→B)    = count(A ∪ B) / N
 Confidence(A→B) = support(A ∪ B) / support(A)
 Lift            = confidence(A→B) / support(B)    (>1 positive correlation)
 Apriori property: every subset of a frequent itemset is frequent (anti-monotone)
 FP-growth: no candidate generation (FP-tree)
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begin{itemize}
 \tightlist
@@ -721,10 +722,10 @@ FP-growth: no candidate generation (FP-tree)
   Outlier detection, regression.
 \end{itemize}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-04--11-big-data--nosql}{%
-\section{11. Big Data \& NoSQL}\label{p2-04--11-big-data--nosql}}
+\section{Big Data \& NoSQL}\label{p2-04--11-big-data--nosql}}
 
 \begin{itemize}
 \tightlist
@@ -743,8 +744,8 @@ FP-growth: no candidate generation (FP-tree)
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1231}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2208}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1450}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2600}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{NoSQL type}
@@ -763,25 +764,25 @@ Graph & Neo4j, JanusGraph \\
 
 \endgroup
 
-\needspace{210pt}
+\needspace{196pt}
 
 \hypertarget{p2-04--12-deeper-dive--sql-on-real-tables-minimal-cover-full-normalisation--schedules}{%
-\section{12. Deeper Dive --- SQL on Real Tables, Minimal Cover, Full Normalisation \& Schedules}\label{p2-04--12-deeper-dive--sql-on-real-tables-minimal-cover-full-normalisation--schedules}}
+\section{Deeper Dive --- SQL on Real Tables, Minimal Cover, Full Normalisation \& Schedules}\label{p2-04--12-deeper-dive--sql-on-real-tables-minimal-cover-full-normalisation--schedules}}
 
-\needspace{170pt}
+\needspace{160pt}
 
 \hypertarget{p2-04--121-sql-worked-on-sample-data}{%
-\subsection{12.1 SQL Worked on Sample Data}\label{p2-04--121-sql-worked-on-sample-data}}
+\subsection{SQL Worked on Sample Data}\label{p2-04--121-sql-worked-on-sample-data}}
 
 \textbf{EMP}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0402}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0605}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0690}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0654}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0479}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0720}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0821}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0779}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{eid}
@@ -811,8 +812,8 @@ Graph & Neo4j, JanusGraph \\
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.0464}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.0770}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.0546}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.0907}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{dept}
@@ -833,9 +834,9 @@ CE & B3 \\
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0340}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.6111}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3550}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0402}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.6071}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3527}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{\#}
@@ -862,45 +863,45 @@ CE & B3 \\
 
 \endgroup
 
-\needspace{164pt}
+\needspace{146pt}
 
 \hypertarget{p2-04--122-minimal-canonical-cover--worked}{%
-\subsection{12.2 Minimal (Canonical) Cover --- Worked}\label{p2-04--122-minimal-canonical-cover--worked}}
+\subsection{Minimal (Canonical) Cover --- Worked}\label{p2-04--122-minimal-canonical-cover--worked}}
 
 F = \{A → BC, B → C, A → B, AB → C\}
 
-\begin{asciiblock}{74pt}
-\begin{Verbatim}[fontsize=\fontsize{8.2}{10.0}\selectfont]
+\begin{listingblock}{66pt}
+\begin{Verbatim}[fontsize=\fontsize{7.5}{9.1}\selectfont]
 1. Split RHS:            A → B, A → C, B → C, A → B, AB → C
 2. Remove duplicates:    A → B, A → C, B → C, AB → C
 3. Extraneous LHS attr:  in AB → C, B is extraneous since A⁺ = {A, B, C} ∋ C  → A → C (duplicate)
 4. Redundant FDs:        A → C follows from A → B and B → C → remove
 Minimal cover Fc = { A → B, B → C }
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needdiagram{figures/p2-04-06}{90pt}
+\needspace{125pt}
 
 \hypertarget{p2-04--123-normalisation--from-1nf-to-bcnf}{%
-\subsection{12.3 Normalisation --- From 1NF to BCNF}\label{p2-04--123-normalisation--from-1nf-to-bcnf}}
+\subsection{Normalisation --- From 1NF to BCNF}\label{p2-04--123-normalisation--from-1nf-to-bcnf}}
 
 R(S, C, I, P, G) --- Student, Course, Instructor, instructor Phone, Grade.
 F = \{ SC → G, C → I, I → P \}. S and C never appear on the right → \textbf{candidate key = SC}.
 
-\diagramhere{figures/p2-04-06}
+\diagram{figures/p2-04-06}
 
 Final schema: \textbf{(S, C, G), (C, I), (I, P)} --- every determinant is a key → BCNF; decomposition is lossless (common attributes C and I are keys of a side) and preserves all three FDs.
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-04--124-recoverability-examples-w--write-r--read-c--commit}{%
-\subsection{12.4 Recoverability Examples (W = write, R = read, C = commit)}\label{p2-04--124-recoverability-examples-w--write-r--read-c--commit}}
+\subsection{Recoverability Examples (W = write, R = read, C = commit)}\label{p2-04--124-recoverability-examples-w--write-r--read-c--commit}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1741}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.6505}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2050}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.7661}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Schedule}
@@ -919,14 +920,14 @@ W1(A) W2(A) C1 C2 & Cascadeless but \textbf{not strict} (T2 overwrote uncommitte
 
 \endgroup
 
-\needdiagram{figures/p2-04-07}{90pt}
+\needspace{125pt}
 
 \hypertarget{p2-04--125-precedence-graphs}{%
-\subsection{12.5 Precedence Graphs}\label{p2-04--125-precedence-graphs}}
+\subsection{Precedence Graphs}\label{p2-04--125-precedence-graphs}}
 
 Schedule S: R1(A) W1(A) R2(A) W2(A) R1(B) W1(B) R2(B) W2(B)
 
-\diagramhere{figures/p2-04-07}
+\diagram{figures/p2-04-07}
 
 Acyclic → conflict serializable, equivalent to serial order \textbf{T1 → T2}.
 
@@ -936,13 +937,13 @@ Schedule S′: R1(X) R2(Y) W2(X) W1(Y)
 
 Cycle → \textbf{not} conflict serializable.
 
-\needspace{165pt}
+\needspace{158pt}
 
 \hypertarget{p2-04--126-two-phase-locking--lock-point}{%
-\subsection{12.6 Two-Phase Locking --- Lock Point}\label{p2-04--126-two-phase-locking--lock-point}}
+\subsection{Two-Phase Locking --- Lock Point}\label{p2-04--126-two-phase-locking--lock-point}}
 
-\begin{asciiblock}{110pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{108pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
  locks held
    │        ╱‾‾‾‾╲
    │      ╱        ╲
@@ -952,15 +953,15 @@ Cycle → \textbf{not} conflict serializable.
           lock point (last lock acquired)
  Serializability order of 2PL transactions = order of their lock points
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{165pt}
+\needspace{158pt}
 
 \hypertarget{p2-04--127-extendible-hashing-sketch}{%
-\subsection{12.7 Extendible Hashing (sketch)}\label{p2-04--127-extendible-hashing-sketch}}
+\subsection{Extendible Hashing (sketch)}\label{p2-04--127-extendible-hashing-sketch}}
 
-\begin{asciiblock}{110pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{108pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
  Global depth 2                     Buckets (local depth)
  directory
   00 ──────────────►  [ 4, 12, 32 ]   (d = 2)
@@ -970,16 +971,16 @@ Cycle → \textbf{not} conflict serializable.
  Overflow of a bucket with local depth = global depth → directory doubles
  Overflow with local depth < global depth → split bucket only
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needdiagram{figures/p2-04-09}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-04--128-data-cube-lattice-3-dimensions--2uxb3--8-cuboids}{%
-\subsection{12.8 Data Cube Lattice (3 dimensions → 2³ = 8 cuboids)}\label{p2-04--128-data-cube-lattice-3-dimensions--2uxb3--8-cuboids}}
+\subsection{Data Cube Lattice (3 dimensions → 2³ = 8 cuboids)}\label{p2-04--128-data-cube-lattice-3-dimensions--2uxb3--8-cuboids}}
 
-\diagramhere{figures/p2-04-09}
+\diagram{figures/p2-04-09}
 
-\needspace{135pt}
+\needspace{125pt}
 
 \hypertarget{p2-04--previous-year-questions-pyq-pattern}{%
 \section{Previous Year Questions (PYQ pattern)}\label{p2-04--previous-year-questions-pyq-pattern}}

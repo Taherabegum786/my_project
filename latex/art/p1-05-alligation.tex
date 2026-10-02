@@ -1,0 +1,14 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \node[slate, minimum width=26mm] (c) at (0,2.4) {cheaper $c$};
+  \node[slate, minimum width=26mm] (d) at (6,2.4) {dearer $d$};
+  \node[sage, minimum width=26mm] (dm) at (0,0) {$d-m$};
+  \node[sage, minimum width=26mm] (mc) at (6,0) {$m-c$};
+  \draw[thinline] (c.south east) -- (mc.north west);
+  \draw[thinline] (d.south west) -- (dm.north east);
+  \node[sand, minimum width=24mm] (m) at (3,1.2) {mean $m$};
+  \node[align=center, font=\small] at (3,-0.95) {cheaper : dearer $= (d-m) : (m-c)$};
+\end{tikzpicture}
+\caption{The rule of alligation: subtract crosswise to obtain the mixing ratio.}
+\end{figure}

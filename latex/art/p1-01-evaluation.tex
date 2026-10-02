@@ -1,0 +1,22 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \draw[line width=6pt, fslate] (0,0) -- (11,0);
+  \draw[arr] (0,0) -- (11.4,0) node[lbl, right] {time};
+  \node[lbl] at (5.5,0.45) {course of instruction};
+  \draw[thinline] (1,-0.15) -- (1,0.15) (10,-0.15) -- (10,0.15);
+  \node[sand, text width=27mm] (P) at (0.6,-1.6) {\textbf{Placement}\\\footnotesize before: entry level};
+  \node[sage, text width=27mm] (F) at (4,-1.6) {\textbf{Formative}\\\footnotesize during: improves learning};
+  \node[rose, text width=27mm] (D) at (7.2,-1.6) {\textbf{Diagnostic}\\\footnotesize when stuck: finds causes};
+  \node[slate, text width=27mm] (S) at (10.4,-1.6) {\textbf{Summative}\\\footnotesize end: certifies};
+  \draw[dasharr] (P.north) -- (1,-0.1);
+  \draw[dasharr] (F.north) -- (4,-0.1);
+  \draw[dasharr] (D.north) -- (7.2,-0.1);
+  \draw[dasharr] (S.north) -- (10,-0.1);
+  \node[grey, text width=46mm] (NR) at (2.6,-4.1) {\textbf{Norm-referenced}\\\footnotesize compares a learner with the group};
+  \node[grey, text width=46mm] (CR) at (8.4,-4.1) {\textbf{Criterion-referenced}\\\footnotesize compares with a fixed standard};
+  \node[capt] at (5.5,-3.15) {how a score is interpreted};
+\end{tikzpicture}
+\caption{Types of evaluation arranged by \emph{when} they occur (above) and by \emph{how} results are
+interpreted (below).}
+\end{figure}

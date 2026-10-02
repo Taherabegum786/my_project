@@ -1,0 +1,14 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \foreach \x/\col/\head/\items in {
+      0/fslate/{By channel}/{verbal — oral, written\\non-verbal},
+      1/fsage/{By participants}/{intrapersonal (self)\\interpersonal (two)\\group, public\\mass (through media)},
+      2/fsand/{By direction}/{upward, downward\\horizontal (lateral)\\diagonal\\grapevine (informal)},
+      3/frose/{By formality}/{formal\\informal}} {
+    \node[box, fill=\col, minimum width=34mm] at (\x*3.75,0) {\textbf{\head}};
+    \node[plain, text width=32mm, align=left, font=\footnotesize, anchor=north, minimum height=17mm] at (\x*3.75,-0.6) {\items};
+  }
+\end{tikzpicture}
+\caption{Four independent ways of classifying communication.}
+\end{figure}

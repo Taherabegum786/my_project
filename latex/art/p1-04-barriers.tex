@@ -1,0 +1,13 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \node[circ, minimum size=26mm, fill=fwine!15, font=\small\bfseries] (B) at (0,0) {Barriers};
+  \foreach \a/\h/\t/\col [count=\k] in {90/Physical/{noise, distance,\\poor light}/fslate, 38.6/Semantic/{jargon,\\ambiguity}/fsage,
+      -12.9/Psychological/{prejudice,\\emotion}/fsand, -64.3/Cultural/{values, norms,\\gestures}/frose,
+      -115.7/Organisational/{hierarchy,\\rigid rules}/fslate, -167.1/Technical/{faulty\\equipment}/fsage, 141.4/Perceptual/{stereotyping,\\selectivity}/fsand} {
+    \node[box, fill=\col, text width=24mm, font=\footnotesize] (n\k) at (\a:3.6) {\textbf{\h}\\\t};
+    \draw[thinline] (B) -- (n\k);
+  }
+\end{tikzpicture}
+\caption{Seven families of barriers to effective communication.}
+\end{figure}

@@ -1,0 +1,14 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \filldraw[fill=fsand, draw=fgink, line width=0.55pt] (0,0) -- (3.6,0) -- (1.8,2.8) -- cycle;
+  \draw[thinline] (0.62,0.98) -- (2.98,0.98) (1.8,0) -- (1.8,0.98);
+  \node[font=\Large] at (1.8,1.6) {$D$};
+  \node[font=\Large] at (0.95,0.45) {$S$};
+  \node[font=\Large] at (2.65,0.45) {$T$};
+  \node[align=left, anchor=west, font=\small] at (4.2,1.4) {$D = S\times T$\\[2pt]$S = D / T$\\[2pt]$T = D / S$\\[2pt]\footnotesize cover the unknown; read the rest};
+  \node[slate, text width=36mm, anchor=west] (k) at (9.6,2.0) {km/h $\to$ m/s: $\times\,\frac{5}{18}$};
+  \node[slate, text width=36mm, anchor=west] (m) at (9.6,0.9) {m/s $\to$ km/h: $\times\,\frac{18}{5}$};
+\end{tikzpicture}
+\caption{The distance–speed–time triangle and the two unit conversions that appear in almost every problem.}
+\end{figure}

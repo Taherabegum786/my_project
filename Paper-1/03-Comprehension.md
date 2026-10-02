@@ -3,11 +3,20 @@
 **Expected questions: 5 (one passage) · Target: 5/5 — these are sure-shot marks**
 
 ## What Is Asked
+
+Comprehension tests the oldest academic skill of all: reading closely and reasoning only from what the text
+actually says. It needs no subject knowledge, which is exactly why careless answers are common — an option
+can sound sensible and still be unsupported by the passage.
 A passage of ~400–600 words followed by **5 questions** on: central idea, title, author's tone, inference,
 vocabulary in context, factual detail, and "which statement is true/false".
 
 ## Step-by-Step Strategy
 
+Reading the questions first tells you what to look for, so the first reading of the passage becomes
+purposeful rather than passive. Treat each question type differently, as the figure shows: a factual
+question is answered by locating a line, while an inference must follow necessarily from several lines.
+
+<!-- latex: p1-03-strategy -->
 ```mermaid
 flowchart TD
     A[1. Read the 5 questions first<br/>~30 sec] --> B[2. Skim passage<br/>note topic + paragraph roles]
@@ -36,6 +45,11 @@ flowchart TD
 
 ## Tone Words Cheat Sheet
 
+Tone is the author's attitude towards the subject. Decide first whether the author approves, stays
+detached or disapproves; only then choose the precise word. Most passages in this examination are
+analytical or balanced, so strongly emotional options are usually wrong.
+
+<!-- latex: p1-03-tone -->
 ```
  Positive ◄──────────────────── Neutral ────────────────────► Negative
  laudatory, optimistic,        objective, analytical,       critical, cynical,

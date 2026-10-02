@@ -1,0 +1,15 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[node distance=14mm]
+  \node[slate, minimum width=32mm] (P) {\textbf{Pre-active}\\\footnotesize planning};
+  \node[sage, minimum width=32mm, right=of P] (I) {\textbf{Inter-active}\\\footnotesize execution in class};
+  \node[sand, minimum width=32mm, right=of I] (O) {\textbf{Post-active}\\\footnotesize evaluation};
+  \draw[arr] (P) -- (I);
+  \draw[arr] (I) -- (O);
+  \draw[dasharr] (O.south) -- ++(0,-7mm) -| node[lbl, pos=0.25, below] {findings improve the next lesson} (P.south);
+  \node[smalllbl, above=1mm of P] {goals, content, method};
+  \node[smalllbl, above=1mm of I] {diagnosis, questioning, reinforcement};
+  \node[smalllbl, above=1mm of O] {tests, measuring change};
+\end{tikzpicture}
+\caption{Jackson's three phases of teaching form a cycle: what is learnt in evaluation feeds the next plan.}
+\end{figure}

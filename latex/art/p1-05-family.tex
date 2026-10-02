@@ -1,0 +1,19 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[m/.style={ink, rectangle, fill=fslate, minimum size=9mm, font=\small\bfseries},
+                    f/.style={ink, circle, fill=frose, minimum size=9.5mm, font=\small\bfseries}]
+  \node[m] (C) at (0,0) {C}; \node[f] (D) at (2.6,0) {D};
+  \draw[fgink, line width=0.6pt, double, double distance=1.4pt] (C) -- (D);
+  \coordinate (mid) at (1.3,0);
+  \draw[thinline] (mid) -- (1.3,-1.0);
+  \node[m] (A) at (0,-2) {A}; \node[f] (B) at (2.6,-2) {B};
+  \draw[thinline] (A.north) |- (1.3,-1.0) -| (B.north);
+  \node[lbl, anchor=west] at (3.3,0) {married couple (double line)};
+  \node[lbl, anchor=west] at (3.3,-2) {siblings share one horizontal bar};
+  % legend
+  \node[m, minimum size=5mm, font=\scriptsize] at (7.9,0.2) {}; \node[lbl, anchor=west] at (8.25,0.2) {male};
+  \node[f, minimum size=5.5mm, font=\scriptsize] at (7.9,-0.5) {}; \node[lbl, anchor=west] at (8.25,-0.5) {female};
+\end{tikzpicture}
+\caption{"A is the brother of B; B is the daughter of C; C is the husband of D." Drawn as a family tree, the
+answer is immediate: D is A's mother. Use squares for males and circles for females.}
+\end{figure}

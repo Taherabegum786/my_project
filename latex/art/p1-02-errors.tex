@@ -1,0 +1,15 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[cell/.style={draw=fgink, line width=0.5pt, minimum width=44mm, minimum height=13mm, align=center, font=\small}]
+  \node[cell, fill=fsage] (a) at (0,0)     {Correct decision\\[-1pt]\footnotesize confidence $1-\alpha$};
+  \node[cell, fill=frose] (b) at (4.4,0)   {\textbf{Type II error}\\[-1pt]\footnotesize probability $\beta$};
+  \node[cell, fill=frose] (c) at (0,-1.3)  {\textbf{Type I error}\\[-1pt]\footnotesize probability $\alpha$};
+  \node[cell, fill=fsage] (d) at (4.4,-1.3){Correct decision\\[-1pt]\footnotesize power $1-\beta$};
+  \node[capt, above=2mm of a] {$H_0$ is true};
+  \node[capt, above=2mm of b] {$H_0$ is false};
+  \node[capt, left=2mm of a, align=right] {retain $H_0$};
+  \node[capt, left=2mm of c, align=right] {reject $H_0$};
+\end{tikzpicture}
+\caption{The four outcomes of a hypothesis test. A Type I error convicts the innocent null hypothesis;
+a Type II error lets a false one go free.}
+\end{figure}

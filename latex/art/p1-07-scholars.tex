@@ -1,0 +1,14 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=12cm, height=5.6cm, ybar, bar width=12pt, ymin=0, ymax=70, enlarge x limits=0.18,
+    xtick={2021,2022,2023,2024}, xticklabel style={/pgf/number format/1000 sep={}}, ylabel={scholars admitted},
+    axis lines*=left, ymajorgrids, grid style={fgink!12}, area legend, legend style={draw=none, font=\footnotesize, legend columns=2, at={(0.5,1.03)}, anchor=south},
+    tick label style={font=\footnotesize}, label style={font=\footnotesize}, nodes near coords, every node near coord/.append style={font=\scriptsize}]
+  \addplot[fill=fslate, draw=fgink] coordinates {(2021,30) (2022,40) (2023,50) (2024,60)};
+  \addplot[fill=fsand, draw=fgink] coordinates {(2021,20) (2022,30) (2023,35) (2024,45)};
+  \legend{Computer Science, Mathematics}
+\end{axis}
+\end{tikzpicture}
+\caption{PhD admissions in two departments.}
+\end{figure}

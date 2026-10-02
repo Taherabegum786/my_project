@@ -1,0 +1,19 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \node[grey, minimum width=40mm] (M) at (0,0) {\textbf{Methods of teaching}};
+  \node[slate, minimum width=40mm] (T) at (-5,-1.6) {\textbf{Teacher-centred}};
+  \node[sage,  minimum width=40mm] (L) at (0,-1.6) {\textbf{Learner-centred}};
+  \node[sand,  minimum width=40mm] (X) at (5,-1.6) {\textbf{Mixed / interactive}};
+  \foreach \c in {T,L,X} \draw[arr] (M) -- (\c);
+  \node[plain, text width=38mm, align=left, anchor=north, font=\footnotesize] at (-5,-2.25)
+    {lecture\\demonstration\\team teaching};
+  \node[plain, text width=38mm, align=left, anchor=north, font=\footnotesize] at (0,-2.25)
+    {project (Kilpatrick)\\problem solving\\heuristic / discovery (Armstrong)\\case study, role play\\programmed instruction (Skinner)\\flipped classroom};
+  \node[plain, text width=38mm, align=left, anchor=north, font=\footnotesize] at (5,-2.25)
+    {discussion, seminar\\symposium, panel\\workshop\\blended learning};
+  \draw[arr] (-6.6,-6.3) -- node[lbl, below] {increasing learner activity and autonomy} (6.6,-6.3);
+\end{tikzpicture}
+\caption{A map of teaching methods. Moving from left to right, responsibility for learning shifts from
+the teacher to the learner.}
+\end{figure}

@@ -1,0 +1,21 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[corner/.style={circ, minimum size=10mm, font=\large\bfseries}]
+  \node[corner, fill=fslate] (A) at (0,4) {A};
+  \node[corner, fill=fslate] (E) at (7,4) {E};
+  \node[corner, fill=fsand]  (I) at (0,0) {I};
+  \node[corner, fill=fsand]  (O) at (7,0) {O};
+  \draw[thinline] (A) -- node[lbl, above] {contraries — cannot both be true} (E);
+  \draw[thinline] (I) -- node[lbl, below] {sub-contraries — cannot both be false} (O);
+  \draw[thinline] (A) -- (O); \draw[thinline] (E) -- (I);
+  \node[lbl, fill=white, inner sep=2pt] at (3.5,2) {contradictories\\exactly one is true};
+  \draw[arr] (A) -- node[lbl, left, align=right] {sub-\\alternation} (I);
+  \draw[arr] (E) -- node[lbl, right, align=left] {sub-\\alternation} (O);
+  \node[anchor=east, font=\small] at (-0.8,4) {All S are P};
+  \node[anchor=west, font=\small] at (7.8,4) {No S is P};
+  \node[anchor=east, font=\small] at (-0.8,0) {Some S are P};
+  \node[anchor=west, font=\small] at (7.8,0) {Some S are not P};
+\end{tikzpicture}
+\caption{The traditional square of opposition. Universal propositions sit above, particular ones below;
+affirmatives on the left, negatives on the right.}
+\end{figure}

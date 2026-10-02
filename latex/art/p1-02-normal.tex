@@ -1,0 +1,20 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=12cm, height=6.2cm, axis lines=middle, axis line style={fgink, line width=0.5pt}, ymin=0, ymax=0.47,
+    xmin=-3.6, xmax=3.6, xtick={-3,-2,-1,0,1,2,3}, xticklabels={$-3\sigma$,$-2\sigma$,$-\sigma$,$\mu$,$\sigma$,$2\sigma$,$3\sigma$},
+    ytick=\empty, tick label style={font=\footnotesize}, samples=120, domain=-3.6:3.6, clip=false]
+  \addplot[fill=fslate, draw=none, domain=-3:3] {exp(-x^2/2)/sqrt(2*pi)} \closedcycle;
+  \addplot[fill=fsteel, draw=none, domain=-2:2] {exp(-x^2/2)/sqrt(2*pi)} \closedcycle;
+  \addplot[fill=fwine!35, draw=none, domain=-1:1] {exp(-x^2/2)/sqrt(2*pi)} \closedcycle;
+  \addplot[fgink, line width=0.7pt] {exp(-x^2/2)/sqrt(2*pi)};
+  \node[font=\footnotesize] at (axis cs:0,0.17) {68.26\%};
+  \draw[<->, thinline] (axis cs:-2,-0.075) -- node[fill=white, font=\footnotesize, inner sep=1.5pt] {95.44\%} (axis cs:2,-0.075);
+  \draw[<->, thinline] (axis cs:-3,-0.12) -- node[fill=white, font=\footnotesize, inner sep=1.5pt] {99.74\%} (axis cs:3,-0.12);
+  \draw[densely dotted, fgink!60] (axis cs:-2,0) -- (axis cs:-2,-0.075) (axis cs:2,0) -- (axis cs:2,-0.075)
+        (axis cs:-3,0) -- (axis cs:-3,-0.12) (axis cs:3,0) -- (axis cs:3,-0.12);
+\end{axis}
+\end{tikzpicture}
+\caption{The normal curve: mean, median and mode coincide at the centre, and fixed proportions of cases lie
+within one, two and three standard deviations.}
+\end{figure}

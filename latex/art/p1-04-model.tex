@@ -1,0 +1,17 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[node distance=17mm]
+  \node[slate, minimum width=24mm] (S) {\textbf{Sender}\\\footnotesize source};
+  \node[grey, minimum width=22mm, right=of S] (M) {\textbf{Message}};
+  \node[sand, minimum width=22mm, right=of M] (C) {\textbf{Channel}};
+  \node[sage, minimum width=24mm, right=of C] (R) {\textbf{Receiver}\\\footnotesize destination};
+  \draw[arr] (S) -- node[lbl, above] {encoding} (M);
+  \draw[arr] (M) -- (C);
+  \draw[arr] (C) -- node[lbl, above] {decoding} (R);
+  \draw[dasharr] (R.south) -- ++(0,-9mm) -| node[lbl, below, pos=0.25] {feedback} (S.south);
+  \node[cloudnode, above=8mm of C, minimum width=22mm, minimum height=11mm, fill=frose] (N) {\footnotesize\textbf{Noise}};
+  \draw[decorate, decoration={zigzag, segment length=4pt, amplitude=1.5pt}, fwine, line width=0.6pt, ->] (N) -- (C);
+\end{tikzpicture}
+\caption{The general model of communication. Shannon and Weaver's contribution was the noise source, which
+can distort the message at any point on the channel.}
+\end{figure}

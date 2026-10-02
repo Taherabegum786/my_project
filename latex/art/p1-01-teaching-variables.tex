@@ -1,0 +1,16 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \node[slate, minimum width=36mm] (T) at (0,0) {\textbf{Teacher}\\\footnotesize independent variable};
+  \node[sage, minimum width=36mm] (S) at (7,0) {\textbf{Student}\\\footnotesize dependent variable};
+  \node[sand, minimum width=74mm] (C) at (3.5,2.1) {\textbf{Content, method, aids, environment}\\\footnotesize intervening variables};
+  \node[rose, minimum width=36mm] (L) at (7,-2.1) {\textbf{Learning}\\\footnotesize a desirable change in behaviour};
+  \draw[arrd] (T) -- node[lbl, above] {interaction} (S);
+  \draw[arr] (C.south -| T.north) -- (T.north);
+  \draw[arr] (C.south -| S.north) -- (S.north);
+  \draw[arr] (S) -- (L);
+  \node[lbl, anchor=east] at (L.west) {the outcome we measure\quad};
+\end{tikzpicture}
+\caption{Teaching as a system of variables. The teacher acts, the learner responds, and everything that
+shapes the encounter — content, method, aids, environment — intervenes between the two.}
+\end{figure}

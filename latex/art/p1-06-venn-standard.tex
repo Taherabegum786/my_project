@@ -1,0 +1,28 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[set/.style={draw=fgink, line width=0.5pt}]
+  % All A are B
+  \begin{scope}
+    \filldraw[set, fill=fslate] (0,0) circle (1.2); \filldraw[set, fill=fsage] (-0.25,-0.15) circle (0.55);
+    \node at (0.55,0.6) {B}; \node at (-0.25,-0.15) {A}; \node[capt] at (0,-1.65) {All A are B};
+  \end{scope}
+  % No A is B
+  \begin{scope}[shift={(3.9,0)}]
+    \filldraw[set, fill=fsage] (-0.75,0) circle (0.68); \filldraw[set, fill=fslate] (0.75,0) circle (0.68);
+    \node at (-0.75,0) {A}; \node at (0.75,0) {B}; \node[capt] at (0,-1.65) {No A is B};
+  \end{scope}
+  % Some A are B
+  \begin{scope}[shift={(7.6,0)}]
+    \begin{scope}[blend group=multiply] \fill[fsage] (-0.45,0) circle (0.8); \fill[fslate] (0.45,0) circle (0.8); \end{scope}
+    \draw[set] (-0.45,0) circle (0.8) (0.45,0) circle (0.8);
+    \node at (-0.8,0) {A}; \node at (0.8,0) {B}; \fill[fwine] (0,0) circle (2pt); \node[capt] at (0,-1.65) {Some A are B};
+  \end{scope}
+  % Some A are not B
+  \begin{scope}[shift={(11.3,0)}]
+    \begin{scope}[blend group=multiply] \fill[fsage] (-0.45,0) circle (0.8); \fill[fslate] (0.45,0) circle (0.8); \end{scope}
+    \draw[set] (-0.45,0) circle (0.8) (0.45,0) circle (0.8);
+    \node at (-0.62,0.35) {A}; \node at (0.8,0.35) {B}; \node[fwine, font=\large] at (-0.8,-0.2) {$\times$}; \node[capt] at (0,-1.65) {Some A are not B};
+  \end{scope}
+\end{tikzpicture}
+\caption{The four standard Venn situations. A dot or cross marks a region known to be non-empty.}
+\end{figure}

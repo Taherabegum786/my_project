@@ -1,0 +1,17 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=13cm, height=6cm, ybar, bar width=8pt, ymin=0, ymax=70, enlarge x limits=0.15,
+    xtick={2019,2020,2021,2022}, xticklabel style={/pgf/number format/1000 sep={}}, ylabel={thousand cars},
+    axis lines*=left, ymajorgrids, grid style={fgink!12}, area legend, legend style={draw=none, font=\footnotesize, legend columns=4, at={(0.5,1.03)}, anchor=south},
+    tick label style={font=\footnotesize}, label style={font=\footnotesize}, nodes near coords, every node near coord/.append style={font=\tiny}]
+  \addplot[fill=fslate, draw=fgink] coordinates {(2019,40) (2020,45) (2021,50) (2022,60)};
+  \addplot[fill=fsage, draw=fgink] coordinates {(2019,30) (2020,35) (2021,30) (2022,40)};
+  \addplot[fill=fsand, draw=fgink] coordinates {(2019,25) (2020,20) (2021,30) (2022,35)};
+  \addplot[fill=frose, draw=fgink] coordinates {(2019,15) (2020,20) (2021,25) (2022,25)};
+  \legend{P, Q, R, S}
+\end{axis}
+\end{tikzpicture}
+\caption{The worked data set as a grouped bar chart. Company P's steady growth, and R's dip in 2020, are
+visible at a glance — a reminder to sketch the data before calculating.}
+\end{figure}

@@ -1,201 +1,211 @@
 % UGC NET Computer Science — Complete Study Material
-% Compile with LuaLaTeX (twice, for the table of contents):  lualatex main.tex
-% Chapters in chapters/ are generated from the Markdown notes by scripts/md2latex.py;
-% figures/ holds the diagrams rendered by scripts/render-diagrams.cjs.
-\documentclass[10pt,a4paper,oneside,openany]{book}
+% Compile with LuaLaTeX (twice, for the contents and cross-references):  lualatex main.tex
+% chapters/ is generated from the Markdown notes by scripts/md2latex.py; art/ holds the
+% hand-made TikZ figures and typeset formulas; figures/ holds any fallback diagram PDFs.
+\documentclass[11pt,a4paper,twoside,openany]{book}
 
-% ---------------------------------------------------------------- page layout
-\usepackage[a4paper,top=20mm,bottom=22mm,left=18mm,right=18mm,headheight=14pt,headsep=8pt,footskip=12mm]{geometry}
+% ================================================================= page layout
+\usepackage[a4paper,inner=24mm,outer=24mm,top=27mm,bottom=28mm,headheight=14pt,headsep=12pt,footskip=12mm]{geometry}
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{4pt plus 1pt}
+\setlength{\parskip}{5pt plus 1.5pt}
 \setlength{\emergencystretch}{3em}
 \raggedbottom
+\widowpenalty=3000
+\clubpenalty=3000
 
-% ---------------------------------------------------------------- fonts
+% ================================================================= fonts
 \usepackage{fontspec}
-% Glyphs missing from the main fonts (sub/superscripts, arrows, box drawing, ⋈, ✔ …)
-% are taken from these fonts automatically.
+\usepackage{unicode-math}
+% Glyphs missing from the main fonts (sub/superscripts, box drawing, rare symbols) come from these.
 \directlua{
-  luaotfload.add_fallback("textfb", {"DejaVu Serif:mode=harf;", "DejaVu Sans:mode=harf;", "FreeSerif:mode=harf;"})
-  luaotfload.add_fallback("sansfb", {"DejaVu Sans:mode=harf;", "FreeSans:mode=harf;", "FreeSerif:mode=harf;"})
-  luaotfload.add_fallback("monofb", {"FreeMono:mode=harf;", "DejaVu Sans:mode=harf;", "FreeSerif:mode=harf;"})
+  luaotfload.add_fallback("textfb", {"TeX Gyre Pagella Math:mode=harf;", "DejaVu Serif:mode=harf;", "FreeSerif:mode=harf;"})
+  luaotfload.add_fallback("monofb", {"FreeMono:mode=harf;", "DejaVu Sans Mono:mode=harf;", "FreeSerif:mode=harf;"})
 }
 \setmainfont{TeX Gyre Pagella}[RawFeature={fallback=textfb}]
-\setsansfont{TeX Gyre Heros}[RawFeature={fallback=sansfb}]
-\setmonofont{DejaVu Sans Mono}[RawFeature={fallback=monofb}]
+\setsansfont{TeX Gyre Pagella}[RawFeature={fallback=textfb}]
+\setmonofont{TeX Gyre Cursor}[RawFeature={fallback=monofb}]
+\setmathfont{TeX Gyre Pagella Math}
+\linespread{1.06}
+\AtBeginDocument{\providecommand{\square}{\mdlgwhtsquare}}
 
-% ---------------------------------------------------------------- colours
-\usepackage[table]{xcolor}
-\definecolor{accent}{HTML}{0B5CAD}
-\definecolor{accentsoft}{HTML}{5B8FC9}
-\definecolor{ink}{HTML}{1B1F24}
-\definecolor{muted}{HTML}{57606A}
-\definecolor{rulegray}{HTML}{C9D1D9}
-\definecolor{codebg}{HTML}{F5F7FA}
-\definecolor{sylbg}{HTML}{EEF4FB}
-\definecolor{revbg}{HTML}{FFF8E6}
-\definecolor{revframe}{HTML}{D4A72C}
+% ================================================================= colours
+\usepackage{xcolor}
+\definecolor{ink}{HTML}{1C1C1C}
+\definecolor{accent}{HTML}{7A2E2E}   % oxblood — used sparingly
+\definecolor{muted}{HTML}{5C5C5C}
+\definecolor{rulegrey}{HTML}{9A9A9A}
+\definecolor{paper}{HTML}{FAF6EE}
 \color{ink}
 
-% ---------------------------------------------------------------- packages used by pandoc output
+% ================================================================= packages used by pandoc output
 \usepackage{longtable,booktabs,array,calc}
 \usepackage{graphicx}
 \usepackage{adjustbox}
 \usepackage{fancyvrb}
 \usepackage{needspace}
 \usepackage{enumitem}
+\usepackage{multicol}
 \usepackage[skins,breakable]{tcolorbox}
-\usepackage{etoc}
-\usepackage{amssymb}
+\usepackage{tikz}
+\usepackage{forest}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{pgf-umlsd}
+\input{tikzstyles}
 \providecommand{\tightlist}{\setlength{\itemsep}{1pt}\setlength{\parskip}{0pt}}
-\setlist{leftmargin=1.4em,itemsep=1pt,topsep=3pt}
-\setlength{\LTpre}{6pt}
-\setlength{\LTpost}{6pt}
-\renewcommand{\arraystretch}{1.25}
+\setlist{leftmargin=1.5em,itemsep=2pt,topsep=4pt}
+\setlist[itemize,1]{label=\textendash}
+\setlist[itemize,2]{label=\textperiodcentered}
+\setlength{\LTpre}{8pt}
+\setlength{\LTpost}{8pt}
+\renewcommand{\arraystretch}{1.22}
 \setlength{\tabcolsep}{5pt}
+\setlength{\heavyrulewidth}{0.7pt}
+\setlength{\lightrulewidth}{0.4pt}
 \usepackage{microtype}
 
-% ---------------------------------------------------------------- headings
-\usepackage{titlesec}
-\setcounter{secnumdepth}{-2}
-\def\chapkicker{}
-\newcommand{\kickerline}{\ifx\chapkicker\empty\else{\large\color{accentsoft}\chapkicker}\\[3pt]\fi}
-\titleformat{\chapter}[display]
-  {\sffamily\color{accent}}
-  {}{0pt}
-  {\kickerline\fontsize{22}{26}\selectfont\bfseries}
-  [\vspace{4pt}{\color{accent}\titlerule[1.2pt]}]
-\titlespacing*{\chapter}{0pt}{-12pt}{10pt}
-\titleformat{\section}{\sffamily\Large\bfseries\color{accent}}{}{0pt}{}[{\color{rulegray}\titlerule}]
-\titlespacing*{\section}{0pt}{14pt}{6pt}
-\titleformat{\subsection}{\sffamily\large\bfseries\color{ink}}{}{0pt}{}
-\titlespacing*{\subsection}{0pt}{10pt}{4pt}
-\titleformat{\subsubsection}{\sffamily\normalsize\bfseries\color{ink}}{}{0pt}{}
-\titleformat{\part}[display]{\centering\sffamily\color{accent}}{}{0pt}{\fontsize{30}{36}\selectfont\bfseries}
-
-% \unitchapter{kicker}{title}{id}: chapter with a small "Paper 2 · Unit 7" line above the title,
-% a link target for cross-references, and a local contents list.
-\newcommand{\unitchapter}[3]{%
-  \def\chapkicker{#1}%
-  \chapter[#1 — #2]{#2}\hypertarget{#3}{}\label{#3}%
-  \begingroup\small
-  \etocsettocstyle{\begin{tcolorbox}[enhanced,colback=white,colframe=rulegray,boxrule=0.4pt,arc=2pt,
-      left=6pt,right=6pt,top=4pt,bottom=4pt,title={\sffamily\bfseries In this unit},coltitle=accent,
-      colbacktitle=white,attach title to upper,after title={\par\smallskip}]\begin{multicols}{2}}%
-    {\end{multicols}\end{tcolorbox}}%
-  \etocsetnexttocdepth{section}%
-  \localtableofcontents
-  \endgroup}
-\usepackage{multicol}
-\etocsetstyle{section}{}
-  {\leavevmode\leftskip 1.2em\parindent -1.2em\rightskip 1.8em plus 1fil\parfillskip -1.8em\relax}
-  {\etocname\nobreak\hfill\makebox[1.8em][r]{\etocpage}\par}{}
-
-% ---------------------------------------------------------------- boxes
-\newtcolorbox{sylbox}{enhanced,breakable,colback=sylbg,colframe=accent,boxrule=0pt,leftrule=3pt,arc=0pt,
-  left=8pt,right=8pt,top=4pt,bottom=4pt,fontupper=\small,
-  title={\sffamily\bfseries Syllabus checklist},coltitle=accent,colbacktitle=sylbg,attach title to upper,after title={\par}}
-\newtcolorbox{revbox}{enhanced,breakable,colback=revbg,colframe=revframe,boxrule=0.6pt,arc=3pt,
-  left=8pt,right=8pt,top=5pt,bottom=5pt,
-  title={\sffamily\bfseries Quick Revision Box},fonttitle=\sffamily\bfseries,colbacktitle=revframe,coltitle=white,before upper={\setlength{\parskip}{3pt}}}
-% Monospaced diagram/code block; the font size is chosen per block by the converter so the widest
-% line fits the text width, which keeps box-drawing diagrams aligned. #1 = space to keep together.
-\newenvironment{asciiblock}[1]
-  {\par\needspace{\dimexpr #1\relax}\begin{tcolorbox}[enhanced,breakable,colback=codebg,colframe=rulegray,
-    boxrule=0.4pt,arc=2pt,left=4pt,right=4pt,top=3pt,bottom=3pt,before skip=4pt,after skip=6pt]}
-  {\end{tcolorbox}}
-\renewenvironment{quote}
-  {\begin{tcolorbox}[enhanced,breakable,colback=white,colframe=accentsoft,boxrule=0pt,leftrule=2.5pt,arc=0pt,
-    left=8pt,right=6pt,top=3pt,bottom=3pt,fontupper=\itshape]}
-  {\end{tcolorbox}}
-% Diagrams rendered from Mermaid float to the nearest good spot (never past the end of their
-% section, see placeins), at natural size but never wider than the text or taller than ~half a page.
-\usepackage[section]{placeins}
+% ================================================================= figures & captions
+\usepackage[font=small,labelfont={sc},labelsep=period,justification=centering,skip=6pt]{caption}
+\usepackage[section,above,below]{placeins}
 \renewcommand{\topfraction}{0.85}
 \renewcommand{\bottomfraction}{0.7}
-\renewcommand{\textfraction}{0.1}
-\renewcommand{\floatpagefraction}{0.7}
+\renewcommand{\textfraction}{0.12}
+\renewcommand{\floatpagefraction}{0.72}
 \setcounter{topnumber}{3}
-\setcounter{bottomnumber}{2}
 \setcounter{totalnumber}{4}
-\setlength{\textfloatsep}{10pt plus 2pt minus 2pt}
-\setlength{\floatsep}{8pt plus 2pt minus 2pt}
-\setlength{\intextsep}{8pt plus 2pt minus 2pt}
-\newcommand{\diagrambox}[1]{\adjustbox{max width=\linewidth,max totalheight=0.40\textheight}{\includegraphics[scale=0.7]{#1}}}
-\newcommand{\diagram}[1]{\begin{figure}[!htbp]\centering\diagrambox{#1}\end{figure}}
-% Non-floating variant used when a diagram directly follows a heading; \needdiagram{file}{extra}
-% is placed before that heading so heading + diagram move to the next page together.
-\newlength{\diagmaxh}
-\setlength{\diagmaxh}{0.40\textheight}
-\newcommand{\diagramhere}[1]{\par\smallskip{\centering
-  \adjustbox{max width=\linewidth,max totalheight=\diagmaxh}{\includegraphics[scale=0.7]{#1}}\par}\medskip
-  \global\setlength{\diagmaxh}{0.40\textheight}}
-\newsavebox{\diagsave}
-\newlength{\diagroom}
-\newcommand{\needdiagram}[2]{\par
-  \sbox{\diagsave}{\diagrambox{#1}}%
-  \ifdim\pagegoal<\maxdimen
-    \setlength{\diagroom}{\dimexpr\pagegoal-\pagetotal-#2\relax}%
-    \ifdim\dimexpr\ht\diagsave+\dp\diagsave\relax>\diagroom
-      \ifdim\diagroom>0.6\dimexpr\ht\diagsave+\dp\diagsave\relax
-        \global\setlength{\diagmaxh}{\diagroom}% shrink a little to fit this page
-      \else
-        \newpage
-      \fi
-    \fi
-  \fi}
+\setlength{\textfloatsep}{12pt plus 2pt minus 2pt}
+\setlength{\floatsep}{10pt plus 2pt minus 2pt}
+\setlength{\intextsep}{10pt plus 2pt minus 2pt}
+% Fallback for any diagram not yet redrawn: the PDF rendered from the Markdown's Mermaid source.
+\newcommand{\diagram}[1]{\begin{figure}[!htbp]\centering
+  \adjustbox{max width=\linewidth,max totalheight=0.42\textheight}{\includegraphics[scale=0.7]{#1}}\end{figure}}
+% Typeset formula panels (from art/): a quiet indented display.
+\newenvironment{formulas}{\par\smallskip\begingroup\setlength{\abovedisplayskip}{4pt}\setlength{\belowdisplayskip}{4pt}}{\endgroup\par\smallskip}
+% Formula table: description on the left, displayed formula on the right.
+\usepackage{tabularx}
+\newcolumntype{F}{>{$\displaystyle}l<{$}}
+\newenvironment{formulatable}[1][0.55]
+  {\par\medskip\noindent\hfill\renewcommand{\arraystretch}{2.0}%
+   \tabularx{0.96\linewidth}{@{}>{\raggedright\arraybackslash\small}X @{\hspace{1.2em}} >{\raggedright\arraybackslash$\displaystyle}p{#1\linewidth}<{$}@{}}\toprule}
+  {\bottomrule\endtabularx\hfill\null\par\medskip}
 
-% ---------------------------------------------------------------- headers & footers
+% ================================================================= headings
+\usepackage{titlesec}
+\setcounter{secnumdepth}{2}
+\def\chapkicker{}
+\titleformat{\chapter}[display]
+  {\normalfont\centering}
+  {\addfontfeatures{LetterSpace=12}\scshape\large\color{accent}\chapkicker}
+  {10pt}
+  {\fontsize{26}{31}\selectfont}
+  [\vspace{8pt}\ornament]
+\titleformat{name=\chapter,numberless}[display]
+  {\normalfont\centering}
+  {\addfontfeatures{LetterSpace=12}\scshape\large\color{accent}\chapkicker}
+  {10pt}
+  {\fontsize{26}{31}\selectfont}
+  [\vspace{8pt}\ornament]
+\titlespacing*{\chapter}{0pt}{0pt}{22pt}
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{0.8em}{}
+\titlespacing*{\section}{0pt}{18pt plus 3pt}{6pt}
+\titleformat{\subsection}{\normalfont\large\bfseries\itshape}{\thesubsection}{0.8em}{}
+\titlespacing*{\subsection}{0pt}{12pt plus 2pt}{4pt}
+\titleformat{\subsubsection}{\normalfont\normalsize\itshape}{}{0pt}{}
+\titleformat{\part}[display]{\normalfont\centering}
+  {\addfontfeatures{LetterSpace=14}\scshape\Large\color{accent}Part \thepart}{14pt}{\fontsize{30}{36}\selectfont}
+  [\vspace{10pt}\ornament]
+\renewcommand{\thepart}{\Roman{part}}
+
+\newcommand{\romanpaper}[1]{\ifcase#1\or I\or II\fi}
+% \unitchapter{paper}{unit}{title}{id}
+\newcommand{\unitchapter}[4]{%
+  \setcounter{chapter}{\numexpr#2-1\relax}%
+  \def\chapkicker{Paper \romanpaper{#1} \textperiodcentered{} Unit #2}%
+  \chapter{#3}\hypertarget{#4}{}\label{#4}}
+% \plainchapter{title}{id}: unnumbered chapter that still appears in the contents
+\newcommand{\plainchapter}[2]{%
+  \def\chapkicker{\ifnum\value{part}>0 Revision\else Introduction\fi}%
+  \chapter*{#1}\hypertarget{#2}{}\label{#2}\addcontentsline{toc}{chapter}{#1}\markboth{#1}{#1}}
+% The "Expected questions" line under a chapter title
+\newcommand{\unitmeta}[1]{\begin{center}\itshape\color{muted}#1\end{center}\vspace{4pt}}
+
+% ================================================================= boxes
+\newtcolorbox{sylbox}{enhanced,breakable,colback=white,colframe=ink,boxrule=0pt,toprule=0.6pt,bottomrule=0.6pt,
+  arc=0pt,left=2pt,right=2pt,top=6pt,bottom=6pt,fontupper=\small,
+  title={\addfontfeatures{LetterSpace=8}\scshape Syllabus coverage},coltitle=ink,colbacktitle=white,
+  halign title=center,titlerule=0.3pt,titlerule style={rulegrey}}
+\newtcolorbox{revbox}{enhanced,breakable,colback=paper,colframe=accent,boxrule=0.4pt,arc=0pt,
+  borderline={0.4pt}{2pt}{accent},left=10pt,right=10pt,top=8pt,bottom=8pt,
+  title={\addfontfeatures{LetterSpace=8}\scshape Points to remember},coltitle=accent,colbacktitle=paper,
+  halign title=center,titlerule=0pt,before upper={\setlength{\parskip}{3pt}}}
+% Code/text listing: thin left rule, no background. #1 = height to keep together.
+\newenvironment{listingblock}[1]
+  {\par\needspace{\dimexpr #1\relax}\begin{tcolorbox}[enhanced,breakable,colback=white,colframe=white,boxrule=0pt,
+    borderline west={0.6pt}{0pt}{rulegrey},arc=0pt,left=10pt,right=2pt,top=2pt,bottom=2pt,
+    before skip=6pt,after skip=8pt]}
+  {\end{tcolorbox}}
+\renewenvironment{quote}
+  {\begin{tcolorbox}[enhanced,breakable,colback=white,colframe=white,boxrule=0pt,
+    borderline west={0.5pt}{0pt}{accent},arc=0pt,left=12pt,right=12pt,top=2pt,bottom=2pt,fontupper=\small]}
+  {\end{tcolorbox}}
+
+% ================================================================= running heads
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhf{}
 \renewcommand{\chaptermark}[1]{\markboth{#1}{}}
-\fancyhead[L]{\sffamily\footnotesize\color{muted}\leftmark}
-\fancyhead[R]{\sffamily\footnotesize\color{muted}UGC NET Computer Science}
-\fancyfoot[C]{\sffamily\footnotesize\color{muted}\thepage}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\quad #1}}
+\fancyhead[LE]{\small\thepage\hspace{1.5em}\addfontfeatures{LetterSpace=5}\scshape\MakeLowercase{\leftmark}}
+\fancyhead[RO]{\addfontfeatures{LetterSpace=5}\small\scshape\MakeLowercase{\rightmark}\hspace{1.5em}\upshape\thepage}
 \renewcommand{\headrulewidth}{0.3pt}
-\renewcommand{\headrule}{\color{rulegray}\hrule height\headrulewidth}
-\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\sffamily\footnotesize\color{muted}\thepage}\renewcommand{\headrulewidth}{0pt}}
+\renewcommand{\headrule}{{\color{rulegrey}\hrule height\headrulewidth}}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\small\thepage}\renewcommand{\headrulewidth}{0pt}}
 
-% ---------------------------------------------------------------- links & PDF metadata
+% ================================================================= contents, links, metadata
+\usepackage{tocloft}
+\renewcommand{\cftchapfont}{\normalfont}
+\renewcommand{\cftchappagefont}{\normalfont}
+\renewcommand{\cftpartfont}{\addfontfeatures{LetterSpace=8}\scshape\large}
+\renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
+\setlength{\cftbeforechapskip}{3pt}
+\setlength{\cftbeforepartskip}{14pt}
+\renewcommand{\cfttoctitlefont}{\hfill\normalfont\fontsize{26}{31}\selectfont}
+\renewcommand{\cftaftertoctitle}{\hfill\null\par\vspace{4pt}\centerline{\ornament}}
+\setcounter{tocdepth}{1}
 \usepackage[hidelinks,unicode]{hyperref}
 \usepackage{bookmark}
 \bookmarksetup{depth=3}
-\hypersetup{colorlinks=true,linkcolor=accent,urlcolor=accent,
+\hypersetup{colorlinks=true,linkcolor=accent!85!black,urlcolor=accent!85!black,
   pdftitle={UGC NET Computer Science — Complete Study Material},
   pdfsubject={UGC NET Paper 1 and Paper 2 (Computer Science, code 87)}}
-\setcounter{tocdepth}{0}
 
 \begin{document}
 
-% ---------------------------------------------------------------- cover
+% ================================================================= title page
 \begin{titlepage}
-\thispagestyle{empty}
-\begin{tcolorbox}[enhanced,colback=accent,colframe=accent,arc=0pt,left=14mm,right=14mm,top=30mm,bottom=24mm,
-  grow to left by=18mm,grow to right by=18mm,enlarge top by=-20mm]
-\color{white}\sffamily
-{\large UGC NET \textbullet\ Paper 1 \& Paper 2 (Computer Science, Code 87)}\par\vspace{10mm}
-{\fontsize{38}{44}\selectfont\bfseries UGC NET\par Computer Science}\par\vspace{6mm}
-{\fontsize{20}{24}\selectfont Complete Study Material}\par
-\end{tcolorbox}
-\vspace{14mm}
-{\sffamily\large
-\begin{itemize}[leftmargin=1.2em,itemsep=6pt]
-  \item All 10 units of Paper 1 and all 10 units of Paper 2
-  \item Simple-language notes with 100+ diagrams
-  \item Worked numericals and step-by-step traces
-  \item Previous-year-pattern questions with answers for every unit
-  \item Exam-day formula sheet and a 120-day study plan
-\end{itemize}}
+\centering
+\vspace*{30mm}
+{\addfontfeatures{LetterSpace=14}\scshape\large University Grants Commission\par National Eligibility Test\par}
+\vspace{16mm}
+{\fontsize{40}{46}\selectfont Computer Science\par}
+\vspace{4mm}
+{\fontsize{22}{26}\selectfont\itshape \&\ Applications\par}
+\vspace{10mm}
+\ornament\par
+\vspace{10mm}
+{\Large Complete Study Material for Paper I and Paper II\par}
+\vspace{6mm}
+{\large\itshape Notes, figures, worked examples and previous-year-pattern questions\par}
 \vfill
-\begin{tcolorbox}[colback=revbg,colframe=revframe,boxrule=0.8pt,arc=3pt,halign=center]
-\sffamily\Large\bfseries Target: 250+ / 300 \quad\textcolor{muted}{\normalsize(\,≈ 126 of 150 questions correct\,)}
-\end{tcolorbox}
+\begin{tikzpicture}
+  \node[draw=accent, line width=0.4pt, double, double distance=1.6pt, inner xsep=14pt, inner ysep=9pt, align=center]
+    {\addfontfeatures{LetterSpace=6}\scshape Target: 250+ of 300\\[2pt]\small\itshape about 126 of 150 questions correct};
+\end{tikzpicture}
+\vspace{22mm}
 \end{titlepage}
 
 \frontmatter
 \pagestyle{plain}
-\renewcommand{\contentsname}{Contents}
 \tableofcontents
 
 \mainmatter
@@ -203,7 +213,7 @@
 
 \input{chapters/intro}
 
-\part{Paper 1\\[6pt]\Large Teaching \& Research Aptitude}
+\part{Paper I\\[6pt]\Large\itshape Teaching \& Research Aptitude}
 \input{chapters/p1-01}
 \input{chapters/p1-02}
 \input{chapters/p1-03}
@@ -215,7 +225,7 @@
 \input{chapters/p1-09}
 \input{chapters/p1-10}
 
-\part{Paper 2\\[6pt]\Large Computer Science \& Applications}
+\part{Paper II\\[6pt]\Large\itshape Computer Science \& Applications}
 \input{chapters/p2-01}
 \input{chapters/p2-02}
 \input{chapters/p2-03}

@@ -1,0 +1,20 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \def\R{2.5}
+  \foreach \a/\n/\t/\m/\col in {90/T/Teach/6 min/fsage, 18/F/Feedback/6 min/fsand, -54/RP/Re-plan/12 min/fslate,
+      -126/RT/Re-teach/6 min/fsage, 162/RF/Re-feedback/6 min/fsand} {
+    \node[box, fill=\col, minimum width=25mm] (\n) at (\a:\R) {\textbf{\t}\\\footnotesize\m};
+  }
+  \draw[arr] (T) to[bend left=18] (F);
+  \draw[arr] (F) to[bend left=18] (RP);
+  \draw[arr] (RP) to[bend left=18] (RT);
+  \draw[arr] (RT) to[bend left=18] (RF);
+  \draw[dasharr] (RF) to[bend left=18] node[lbl, left, pos=0.4] {repeat until\\mastered} (T);
+  \node[grey, minimum width=20mm] (PL) at (-5.2,2.5) {\textbf{Plan}\\\footnotesize one skill};
+  \draw[arr] (PL) -- (T);
+  \node[capt, align=center] at (0,0) {one cycle\\36 minutes};
+\end{tikzpicture}
+\caption{The micro-teaching cycle (Indian model): a single skill is taught to a small group, critiqued,
+re-planned and taught again.}
+\end{figure}

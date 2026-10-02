@@ -1,6 +1,7 @@
-\unitchapter{Paper 1 · Unit 7}{Data Interpretation}{p1-07}
+\unitchapter{1}{7}{Data Interpretation}{p1-07}
 
-\textbf{Expected questions: 5 (one data set) · Target: 5/5 --- pure calculation marks}
+\unitmeta{Expected questions: 5 (one data set) · Target: 5/5 --- pure calculation
+marks}
 
 \begin{sylbox}
 
@@ -20,12 +21,16 @@
 
 \end{sylbox}
 
-\needdiagram{figures/p1-07-00}{55pt}
+\needspace{125pt}
 
 \hypertarget{p1-07--1-data-basics}{%
-\section{1. Data Basics}\label{p1-07--1-data-basics}}
+\section{Data Basics}\label{p1-07--1-data-basics}}
 
-\diagramhere{figures/p1-07-00}
+Data are recorded observations. Before any calculation, ask what kind of data you have, because that
+decides what may legitimately be done with it --- one can average marks, but not roll numbers or
+blood groups.
+
+\input{art/p1-07-data}
 
 \begin{itemize}
 \tightlist
@@ -35,17 +40,22 @@
   Data mapping: choropleth maps (shades by region), dot maps, isopleths, cartograms.
 \end{itemize}
 
-\needspace{135pt}
+\needspace{125pt}
 
 \hypertarget{p1-07--2-graph-types--when-to-use}{%
-\section{2. Graph Types --- When to Use}\label{p1-07--2-graph-types--when-to-use}}
+\section{Graph Types --- When to Use}\label{p1-07--2-graph-types--when-to-use}}
+
+Every chart is designed for one kind of comparison. Examiners sometimes ask which chart suits a given
+purpose; the four panels below show the most common choices side by side.
+
+\input{art/p1-07-graphtypes}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1466}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3456}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2359}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1736}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4092}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2793}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Graph}
@@ -70,25 +80,23 @@ Table & Exact values & \\
 
 \endgroup
 
-\begin{asciiblock}{57pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
-Pie chart conversions
- 1% = 3.6°      25% = 90°      50% = 180°
- angle θ  ⇒  percentage = θ / 3.6
-\end{Verbatim}
-\end{asciiblock}
+\input{art/p1-07-pie-rule}
 
-\needspace{135pt}
+\needspace{160pt}
 
 \hypertarget{p1-07--3-measures-of-central-tendency--dispersion}{%
-\section{3. Measures of Central Tendency \& Dispersion}\label{p1-07--3-measures-of-central-tendency--dispersion}}
+\section{Measures of Central Tendency \& Dispersion}\label{p1-07--3-measures-of-central-tendency--dispersion}}
+
+A measure of central tendency gives one representative value; a measure of dispersion tells how widely the
+values scatter around it. Two classes can share the same average and still be very different --- which is
+why both kinds of measure are needed.
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1869}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2097}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2117}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2213}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2483}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2506}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Measure}
@@ -113,40 +121,37 @@ Coefficient of variation & SD / Mean × 100 & Compare consistency \\
 
 \endgroup
 
-\needspace{144pt}
+\needspace{125pt}
 
 \hypertarget{p1-07--4-speed-calculation-tricks}{%
-\section{4. Speed-Calculation Tricks}\label{p1-07--4-speed-calculation-tricks}}
+\section{Speed-Calculation Tricks}\label{p1-07--4-speed-calculation-tricks}}
 
-\begin{asciiblock}{89pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
-Percentage change    = (New − Old)/Old × 100
-Percentage points    = simple difference of two percentages
-Ratio comparisons    → compare cross-products: a/b > c/d  ⇔ ad > bc
-CAGR                 = (End/Start)^(1/n) − 1
-Fraction-percent     1/2=50 1/3=33.33 1/4=25 1/5=20 1/6=16.67 1/7=14.28
-                     1/8=12.5 1/9=11.11 1/11=9.09 1/12=8.33 1/16=6.25
-\end{Verbatim}
-\end{asciiblock}
+The data-interpretation set is the most calculation-heavy part of Paper I. Options are usually far apart,
+so approximate first and calculate exactly only when two options are close.
+
+\input{art/p1-07-tricks}
 
 Approximate first, then pick nearest option; options are usually far apart.
 
-\needspace{170pt}
+\needspace{190pt}
 
 \hypertarget{p1-07--5-worked-data-set-typical-net-format}{%
-\section{5. Worked Data Set (typical NET format)}\label{p1-07--5-worked-data-set-typical-net-format}}
+\section{Worked Data Set (typical NET format)}\label{p1-07--5-worked-data-set-typical-net-format}}
+
+The table below is typical of an examination set: four series over four years, followed by five questions
+on growth, averages, shares and angles. Work through each question before reading its solution.
 
 Production of cars (thousands) by 4 companies:
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0589}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0372}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0372}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0372}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0372}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0666}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0709}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0449}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0449}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0449}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0449}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0803}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Year}
@@ -173,15 +178,7 @@ Production of cars (thousands) by 4 companies:
 
 \endgroup
 
-\begin{asciiblock}{78pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
-Bar view of P across years
-2019 ████████████████████ 40
-2020 ██████████████████████▌ 45
-2021 █████████████████████████ 50
-2022 ██████████████████████████████ 60
-\end{Verbatim}
-\end{asciiblock}
+\input{art/p1-07-cars}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -198,10 +195,13 @@ Bar view of P across years
   Pie-chart angle for S in 2021 = 25/135 × 360 = \textbf{66.67°}
 \end{enumerate}
 
-\needspace{100pt}
+\needspace{125pt}
 
 \hypertarget{p1-07--6-data-and-governance}{%
-\section{6. Data and Governance}\label{p1-07--6-data-and-governance}}
+\section{Data and Governance}\label{p1-07--6-data-and-governance}}
+
+Governments are now among the largest producers and users of data. Questions in this area concern the
+institutions, laws and platforms through which public data are collected, protected and shared.
 
 \begin{itemize}
 \tightlist
@@ -219,27 +219,27 @@ Bar view of P across years
   Census of India --- every 10 years (Registrar General \& Census Commissioner, MHA); NSO (merged NSSO + CSO, 2019) under MoSPI.
 \end{itemize}
 
-\needdiagram{figures/p1-07-01}{130pt}
+\needspace{161pt}
 
 \hypertarget{p1-07--7-deeper-dive--pie-chart--line-graph-sets-common-pitfalls}{%
-\section{7. Deeper Dive --- Pie Chart \& Line Graph Sets, Common Pitfalls}\label{p1-07--7-deeper-dive--pie-chart--line-graph-sets-common-pitfalls}}
+\section{Deeper Dive --- Pie Chart \& Line Graph Sets, Common Pitfalls}\label{p1-07--7-deeper-dive--pie-chart--line-graph-sets-common-pitfalls}}
 
-\needspace{135pt}
+\needspace{125pt}
 
 \hypertarget{p1-07--71-pie-chart-set-worked}{%
-\subsection{7.1 Pie-Chart Set (worked)}\label{p1-07--71-pie-chart-set-worked}}
+\subsection{Pie-Chart Set (worked)}\label{p1-07--71-pie-chart-set-worked}}
 
 A university\textquotesingle s annual expenditure of \textbf{₹80 crore} is distributed as follows:
 
-\diagramhere{figures/p1-07-01}
+\input{art/p1-07-pie}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1315}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0350}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1662}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1281}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1565}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0417}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1979}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1525}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Head}
@@ -278,34 +278,22 @@ Scholarships & 10 & 8 & 36° \\
   If research grants come only from a ₹12 crore grant plus internal funds, internal funds = 16 − 12 = \textbf{₹4 crore}.
 \end{enumerate}
 
-\needspace{211pt}
+\needspace{125pt}
 
 \hypertarget{p1-07--72-two-series-set-worked}{%
-\subsection{7.2 Two-Series Set (worked)}\label{p1-07--72-two-series-set-worked}}
+\subsection{Two-Series Set (worked)}\label{p1-07--72-two-series-set-worked}}
 
 Number of PhD scholars admitted (two departments):
 
-\begin{asciiblock}{121pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
- Scholars admitted (each ▇ = 5 scholars)
- 2021  CS    ▇▇▇▇▇▇            30
-       Maths ▇▇▇▇              20
- 2022  CS    ▇▇▇▇▇▇▇▇          40
-       Maths ▇▇▇▇▇▇            30
- 2023  CS    ▇▇▇▇▇▇▇▇▇▇        50
-       Maths ▇▇▇▇▇▇▇           35
- 2024  CS    ▇▇▇▇▇▇▇▇▇▇▇▇      60
-       Maths ▇▇▇▇▇▇▇▇▇         45
-\end{Verbatim}
-\end{asciiblock}
+\input{art/p1-07-scholars}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0553}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0452}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0643}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0626}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0659}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0539}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0765}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0745}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Year}
@@ -343,10 +331,10 @@ Number of PhD scholars admitted (two departments):
   CAGR of CS (2021→2024, 3 years) = (60/30)\^{}(1/3) − 1 ≈ \textbf{26\%}.
 \end{enumerate}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p1-07--73-pitfalls-examiners-exploit}{%
-\subsection{7.3 Pitfalls Examiners Exploit}\label{p1-07--73-pitfalls-examiners-exploit}}
+\subsection{Pitfalls Examiners Exploit}\label{p1-07--73-pitfalls-examiners-exploit}}
 
 \begin{itemize}
 \tightlist
@@ -362,10 +350,10 @@ Number of PhD scholars admitted (two departments):
   Read the \textbf{question first}, then compute only what is asked.
 \end{itemize}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p1-07--74-data-mapping--governance-extras}{%
-\subsection{7.4 Data Mapping \& Governance Extras}\label{p1-07--74-data-mapping--governance-extras}}
+\subsection{Data Mapping \& Governance Extras}\label{p1-07--74-data-mapping--governance-extras}}
 
 \begin{itemize}
 \tightlist
@@ -377,7 +365,7 @@ Number of PhD scholars admitted (two departments):
   \textbf{Metadata} = data about data. \textbf{Open data} principles: accessible, machine-readable, licence-free.
 \end{itemize}
 
-\needspace{135pt}
+\needspace{125pt}
 
 \hypertarget{p1-07--previous-year-questions-pyq-pattern}{%
 \section{Previous Year Questions (PYQ pattern)}\label{p1-07--previous-year-questions-pyq-pattern}}

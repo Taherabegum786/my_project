@@ -1,0 +1,14 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[node distance=9mm]
+  \node[slate, text width=24mm] (A) {Instructional\\objectives};
+  \node[sage,  text width=24mm, right=of A] (B) {Entering\\behaviour};
+  \node[sand,  text width=24mm, right=of B] (C) {Instructional\\procedures};
+  \node[rose,  text width=24mm, right=of C] (D) {Performance\\assessment};
+  \draw[arr] (A) -- (B); \draw[arr] (B) -- (C); \draw[arr] (C) -- (D);
+  \coordinate (y) at ($(A.south)+(0,-9mm)$);
+  \draw[thinline] (D.south) -- (D.south |- y) -- node[lbl, below, pos=0.5] {feedback} (A.south |- y);
+  \foreach \n in {A,B,C} \draw[arr] (\n.south |- y) -- (\n.south);
+\end{tikzpicture}
+\caption{Glaser's Basic Teaching Model. Assessment feeds back into every earlier component.}
+\end{figure}

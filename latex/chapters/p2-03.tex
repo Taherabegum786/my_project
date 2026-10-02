@@ -1,6 +1,7 @@
-\unitchapter{Paper 2 · Unit 3}{Programming Languages \& Computer Graphics}{p2-03}
+\unitchapter{2}{3}{Programming Languages \& Computer Graphics}{p2-03}
 
-\textbf{Expected questions: 8--10 · Target: 8+ · Type: C/C++ output prediction, OOP concepts, graphics algorithms \& transforms}
+\unitmeta{Expected questions: 8--10 · Target: 8+ · Type: C/C++ output prediction,
+OOP concepts, graphics algorithms \& transforms}
 
 \begin{sylbox}
 
@@ -28,24 +29,24 @@
 
 \end{sylbox}
 
-\needdiagram{figures/p2-03-00}{95pt}
+\needspace{131pt}
 
 \hypertarget{p2-03--1-language-concepts}{%
-\section{1. Language Concepts}\label{p2-03--1-language-concepts}}
+\section{Language Concepts}\label{p2-03--1-language-concepts}}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-03--11-paradigms}{%
-\subsection{1.1 Paradigms}\label{p2-03--11-paradigms}}
+\subsection{Paradigms}\label{p2-03--11-paradigms}}
 
-\diagramhere{figures/p2-03-00}
+\diagram{figures/p2-03-00}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1063}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2777}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2539}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1259}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3287}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3006}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Language}
@@ -74,19 +75,19 @@ Python & 1991, Guido van Rossum & Multi-paradigm \\
 
 \endgroup
 
-\needspace{132pt}
+\needspace{117pt}
 
 \hypertarget{p2-03--12-binding-time}{%
-\subsection{1.2 Binding Time}\label{p2-03--12-binding-time}}
+\subsection{Binding Time}\label{p2-03--12-binding-time}}
 
 Binding = association of an attribute with an entity.
 
-\begin{asciiblock}{42pt}
-\begin{Verbatim}[fontsize=\fontsize{7.4}{9.0}\selectfont]
+\begin{listingblock}{37pt}
+\begin{Verbatim}[fontsize=\fontsize{6.7}{8.1}\selectfont]
 Language design time → Language implementation time → Compile time → Link time → Load time → Run time
   (meaning of *)          (size of int)                 (type of var)   (library code)  (address)    (value)
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begin{itemize}
 \tightlist
@@ -98,17 +99,17 @@ Language design time → Language implementation time → Compile time → Link 
   Storage: static (globals), stack-dynamic (locals), explicit heap-dynamic (new/malloc), implicit heap-dynamic.
 \end{itemize}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-03--13-parameter-passing}{%
-\subsection{1.3 Parameter Passing}\label{p2-03--13-parameter-passing}}
+\subsection{Parameter Passing}\label{p2-03--13-parameter-passing}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3039}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4466}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1471}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3598}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4661}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1741}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Method}
@@ -132,19 +133,19 @@ Call by need & Lazy evaluation, memoised & Haskell \\
 
 \textbf{Classic question}:
 
-\begin{asciiblock}{35pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{31pt}
+\begin{Verbatim}[fontsize=\fontsize{8.7}{10.6}\selectfont]
 void swap(int x, int y) { int t = x; x = y; y = t; }   // by value: caller unchanged
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 With \texttt{a\ =\ 1,\ i\ =\ 1,\ A{[}1{]}\ =\ 5}, call \texttt{f(i,\ A{[}i{]})} where f does \texttt{x\ =\ x\ +\ 1;\ y\ =\ y\ +\ 1;}:
 by name → \texttt{A{[}2{]}} incremented (since i changed first); by reference → \texttt{A{[}1{]}} incremented.
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-03--14-data-types}{%
-\subsection{1.4 Data Types}\label{p2-03--14-data-types}}
+\subsection{Data Types}\label{p2-03--14-data-types}}
 
 \begin{itemize}
 \tightlist
@@ -158,18 +159,18 @@ by name → \texttt{A{[}2{]}} incremented (since i changed first); by reference 
   Type checking static (compile) vs dynamic (run time). Coercion = implicit type conversion.
 \end{itemize}
 
-\needspace{248pt}
+\needspace{237pt}
 
 \hypertarget{p2-03--2-c-programming--exam-traps}{%
-\section{2. C Programming --- Exam Traps}\label{p2-03--2-c-programming--exam-traps}}
+\section{C Programming --- Exam Traps}\label{p2-03--2-c-programming--exam-traps}}
 
-\needspace{208pt}
+\needspace{201pt}
 
 \hypertarget{p2-03--21-operator-precedence-high--low}{%
-\subsection{2.1 Operator precedence (high → low)}\label{p2-03--21-operator-precedence-high--low}}
+\subsection{Operator precedence (high → low)}\label{p2-03--21-operator-precedence-high--low}}
 
-\begin{asciiblock}{153pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{151pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 () [] -> .     ++ -- (postfix)
 ! ~ ++ -- + - * & (type) sizeof   (unary, right-to-left)
 * / %
@@ -183,15 +184,15 @@ by name → \texttt{A{[}2{]}} incremented (since i changed first); by reference 
 = += -= ...     (right-to-left)
 ,
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{336pt}
+\needspace{318pt}
 
 \hypertarget{p2-03--22-output-prediction-examples}{%
-\subsection{2.2 Output-prediction examples}\label{p2-03--22-output-prediction-examples}}
+\subsection{Output-prediction examples}\label{p2-03--22-output-prediction-examples}}
 
-\begin{asciiblock}{281pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{268pt}
+\begin{Verbatim}[fontsize=\fontsize{8.5}{10.3}\selectfont]
 int i = 5;
 printf("%d %d", i++, ++i);   // UNDEFINED behaviour (unsequenced modification)
 
@@ -217,15 +218,15 @@ static int counter() { static int c = 0; return ++c; }   // retains value: 1, 2,
 #define SQ(x) x*x
 printf("%d", SQ(2+3));           // 2+3*2+3 = 11 (macro pitfall)
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{144pt}
+\needspace{136pt}
 
 \hypertarget{p2-03--23-pointers}{%
-\subsection{2.3 Pointers}\label{p2-03--23-pointers}}
+\subsection{Pointers}\label{p2-03--23-pointers}}
 
-\begin{asciiblock}{89pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{86pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 int *p;          pointer to int
 int **pp;        pointer to pointer
 int *a[10];      array of 10 pointers to int
@@ -233,7 +234,7 @@ int (*a)[10];    pointer to an array of 10 ints
 int *f();        function returning pointer to int
 int (*f)();      pointer to function returning int
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begin{itemize}
 \tightlist
@@ -245,31 +246,31 @@ int (*f)();      pointer to function returning int
   Memory: \texttt{malloc} (uninitialised), \texttt{calloc} (zeroed, n × size), \texttt{realloc}, \texttt{free}.
 \end{itemize}
 
-\needspace{101pt}
+\needspace{90pt}
 
 \hypertarget{p2-03--24-structures-vs-unions}{%
-\subsection{2.4 Structures vs Unions}\label{p2-03--24-structures-vs-unions}}
+\subsection{Structures vs Unions}\label{p2-03--24-structures-vs-unions}}
 
-\begin{asciiblock}{46pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{40pt}
+\begin{Verbatim}[fontsize=\fontsize{8.0}{9.7}\selectfont]
 struct S { int i; char c; double d; };  // size = sum + padding (typically 16)
 union  U { int i; char c; double d; };  // size = largest member (8) — members share memory
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-03--25-storage-classes}{%
-\subsection{2.5 Storage Classes}\label{p2-03--25-storage-classes}}
+\subsection{Storage Classes}\label{p2-03--25-storage-classes}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0753}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0974}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1273}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0813}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1753}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0901}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1167}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1525}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0973}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2099}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Class}
@@ -294,10 +295,10 @@ extern & Global & Whole program & 0 & Data segment \\
 
 \endgroup
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-03--26-files-command-line-preprocessor}{%
-\subsection{2.6 Files, Command line, Preprocessor}\label{p2-03--26-files-command-line-preprocessor}}
+\subsection{Files, Command line, Preprocessor}\label{p2-03--26-files-command-line-preprocessor}}
 
 \begin{itemize}
 \tightlist
@@ -309,15 +310,15 @@ extern & Global & Whole program & 0 & Data segment \\
   Preprocessor: \texttt{\#include}, \texttt{\#define}, \texttt{\#ifdef}, \texttt{\#ifndef}, \texttt{\#if}, \texttt{\#pragma}, \texttt{\#undef}; runs \textbf{before compilation}.
 \end{itemize}
 
-\needdiagram{figures/p2-03-01}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-03--3-oop-concepts}{%
-\section{3. OOP Concepts}\label{p2-03--3-oop-concepts}}
+\section{OOP Concepts}\label{p2-03--3-oop-concepts}}
 
-\diagramhere{figures/p2-03-01}
+\diagram{figures/p2-03-01}
 
-\begin{asciiblock}{99pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{97pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
  Inheritance types
  Single      Multiple      Multilevel     Hierarchical      Hybrid (diamond)
    A         A     B          A               A                  A
@@ -326,7 +327,7 @@ extern & Global & Whole program & 0 & Data segment \\
                               │                                 ╲ ╱
                               C                                  D
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begin{itemize}
 \tightlist
@@ -334,16 +335,16 @@ extern & Global & Whole program & 0 & Data segment \\
   Diamond problem in C++ solved by \textbf{virtual base class}. Java avoids multiple class inheritance (uses interfaces).
 \end{itemize}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-03--4-c-specifics}{%
-\section{4. C++ Specifics}\label{p2-03--4-c-specifics}}
+\section{C++ Specifics}\label{p2-03--4-c-specifics}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1660}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.8340}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1956}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.8044}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Topic}
@@ -374,25 +375,25 @@ Access in inheritance & public base: public→\allowbreak{}public, protected→\
 
 \endgroup
 
-\begin{asciiblock}{67pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{64pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 class Base { public: virtual void show() { cout << "Base"; } };
 class Der : public Base { public: void show() { cout << "Derived"; } };
 Base *b = new Der();
 b->show();    // "Derived" (virtual)  — without virtual: "Base"
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-03--5-web-programming}{%
-\section{5. Web Programming}\label{p2-03--5-web-programming}}
+\section{Web Programming}\label{p2-03--5-web-programming}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1274}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.8726}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.8500}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Technology}
@@ -417,21 +418,21 @@ HTTP methods & GET (in URL, idempotent), POST (in body), PUT, DELETE \\
 
 \endgroup
 
-\needspace{175pt}
+\needspace{166pt}
 
 \hypertarget{p2-03--6-computer-graphics}{%
-\section{6. Computer Graphics}\label{p2-03--6-computer-graphics}}
+\section{Computer Graphics}\label{p2-03--6-computer-graphics}}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-03--61-display-devices}{%
-\subsection{6.1 Display Devices}\label{p2-03--61-display-devices}}
+\subsection{Display Devices}\label{p2-03--61-display-devices}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2986}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3019}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3517}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3556}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Raster scan}
@@ -451,15 +452,15 @@ TV, monitors & Pen plotters, early CAD \\
 
 \endgroup
 
-\begin{asciiblock}{78pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{75pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 Frame buffer size = Resolution × bits per pixel / 8   bytes
 e.g. 1024 × 768, 24-bit colour → 1024×768×3 = 2.25 MB
 Number of colours = 2^(bits per pixel)
 Refresh: interlaced (odd/even lines alternately) vs non-interlaced
 Aspect ratio = width : height
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begin{itemize}
 \tightlist
@@ -469,36 +470,36 @@ Aspect ratio = width : height
   LCD, LED, plasma (flat panel); DVST (Direct View Storage Tube). Colour lookup table saves memory.
 \end{itemize}
 
-\needspace{157pt}
+\needspace{144pt}
 
 \hypertarget{p2-03--62-line-drawing}{%
-\subsection{6.2 Line Drawing}\label{p2-03--62-line-drawing}}
+\subsection{Line Drawing}\label{p2-03--62-line-drawing}}
 
 \textbf{DDA (Digital Differential Analyzer)}
 
-\begin{asciiblock}{67pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{64pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 dx = x2 − x1, dy = y2 − y1, steps = max(|dx|, |dy|)
 xinc = dx/steps, yinc = dy/steps
 repeat steps times: x += xinc, y += yinc, plot(round(x), round(y))
 → uses floating point and rounding (slower)
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \textbf{Bresenham (\textbar m\textbar{} \textless{} 1)} --- integer only:
 
-\begin{asciiblock}{57pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{53pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 p0 = 2dy − dx
 if pk < 0:  next = (xk+1, yk),     pk+1 = pk + 2dy
 else:       next = (xk+1, yk+1),   pk+1 = pk + 2dy − 2dx
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 Example (20,10)→(30,18): dx=10, dy=8, p0 = 6, 2dy = 16, 2dy−2dx = −4.
 
-\begin{asciiblock}{110pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{108pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
  k  pk   plot
  0   6   (21,11)
  1   2   (22,12)
@@ -508,12 +509,12 @@ Example (20,10)→(30,18): dx=10, dy=8, p0 = 6, 2dy = 16, 2dy−2dx = −4.
  5   6   (26,15)
  ...
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-03--63-mid-point-circle}{%
-\subsection{6.3 Mid-point Circle}\label{p2-03--63-mid-point-circle}}
+\subsection{Mid-point Circle}\label{p2-03--63-mid-point-circle}}
 
 \begin{itemize}
 \tightlist
@@ -521,20 +522,20 @@ Example (20,10)→(30,18): dx=10, dy=8, p0 = 6, 2dy = 16, 2dy−2dx = −4.
   8-way symmetry: compute one octant (x from 0 to x = y), reflect to 8.
 \end{itemize}
 
-\begin{asciiblock}{57pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{53pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 p0 = 1 − r     (5/4 − r)
 if pk < 0:  (xk+1, yk),     pk+1 = pk + 2xk+1 + 1
 else:       (xk+1, yk−1),   pk+1 = pk + 2xk+1 + 1 − 2yk+1
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 Ellipse: \textbf{4-way symmetry}, two regions (slope −1 boundary).
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-03--64-filling}{%
-\subsection{6.4 Filling}\label{p2-03--64-filling}}
+\subsection{Filling}\label{p2-03--64-filling}}
 
 \begin{itemize}
 \tightlist
@@ -548,13 +549,13 @@ Ellipse: \textbf{4-way symmetry}, two regions (slope −1 boundary).
   Inside test: \textbf{odd-even (even-odd) rule}, \textbf{non-zero winding number rule}.
 \end{itemize}
 
-\needspace{161pt}
+\needspace{145pt}
 
 \hypertarget{p2-03--65-2-d-transformations-homogeneous-coordinates}{%
-\subsection{6.5 2-D Transformations (Homogeneous coordinates)}\label{p2-03--65-2-d-transformations-homogeneous-coordinates}}
+\subsection{2-D Transformations (Homogeneous coordinates)}\label{p2-03--65-2-d-transformations-homogeneous-coordinates}}
 
-\begin{asciiblock}{106pt}
-\begin{Verbatim}[fontsize=\fontsize{8.4}{10.2}\selectfont]
+\begin{listingblock}{95pt}
+\begin{Verbatim}[fontsize=\fontsize{7.7}{9.3}\selectfont]
 Translation        Scaling            Rotation (anticlockwise θ)
 | 1  0  tx |       | sx 0  0 |        | cosθ  −sinθ  0 |
 | 0  1  ty |       | 0  sy 0 |        | sinθ   cosθ  0 |
@@ -564,7 +565,7 @@ Reflection about x-axis: diag(1, −1, 1)      about y-axis: diag(−1, 1, 1)
 about origin: diag(−1, −1, 1)                about y = x: swap x and y  [[0 1 0][1 0 0][0 0 1]]
 X-shear: x' = x + shx·y                      Y-shear: y' = y + shy·x
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begin{itemize}
 \tightlist
@@ -578,36 +579,36 @@ X-shear: x' = x + shx·y                      Y-shear: y' = y + shy·x
   Matrix multiplication is generally \textbf{not commutative} (except e.g. two rotations, two scalings, rotation \& uniform scaling).
 \end{itemize}
 
-\needdiagram{figures/p2-03-02}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-03--66-viewing--window-to-viewport}{%
-\subsection{6.6 Viewing \& Window-to-Viewport}\label{p2-03--66-viewing--window-to-viewport}}
+\subsection{Viewing \& Window-to-Viewport}\label{p2-03--66-viewing--window-to-viewport}}
 
-\diagramhere{figures/p2-03-02}
+\diagram{figures/p2-03-02}
 
-\begin{asciiblock}{46pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{42pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 xv = xvmin + (xw − xwmin) · sx      sx = (xvmax − xvmin)/(xwmax − xwmin)
 yv = yvmin + (yw − ywmin) · sy      sy = (yvmax − yvmin)/(ywmax − ywmin)
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{168pt}
+\needspace{155pt}
 
 \hypertarget{p2-03--67-clipping}{%
-\subsection{6.7 Clipping}\label{p2-03--67-clipping}}
+\subsection{Clipping}\label{p2-03--67-clipping}}
 
 \textbf{Cohen--Sutherland line clipping} --- 4-bit region code \textbf{TBRL} (Top, Bottom, Right, Left):
 
-\begin{asciiblock}{78pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{75pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
         1001 │ 1000 │ 1010
        ──────┼──────┼──────
         0001 │ 0000 │ 0010        window = 0000
        ──────┼──────┼──────
         0101 │ 0100 │ 0110
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begin{itemize}
 \tightlist
@@ -618,8 +619,8 @@ yv = yvmin + (yw − ywmin) · sy      sy = (yvmax − yvmin)/(ywmax − ywmin)
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1741}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3566}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2050}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4200}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Algorithm}
@@ -641,10 +642,10 @@ Weiler--Atherton & Polygon clipping (concave too) \\
 
 \endgroup
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-03--68-3-d-graphics}{%
-\subsection{6.8 3-D Graphics}\label{p2-03--68-3-d-graphics}}
+\subsection{3-D Graphics}\label{p2-03--68-3-d-graphics}}
 
 \begin{itemize}
 \tightlist
@@ -659,8 +660,8 @@ Weiler--Atherton & Polygon clipping (concave too) \\
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4024}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3750}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4739}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4417}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Bezier curve}
@@ -682,24 +683,24 @@ Bernstein basis polynomials & B-spline basis functions \\
 
 Cubic Bezier: P(t) = (1−t)³P₀ + 3t(1−t)²P₁ + 3t²(1−t)P₂ + t³P₃, 0 ≤ t ≤ 1.
 
-\needspace{101pt}
+\needspace{92pt}
 
 \hypertarget{p2-03--69-illumination--shading}{%
-\subsection{6.9 Illumination \& Shading}\label{p2-03--69-illumination--shading}}
+\subsection{Illumination \& Shading}\label{p2-03--69-illumination--shading}}
 
-\begin{asciiblock}{46pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{42pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 I = Ia·ka  +  Il·kd·(N·L)  +  Il·ks·(R·V)ⁿ
     ambient     diffuse (Lambert)   specular (Phong, n = shininess)
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1282}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2655}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3893}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1517}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3144}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4609}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Shading}
@@ -719,12 +720,12 @@ Flat (constant) & One intensity per polygon & Faceted \\
 
 \endgroup
 
-\needdiagram{figures/p2-03-03}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-03--610-projections}{%
-\subsection{6.10 Projections}\label{p2-03--610-projections}}
+\subsection{Projections}\label{p2-03--610-projections}}
 
-\diagramhere{figures/p2-03-03}
+\diagram{figures/p2-03-03}
 
 \begin{itemize}
 \tightlist
@@ -736,24 +737,24 @@ Flat (constant) & One intensity per polygon & Faceted \\
   Hidden surface removal: \textbf{Z-buffer (depth buffer)}, painter\textquotesingle s (depth sort), scan-line, BSP tree, back-face detection (N·V \textgreater{} 0 → back face), Warnock (area subdivision), ray casting.
 \end{itemize}
 
-\needspace{162pt}
+\needspace{150pt}
 
 \hypertarget{p2-03--7-deeper-dive--scoping-more-c-traps-java-essentials--graphics-traces}{%
-\section{7. Deeper Dive --- Scoping, More C Traps, Java Essentials \& Graphics Traces}\label{p2-03--7-deeper-dive--scoping-more-c-traps-java-essentials--graphics-traces}}
+\section{Deeper Dive --- Scoping, More C Traps, Java Essentials \& Graphics Traces}\label{p2-03--7-deeper-dive--scoping-more-c-traps-java-essentials--graphics-traces}}
 
-\needspace{122pt}
+\needspace{114pt}
 
 \hypertarget{p2-03--71-static-vs-dynamic-scoping--classic-question}{%
-\subsection{7.1 Static vs Dynamic Scoping --- Classic Question}\label{p2-03--71-static-vs-dynamic-scoping--classic-question}}
+\subsection{Static vs Dynamic Scoping --- Classic Question}\label{p2-03--71-static-vs-dynamic-scoping--classic-question}}
 
-\begin{asciiblock}{67pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{64pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 int x = 1;
 void f()  { printf("%d", x); }
 void g()  { int x = 2; f(); }
 int main() { g(); }
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begin{itemize}
 \tightlist
@@ -763,35 +764,35 @@ int main() { g(); }
   \textbf{Dynamic scoping}: x is looked up in the most recent active frame (g\textquotesingle s) → prints \textbf{2}.
 \end{itemize}
 
-\needspace{101pt}
+\needspace{92pt}
 
 \hypertarget{p2-03--72-recursion-trace}{%
-\subsection{7.2 Recursion Trace}\label{p2-03--72-recursion-trace}}
+\subsection{Recursion Trace}\label{p2-03--72-recursion-trace}}
 
-\begin{asciiblock}{46pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{42pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 int fun(int n) { if (n <= 1) return 1; return n * fun(n - 2); }
 fun(7) = 7 × fun(5) = 7 × 5 × fun(3) = 7 × 5 × 3 × fun(1) = 105
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\begin{asciiblock}{78pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{75pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 Call stack (grows downward)       Returns (unwinding)
  fun(7)                            fun(1) → 1
    fun(5)                          fun(3) → 3 × 1  = 3
      fun(3)                        fun(5) → 5 × 3  = 15
        fun(1)                      fun(7) → 7 × 15 = 105
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{362pt}
+\needspace{331pt}
 
 \hypertarget{p2-03--73-more-c-output-questions-with-reasons}{%
-\subsection{7.3 More C Output Questions (with reasons)}\label{p2-03--73-more-c-output-questions-with-reasons}}
+\subsection{More C Output Questions (with reasons)}\label{p2-03--73-more-c-output-questions-with-reasons}}
 
-\begin{asciiblock}{307pt}
-\begin{Verbatim}[fontsize=\fontsize{7.5}{9.1}\selectfont]
+\begin{listingblock}{281pt}
+\begin{Verbatim}[fontsize=\fontsize{6.9}{8.4}\selectfont]
 // 1. switch fall-through
 int k = 2;
 switch (k) { case 1: printf("A"); case 2: printf("B"); case 3: printf("C"); break; default: printf("D"); }
@@ -824,21 +825,21 @@ if (p && (q = 10)) {}  printf("%d", q);         // 5 (second operand never evalu
 int m[2][3] = {{1,2,3},{4,5,6}};
 printf("%d", *(*(m + 1) + 2));                  // 6  (m[1][2])
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-03--74-java-essentials}{%
-\subsection{7.4 Java Essentials}\label{p2-03--74-java-essentials}}
+\subsection{Java Essentials}\label{p2-03--74-java-essentials}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1237}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1165}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1367}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1956}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0645}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1481}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1395}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1637}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2342}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0773}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Modifier}
@@ -866,8 +867,8 @@ public & ✔ & ✔ & ✔ & ✔ \\
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4090}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4972}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4817}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5183}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Abstract class}
@@ -899,30 +900,30 @@ Use for "is-a" with shared code & Use for capability contracts \\
   \texttt{String} is immutable; \texttt{StringBuffer} (synchronised) and \texttt{StringBuilder} (faster) are mutable.
 \end{itemize}
 
-\needspace{147pt}
+\needspace{133pt}
 
 \hypertarget{p2-03--75-graphics-traces}{%
-\subsection{7.5 Graphics Traces}\label{p2-03--75-graphics-traces}}
+\subsection{Graphics Traces}\label{p2-03--75-graphics-traces}}
 
 \textbf{DDA}: (2, 3) → (8, 6); dx = 6, dy = 3, steps = 6, x-inc = 1, y-inc = 0.5.
 
-\begin{asciiblock}{57pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{53pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 x : 2   3    4   5    6   7    8
 y : 3   3.5  4   4.5  5   5.5  6
 plotted (round half up): (2,3) (3,4) (4,4) (5,5) (6,5) (7,6) (8,6)
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \textbf{Mid-point circle, r = 10} (first octant, start (0, 10), p₀ = 1 − r = −9):
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0300}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0385}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1029}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1070}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0357}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0459}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1225}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1274}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{k}
@@ -950,13 +951,13 @@ plotted (round half up): (2,3) (3,4) (4,4) (5,5) (6,5) (7,6) (8,6)
 
 \textbf{Composite transformation}: rotate P(4, 2) by 90° anticlockwise about pivot (2, 2).
 
-\begin{asciiblock}{57pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{53pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 1. Translate by (−2, −2):  (2, 0)
 2. Rotate 90°: (x cos90 − y sin90, x sin90 + y cos90) = (0, 2)
 3. Translate by (+2, +2):  (2, 4)        → P' = (2, 4)
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 Scaling about fixed point (xf, yf): T(xf, yf) · S(sx, sy) · T(−xf, −yf) → x\textquotesingle{} = xf + (x − xf)·sx.
 
@@ -964,8 +965,8 @@ Scaling about fixed point (xf, yf): T(xf, yf) · S(sx, sy) · T(−xf, −yf) �
 
 \textbf{Liang--Barsky}: same window; line (−5, 3) → (15, 9); Δx = 20, Δy = 6.
 
-\begin{asciiblock}{86pt}
-\begin{Verbatim}[fontsize=\fontsize{8.4}{10.2}\selectfont]
+\begin{listingblock}{76pt}
+\begin{Verbatim}[fontsize=\fontsize{7.7}{9.3}\selectfont]
 p₁ = −Δx = −20, q₁ = x₁ − xmin = −5   → r₁ = 0.25    (entering)
 p₂ =  Δx =  20, q₂ = xmax − x₁ = 15   → r₂ = 0.75    (leaving)
 p₃ = −Δy = −6,  q₃ = y₁ − ymin = 3    → r₃ = −0.5    (entering)
@@ -973,15 +974,15 @@ p₄ =  Δy =  6,  q₄ = ymax − y₁ = 7    → r₄ ≈ 1.17    (leaving)
 u₁ = max(0, 0.25, −0.5) = 0.25 ;  u₂ = min(1, 0.75, 1.17) = 0.75
 Clipped line: (−5 + 0.25·20, 3 + 0.25·6) = (0, 4.5)  to  (−5 + 0.75·20, 3 + 0.75·6) = (10, 7.5)
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{165pt}
+\needspace{158pt}
 
 \hypertarget{p2-03--76-3-d-transformation-matrices-homogeneous-4--4}{%
-\subsection{7.6 3-D Transformation Matrices (homogeneous 4 × 4)}\label{p2-03--76-3-d-transformation-matrices-homogeneous-4--4}}
+\subsection{3-D Transformation Matrices (homogeneous 4 × 4)}\label{p2-03--76-3-d-transformation-matrices-homogeneous-4--4}}
 
-\begin{asciiblock}{110pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{108pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 Translation           Scaling              Rotation about z-axis
 | 1 0 0 tx |          | sx 0  0  0 |       | cosθ −sinθ 0 0 |
 | 0 1 0 ty |          | 0  sy 0  0 |       | sinθ  cosθ 0 0 |
@@ -991,9 +992,9 @@ Rotation about x: y' = y cosθ − z sinθ, z' = y sinθ + z cosθ
 Rotation about y: z' = z cosθ − x sinθ, x' = z sinθ + x cosθ
 Perspective (centre of projection at origin, plane z = d): x' = x·d/z, y' = y·d/z
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{135pt}
+\needspace{125pt}
 
 \hypertarget{p2-03--previous-year-questions-pyq-pattern}{%
 \section{Previous Year Questions (PYQ pattern)}\label{p2-03--previous-year-questions-pyq-pattern}}

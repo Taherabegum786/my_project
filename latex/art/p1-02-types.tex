@@ -1,0 +1,16 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \node[grey, minimum width=34mm] (R) at (0,0) {\textbf{Research}};
+  \foreach \x/\n/\col/\head/\items in {
+      -5/P/fslate/{By purpose}/{fundamental (pure) — builds theory\\applied — solves a practical problem\\action — practitioner improves own practice\\evaluation — judges a programme},
+      0/A/fsage/{By approach}/{quantitative — numbers, deductive\\qualitative — words, inductive\\mixed methods},
+      5/M/fsand/{By method}/{experimental — manipulates a cause\\descriptive / survey — "what is"\\historical — the past\\ex-post facto — cause already acted\\case study, ethnography}} {
+    \node[box, fill=\col, minimum width=44mm] (\n) at (\x,-1.5) {\textbf{\head}};
+    \node[plain, text width=44mm, align=left, font=\footnotesize, anchor=north] at (\x,-2.1) {\items};
+    \draw[arr] (R) -- (\n);
+  }
+\end{tikzpicture}
+\caption{Three independent ways of classifying research. A single study can be, for example, applied in
+purpose, quantitative in approach and experimental in method.}
+\end{figure}

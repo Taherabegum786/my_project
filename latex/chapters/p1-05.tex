@@ -1,6 +1,7 @@
-\unitchapter{Paper 1 · Unit 5}{Mathematical Reasoning \& Aptitude}{p1-05}
+\unitchapter{1}{5}{Mathematical Reasoning \& Aptitude}{p1-05}
 
-\textbf{Expected questions: \textasciitilde5 (10 marks) · Target: 5/5 (pure practice unit)}
+\unitmeta{Expected questions: \textasciitilde5 (10 marks) · Target: 5/5 (pure
+practice unit)}
 
 \begin{sylbox}
 
@@ -21,12 +22,17 @@
 
 \end{sylbox}
 
-\needdiagram{figures/p1-05-00}{55pt}
+\needspace{125pt}
 
 \hypertarget{p1-05--1-number-series--pattern-checklist}{%
-\section{1. Number Series --- Pattern Checklist}\label{p1-05--1-number-series--pattern-checklist}}
+\section{Number Series --- Pattern Checklist}\label{p1-05--1-number-series--pattern-checklist}}
 
-\diagramhere{figures/p1-05-00}
+A number series hides a rule that generates each term from the ones before it. The quickest way to find it is
+to test the simplest rules first --- constant differences, then constant ratios --- and only then look for
+squares, alternating patterns or mixed operations. Writing the differences beneath the series takes a few
+seconds and solves most questions.
+
+\input{art/p1-05-series}
 
 Examples:
 
@@ -48,20 +54,18 @@ Examples:
   1, 2, 6, 24, 120, \textbf{720} → ×2, ×3, ×4 \ldots{} (factorials)
 \end{itemize}
 
-\needspace{147pt}
+\needspace{155pt}
 
 \hypertarget{p1-05--2-letter-series--coding}{%
-\section{2. Letter Series \& Coding}\label{p1-05--2-letter-series--coding}}
+\section{Letter Series \& Coding}\label{p1-05--2-letter-series--coding}}
+
+Letter questions become number questions once each letter is replaced by its position in the alphabet.
+Memorise the positions and their reverses so that no time is lost counting; the reference table below is
+worth learning by heart.
 
 Position table (memorise both directions):
 
-\begin{asciiblock}{57pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
-A B C D E F G H I J K  L  M  N  O  P  Q  R  S  T  U  V  W  X  Y  Z
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26
-Z Y X W V U T S R Q P  O  N  M  L  K  J  I  H  G  F  E  D  C  B  A   (reverse)
-\end{Verbatim}
-\end{asciiblock}
+\input{art/p1-05-alphabet}
 
 Trick: \textbf{EJOTY} = 5, 10, 15, 20, 25. Opposite pairs sum to 27 (A↔Z, M↔N).
 
@@ -75,106 +79,90 @@ Trick: \textbf{EJOTY} = 5, 10, 15, 20, 25. Opposite pairs sum to 27 (A↔Z, M↔
   Reverse coding: CAT → XZG (opposite letters).
 \end{itemize}
 
-\needspace{200pt}
+\needspace{155pt}
 
 \hypertarget{p1-05--3-blood-relations}{%
-\section{3. Blood Relations}\label{p1-05--3-blood-relations}}
+\section{Blood Relations}\label{p1-05--3-blood-relations}}
+
+Relationship puzzles are confusing in words and trivial on paper. Draw a small family tree as you read each
+clause, marking gender and generation, and the answer can simply be read off.
 
 Use a \textbf{family tree diagram} with symbols:
 
-\begin{asciiblock}{110pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
-  +  male    −  female    ═  married    │ parent-child    ─ siblings
-
-  Example: "A is the brother of B. B is the daughter of C. C is the husband of D."
-              C(+) ═ D(−)
-                  │
-           ┌──────┴──────┐
-         A(+)          B(−)
-   → D is A's MOTHER.
-\end{Verbatim}
-\end{asciiblock}
+\input{art/p1-05-family}
 
 Coded relations: "P + Q means P is father of Q; P × Q means P is sister of Q" → draw step-by-step.
 
-\needspace{237pt}
+\needspace{227pt}
 
 \hypertarget{p1-05--4-classification-odd-one-out}{%
-\section{4. Classification (Odd one out)}\label{p1-05--4-classification-odd-one-out}}
+\section{Classification (Odd one out)}\label{p1-05--4-classification-odd-one-out}}
 
+Look for the property shared by all options but one: being prime, a perfect square, a multiple of a number,
+a vowel, a member of a category. When two different properties seem to work, prefer the more specific one.
 Find the common property in 3 of 4: primes, squares, multiples, vowels, same-category items.
 Example: 121, 144, 169, \textbf{190} → 190 is not a perfect square.
 
-\needspace{162pt}
+\needspace{191pt}
 
 \hypertarget{p1-05--5-arithmetic-aptitude--formula-bank}{%
-\section{5. Arithmetic Aptitude --- Formula Bank}\label{p1-05--5-arithmetic-aptitude--formula-bank}}
+\section{Arithmetic Aptitude --- Formula Bank}\label{p1-05--5-arithmetic-aptitude--formula-bank}}
 
-\needspace{122pt}
+Arithmetic questions in Paper I are not difficult, but they reward speed. Each formula below replaces several
+lines of working; understand where it comes from once, then use it directly in the examination.
+
+\needspace{125pt}
 
 \hypertarget{p1-05--percentage}{%
 \subsection{Percentage}\label{p1-05--percentage}}
 
-\begin{asciiblock}{67pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
-x% of y = y% of x
-Increase by a% then b% ⇒ net = a + b + ab/100
-If price ↑ r%, consumption must ↓ by r/(100+r) × 100 % to keep expenditure same
-Successive discount d1, d2 ⇒ d1 + d2 − d1·d2/100
-\end{Verbatim}
-\end{asciiblock}
+Percentages express every quantity as a fraction of 100, which makes comparison easy. Successive changes do
+\emph{not} simply add: a 20\% rise followed by a 20\% fall leaves you 4\% poorer, because the fall is taken on a
+larger base.
 
-\needspace{133pt}
+\input{art/p1-05-percent}
+
+\needspace{125pt}
 
 \hypertarget{p1-05--profit--loss}{%
 \subsection{Profit \& Loss}\label{p1-05--profit--loss}}
 
-\begin{asciiblock}{78pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
-Profit% = (SP − CP)/CP × 100
-SP = CP × (100 + P%)/100
-Marked price M, discount d% ⇒ SP = M(100 − d)/100
-Two items sold at same SP, one at x% gain, other at x% loss ⇒ always LOSS of x²/100 %
-Dishonest dealer (uses 900g for 1kg) ⇒ gain = 100/900 × 100 = 11.11%
-\end{Verbatim}
-\end{asciiblock}
+Profit and loss percentages are always calculated on the \textbf{cost price} unless the question says otherwise;
+discounts are always calculated on the \textbf{marked price}.
 
-\needspace{133pt}
+\input{art/p1-05-profit}
+
+\needspace{125pt}
 
 \hypertarget{p1-05--simple--compound-interest}{%
 \subsection{Simple \& Compound Interest}\label{p1-05--simple--compound-interest}}
 
-\begin{asciiblock}{78pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
-SI = P·R·T/100
-CI: A = P(1 + R/100)^T ;  CI = A − P
-CI − SI for 2 yrs = P(R/100)²
-CI − SI for 3 yrs = P(R/100)²(3 + R/100)
-Money doubles in T years at SI ⇒ R = 100/T
-\end{Verbatim}
-\end{asciiblock}
+Simple interest is earned only on the original principal; compound interest is also earned on interest
+already added. The difference between them grows with time, and the two-year difference formula is the most
+frequently used shortcut.
 
-\needspace{133pt}
+\input{art/p1-05-interest}
+
+\needspace{125pt}
 
 \hypertarget{p1-05--ratio-proportion-averages}{%
 \subsection{Ratio, Proportion, Averages}\label{p1-05--ratio-proportion-averages}}
 
-\begin{asciiblock}{78pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
-a : b = c : d  ⇒ ad = bc
-Mean proportional of a, b = √(ab);  Third proportional to a, b = b²/a
-Average = Sum / Count
-If one value replaced changes average by d over n items ⇒ change in value = n·d
-Average speed (equal distances) = 2xy/(x + y)
-\end{Verbatim}
-\end{asciiblock}
+A ratio compares two quantities; a proportion states that two ratios are equal. Averages smooth a set of
+values into one representative number --- but note that the average \emph{speed} over equal distances is a
+harmonic mean, not the simple average of the speeds.
 
-\needdiagram{figures/p1-05-01}{55pt}
+\input{art/p1-05-ratio}
+
+\needspace{125pt}
 
 \hypertarget{p1-05--time-speed-distance}{%
 \subsection{Time, Speed, Distance}\label{p1-05--time-speed-distance}}
 
-\diagramhere{figures/p1-05-01}
+Nearly every motion problem --- trains, boats, races --- reduces to the single relation distance = speed ×
+time, applied carefully with consistent units and, where two bodies move, with their \emph{relative} speed.
+
+\input{art/p1-05-tsd}
 
 \begin{itemize}
 \tightlist
@@ -186,20 +174,17 @@ Average speed (equal distances) = 2xy/(x + y)
   Boats: downstream = u + v, upstream = u − v; still water speed = (D + U)/2, stream = (D − U)/2.
 \end{itemize}
 
-\needspace{112pt}
+\needspace{125pt}
 
 \hypertarget{p1-05--time--work}{%
 \subsection{Time \& Work}\label{p1-05--time--work}}
 
-\begin{asciiblock}{57pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
-A does work in a days, B in b days ⇒ together = ab/(a + b) days
-Pipes: inlet +, outlet − (rates add)
-M1·D1·H1 / W1 = M2·D2·H2 / W2
-\end{Verbatim}
-\end{asciiblock}
+Think of work as a rate: if A finishes a job in \emph{a} days, A does 1/\emph{a} of it each day. Rates of people (or
+pipes) working together simply add.
 
-\needspace{100pt}
+\input{art/p1-05-work}
+
+\needspace{95pt}
 
 \hypertarget{p1-05--worked-examples}{%
 \section{Worked Examples}\label{p1-05--worked-examples}}
@@ -219,15 +204,15 @@ M1·D1·H1 / W1 = M2·D2·H2 / W2
   Two articles each sold at ₹990, one at 10\% profit, another at 10\% loss. → \textbf{1\% loss}.
 \end{enumerate}
 
-\needspace{140pt}
+\needspace{131pt}
 
 \hypertarget{p1-05--6-deeper-dive--more-question-types-with-shortcuts}{%
-\section{6. Deeper Dive --- More Question Types with Shortcuts}\label{p1-05--6-deeper-dive--more-question-types-with-shortcuts}}
+\section{Deeper Dive --- More Question Types with Shortcuts}\label{p1-05--6-deeper-dive--more-question-types-with-shortcuts}}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p1-05--61-types-of-reasoning}{%
-\subsection{6.1 Types of Reasoning}\label{p1-05--61-types-of-reasoning}}
+\subsection{Types of Reasoning}\label{p1-05--61-types-of-reasoning}}
 
 \begin{itemize}
 \tightlist
@@ -239,67 +224,54 @@ M1·D1·H1 / W1 = M2·D2·H2 / W2
   \textbf{Analogical}: reasoning from similarity of two cases.
 \end{itemize}
 
-\needspace{154pt}
+\needspace{125pt}
 
 \hypertarget{p1-05--62-mixtures--alligation}{%
-\subsection{6.2 Mixtures \& Alligation}\label{p1-05--62-mixtures--alligation}}
+\subsection{Mixtures \& Alligation}\label{p1-05--62-mixtures--alligation}}
 
-\begin{asciiblock}{99pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
-   Cheaper (c)            Dearer (d)
-         ╲                ╱
-          ╲    Mean (m)  ╱
-          ╱            ╲
-         ╱              ╲
-   (d − m)              (m − c)
-   Ratio  cheaper : dearer = (d − m) : (m − c)
-\end{Verbatim}
-\end{asciiblock}
+Alligation is a quick way of finding the ratio in which two ingredients at different prices (or
+concentrations) must be mixed to give a mixture of a desired mean value.
+
+\input{art/p1-05-alligation}
 
 \textbf{Example}: Rice at ₹40/kg and ₹60/kg mixed to get ₹52/kg → ratio = (60 − 52) : (52 − 40) = 8 : 12 = \textbf{2 : 3}.
 
 Repeated dilution: from a vessel of x litres, y litres replaced by water n times → remaining pure = x(1 − y/x)ⁿ.
 
-\needspace{262pt}
+\needspace{227pt}
 
 \hypertarget{p1-05--63-ages}{%
-\subsection{6.3 Ages}\label{p1-05--63-ages}}
+\subsection{Ages}\label{p1-05--63-ages}}
 
 Translate words into equations. "A is twice as old as B; 10 years ago A was three times as old as B":
 A = 2B, A − 10 = 3(B − 10) → 2B − 10 = 3B − 30 → \textbf{B = 20, A = 40}.
 
-\needspace{187pt}
+\needspace{161pt}
 
 \hypertarget{p1-05--64-partnership}{%
-\subsection{6.4 Partnership}\label{p1-05--64-partnership}}
+\subsection{Partnership}\label{p1-05--64-partnership}}
 
 Profit shared in ratio of \textbf{capital × time}. A invests ₹5000 for 12 months, B ₹6000 for 8 months → 60000 : 48000 = \textbf{5 : 4}.
 
-\needspace{112pt}
+\needspace{95pt}
 
 \hypertarget{p1-05--65-discounting-bankers--true-discount}{%
-\subsection{6.5 Discounting (banker\textquotesingle s \& true discount)}\label{p1-05--65-discounting-bankers--true-discount}}
+\subsection{Discounting (banker\textquotesingle s \& true discount)}\label{p1-05--65-discounting-bankers--true-discount}}
 
-\begin{asciiblock}{57pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
-True discount TD = (Amount × R × T) / (100 + R·T)
-Banker's discount BD = SI on the amount = A·R·T/100
-BD − TD = SI on TD (Banker's gain) ; Present worth PW = A − TD
-\end{Verbatim}
-\end{asciiblock}
+\input{art/p1-05-discount}
 
 \textbf{Example}: A = ₹1100 due in 1 year at 10\%: TD = 1100 × 10/110 = ₹100; PW = ₹1000; BD = ₹110; BG = ₹10.
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p1-05--66-codingdecoding-variants}{%
-\subsection{6.6 Coding--Decoding Variants}\label{p1-05--66-codingdecoding-variants}}
+\subsection{Coding--Decoding Variants}\label{p1-05--66-codingdecoding-variants}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1575}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4033}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1856}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4750}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Type}
@@ -319,10 +291,10 @@ Symbol substitution & If + means ×, − means ÷: 8 + 2 − 4 = 8 × 2 ÷ 4 = \
 
 \endgroup
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p1-05--67-fractions--comparison}{%
-\subsection{6.7 Fractions \& Comparison}\label{p1-05--67-fractions--comparison}}
+\subsection{Fractions \& Comparison}\label{p1-05--67-fractions--comparison}}
 
 \begin{itemize}
 \tightlist
@@ -332,10 +304,10 @@ Symbol substitution & If + means ×, − means ÷: 8 + 2 − 4 = 8 × 2 ÷ 4 = \
   Recurring decimals: 0.333\ldots{} = 1/3; 0.2727\ldots{} = 27/99 = 3/11.
 \end{itemize}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p1-05--68-worked-mixed-set}{%
-\subsection{6.8 Worked Mixed Set}\label{p1-05--68-worked-mixed-set}}
+\subsection{Worked Mixed Set}\label{p1-05--68-worked-mixed-set}}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -352,7 +324,7 @@ Symbol substitution & If + means ×, − means ÷: 8 + 2 − 4 = 8 × 2 ÷ 4 = \
   Average of first 50 natural numbers = (50 + 1)/2 = \textbf{25.5}.
 \end{enumerate}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p1-05--previous-year-questions-pyq-pattern}{%
 \section{Previous Year Questions (PYQ pattern)}\label{p1-05--previous-year-questions-pyq-pattern}}

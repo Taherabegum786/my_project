@@ -1,0 +1,25 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \def\N{11}
+  \def\W{4.2}
+  \def\Ht{7.15}
+  \foreach \i/\name in {0/{Direct, purposeful experiences}, 1/Contrived experiences, 2/Dramatised experiences,
+      3/Demonstrations, 4/Field trips, 5/Exhibits, 6/Television, 7/Motion pictures,
+      8/{Recordings, radio, still pictures}, 9/Visual symbols, 10/Verbal symbols} {
+    \pgfmathsetmacro{\yb}{\i*\Ht/\N}
+    \pgfmathsetmacro{\yt}{(\i+1)*\Ht/\N}
+    \pgfmathsetmacro{\xb}{\W*(1-\yb/\Ht)}
+    \pgfmathsetmacro{\xt}{\W*(1-\yt/\Ht)}
+    \pgfmathsetmacro{\sh}{85-\i*7}
+    \filldraw[fill=fsteel!\sh!white, draw=fgink, line width=0.45pt] (-\xb,\yb) -- (\xb,\yb) -- (\xt,\yt) -- (-\xt,\yt) -- cycle;
+    \draw[fgink!45, line width=0.3pt] ({\xb-\W/\N*0.5},{\yb+\Ht/\N/2}) -- (4.7,{\yb+\Ht/\N/2});
+    \node[anchor=west, font=\footnotesize] at (4.75,{\yb+\Ht/\N/2}) {\name};
+  }
+  \draw[arr] (-4.9,0.2) -- node[lbl, rotate=90, above] {from concrete to abstract} (-4.9,7.0);
+  \node[smalllbl, anchor=west] at (4.75,7.5) {most abstract — least retained};
+  \node[smalllbl, anchor=west] at (4.75,-0.35) {most concrete — best retained};
+\end{tikzpicture}
+\caption{Edgar Dale's Cone of Experience. Learning is most durable at the broad base, where learners
+\emph{do}; it becomes more abstract as we climb towards words and symbols.}
+\end{figure}

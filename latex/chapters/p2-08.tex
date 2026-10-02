@@ -1,6 +1,8 @@
-\unitchapter{Paper 2 · Unit 8}{Theory of Computation \& Compilers}{p2-08}
+\unitchapter{2}{8}{Theory of Computation \& Compilers}{p2-08}
 
-\textbf{Expected questions: 10--12 · Target: 9+ · Type: closure/decidability facts, automata construction, parsing tables --- the differentiator unit for 250+}
+\unitmeta{Expected questions: 10--12 · Target: 9+ · Type: closure/decidability
+facts, automata construction, parsing tables --- the differentiator unit
+for 250+}
 
 \begin{sylbox}
 
@@ -30,15 +32,15 @@
 
 \end{sylbox}
 
-\needspace{140pt}
+\needspace{131pt}
 
 \hypertarget{p2-08--part-a--theory-of-computation}{%
 \section{Part A --- Theory of Computation}\label{p2-08--part-a--theory-of-computation}}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-08--1-basics}{%
-\section{1. Basics}\label{p2-08--1-basics}}
+\section{Basics}\label{p2-08--1-basics}}
 
 \begin{itemize}
 \tightlist
@@ -52,15 +54,15 @@
   \textbf{Russell\textquotesingle s paradox}: the set of all sets that do not contain themselves --- self-reference leads to contradiction (basis of diagonalisation).
 \end{itemize}
 
-\needdiagram{figures/p2-08-00}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-08--2-chomsky-hierarchy}{%
-\section{2. Chomsky Hierarchy}\label{p2-08--2-chomsky-hierarchy}}
+\section{Chomsky Hierarchy}\label{p2-08--2-chomsky-hierarchy}}
 
-\diagramhere{figures/p2-08-00}
+\diagram{figures/p2-08-00}
 
-\begin{asciiblock}{249pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{249pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
  ┌──────────────────────────────────────────────────┐
  │ All languages (uncountable)                      │
  │ ┌──────────────────────────────────────────────┐ │
@@ -83,17 +85,17 @@
  │ └──────────────────────────────────────────────┘ │
  └──────────────────────────────────────────────────┘
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{140pt}
+\needspace{131pt}
 
 \hypertarget{p2-08--3-finite-automata}{%
-\section{3. Finite Automata}\label{p2-08--3-finite-automata}}
+\section{Finite Automata}\label{p2-08--3-finite-automata}}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-08--31-dfa-vs-nfa}{%
-\subsection{3.1 DFA vs NFA}\label{p2-08--31-dfa-vs-nfa}}
+\subsection{DFA vs NFA}\label{p2-08--31-dfa-vs-nfa}}
 
 \begin{itemize}
 \tightlist
@@ -113,16 +115,16 @@
 
 \diagram{figures/p2-08-02}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-08--32-counting-minimum-dfa-states-common-shortcuts}{%
-\subsection{3.2 Counting minimum DFA states (common shortcuts)}\label{p2-08--32-counting-minimum-dfa-states-common-shortcuts}}
+\subsection{Counting minimum DFA states (common shortcuts)}\label{p2-08--32-counting-minimum-dfa-states-common-shortcuts}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3491}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1457}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4111}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1716}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Language over \{a, b\}}
@@ -147,10 +149,10 @@ n-th symbol from the end is \textquotesingle a\textquotesingle{} (DFA) & 2ⁿ (N
 
 \endgroup
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-08--33-minimisation-myhillnerode--partition-method}{%
-\subsection{3.3 Minimisation (Myhill--Nerode / partition method)}\label{p2-08--33-minimisation-myhillnerode--partition-method}}
+\subsection{Minimisation (Myhill--Nerode / partition method)}\label{p2-08--33-minimisation-myhillnerode--partition-method}}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -160,16 +162,16 @@ n-th symbol from the end is \textquotesingle a\textquotesingle{} (DFA) & 2ⁿ (N
   \textbf{Myhill--Nerode}: L is regular ⇔ the number of equivalence classes of ≡\_L is finite; that number = states of minimal DFA.
 \end{enumerate}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-08--34-mealy--moore}{%
-\subsection{3.4 Mealy \& Moore}\label{p2-08--34-mealy--moore}}
+\subsection{Mealy \& Moore}\label{p2-08--34-mealy--moore}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2406}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2330}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2833}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2744}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Moore}
@@ -188,10 +190,10 @@ More states usually & Fewer states \\
 
 \endgroup
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-08--4-regular-expressions}{%
-\section{4. Regular Expressions}\label{p2-08--4-regular-expressions}}
+\section{Regular Expressions}\label{p2-08--4-regular-expressions}}
 
 \begin{itemize}
 \tightlist
@@ -206,8 +208,8 @@ More states usually & Fewer states \\
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2575}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2038}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3033}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2400}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Language}
@@ -228,7 +230,7 @@ Exactly one \textquotesingle a\textquotesingle{} & b\emph{ab} \\
 
 \endgroup
 
-\needspace{215pt}
+\needspace{197pt}
 
 \hypertarget{p2-08--pumping-lemma-regular}{%
 \subsection{Pumping Lemma (Regular)}\label{p2-08--pumping-lemma-regular}}
@@ -237,15 +239,15 @@ If L is regular, ∃ p such that every w ∈ L with \textbar w\textbar{} ≥ p c
 Non-regular: aⁿbⁿ, ww\^{}R, palindromes, a\^{}(n²), a\^{}p (p prime), balanced parentheses, aⁿbᵐ (n \textless{} m).
 Regular: aⁿbᵐ (n, m ≥ 0), (ab)ⁿ, a\^{}(2n), strings with equal number of "ab" and "ba" substrings, aⁿbⁿ for n ≤ 100 (finite).
 
-\needspace{140pt}
+\needspace{131pt}
 
 \hypertarget{p2-08--5-context-free-languages}{%
-\section{5. Context-Free Languages}\label{p2-08--5-context-free-languages}}
+\section{Context-Free Languages}\label{p2-08--5-context-free-languages}}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-08--51-grammars--ambiguity}{%
-\subsection{5.1 Grammars \& Ambiguity}\label{p2-08--51-grammars--ambiguity}}
+\subsection{Grammars \& Ambiguity}\label{p2-08--51-grammars--ambiguity}}
 
 \begin{itemize}
 \tightlist
@@ -259,18 +261,18 @@ Regular: aⁿbᵐ (n, m ≥ 0), (ab)ⁿ, a\^{}(2n), strings with equal number of
   Remove ambiguity by encoding precedence \& associativity:
 \end{itemize}
 
-\begin{asciiblock}{57pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{53pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 E → E + T | T        (+ left-assoc, lower precedence)
 T → T * F | F        (* higher precedence)
 F → (E) | id
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-08--52-normal-forms}{%
-\subsection{5.2 Normal Forms}\label{p2-08--52-normal-forms}}
+\subsection{Normal Forms}\label{p2-08--52-normal-forms}}
 
 \begin{itemize}
 \tightlist
@@ -282,10 +284,10 @@ F → (E) | id
   Simplification order: remove ε-productions → unit productions → useless symbols.
 \end{itemize}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-08--53-pda}{%
-\subsection{5.3 PDA}\label{p2-08--53-pda}}
+\subsection{PDA}\label{p2-08--53-pda}}
 
 \begin{itemize}
 \tightlist
@@ -297,8 +299,8 @@ F → (E) | id
   DCFLs are unambiguous; every LR(k) grammar generates a DCFL.
 \end{itemize}
 
-\begin{asciiblock}{89pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{86pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 PDA for aⁿbⁿ
  δ(q0, a, Z) = (q0, aZ)       push a
  δ(q0, a, a) = (q0, aa)       push a
@@ -306,39 +308,39 @@ PDA for aⁿbⁿ
  δ(q1, b, a) = (q1, ε)
  δ(q1, ε, Z) = (qf, Z)        accept
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{285pt}
+\needspace{262pt}
 
 \hypertarget{p2-08--54-pumping-lemma-cfl}{%
-\subsection{5.4 Pumping Lemma (CFL)}\label{p2-08--54-pumping-lemma-cfl}}
+\subsection{Pumping Lemma (CFL)}\label{p2-08--54-pumping-lemma-cfl}}
 
 w = uvxyz, \textbar vxy\textbar{} ≤ p, \textbar vy\textbar{} ≥ 1, uvⁱxyⁱz ∈ L ∀ i ≥ 0.
 Non-CFL: aⁿbⁿcⁿ, ww, a\^{}(n²), a\^{}p (prime), aⁿbᵐcⁿdᵐ.
 CFL (non-regular): aⁿbⁿ, ww\^{}R, aⁿbᵐcᵐ, aⁿbⁿcᵐ, aⁱbʲcᵏ with i = j or j = k.
 
-\needspace{210pt}
+\needspace{196pt}
 
 \hypertarget{p2-08--55-cyk-algorithm}{%
-\subsection{5.5 CYK Algorithm}\label{p2-08--55-cyk-algorithm}}
+\subsection{CYK Algorithm}\label{p2-08--55-cyk-algorithm}}
 
 Membership for CNF grammar in \textbf{O(n³·\textbar G\textbar)}; dynamic programming over substrings.
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-08--6-closure--decision-properties-most-asked-table}{%
-\section{6. Closure \& Decision Properties (MOST ASKED TABLE)}\label{p2-08--6-closure--decision-properties-most-asked-table}}
+\section{Closure \& Decision Properties (MOST ASKED TABLE)}\label{p2-08--6-closure--decision-properties-most-asked-table}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.2286}}
-  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0885}}
-  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0829}}
-  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0663}}
-  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0663}}
-  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1082}}
-  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0497}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.2773}}
+  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1074}}
+  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1006}}
+  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0805}}
+  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0805}}
+  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1313}}
+  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0603}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Operation}
@@ -378,12 +380,12 @@ Notes: CFL ∩ Regular = CFL. DCFL ∪ Regular, DCFL ∩ Regular = DCFL. If L an
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1793}}
-  >{\centering\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0857}}
-  >{\centering\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1394}}
-  >{\centering\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0642}}
-  >{\centering\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1047}}
-  >{\centering\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1739}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2160}}
+  >{\centering\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1032}}
+  >{\centering\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1679}}
+  >{\centering\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0774}}
+  >{\centering\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1262}}
+  >{\centering\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2096}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Decision problem}
@@ -416,10 +418,10 @@ Intersection empty? & D & U & U & U & U \\
 
 D = decidable, U = undecidable.
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-08--7-turing-machines}{%
-\section{7. Turing Machines}\label{p2-08--7-turing-machines}}
+\section{Turing Machines}\label{p2-08--7-turing-machines}}
 
 \begin{itemize}
 \tightlist
@@ -441,19 +443,19 @@ D = decidable, U = undecidable.
   \textbf{Unrestricted grammar} (α → β) ≡ TM.
 \end{itemize}
 
-\begin{asciiblock}{46pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{42pt}
+\begin{Verbatim}[fontsize=\fontsize{8.9}{10.8}\selectfont]
 TM for aⁿbⁿ: repeatedly mark leftmost a as X, move right to leftmost b, mark as Y,
 return left; when no a's left, check no b's remain → accept.
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needdiagram{figures/p2-08-03}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-08--8-undecidability}{%
-\section{8. Undecidability}\label{p2-08--8-undecidability}}
+\section{Undecidability}\label{p2-08--8-undecidability}}
 
-\diagramhere{figures/p2-08-03}
+\diagram{figures/p2-08-03}
 
 \begin{itemize}
 \tightlist
@@ -473,17 +475,17 @@ return left; when no a's left, check no b's remain → accept.
   Complexity: P, NP, PSPACE, EXPTIME; tractable (polynomial) vs intractable. See \protect\hyperlink{p2-07--10-complexity-classes}{Unit 7 §10}.
 \end{itemize}
 
-\needdiagram{figures/p2-08-04}{95pt}
+\needspace{131pt}
 
 \hypertarget{p2-08--part-b--compiler-design}{%
 \section{Part B --- Compiler Design}\label{p2-08--part-b--compiler-design}}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-08--9-phases-of-a-compiler}{%
-\section{9. Phases of a Compiler}\label{p2-08--9-phases-of-a-compiler}}
+\section{Phases of a Compiler}\label{p2-08--9-phases-of-a-compiler}}
 
-\diagramhere{figures/p2-08-04}
+\diagram{figures/p2-08-04}
 
 \begin{itemize}
 \tightlist
@@ -501,19 +503,19 @@ return left; when no a's left, check no b's remain → accept.
   Compiler passes: single-pass vs multi-pass. \textbf{Cross compiler}: runs on one machine, generates code for another. \textbf{Bootstrapping}: writing a compiler in its own language (T-diagrams).
 \end{itemize}
 
-\needdiagram{figures/p2-08-05}{55pt}
+\needspace{95pt}
 
 \hypertarget{p2-08--10-syntax-analysis-parsing}{%
-\section{10. Syntax Analysis (Parsing)}\label{p2-08--10-syntax-analysis-parsing}}
+\section{Syntax Analysis (Parsing)}\label{p2-08--10-syntax-analysis-parsing}}
 
-\diagramhere{figures/p2-08-05}
+\diagram{figures/p2-08-05}
 
 \textbf{Power}: LR(0) ⊂ SLR(1) ⊂ LALR(1) ⊂ CLR(1); LL(1) ⊂ LR(1). Number of states: \textbf{LR(0) = SLR = LALR ≤ CLR}.
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-08--101-grammar-transformations-for-top-down}{%
-\subsection{10.1 Grammar Transformations for Top-down}\label{p2-08--101-grammar-transformations-for-top-down}}
+\subsection{Grammar Transformations for Top-down}\label{p2-08--101-grammar-transformations-for-top-down}}
 
 \begin{itemize}
 \tightlist
@@ -523,29 +525,29 @@ return left; when no a's left, check no b's remain → accept.
   \textbf{Left factoring}: A → αβ₁ \textbar{} αβ₂ ⇒ A → αA′, A′ → β₁ \textbar{} β₂.
 \end{itemize}
 
-\needspace{168pt}
+\needspace{155pt}
 
 \hypertarget{p2-08--102-first-and-follow}{%
-\subsection{10.2 FIRST and FOLLOW}\label{p2-08--102-first-and-follow}}
+\subsection{FIRST and FOLLOW}\label{p2-08--102-first-and-follow}}
 
 Grammar:
 
-\begin{asciiblock}{78pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{75pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 E  → T E'
 E' → + T E' | ε
 T  → F T'
 T' → * F T' | ε
 F  → ( E ) | id
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0439}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0880}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1112}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0520}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1041}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1316}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{NT}
@@ -572,13 +574,13 @@ F & \{ (, id \} & \{ *, +, ), \$ \} \\
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0401}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0841}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1016}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1016}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0841}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0687}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0687}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0487}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1020}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1233}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1233}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1020}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0833}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0833}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -609,12 +611,12 @@ F & F→id & & & F→(E) & & \\
 
 \textbf{LL(1) condition}: for A → α \textbar{} β: FIRST(α) ∩ FIRST(β) = ∅; if β ⇒* ε then FIRST(α) ∩ FOLLOW(A) = ∅. A left-recursive or ambiguous grammar is \textbf{never} LL(1).
 
-\needspace{133pt}
+\needspace{124pt}
 
 \hypertarget{p2-08--103-lr-parsing}{%
-\subsection{10.3 LR Parsing}\label{p2-08--103-lr-parsing}}
+\subsection{LR Parsing}\label{p2-08--103-lr-parsing}}
 
-\begin{asciiblock}{78pt}
+\begin{listingblock}{74pt}
 \begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
  LR parser model
  input:  a1 a2 ... an $
@@ -622,14 +624,14 @@ F & F→id & & & F→(E) & & \\
  stack:  s0 X1 s1 X2 s2 ... Xm sm     ACTION[s, a]: shift / reduce / accept / error
                                      GOTO[s, A]: next state after reduce
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0922}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2859}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2261}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1092}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3385}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2676}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Parser}
@@ -664,17 +666,17 @@ Conflicts: \textbf{shift-reduce (S/R)} and \textbf{reduce-reduce (R/R)}.
 
 \textbf{Handle}: substring matching RHS whose reduction is a step of reverse rightmost derivation. \textbf{Viable prefixes} are recognised by a DFA (LR(0) automaton).
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-08--11-syntax-directed-translation}{%
-\section{11. Syntax-Directed Translation}\label{p2-08--11-syntax-directed-translation}}
+\section{Syntax-Directed Translation}\label{p2-08--11-syntax-directed-translation}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1024}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2092}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3068}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1213}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2477}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3632}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Attribute}
@@ -707,8 +709,8 @@ Conflicts: \textbf{shift-reduce (S/R)} and \textbf{reduce-reduce (R/R)}.
   \textbf{Type checking}: static vs dynamic; type expressions; coercion; overloading resolution; strongly typed language.
 \end{itemize}
 
-\begin{asciiblock}{89pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{86pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 SDT for desk calculator: input 3 * 5 + 4
 L → E n      { print(E.val) }
 E → E1 + T   { E.val = E1.val + T.val }
@@ -716,15 +718,15 @@ T → T1 * F   { T.val = T1.val * F.val }
 F → digit    { F.val = digit.lexval }
 Annotated root value: 19
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{197pt}
+\needspace{190pt}
 
 \hypertarget{p2-08--12-run-time-environment}{%
-\section{12. Run-Time Environment}\label{p2-08--12-run-time-environment}}
+\section{Run-Time Environment}\label{p2-08--12-run-time-environment}}
 
-\begin{asciiblock}{142pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{140pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
  Memory layout
  ┌──────────────┐ high address
  │    Stack     │  activation records (grows ↓)
@@ -737,12 +739,12 @@ Annotated root value: 19
  │    Code      │  text
  └──────────────┘ low address
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \textbf{Activation record (stack frame)}:
 
-\begin{asciiblock}{121pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{119pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
  ┌──────────────────────────┐
  │ Actual parameters        │
  │ Returned value           │
@@ -753,7 +755,7 @@ Annotated root value: 19
  │ Temporaries              │
  └──────────────────────────┘
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begin{itemize}
 \tightlist
@@ -769,17 +771,17 @@ Annotated root value: 19
   \textbf{Symbol table}: implemented with linear list, \textbf{hash table} (most common), BST; stores name, type, scope, offset. Scope handling via a stack of tables.
 \end{itemize}
 
-\needspace{214pt}
+\needspace{196pt}
 
 \hypertarget{p2-08--13-intermediate-code}{%
-\section{13. Intermediate Code}\label{p2-08--13-intermediate-code}}
+\section{Intermediate Code}\label{p2-08--13-intermediate-code}}
 
 Expression: \textbf{a = b * −c + b * −c}
 
 \textbf{Three-address code}:
 
-\begin{asciiblock}{89pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{86pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 t1 = minus c
 t2 = b * t1
 t3 = minus c
@@ -787,18 +789,18 @@ t4 = b * t3
 t5 = t2 + t4
 a  = t5
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \textbf{Quadruples} (op, arg1, arg2, result) · \textbf{Triples} (op, arg1, arg2 --- results referred by position) · \textbf{Indirect triples} (list of pointers to triples, easy to reorder).
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0309}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0613}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0530}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0530}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0657}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0370}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0735}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0635}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0635}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0787}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{\#}
@@ -827,8 +829,8 @@ a  = t5
 
 \textbf{DAG} for the same expression shares the common subexpression b * −c:
 
-\begin{asciiblock}{131pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{129pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
         =
        ╱ ╲
       a   +
@@ -840,7 +842,7 @@ a  = t5
              │
              c
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begin{itemize}
 \tightlist
@@ -850,31 +852,31 @@ a  = t5
   Boolean expressions: numerical vs \textbf{short-circuit (jumping) code}; \textbf{backpatching} for one-pass generation of jumps (makelist, merge, backpatch).
 \end{itemize}
 
-\needdiagram{figures/p2-08-06}{130pt}
+\needspace{161pt}
 
 \hypertarget{p2-08--14-code-optimisation--generation}{%
-\section{14. Code Optimisation \& Generation}\label{p2-08--14-code-optimisation--generation}}
+\section{Code Optimisation \& Generation}\label{p2-08--14-code-optimisation--generation}}
 
-\needspace{135pt}
+\needspace{125pt}
 
 \hypertarget{p2-08--141-basic-blocks--flow-graphs}{%
-\subsection{14.1 Basic Blocks \& Flow Graphs}\label{p2-08--141-basic-blocks--flow-graphs}}
+\subsection{Basic Blocks \& Flow Graphs}\label{p2-08--141-basic-blocks--flow-graphs}}
 
 \textbf{Leaders}: (1) first statement; (2) target of any jump; (3) statement immediately after a jump. A basic block runs from a leader up to (not including) the next leader.
 
-\diagramhere{figures/p2-08-06}
+\diagram{figures/p2-08-06}
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-08--142-optimisations}{%
-\subsection{14.2 Optimisations}\label{p2-08--142-optimisations}}
+\subsection{Optimisations}\label{p2-08--142-optimisations}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0806}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.6587}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2607}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0954}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5960}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3086}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Level}
@@ -901,18 +903,18 @@ Peephole & Redundant load/store, unreachable code, flow-of-control (jump to jump
 
 \endgroup
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-08--143-data-flow-analysis}{%
-\subsection{14.3 Data-Flow Analysis}\label{p2-08--143-data-flow-analysis}}
+\subsection{Data-Flow Analysis}\label{p2-08--143-data-flow-analysis}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1790}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0951}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0553}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2425}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2131}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1132}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0659}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2887}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Analysis}
@@ -935,12 +937,12 @@ Very busy expressions & Backward & ∩ & Code hoisting \\
 
 \endgroup
 
-\begin{asciiblock}{46pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{42pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 Reaching definitions:  OUT[B] = gen[B] ∪ (IN[B] − kill[B]) ;  IN[B] = ∪ OUT[pred]
 Live variables:        IN[B]  = use[B] ∪ (OUT[B] − def[B]) ;  OUT[B] = ∪ IN[succ]
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begin{itemize}
 \tightlist
@@ -948,10 +950,10 @@ Live variables:        IN[B]  = use[B] ∪ (OUT[B] − def[B]) ;  OUT[B] = ∪ I
   \textbf{Loops} detected using \textbf{dominators} and back edges (n → d where d dom n). Natural loop. Reducible flow graphs.
 \end{itemize}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-08--144-code-generation}{%
-\subsection{14.4 Code Generation}\label{p2-08--144-code-generation}}
+\subsection{Code Generation}\label{p2-08--144-code-generation}}
 
 \begin{itemize}
 \tightlist
@@ -965,25 +967,25 @@ Live variables:        IN[B]  = use[B] ∪ (OUT[B] − def[B]) ;  OUT[B] = ∪ I
   \textbf{Instruction scheduling}: reorder to avoid pipeline stalls (list scheduling); respects data dependences.
 \end{itemize}
 
-\needspace{210pt}
+\needspace{196pt}
 
 \hypertarget{p2-08--15-deeper-dive--constructions--parsing-traces}{%
-\section{15. Deeper Dive --- Constructions \& Parsing Traces}\label{p2-08--15-deeper-dive--constructions--parsing-traces}}
+\section{Deeper Dive --- Constructions \& Parsing Traces}\label{p2-08--15-deeper-dive--constructions--parsing-traces}}
 
-\needspace{170pt}
+\needspace{160pt}
 
 \hypertarget{p2-08--151-nfa--dfa-subset-construction}{%
-\subsection{15.1 NFA → DFA (Subset Construction)}\label{p2-08--151-nfa--dfa-subset-construction}}
+\subsection{NFA → DFA (Subset Construction)}\label{p2-08--151-nfa--dfa-subset-construction}}
 
 NFA for strings over \{0, 1\} ending in "01": q0 ---0,1→ q0, q0 ---0→ q1, q1 ---1→ q2 (final).
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1080}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0805}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0805}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0716}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1285}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0958}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0958}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0852}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{DFA state}
@@ -1007,18 +1009,18 @@ NFA for strings over \{0, 1\} ending in "01": q0 ---0,1→ q0, q0 ---0→ q1, q1
 
 Only 3 of the 2³ = 8 subsets are reachable --- this is the same DFA drawn in §3.1.
 
-\needspace{135pt}
+\needspace{130pt}
 
 \hypertarget{p2-08--152-dfa-minimisation-partition-refinement}{%
-\subsection{15.2 DFA Minimisation (partition refinement)}\label{p2-08--152-dfa-minimisation-partition-refinement}}
+\subsection{DFA Minimisation (partition refinement)}\label{p2-08--152-dfa-minimisation-partition-refinement}}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0626}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0503}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0503}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0716}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0745}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0599}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0599}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0852}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{State}
@@ -1043,8 +1045,8 @@ F & F & F & \\
 
 \endgroup
 
-\begin{asciiblock}{99pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{97pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 P0 = { C D E } { A B F }                       (final / non-final)
 P1: in {A B F}, F goes to non-final on 1 while A, B go to final → split
     = { C D E } { A B } { F }
@@ -1053,28 +1055,28 @@ P2: {A B}: both go to {A B} on 0 and {C D E} on 1 → no split
 Minimal DFA: 3 states  [AB] —1→ [CDE] —1→ [F] (dead), 0-loops on each
 Language: strings over {0,1} containing exactly one 1
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{157pt}
+\needspace{144pt}
 
 \hypertarget{p2-08--153-cfg--cnf}{%
-\subsection{15.3 CFG → CNF}\label{p2-08--153-cfg--cnf}}
+\subsection{CFG → CNF}\label{p2-08--153-cfg--cnf}}
 
 S → aSb \textbar{} ab
 
-\begin{asciiblock}{67pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{64pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
 1. Replace terminals in long bodies:  A → a, B → b
    S → A S B | A B
 2. Break bodies longer than 2:        S → A X,  X → S B
 CNF:  S → AX | AB,   X → SB,   A → a,   B → b
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{100pt}
+\needspace{95pt}
 
 \hypertarget{p2-08--154-pumping-lemma-proof-template-l---aux207fbux207f--n--0--is-not-regular}{%
-\subsection{15.4 Pumping-Lemma Proof Template (L = \{ aⁿbⁿ \textbar{} n ≥ 0 \} is not regular)}\label{p2-08--154-pumping-lemma-proof-template-l---aux207fbux207f--n--0--is-not-regular}}
+\subsection{Pumping-Lemma Proof Template (L = \{ aⁿbⁿ \textbar{} n ≥ 0 \} is not regular)}\label{p2-08--154-pumping-lemma-proof-template-l---aux207fbux207f--n--0--is-not-regular}}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -1089,24 +1091,24 @@ CNF:  S → AX | AB,   X → SB,   A → a,   B → b
   Pump i = 2: xy²z = a\^{}(p+k) bᵖ ∉ L --- contradiction. Hence L is not regular.
 \end{enumerate}
 
-\needdiagram{figures/p2-08-07}{90pt}
+\needspace{125pt}
 
 \hypertarget{p2-08--155-lr0-automaton-and-parse--worked}{%
-\subsection{15.5 LR(0) Automaton and Parse --- Worked}\label{p2-08--155-lr0-automaton-and-parse--worked}}
+\subsection{LR(0) Automaton and Parse --- Worked}\label{p2-08--155-lr0-automaton-and-parse--worked}}
 
 Grammar: (0) S′ → S (1) S → AA (2) A → aA (3) A → b
 
-\diagramhere{figures/p2-08-07}
+\diagram{figures/p2-08-07}
 
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0666}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0351}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0351}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0415}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0320}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0320}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0803}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0423}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0423}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0386}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0386}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{State}
@@ -1143,9 +1145,9 @@ Parse of \textbf{abb\$}:
 \begingroup\small
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0913}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0624}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2500}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1080}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0739}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2960}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \textbf{Stack}
@@ -1172,13 +1174,13 @@ Parse of \textbf{abb\$}:
 
 \textbf{A grammar that is LALR(1) but not SLR(1)}: S → L = R \textbar{} R, L → *R \textbar{} id, R → L. In the state containing S → L·= R and R → L·, \textquotesingle=\textquotesingle{} ∈ FOLLOW(R), so SLR has a shift/reduce conflict on \textquotesingle=\textquotesingle; LR(1) lookaheads resolve it.
 
-\needspace{261pt}
+\needspace{256pt}
 
 \hypertarget{p2-08--156-basic-blocks--worked}{%
-\subsection{15.6 Basic Blocks --- Worked}\label{p2-08--156-basic-blocks--worked}}
+\subsection{Basic Blocks --- Worked}\label{p2-08--156-basic-blocks--worked}}
 
-\begin{asciiblock}{206pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{206pt}
+\begin{Verbatim}[fontsize=\fontsize{9.0}{10.9}\selectfont]
  1  i = 1                      Leaders: 1 (first), 2 & 3 & 13 (jump targets),
  2  j = 1                               10 & 12 (follow a conditional jump)
  3  t1 = 10 * i
@@ -1197,22 +1199,22 @@ Parse of \textbf{abb\$}:
 16  i = i + 1
 17  if i <= 10 goto 13
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
-\needspace{133pt}
+\needspace{123pt}
 
 \hypertarget{p2-08--157-dag-based-local-optimisation}{%
-\subsection{15.7 DAG-Based Local Optimisation}\label{p2-08--157-dag-based-local-optimisation}}
+\subsection{DAG-Based Local Optimisation}\label{p2-08--157-dag-based-local-optimisation}}
 
-\begin{asciiblock}{78pt}
-\begin{Verbatim}[fontsize=\fontsize{8.8}{10.7}\selectfont]
+\begin{listingblock}{73pt}
+\begin{Verbatim}[fontsize=\fontsize{8.7}{10.6}\selectfont]
  Block                       DAG nodes built                         Optimised block
  a = b + c                   n1 = + (b0, c0)        label a          a = b + c
  b = a - d                   n2 = − (n1, d0)        label b          b = a - d
  c = b + c                   n3 = + (n2, c0)        label c          c = b + c
  d = a - d                   − (n1, d0) exists = n2 → label d too    d = b
 \end{Verbatim}
-\end{asciiblock}
+\end{listingblock}
 
 \begin{itemize}
 \tightlist
@@ -1222,7 +1224,7 @@ Parse of \textbf{abb\$}:
   \texttt{c\ =\ b\ +\ c} is \textbf{not} a repeat of \texttt{a\ =\ b\ +\ c}, because b was reassigned in between (its operand is n2, not b0).
 \end{itemize}
 
-\needspace{135pt}
+\needspace{125pt}
 
 \hypertarget{p2-08--previous-year-questions-pyq-pattern}{%
 \section{Previous Year Questions (PYQ pattern)}\label{p2-08--previous-year-questions-pyq-pattern}}

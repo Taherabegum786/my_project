@@ -1,0 +1,14 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \foreach \x/\title in {0/{Reliable, not valid}, 4.6/{Valid and reliable}, 9.2/{Neither}} {
+    \foreach \r/\c in {1.5/fslate, 1.1/fpaper, 0.7/fslate, 0.3/frose} \filldraw[fill=\c, draw=fgink, line width=0.45pt] (\x,0) circle (\r);
+    \node[capt] at (\x,-1.95) {\title};
+  }
+  \foreach \dx/\dy in {0.75/0.7, 0.88/0.62, 0.68/0.86, 0.95/0.78, 0.8/0.95, 0.62/0.7} \fill[fgink] ({0+\dx},{\dy}) circle (2pt);
+  \foreach \dx/\dy in {0.08/0.05, -0.12/0.1, 0.1/-0.12, -0.05/-0.08, 0.15/0.12, -0.14/-0.03} \fill[fgink] ({4.6+\dx},{\dy}) circle (2pt);
+  \foreach \dx/\dy in {-1.1/0.6, 0.9/-0.8, 0.3/1.2, -0.6/-1.1, 1.2/0.4, -0.2/0.3} \fill[fgink] ({9.2+\dx},{\dy}) circle (2pt);
+\end{tikzpicture}
+\caption{The target analogy. Reliability is a tight grouping of shots; validity is a grouping centred on
+the bull's-eye. A tool can be reliable without being valid, but a valid tool must be reliable.}
+\end{figure}

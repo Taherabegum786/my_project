@@ -1,0 +1,18 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \foreach \i/\t [count=\k] in {{Identify \& define\\the problem}, {Review the\\literature}, {Formulate\\hypotheses}, {Choose the\\research design}, {Select the\\sample},
+      {Collect\\data}, {Analyse \&\\interpret}, {Test the\\hypotheses}, {Generalise,\\conclude}, {Write the\\report}} {
+    \pgfmathtruncatemacro{\row}{(\k-1)/5}
+    \pgfmathtruncatemacro{\colraw}{mod(\k-1,5)}
+    \pgfmathtruncatemacro{\cc}{\row==0 ? \colraw : 4-\colraw}
+    \ifnum\row=0 \def\fc{fslate}\else\def\fc{fsage}\fi
+    \node[box, fill=\fc, text width=22mm, minimum height=13mm] (s\k) at (\cc*3.05,-\row*2.4) {\footnotesize\i};
+    \node[circle, fill=fwine, text=white, font=\scriptsize\bfseries, inner sep=1.5pt, minimum size=4.5mm] at (s\k.north west) {\k};
+  }
+  \foreach \a/\b in {1/2,2/3,3/4,4/5,6/7,7/8,8/9,9/10} \draw[arr] (s\a) -- (s\b);
+  \draw[arr] (s5.south) -- (s6.north);
+\end{tikzpicture}
+\caption{The research process as a sequence of ten steps. In practice the steps overlap and the researcher
+often loops back — for example, from the literature review to a sharper statement of the problem.}
+\end{figure}

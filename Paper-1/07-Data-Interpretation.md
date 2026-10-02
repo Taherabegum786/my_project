@@ -13,6 +13,11 @@
 
 ## 1. Data Basics
 
+Data are recorded observations. Before any calculation, ask what kind of data you have, because that
+decides what may legitimately be done with it — one can average marks, but not roll numbers or
+blood groups.
+
+<!-- latex: p1-07-data -->
 ```mermaid
 flowchart TB
     D[Data] --> Q[Quantitative<br/>numbers]
@@ -31,6 +36,12 @@ flowchart TB
 
 ## 2. Graph Types — When to Use
 
+Every chart is designed for one kind of comparison. Examiners sometimes ask which chart suits a given
+purpose; the four panels below show the most common choices side by side.
+
+<!-- latex: p1-07-graphtypes -->
+
+
 | Graph | Best for | Note |
 |-------|----------|------|
 | Bar chart | Comparing categories | Gaps between bars |
@@ -42,6 +53,7 @@ flowchart TB
 | Scatter plot | Correlation between two variables | |
 | Table | Exact values | |
 
+<!-- latex: p1-07-pie-rule -->
 ```
 Pie chart conversions
  1% = 3.6°      25% = 90°      50% = 180°
@@ -49,6 +61,10 @@ Pie chart conversions
 ```
 
 ## 3. Measures of Central Tendency & Dispersion
+
+A measure of central tendency gives one representative value; a measure of dispersion tells how widely the
+values scatter around it. Two classes can share the same average and still be very different — which is
+why both kinds of measure are needed.
 
 | Measure | Formula | Note |
 |---------|---------|------|
@@ -63,6 +79,10 @@ Pie chart conversions
 
 ## 4. Speed-Calculation Tricks
 
+The data-interpretation set is the most calculation-heavy part of Paper I. Options are usually far apart,
+so approximate first and calculate exactly only when two options are close.
+
+<!-- latex: p1-07-tricks -->
 ```
 Percentage change    = (New − Old)/Old × 100
 Percentage points    = simple difference of two percentages
@@ -75,6 +95,9 @@ Approximate first, then pick nearest option; options are usually far apart.
 
 ## 5. Worked Data Set (typical NET format)
 
+The table below is typical of an examination set: four series over four years, followed by five questions
+on growth, averages, shares and angles. Work through each question before reading its solution.
+
 Production of cars (thousands) by 4 companies:
 
 | Year | P | Q | R | S | Total |
@@ -84,6 +107,7 @@ Production of cars (thousands) by 4 companies:
 | 2021 | 50 | 30 | 30 | 25 | 135 |
 | 2022 | 60 | 40 | 35 | 25 | 160 |
 
+<!-- latex: p1-07-cars -->
 ```
 Bar view of P across years
 2019 ████████████████████ 40
@@ -100,6 +124,9 @@ Bar view of P across years
 
 ## 6. Data and Governance
 
+Governments are now among the largest producers and users of data. Questions in this area concern the
+institutions, laws and platforms through which public data are collected, protected and shared.
+
 - **Open Government Data (OGD) Platform India** — data.gov.in (NDSAP 2012 — National Data Sharing & Accessibility Policy).
 - **Digital Personal Data Protection Act, 2023 (DPDP)** — rights of Data Principal, duties of Data Fiduciary, Data Protection Board.
 - **National Data Governance Framework Policy (2022)**, India Data Management Office.
@@ -113,6 +140,7 @@ Bar view of P across years
 
 A university's annual expenditure of **₹80 crore** is distributed as follows:
 
+<!-- latex: p1-07-pie -->
 ```mermaid
 pie title Expenditure share (%)
     "Salaries" : 45
@@ -140,6 +168,7 @@ pie title Expenditure share (%)
 
 Number of PhD scholars admitted (two departments):
 
+<!-- latex: p1-07-scholars -->
 ```
  Scholars admitted (each ▇ = 5 scholars)
  2021  CS    ▇▇▇▇▇▇            30

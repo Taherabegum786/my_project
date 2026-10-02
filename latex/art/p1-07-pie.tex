@@ -1,0 +1,15 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \def\R{2.2}
+  \foreach \a/\b/\c/\t/\p in {90/-72/fslate/Salaries/45, -72/-144/fsage/Research/20, -144/-198/fsand/Infrastructure/15,
+      -198/-234/frose/{Library \& ICT}/10, -234/-270/fgrey/Scholarships/10} {
+    \filldraw[fill=\c, draw=fgink, line width=0.5pt] (0,0) -- (\a:\R) arc (\a:\b:\R) -- cycle;
+    \pgfmathsetmacro{\m}{(\a+\b)/2}
+    \pgfmathsetmacro{\an}{\m+180}
+    \draw[thinline] (\m:{\R*0.98}) -- (\m:{\R+0.35});
+    \node[font=\footnotesize, anchor=\an] at (\m:{\R+0.4}) {\t\ (\p\%)};
+  }
+\end{tikzpicture}
+\caption{University expenditure of ₹80 crore by head. Each 1\% of the circle is 3.6°.}
+\end{figure}

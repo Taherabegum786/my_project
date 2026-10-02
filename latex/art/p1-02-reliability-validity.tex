@@ -1,0 +1,14 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \node[grey, minimum width=46mm] (Q) at (0,0) {\textbf{Quality of a research tool}};
+  \node[slate, minimum width=50mm] (R) at (-3.4,-1.4) {\textbf{Reliability} — consistency};
+  \node[sage, minimum width=50mm] (V) at (3.4,-1.4) {\textbf{Validity} — accuracy};
+  \draw[arr] (Q) -- (R); \draw[arr] (Q) -- (V);
+  \node[plain, text width=48mm, align=left, font=\footnotesize, anchor=north] at (-3.4,-2.1)
+    {test–retest (stability)\\parallel forms (equivalence)\\split-half (Spearman–Brown)\\internal consistency (Cronbach's $\alpha$)\\inter-rater (Cohen's $\kappa$)};
+  \node[plain, text width=48mm, align=left, font=\footnotesize, anchor=north] at (3.4,-2.1)
+    {content / face validity\\criterion: concurrent, predictive\\construct: convergent, discriminant\\\phantom{x}\\\phantom{x}};
+\end{tikzpicture}
+\caption{The two pillars of a good measuring instrument and the ways each is established.}
+\end{figure}

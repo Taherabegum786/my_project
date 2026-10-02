@@ -1,0 +1,19 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \begin{scope}[blend group=multiply]
+    \fill[fslate] (0,0) ellipse (2.0 and 1.45);
+    \fill[fsand] (2.7,0) circle (1.1);
+  \end{scope}
+  \filldraw[fill=fsage, draw=fgink, line width=0.5pt] (-0.7,0) circle (0.6);
+  \draw[fgink, line width=0.5pt] (0,0) ellipse (2.0 and 1.45) (2.7,0) circle (1.1);
+  \node at (-0.7,0) {\textbf{A}}; \node at (0.8,0.85) {\textbf{B}}; \node at (3.2,0.2) {\textbf{C}};
+  \fill[fwine] (2.05,-0.1) circle (2pt);
+  \node[lbl, text width=56mm, align=left, anchor=west] at (4.6,0.45)
+    {All A are B; Some B are C.\\[3pt]
+     \upshape``Some C are B'' — \textbf{follows} (converse of an I-proposition).\\[3pt]
+     ``Some A are C'' — \textbf{does not follow}: here C touches B only outside A.};
+\end{tikzpicture}
+\caption{The Venn method. Draw the weakest picture the premises allow; a conclusion is valid only if it is
+true in every such picture.}
+\end{figure}

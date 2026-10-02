@@ -1,0 +1,19 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \begin{scope}[blend group=multiply]
+    \fill[fslate] (0,0) circle (2.3);
+    \fill[fsand] (3.0,0) circle (2.3);
+  \end{scope}
+  \draw[fgink, line width=0.5pt] (0,0) circle (2.3) (3.0,0) circle (2.3);
+  \node[align=center] at (-1.0,0.4) {\textbf{Sender}\\\footnotesize encoder};
+  \node[align=center] at (4.0,0.4) {\textbf{Receiver}\\\footnotesize decoder};
+  \node[align=center, font=\footnotesize\itshape] at (1.5,0) {shared\\meaning};
+  \node[lbl] at (-1.0,-1.25) {sender's field\\of experience};
+  \node[lbl] at (4.0,-1.25) {receiver's field\\of experience};
+  \draw[arr] (-0.6,2.65) to[bend left=22] node[lbl, above] {message} (3.6,2.65);
+  \draw[dasharr] (3.6,-2.65) to[bend left=22] node[lbl, below] {feedback} (-0.6,-2.65);
+\end{tikzpicture}
+\caption{Schramm's model: a message can be understood only to the extent that the fields of experience of
+sender and receiver overlap.}
+\end{figure}
