@@ -1,0 +1,18 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \node[circ, minimum size=22mm, fill=fwine!15, font=\small\bfseries, align=center] (N) at (0,0) {NEP\\2020};
+  \node[slate, text width=40mm, align=left, font=\footnotesize] (a) at (-4.6,1.7) {\textbf{Structure}\\5+3+3+4 schooling\\GER 50\% by 2035\\multidisciplinary institutions};
+  \node[sage, text width=40mm, align=left, font=\footnotesize] (b) at (4.6,1.7) {\textbf{Degrees}\\4-year UG, multiple entry–exit\\certificate–diploma–degree–honours\\M.Phil discontinued};
+  \node[sand, text width=40mm, align=left, font=\footnotesize] (c) at (-4.6,-1.7) {\textbf{Institutions}\\research \& teaching universities\\autonomous degree-granting colleges\\affiliation phased out by 2035};
+  \node[rose, text width=40mm, align=left, font=\footnotesize] (d) at (4.6,-1.7) {\textbf{Others}\\Academic Bank of Credits\\National Research Foundation\\6\% of GDP on education};
+  \foreach \n in {a,b,c,d} \draw[thinline] (N) -- (\n);
+  \node[grey, minimum width=34mm] (H) at (0,-4.1) {\textbf{HECI} — single regulator};
+  \foreach \x/\t/\s in {-4.8/NHERC/regulation, -1.6/NAC/accreditation, 1.6/HEGC/funding, 4.8/GEC/standards}
+    \node[plain, minimum width=26mm, font=\footnotesize] (v\t) at (\x,-5.5) {\textbf{\t}\\\s};
+  \foreach \t in {NHERC,NAC,HEGC,GEC} \draw[arr] (H.south) -- (v\t.north);
+  \draw[thinline] (N) -- (H);
+\end{tikzpicture}
+\caption{The main reforms of NEP 2020 for higher education, and the four verticals of the proposed Higher
+Education Commission of India.}
+\end{figure}

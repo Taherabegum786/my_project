@@ -1,0 +1,14 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[node distance=24mm]
+  \node[slate, text width=22mm] (A) {sender's\\mail client};
+  \node[db, text width=20mm, right=of A] (S1) {sender's\\server};
+  \node[db, text width=20mm, right=of S1] (S2) {receiver's\\server};
+  \node[sage, text width=22mm, right=of S2] (B) {receiver's\\mail client};
+  \draw[arr] (A) -- node[lbl, above] {SMTP} node[lbl, below] {send} (S1);
+  \draw[arr] (S1) -- node[lbl, above] {SMTP} node[lbl, below] {relay} (S2);
+  \draw[arr] (B) -- node[lbl, above] {POP3 / IMAP} node[lbl, below] {retrieve} (S2);
+\end{tikzpicture}
+\caption{How e-mail travels. SMTP \emph{pushes} mail towards the recipient's server; POP3 or IMAP lets
+the recipient \emph{pull} it down.}
+\end{figure}

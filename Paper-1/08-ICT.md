@@ -12,6 +12,11 @@
 
 ## 1. Computer Basics
 
+For Paper I you need a clear picture of what the parts of a computer do rather than how they are built.
+Every computer, from a phone to a supercomputer, follows the same plan: data enter through input devices,
+are processed by the CPU using instructions held in memory, and leave through output devices.
+
+<!-- latex: p1-08-computer -->
 ```mermaid
 flowchart LR
     I[Input<br/>keyboard, mouse, scanner] --> CPU
@@ -26,6 +31,11 @@ flowchart LR
 ```
 
 ### Memory hierarchy (fast/costly at top)
+
+No single memory technology is both fast and cheap, so computers combine several in a hierarchy. Frequently
+used data are kept in the small, fast levels near the processor; everything else waits in the large, slow
+levels below.
+<!-- latex: p1-08-pyramid -->
 ```
           ┌──────────┐            Registers       ▲ fastest, costliest, smallest
         ┌─┴──────────┴─┐          Cache (SRAM)    │
@@ -36,6 +46,7 @@ flowchart LR
 ```
 
 ### Units
+<!-- latex: p1-08-units -->
 ```
 1 nibble = 4 bits     1 byte = 8 bits
 1 KB = 2^10 B   1 MB = 2^20 B   1 GB = 2^30 B   1 TB = 2^40 B
@@ -43,6 +54,10 @@ flowchart LR
 ```
 
 ### Number Systems (frequent question!)
+
+Computers store everything in binary because electronic circuits have two reliable states. Octal and
+hexadecimal are compact ways of writing binary: each octal digit stands for three bits and each hexadecimal
+digit for four.
 - Binary (2), Octal (8), Decimal (10), Hexadecimal (16).
 - (25)₁₀ = (11001)₂ = (31)₈ = (19)₁₆
 - (1010.101)₂ = 10.625
@@ -82,6 +97,11 @@ flowchart LR
 
 ## 3. Internet, Intranet, Extranet
 
+The same Internet technologies — TCP/IP, web browsers, e-mail — can be used on a private network
+(intranet), shared with trusted partners (extranet) or opened to the world (Internet). What differs is who
+is allowed in.
+
+<!-- latex: p1-08-intranet -->
 ```mermaid
 flowchart LR
     subgraph Org[Organisation]
@@ -100,6 +120,10 @@ flowchart LR
 
 ## 4. E-mail
 
+E-mail is a store-and-forward system: messages wait on servers until the recipient collects them, which is
+why sender and recipient need not be online at the same time.
+
+<!-- latex: p1-08-email -->
 ```mermaid
 sequenceDiagram
     participant A as Sender client
@@ -124,6 +148,9 @@ sequenceDiagram
 
 ## 6. Digital Initiatives in Higher Education
 
+These initiatives, coordinated largely by the Ministry of Education, UGC, AICTE and INFLIBNET, together
+form India's digital infrastructure for higher education. Learn each name with its purpose.
+
 | Initiative | Purpose |
 |-----------|---------|
 | SWAYAM | MOOCs (2017) |
@@ -146,6 +173,10 @@ sequenceDiagram
 
 ## 7. ICT & Governance
 
+E-governance uses ICT to deliver government services more quickly, transparently and cheaply. It is
+usually described by the parties it connects.
+
+<!-- latex: p1-08-egov -->
 ```mermaid
 flowchart LR
     G2C[Government to Citizen<br/>UMANG, DigiLocker, passport seva]
@@ -174,6 +205,10 @@ India: **PARAM 8000 (1991)** by C-DAC (first Indian supercomputer); **National S
 
 ### 8.2 Software
 
+Hardware does nothing without instructions. Software is commonly divided into the programs that run the
+computer itself and the programs that do useful work for the user.
+
+<!-- latex: p1-08-software -->
 ```mermaid
 flowchart TB
     S[Software] --> SY[System software]

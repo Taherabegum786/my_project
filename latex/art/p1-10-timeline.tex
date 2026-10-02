@@ -1,0 +1,20 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[y=-0.6cm]
+  \draw[line width=1.6pt, fslate] (0,0.3) -- (0,19.7);
+  \foreach \y/\yr/\ev in {1/1781/{Calcutta Madrasa (Warren Hastings)}, 2/1791/{Sanskrit College, Benares (Jonathan Duncan)},
+      3/1813/{Charter Act — ₹1 lakh a year for education}, 4/1835/{Macaulay's Minute — English education},
+      5/1854/{Wood's Despatch — "Magna Carta of English education in India"}, 6/1857/{Universities of Calcutta, Bombay and Madras},
+      7/1882/{Hunter Commission}, 8/1902/{Raleigh Commission → Indian Universities Act, 1904},
+      9/1917/{Sadler (Calcutta University) Commission}, 10/1948/{Radhakrishnan Commission — recommended the UGC},
+      11/1953/{UGC set up (inaugurated 28 December 1953)}, 12/1956/{UGC Act — UGC becomes a statutory body},
+      13/1964/{Kothari Commission (1964–66) — 10+2+3 pattern}, 14/1968/{First National Policy on Education},
+      15/1986/{National Policy on Education (revised 1992, Programme of Action)}, 16/2005/{National Knowledge Commission (Sam Pitroda)},
+      17/2009/{Yash Pal Committee}, 18/2013/{RUSA — funding for state institutions}, 19/2020/{National Education Policy 2020 (K. Kasturirangan)}} {
+    \filldraw[fill=fwine, draw=white, line width=0.8pt] (0,\y) circle (3.2pt);
+    \node[anchor=east, font=\small\bfseries] at (-0.3,\y) {\yr};
+    \node[anchor=west, font=\small, text width=125mm] at (0.3,\y) {\ev};
+  }
+\end{tikzpicture}
+\caption{The evolution of modern higher education in India.}
+\end{figure}

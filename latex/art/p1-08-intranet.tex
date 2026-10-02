@@ -1,0 +1,17 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \node[panel, minimum width=58mm, minimum height=36mm] (ORG) at (0,0) {};
+  \node[capt, anchor=north west] at (ORG.north west) {the organisation};
+  \node[slate, text width=30mm] (IN) at (0,-0.1) {\textbf{Intranet}\\\footnotesize private; employees only};
+  \node[sage, text width=30mm] (EX) at (0,-3.4) {\textbf{Extranet}\\\footnotesize intranet opened to selected partners};
+  \node[brick, minimum width=6mm, minimum height=26mm, inner sep=0pt] (FW) at (4.0,0) {};
+  \foreach \y in {-1.0,-0.5,...,1.0} \draw[fgink!60, line width=0.3pt] (3.7,\y) -- (4.3,\y);
+  \node[lbl, below=1mm of FW] {firewall};
+  \node[cloudnode, minimum width=34mm, minimum height=20mm, fill=fgrey] (NET) at (7.4,0) {\textbf{Internet}\\\footnotesize public, global};
+  \draw[arrd] (IN) -- (FW); \draw[arrd] (FW) -- (NET);
+  \draw[dasharr, <->] (IN) -- (EX);
+\end{tikzpicture}
+\caption{Intranet, extranet and Internet. A firewall filters traffic between the private network and the
+public Internet.}
+\end{figure}

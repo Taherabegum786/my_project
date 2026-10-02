@@ -1,0 +1,14 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \node[slate, text width=50mm] (V) at (0,0) {\textbf{Visitor} — President of India\\\footnotesize central universities};
+  \node[slate, text width=50mm] (C) at (0,-1.4) {\textbf{Chancellor} — Governor\\\footnotesize state universities};
+  \node[sand, text width=50mm] (VC) at (0,-2.8) {\textbf{Vice-Chancellor}\\\footnotesize chief executive and academic officer};
+  \draw[arr] (V) -- (C); \draw[arr] (C) -- (VC);
+  \foreach \x/\t/\s [count=\k] in {-6.0/{Executive\\Council}/{apex executive}, -3.6/{Academic\\Council}/{apex academic}, -1.2/{Court /\\Senate}/{}, 1.2/Registrar/{administration}, 3.6/{Finance\\Officer}/{}, 6.0/{Controller of\\Examinations}/{}} {
+    \node[sage, text width=20mm, font=\footnotesize, anchor=north] (b\k) at (\x,-4.2) {\textbf{\t}\\\s};
+    \draw[arr] (VC.south) -- (b\k.north);
+  }
+\end{tikzpicture}
+\caption{The governance structure of an Indian university.}
+\end{figure}

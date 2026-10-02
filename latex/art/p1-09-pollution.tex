@@ -1,0 +1,14 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \foreach \x/\col/\head/\items in {
+      0/fslate/Air/{PM\textsubscript{2.5}, PM\textsubscript{10} — lungs, heart\\SO\textsubscript{2}, NO\textsubscript{x} — acid rain\\CO — binds haemoglobin\\ground-level O\textsubscript{3}\\lead — neurotoxic},
+      1/fsage/Water/{fluoride — fluorosis\\arsenic — skin lesions\\mercury — Minamata\\cadmium — itai-itai\\nitrate — blue-baby},
+      2/fsand/Soil/{pesticides, fertilisers\\heavy metals\\salinisation\\\phantom{x}\\\phantom{x}},
+      3/frose/Noise/{above 85 dB harmful\\hearing loss\\stress, sleep loss\\\phantom{x}\\\phantom{x}}} {
+    \node[box, fill=\col, minimum width=36mm] at (\x*3.95,0) {\textbf{\head}};
+    \node[plain, text width=34mm, align=left, font=\footnotesize, anchor=north] at (\x*3.95,-0.6) {\items};
+  }
+\end{tikzpicture}
+\caption{Major forms of pollution and their best-known health effects.}
+\end{figure}

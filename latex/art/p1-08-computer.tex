@@ -1,0 +1,18 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \node[slate, text width=24mm] (IN) at (0,0) {\textbf{Input}\\\footnotesize keyboard, mouse, scanner};
+  \node[box, fill=fgrey, minimum width=46mm, minimum height=34mm] (CPU) at (5.2,0) {};
+  \node[capt, anchor=north] at (CPU.north) {central processing unit};
+  \node[sand, minimum width=36mm] (CU) at (5.2,0.45) {Control unit};
+  \node[sand, minimum width=17mm, font=\footnotesize] (ALU) at (4.27,-0.75) {ALU};
+  \node[sand, minimum width=17mm, font=\footnotesize] (REG) at (6.13,-0.75) {Registers};
+  \node[sage, text width=24mm] (OUT) at (10.4,0) {\textbf{Output}\\\footnotesize monitor, printer};
+  \node[rose, text width=36mm] (MEM) at (5.2,-3.1) {\textbf{Primary memory}\\\footnotesize RAM, ROM, cache};
+  \node[db, minimum width=30mm, minimum height=13mm, text width=26mm] (SEC) at (10.4,-3.1) {\textbf{Secondary}\\\footnotesize HDD, SSD, pen drive};
+  \draw[arr] (IN) -- (CPU); \draw[arr] (CPU) -- (OUT);
+  \draw[arrd] (CPU) -- (MEM); \draw[arrd] (MEM) -- (SEC);
+\end{tikzpicture}
+\caption{The basic organisation of a computer. The CPU fetches instructions and data from primary memory;
+secondary storage holds them permanently.}
+\end{figure}

@@ -1,0 +1,10 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \node[grey, minimum width=34mm] (R) at (0,0) {\textbf{Energy resources}};
+  \node[sage, text width=56mm] (RE) at (-3.4,-1.6) {\textbf{Renewable}\\\footnotesize solar, wind, hydro, biomass, geothermal, tidal};
+  \node[rose, text width=56mm] (NR) at (3.4,-1.6) {\textbf{Non-renewable}\\\footnotesize coal, petroleum, natural gas, nuclear};
+  \draw[arr] (R) -- (RE); \draw[arr] (R) -- (NR);
+\end{tikzpicture}
+\caption{Renewable resources are replenished by nature within a human lifetime; non-renewable ones are not.}
+\end{figure}

@@ -1,0 +1,11 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \foreach \i/\w/\name/\col in {0/9.0/{Optical disc / tape}/fgrey, 1/7.4/{SSD / hard disk}/fslate, 2/5.8/{Main memory (DRAM)}/fsage, 3/4.2/{Cache (SRAM)}/fsand, 4/2.6/{Registers}/frose} {
+    \pic at ({(9-\w)/2},{\i*0.9}) {slab={\w}{0.9}{1.0}{\col}};
+    \node[font=\small] at (4.5,{\i*0.9+0.45}) {\name};
+  }
+  \draw[arr] (10.6,0) -- node[lbl, rotate=90, below] {faster, costlier, smaller} (10.6,4.5);
+\end{tikzpicture}
+\caption{The memory hierarchy. Moving up, each level is faster and more expensive per byte but smaller.}
+\end{figure}

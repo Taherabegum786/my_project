@@ -14,6 +14,9 @@
 
 ## 1. Ancient Indian Centres of Learning
 
+India had residential universities more than a thousand years before Europe. Questions usually ask who
+founded a centre, where it was, which foreign scholars studied there, or who destroyed it.
+
 | Centre | Location (present) | Key facts |
 |--------|--------------------|-----------|
 | **Takshashila** | Rawalpindi, Pakistan | Oldest (~6th c. BCE); Chanakya, Panini, Charaka, Jivaka; no formal degrees |
@@ -31,6 +34,10 @@ Buddhist education: *Pabbajja* (entry) and *Upasampada* (full ordination) ceremo
 
 ## 2. Evolution of Higher Education — Timeline
 
+Modern higher education in India has been shaped by a succession of commissions and policies. Their order
+and their key recommendations are among the most frequently asked facts in this unit.
+
+<!-- latex: p1-10-timeline -->
 ```mermaid
 timeline
     title Modern higher education in India
@@ -57,6 +64,10 @@ timeline
 
 ## 3. NEP 2020 — Higher Education Highlights (most asked)
 
+The National Education Policy 2020 is the first comprehensive policy since 1986. Its higher-education
+reforms aim at flexibility for students, multidisciplinary institutions and lighter but tighter regulation.
+
+<!-- latex: p1-10-nep -->
 ```mermaid
 mindmap
   root((NEP 2020))
@@ -107,6 +118,9 @@ mindmap
 
 ## 5. Regulatory & Professional Bodies
 
+India regulates higher education through a separate body for each sector. Matching each body with its
+field and its year of establishment is a standard question.
+
 | Body | Field | Est. |
 |------|-------|------|
 | UGC | Universities (funding, standards) | 1953 / Act 1956 |
@@ -138,6 +152,10 @@ NAAC grades: A++, A+, A, B++, B+, B, C, D on 4-point CGPA; criteria = **7** (Cur
 
 ## 8. Governance & Administration
 
+A university is governed by a hierarchy of officers and statutory bodies defined in its Act. The figure
+shows the usual arrangement; details vary between central and state universities.
+
+<!-- latex: p1-10-governance -->
 ```mermaid
 flowchart TB
     V[Visitor<br/>President of India - Central univ] --> C[Chancellor<br/>Governor - state univ]
@@ -160,6 +178,7 @@ flowchart TB
 
 ### 9.1 NEP 2020 — Multiple Entry/Exit & Credit System
 
+<!-- latex: p1-10-exits -->
 ```mermaid
 flowchart LR
     E[Enter UG] --> Y1[After Year 1<br/>UG Certificate<br/>40 credits]

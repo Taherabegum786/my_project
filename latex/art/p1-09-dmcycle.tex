@@ -1,0 +1,17 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \def\R{2.3}
+  \foreach \a/\n/\t/\s/\col in {90/M/Mitigation/{reduce risk before it strikes}/fsage, 0/P/Preparedness/{plans, drills, warnings}/fslate,
+      -90/R/Response/{rescue, relief}/frose, 180/C/Recovery/{rehabilitate, rebuild better}/fsand} {
+    \node[box, fill=\col, text width=27mm] (\n) at (\a:\R) {\textbf{\t}\\\footnotesize\s};
+  }
+  \draw[arr] (M) to[bend left=30] (P); \draw[arr] (P) to[bend left=30] (R);
+  \draw[arr] (R) to[bend left=30] (C); \draw[arr] (C) to[bend left=30] (M);
+  \node[capt, align=center] at (0,0) {disaster\\management\\cycle};
+  \draw[decorate, decoration={zigzag, segment length=5pt, amplitude=2pt}, fwine, line width=0.8pt] (2.3,-2.6) -- (2.9,-1.9);
+  \node[lbl, text=fwine, anchor=west] at (2.95,-1.85) {disaster strikes};
+\end{tikzpicture}
+\caption{The disaster management cycle. Mitigation and preparedness come \emph{before} the event; response
+and recovery follow it.}
+\end{figure}

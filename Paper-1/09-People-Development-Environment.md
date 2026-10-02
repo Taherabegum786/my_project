@@ -15,6 +15,11 @@
 
 ## 1. MDGs → SDGs
 
+Development was long measured by income alone. The global goals reflect a broader view: development must
+also reduce poverty, improve health and education, and do so without exhausting the environment on which
+future generations depend.
+
+<!-- latex: p1-09-mdg-sdg -->
 ```mermaid
 timeline
     title Development goals
@@ -46,6 +51,11 @@ timeline
 
 ## 2. Pollution — Sources & Health Effects
 
+Pollution is the addition of substances or energy to the environment faster than it can disperse or
+neutralise them. Questions often pair a pollutant with the disease or disaster it caused, so learn the
+pairs in the figure and table together.
+
+<!-- latex: p1-09-pollution -->
 ```mermaid
 mindmap
   root((Pollution))
@@ -92,6 +102,10 @@ mindmap
 
 ## 3. Waste Management
 
+India's 2016 set of waste rules shifted responsibility to the generators of waste and to producers
+(extended producer responsibility). The guiding principle is the waste hierarchy: the best waste is the
+waste never produced.
+
 | Waste | Rules in India |
 |------|----------------|
 | Solid waste | Solid Waste Management Rules 2016 — segregation at source (wet, dry, hazardous) |
@@ -105,6 +119,10 @@ Waste hierarchy (most → least preferred): **Prevent → Reduce → Reuse → R
 
 ## 4. Natural & Energy Resources
 
+India's energy transition — from coal towards solar, wind and other renewables — is a frequent source of
+questions, both for its targets and for its geography.
+
+<!-- latex: p1-09-energy -->
 ```mermaid
 flowchart LR
     R[Energy resources] --> RE[Renewable<br/>solar, wind, hydro, biomass, geothermal, tidal]
@@ -119,6 +137,10 @@ flowchart LR
 
 ## 5. Natural Hazards & Disasters
 
+A hazard becomes a disaster only when it strikes people who are vulnerable and unprepared. Disaster
+management therefore works continuously, not only after the event.
+
+<!-- latex: p1-09-dmcycle -->
 ```mermaid
 flowchart LR
     P[Prevention / Mitigation] --> PR[Preparedness]
@@ -133,6 +155,10 @@ flowchart LR
 - Risk = Hazard × Vulnerability / Capacity.
 
 ## 6. Environmental Laws & International Agreements
+
+Environmental law in India grew in response to specific crises — the Bhopal gas tragedy led directly to
+the Environment (Protection) Act, 1986. Internationally, cooperation advanced through a series of
+conferences and protocols whose years and subjects are a staple of the examination.
 
 ### Indian Acts
 | Act | Year |
@@ -149,6 +175,7 @@ flowchart LR
 
 ### International
 
+<!-- latex: p1-09-milestones -->
 ```mermaid
 timeline
     title Global environment milestones
@@ -181,6 +208,10 @@ timeline
 
 ### 7.1 Greenhouse Effect & Climate Change
 
+The greenhouse effect itself is natural and essential — without it the Earth would be about 33 °C colder.
+The problem is its *enhancement* by human emissions, which traps extra heat.
+
+<!-- latex: p1-09-greenhouse -->
 ```mermaid
 flowchart LR
     S[Sun: short-wave radiation] --> E[Earth's surface absorbs and warms]

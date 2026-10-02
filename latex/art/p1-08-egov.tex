@@ -1,0 +1,12 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \node[circ, minimum size=24mm, fill=fwine!15, font=\small\bfseries, align=center] (G) at (0,0) {e-Gover-\\nance};
+  \node[slate, text width=44mm] (a) at (-4.3,1.4) {\textbf{G2C} — Government to Citizen\\\footnotesize UMANG, DigiLocker, Passport Seva};
+  \node[sage, text width=44mm] (b) at (4.3,1.4) {\textbf{G2B} — Government to Business\\\footnotesize GeM, GSTN, MCA21};
+  \node[sand, text width=44mm] (c) at (-4.3,-1.4) {\textbf{G2G} — Government to Government\\\footnotesize e-Office, PFMS};
+  \node[rose, text width=44mm] (d) at (4.3,-1.4) {\textbf{G2E} — Government to Employee\\\footnotesize e-HRMS};
+  \foreach \n in {a,b,c,d} \draw[thinline] (G) -- (\n);
+\end{tikzpicture}
+\caption{The four relationships served by e-governance, with representative Indian platforms.}
+\end{figure}

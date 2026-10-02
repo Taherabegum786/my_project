@@ -1,0 +1,24 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[callout/.style={circle, fill=fwine, text=white, font=\scriptsize\bfseries, inner sep=1pt, minimum size=4.6mm}]
+  \fill[fsage] (0,0) rectangle (12,0.5); \draw[fgink, line width=0.5pt] (0,0.5) -- (12,0.5);
+  \fill[fslate!55] (0,0.5) rectangle (12,3.2);
+  \draw[fgink!50, dash pattern=on 3pt off 2pt] (0,3.2) -- (12,3.2);
+  \node[lbl, anchor=west] at (0.15,2.95) {atmosphere with greenhouse gases};
+  \node[lbl, anchor=west] at (0.15,0.25) {Earth's surface};
+  \fill[fochre] (1.2,5.0) circle (0.55);
+  \foreach \a in {0,30,...,330} \draw[fochre, line width=1pt] ($(1.2,5.0)+(\a:0.7)$) -- ($(1.2,5.0)+(\a:0.9)$);
+  \draw[->, fochre!80!black, line width=1.4pt] (2.0,4.5) -- (4.4,0.55);
+  \node[callout] at (3.65,3.4) {1};
+  \draw[->, fwine, line width=1.2pt, decorate, decoration={snake, amplitude=1.5pt, segment length=7pt, post length=2mm}] (5.6,0.55) -- (6.8,3.1);
+  \node[callout] at (5.75,2.2) {2};
+  \draw[->, fwine, line width=1.2pt, decorate, decoration={snake, amplitude=1.5pt, segment length=7pt, post length=2mm}] (6.8,3.15) -- (8.0,0.6);
+  \node[callout] at (7.95,2.2) {3};
+  \draw[->, fwine!60, line width=1.0pt, decorate, decoration={snake, amplitude=1.5pt, segment length=7pt, post length=2mm}] (9.0,0.55) -- (10.0,4.4);
+  \node[callout] at (10.35,3.9) {4};
+\end{tikzpicture}
+\caption{The greenhouse effect. (1) Short-wave sunlight passes through the atmosphere and warms the
+surface. (2) The warm surface radiates long-wave infrared, which greenhouse gases absorb. (3) The gases
+re-emit much of it back towards the surface. (4) The rest escapes to space. More greenhouse gas means more
+re-emission (3) and a warmer lower atmosphere.}
+\end{figure}

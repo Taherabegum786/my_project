@@ -1,0 +1,17 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+  \foreach \i/\t/\c/\col in {0/{UG certificate}/40/fslate, 1/{UG diploma}/80/fsteel, 2/{Bachelor's degree}/120/fsage, 3/{Honours, or honours with research}/160/fsand} {
+    \pic at ({\i*2.9},{\i*0.75}) {slab={2.9}{0.75}{0.9}{\col}};
+    \node[font=\footnotesize\bfseries] at ({\i*2.9+1.45},{\i*0.75+0.375}) {Year \pgfmathparse{int(\i+1)}\pgfmathresult};
+    \node[font=\footnotesize, text width=26mm, align=center, anchor=north] at ({\i*2.9+1.45},-0.15) {exit: \t\\\textit{\c\ credits}};
+  }
+  \node[rose, text width=27mm, font=\footnotesize] (pg2) at (14.3,2.75) {\textbf{2-year master's}\\after 3 years};
+  \node[rose, text width=27mm, font=\footnotesize] (pg1) at (14.3,4.5) {\textbf{1-year master's}\\after 4 years};
+  \node[rose, text width=27mm, font=\footnotesize] (phd) at (14.3,0.9) {\textbf{PhD directly}\\honours with research, CGPA $\ge 7.5$};
+  \draw[arr] (11.9,3.55) |- (pg1.west);
+  \draw[arr] (9.0,2.85) -- (pg2.west);
+  \draw[arr] (12.2,2.2) |- (phd.west);
+\end{tikzpicture}
+\caption{NEP 2020's four-year undergraduate programme, with an exit after every year and the routes onward.}
+\end{figure}

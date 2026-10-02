@@ -1,0 +1,16 @@
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[y=-0.68cm]
+  \draw[line width=1.6pt, fslate] (0,0.3) -- (0,10.7);
+  \foreach \y/\yr/\ev [count=\k] in {1/1972/{Stockholm Conference — UNEP created}, 2/1985/{Vienna Convention for the ozone layer},
+      3/1987/{Montreal Protocol on ozone-depleting substances; Brundtland Report}, 4/1992/{Rio Earth Summit — UNFCCC, CBD, Agenda 21},
+      5/1997/{Kyoto Protocol — binding targets for developed countries (in force 2005)}, 6/2002/{Johannesburg Summit (Rio+10)},
+      7/2012/{Rio+20 — "The Future We Want"}, 8/2015/{Paris Agreement (COP21): well below 2 °C, NDCs; International Solar Alliance},
+      9/2016/{Kigali Amendment — phase-down of HFCs}, 10/2021/{COP26 Glasgow — India's net-zero target of 2070}} {
+    \filldraw[fill=fwine, draw=white, line width=0.8pt] (0,\y) circle (3.5pt);
+    \node[anchor=east, font=\small\bfseries] at (-0.3,\y) {\yr};
+    \node[anchor=west, font=\small, text width=125mm] at (0.3,\y) {\ev};
+  }
+\end{tikzpicture}
+\caption{Milestones in global environmental cooperation.}
+\end{figure}
