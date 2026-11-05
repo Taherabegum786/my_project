@@ -1,0 +1,8 @@
+go,ML-KEM-768,keygen,2000,63.23
+go,ML-KEM-768,encaps,2000,56.27
+go,ML-KEM-768,decaps,2000,75.73
+go,ML-KEM-1024,keygen,2000,97.28
+go,ML-KEM-1024,encaps,2000,96.23
+go,ML-KEM-1024,decaps,2000,128.94
+go-tls,X25519MLKEM768,handshake_loopback,300,951.67,only_group_offered
+go-tls,X25519,handshake_loopback,300,789.86,only_group_offered
