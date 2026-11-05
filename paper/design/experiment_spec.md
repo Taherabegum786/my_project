@@ -9,7 +9,13 @@ Read `design/design.md` first. This spec covers the engineering: modules, parame
   - (a) gcc + system OpenSSL 3.0 libcrypto (`-lcrypto`) for SHA-256 path verification and HMAC;
   - (b) Docker image `openquantumsafe/oqs-ossl3:latest` (OpenSSL 3.6.0, present locally; start dockerd with `nohup dockerd >/tmp/dockerd.log 2>&1 &` if needed). Use it for native ML-DSA/SLH-DSA/Ed25519/ECDSA/RSA sign and verify via `openssl speed` (see `experiments/probe/openssl_speed.sh`) and, ideally, a small C program linked against that image's libcrypto, using EVP_PKEY_sign/verify, built inside the container.
 - Pinning: `taskset -c 2` for single-core benchmarks; the 4-process issuer run uses cores 0–3. Run `gc.disable()` during timed loops, use `time.perf_counter_ns()`, and warm up for 200 iterations.
-- Seeds: global `SEED=20261105`. Simulation replicate r uses `SEED + 1000*r`. Use 5 replicates for the simulation and report the mean and 95% CI across replicates.
+- **Native primary (Critic):** OpenSSL 3.5.4 at `$SP/opt/ossl35` (already built; recipe in `scout/feasibility.md`). Set `LD_LIBRARY_PATH=$SP/opt/ossl35/lib` and `OPENSSL_CONF=$SP/opt/ossl35/ssl/openssl.cnf`, and compile with `-I$SP/opt/ossl35/include -L$SP/opt/ossl35/lib -lcrypto`. **All issuer-cost and edge-CPU claims use these numbers.** Docker oqs-ossl3 is a cross-check only.
+- **Go:** `/usr/local/go/bin/go` 1.24.7, with module `github.com/cloudflare/circl v1.6.1` (fetch verified working through the proxy) for ML-DSA-44 and `golang.org/x/net/http2/hpack` for E3b.
+- **Seeds.** Global `SEED=20261105`. Simulation replicate r uses `SEED + 1000*r`.
+  - Use **≥ 5 replicates** everywhere, and 10 for the controller headline (`sim_controller_summary`).
+  - Use **common random numbers**: the same seeds across policies and modes.
+  - Report the mean and a **Student-t 95% CI** (t₄ = 2.776 for 5 reps, t₉ = 2.262 for 10). For every "A better than B" claim, also report the **paired-difference CI**.
+- **Micro-benchmark statistics.** ≥ 5 independent process runs (fresh process per run, pinned core) × n_iter per run. Report the median of run-medians and a bootstrap CI over run-medians (2000 resamples), plus pooled p99. Record `/sys/devices/system/cpu/cpu*/cpufreq/scaling_governor` (if present) and `/proc/stat` steal time before and after each run in `results/env.txt`.
 
 ## 1. Directory layout (`paper/experiments/`)
 ```
@@ -36,13 +42,23 @@ experiments/
       pathverify.c          # SHA-256 Th + path verify + HMAC-SHA256, libcrypto; CLI prints CSV
       Makefile
       oqs_sigbench.c        # EVP sign/verify loop (built & run inside oqs-ossl3 container)
-      run_native.sh         # builds & runs both, writes results/native_*.csv
+      evp_sigbench.c        # PRIMARY: EVP sign/verify/keygen + ML-KEM-768 encap/decap, OpenSSL 3.5.4 (scratchpad)
+      run_native.sh         # builds & runs all, 5 runs each, writes results/native_*.csv
   sim/
     workload.py             # tenants, diurnal NHPP, edge shares, sessions, RTT samplers
     fleet_mc.py             # vectorised epoch-level Monte Carlo (E5 main)
     des.py                  # per-request discrete-event simulator (validation, E5v) using heapq
     dos.py                  # E7
     run_sim.py              # CLI: --exp {sweep_delta,controller,dissem,e2e,sens,validate,dos}
+  proto/                    # E8 real prototype (Go module, circl v1.6.1, x/net)
+    go.mod
+    tokens/                 # Go port of token encode/verify for all schemes (must pass the shared test vectors)
+    edge/main.go            # edge verifier: query/cookie token, V virtual edges, root cache + singleflight, neg cache, verify-LRU
+    issuer/main.go          # issuer + root service: timer-Δ epochs, ML-DSA-44 (circl) root, per-token modes, /root/<kid>/<e>
+    loadgen/main.go         # closed-loop (P1) and open-loop Poisson sessions (P2/P3); writes CSV
+    hpackbytes/main.go      # E3b: per-session header bytes with hpack encoder
+    net/                    # tapbridge.c + net3.sh (3 netns: cli, edge, origin; 2 tapbridge instances)
+    run_proto.sh            # builds, sets up netns, runs P1-P3 x 5 runs, tears down
   plots/
     style.py                # common matplotlib style (IEEE column width 3.5in, 8pt fonts, colorblind palette)
     make_figures.py         # fig2..fig9 from CSVs -> results/figs/*.pdf
@@ -84,6 +100,12 @@ class Signer:  name; keygen(); sign(msg)->bytes; verify(msg, sig)->bool; sig_len
 # implementations: HMACSHA256, Ed25519, ECDSAP256 (DER, SHA-256), RSA2048 (PKCS1v15, SHA-256),
 # MLDSA44, MLDSA65, SLHDSA128s, SLHDSA128f (pqcrypto, context=b"EMBER-root" for roots / b"CDN-token" per-token),
 # HybridEd25519MLDSA44 (both must verify)
+# Critic baselines:
+#   MultiMAC(k)            -> k truncated 16-B HMAC tags, independent keys (B10)
+#   DelegatedEd25519       -> ML-DSA-44-signed epoch cert {kid, ed_pk, not_after}; token = claims+Ed25519 sig+cert id (B11)
+#   KemWrappedHMAC         -> per-epoch k_e; wrap = ML-KEM-768 encaps to each edge pk + AES-GCM/HKDF of k_e; token = HMAC_k_e (B12)
+#   MTLMode                -> single growing Merkle series per key; ladder re-signed every Δ; condensed sig = idx|rung_id|path (B13)
+# VerifyCache wrapper: LRU(SHA-256(token)) -> accept until Expires; applies to any scheme (B5v/B6v and ablation for EMBER)
 
 # ember/issuer.py
 class EmberIssuer:
@@ -109,6 +131,11 @@ class EmberEdge:
   - a period-bundle root with a tampered list;
   - for the hybrid, either half's signature corrupted.
 - Every per-token baseline: valid accepted, tampered rejected.
+- (Critic) Cross-tenant: a leaf from tenant A replayed with Tenant = B in a pooled tree is rejected; the tenant id is in the leaf tweak.
+- (Critic) Cross-kid replay is rejected. An edge clock skewed by +τ_skew/−τ_skew accepts; one skewed by 2τ_skew rejects at the boundary.
+- (Critic) idx ≥ N_e is rejected. The epoch counter refuses to wrap.
+- (Critic) B11: an expired delegated key is rejected; Ed25519 under a non-certified key is rejected. B12: a wrong-epoch key is rejected.
+- (Critic) Shared JSON test vectors (`tests/vectors.json`) generated by Python must verify identically in the Go `proto/tokens` package.
 
 ## 3. Experiments, parameters, CSV schemas
 
@@ -124,7 +151,12 @@ class EmberEdge:
 - Also save the raw samples: `results/raw/micro_<scheme>_<op>.npy`, used for the CDFs and as simulator input.
 - **A1 investigation.** Time ML-DSA-44 sign via the flat `sign` and the object API, and via `hash_algorithm=None` vs a pre-hash variant if available. Write the findings to `results/notes_A1_mldsa_sign.md`.
 
-### E1n. `bench/native/run_native.sh` → `results/native_pathverify.csv`, `results/native_sig.csv`
+### E1n. `bench/native/run_native.sh` → `results/native_pathverify.csv`, `results/native_sig.csv` (PRIMARY timing source)
+- **`evp_sigbench.c` against OpenSSL 3.5.4 (scratchpad).**
+  - Ops: keygen/sign/verify for ML-DSA-44/65/87, SLH-DSA-SHA2-128s/128f, Ed25519, ECDSA-P256, RSA-2048; ML-KEM-768 keygen/encaps/decaps.
+  - Repetitions: 5 runs × 2000 iterations (SLH-DSA-128s sign 5 × 10; SLH-DSA-128f sign 5 × 100). Fresh process per run, `taskset -c 2`, warm-up 200 iterations.
+  - Columns: `scheme,op,impl,run,n_iter,median_us,p99_us,mean_us`. Write the aggregate to `native_sig_agg.csv` with `ci95_lo_us,ci95_hi_us` (bootstrap over run-medians), `impl=openssl-3.5.4-native`.
+- `pathverify.c` is also linked against OpenSSL 3.5.4, and also runs 5 runs.
 - `pathverify.c` (libcrypto SHA-256; also try SHA-NI if OpenSSL uses it automatically):
   - for d ∈ {4, 8, 10, 12, 14, 16, 18, 20, 24} and n ∈ {16, 32}, time 10⁶ path verifications; also time HMAC-SHA256 over the 200 B claims, 10⁶ times;
   - columns: `op,d,n,iters,ns_per_op_median,ns_per_op_p99`. Use batches of 1000 and per-batch timing to obtain the distribution.
@@ -148,6 +180,22 @@ class EmberEdge:
   - Columns: `scheme,root_signer,n,N,procs,t_leaf_us,t_tree_us,t_sign_us,t_encode_us,t_epoch_us,tokens_per_s`.
   - Also run procs = 4 (multiprocessing, one issuer shard per core) for O1 and for B5.
 - **Model check** → `results/model_check.csv`: `quantity,scheme,param,predicted,measured,rel_err`.
+
+### E2+ (Critic baselines) in `bench_tokens.py`
+- Add B5v, B6v, B5c, B6c, B10 (k = 1, 3, 10), B11, B12 and B13 to `token_sizes.csv` and `token_verify.csv`.
+- For the `+vcache` variants, report `cache=hit` and `cache=miss` rows, plus `amortised_us_per_req` for K = 150 segments at one edge.
+- B12 issuer cost per epoch = E × ML-KEM-768 encaps (native) + E × AES-GCM; add it to `issuer_throughput.csv` with E ∈ {100, 500, 2000}.
+- Also add EMBER `pad_pow2=1` rows (issuer cost).
+
+### E3b. `proto/hpackbytes` → `results/wire_bytes.csv`
+- Build each scheme's real token (via the shared Python test-vector generator, or the Go port).
+- For a session of 1 manifest + K = 150 segment requests with realistic headers (`:method,:scheme,:authority,:path,user-agent,accept`, ~600 B total), encode with `hpack.NewEncoder` (4096-B table). Placements:
+  - `url`: token in the query, so `:path` differs per segment;
+  - `cookie`: same value every request;
+  - `cookie2`: split across 2 cookie headers for B5c/B6c.
+- HTTP/1.1 = raw byte length.
+- EMBER: with and without `X-EMBER-Root` on the first request.
+- Columns: `scheme,placement,proto,K,first_req_bytes,session_bytes,bytes_per_req_mean`.
 
 ### E3. `bench/fit_analysis.py` → `results/fit.csv`
 - URL path length L ~ lognormal(median = 80 chars, σ = 0.5) (assumption, stated in Table IV), with 10⁵ samples; base URL host = "https://cdn.example.com".
@@ -212,6 +260,32 @@ Track per-edge root caches as sets keyed by (tenant, epoch) or (tenant, period),
 - `results/sim_e2e_latency.csv`: per-request added-latency samples, reservoir 10⁵ per (scheme, mode). Columns `scheme,mode,sample_ms`. Per-token baselines have zero miss latency but higher CPU.
 - `results/sim_sens.csv`: `param,value,metric,mean,ci_lo,ci_hi`
 
+**Critic additions to the simulation:**
+- Policies also include `oracle_fixed`: per tenant-rate decile, the fixed Δ with the lowest D in hindsight, chosen from the `sweep_delta` results at the same seeds.
+- Add baselines B11 and B12 to `sim_dissem.csv` (they share the per-epoch push/pull path; B12 is push-only at E·1120 B/epoch).
+- Add columns `refresh_per_session` and `revocation_propagation_s`.
+- `des.py` remains, but its CSV is labelled `internal_consistency`. The **validation** is E8 P3 (below).
+
+### E8. Real prototype → `results/proto_capacity.csv`, `results/proto_latency.csv`, `results/proto_validate.csv`
+- **Network.** `proto/net/net3.sh` builds netns `cli`, `edge`, `origin` with two `tapbridge` instances, adapted from `git show origin/claude/brave-meitner-l8yswp:experiments/src/tapbridge.c` and `.../scripts/net.sh` (copy; reused tooling, cite as the author's prior artifact):
+  - cli↔edge one-way delay 10 ms;
+  - edge↔origin one-way delay 37.5 ms;
+  - 1000 Mbit/s, MTU 1500, offloads off.
+  - Cores: loadgen 0, edge 1 (`GOMAXPROCS=1`), both tapbridges 2, issuer 3.
+  - If netns/TAP setup fails, fall back to loopback, record `net=loopback` in every CSV row, and state it in the limitations. Never silently.
+- **P1 capacity** (inside the `edge` ns, loadgen over that ns's loopback, so no tapbridge, measuring CPU):
+  - closed loop with 64 connections, keep-alive, 20 s per run after 5 s warm-up, 5 runs;
+  - schemes B1, B2, B3, B5, B5v (hit ratio set by K = 150), B11, B12, O1-warm, O1 with root verify every N_req = 1000 (amortised);
+  - columns: `scheme,run,req_per_s,cpu_util_edge,p50_ms,p99_ms`.
+- **P2 latency under load** (over tapbridge): open loop at 50% and 80% of each scheme's P1 capacity, 30 s × 5 runs. Columns: `scheme,load_frac,run,p50_ms,p99_ms,added_p50_ms_vs_hmac`.
+- **P3 validation**:
+  - modes `pull`, `pull_staple`; V ∈ {10, 50} virtual edges with Zipf(0.8) shares; Δ ∈ {0.1, 1, 10} s; λ ∈ {20, 200} tokens/s;
+  - segment interval compressed to 200 ms and K ~ geometric(mean 20) to keep runs at 5 min; 5 runs each;
+  - measured: misses/token, mean and p99 miss-added latency, root bytes;
+  - then run `fleet_mc` and `model.py` with **the same parameters and the RTT distribution measured in the prototype** (ping-style probe through tapbridge, recorded);
+  - columns: `mode,V,delta_s,lambda,metric,proto_mean,proto_ci_lo,proto_ci_hi,mc_mean,model_value,rel_err_mc,rel_err_model`.
+- Wall-time cap for E8: ≤ 60 min. If it is exceeded, drop V = 50 first, then λ = 20.
+
 ### E7. `sim/dos.py` → `results/dos.csv`
 - One edge; attack rate ∈ {10², 10³, 10⁴} fake tokens/s with random epochs within the acceptance window; 60 s.
 - Variants: coalescing + negative cache on/off; stapled-root flood (each fake token carries a stapled root with an invalid signature).
@@ -256,10 +330,37 @@ $PY -m plots.make_figures --in ../results --out ../results/figs
 $PY -m plots.make_tables  --in ../results --out ../results/tables
 # or: QUICK=1 bash run_all.sh  (1 h sim, fewer iters) then bash run_all.sh
 ```
-Budget: the full run should take ≤ 3 h on 4 cores. The fleet MC must be vectorised with numpy per epoch, never per request, apart from the DES validation. If the 24 h × λ̄ = 20000 configuration is too slow, cut that case to 6 h and record the change in `results/sim_params.json`.
+### 5.1 Compute budget (Critic D12; mandatory)
+| Block | Cap | How |
+|---|---|---|
+| E1 + E1n | 30 min | 5 runs; SLH-128s sign limited to 10 iters/run |
+| E2/E2+/E3/E3b | 25 min | the issuer N = 262144 point only for O1 and O3 |
+| sweep_delta | 30 min | **1 h stationary horizon** (no diurnal), λ̄ ∈ {200, 2000, 20000}, 5 reps; Δ = 0.01 only at λ̄ ≥ 2000 |
+| controller | 40 min | 24 h at λ̄ = 200 and 2000 (10 reps); λ̄ = 20000 runs a 1 h peak window only (5 reps) |
+| dissem/e2e/sens | 30 min | sens 3 reps → **raised to 5** but only for 1 h horizons |
+| E8 prototype | 60 min | see the E8 caps |
+| total | ≤ 3.5 h | run `QUICK=1` first. If any block's extrapolated time exceeds its cap, shorten its horizon, record this in `results/sim_params.json`, and footnote it in Table IV |
+
+The simulator must **never materialise empty tenant-epochs**. Generate per-tenant arrival times (NHPP by thinning), assign epochs with `np.searchsorted` over epoch boundaries, and iterate only over non-empty epochs. Under the controller (variable Δ), iterate epochs only for tenants with pending arrivals.
+
+Budget (original text): the full run should take ≤ 3 h on 4 cores. The fleet MC must be vectorised with numpy per epoch, never per request, apart from the DES validation. If the 24 h × λ̄ = 20000 configuration is too slow, cut that case to 6 h and record the change in `results/sim_params.json`.
 
 ## 6. Reporting rules
 - Write `results/SUMMARY.md` containing the key numbers, each with its CSV and row, and the status of H1–H7 (supported / refuted / partial), using values that were actually produced.
 - Label backend (python vs native) on every timing. Never project or extrapolate numbers and present them as measured. Simulated quantities are labelled "simulated".
 - Report A1 (the slow pqcrypto ML-DSA sign) explicitly. Issuer-side claims must use the native sign costs.
 - Assumptions (RTT, Zipf, segment size, URL-length distribution) go in Table IV with their sweep ranges. They are not presented as measured.
+- (Critic) **No interpolation or projection.** Model curves are lines labelled "model"; measured and simulated values are markers. No value appears in a table that a script did not output.
+- (Critic) Every timing row carries `impl` ∈ {openssl-3.5.4-native, oqs-ossl3-docker, go-circl-1.6.1, go-stdlib, pqcrypto-1.0.0, cryptography-50.0.2, hashlib}. Sanity rule: ML-DSA-44 verify must be in the tens to hundreds of µs. An implementation more than 3× off OpenSSL 3.5.4 is investigated in `results/notes_impl_xcheck.md`.
+- (Critic) `SUMMARY.md` gives H1–H9 status. H5 applies its pre-registered demotion rule. H8 states whether the simulator was validated by the prototype.
+
+## 7. Critic changes log (2026-11-05)
+See `design/critique.md` and design.md §9.
+- Native OpenSSL 3.5.4 is the primary source.
+- Statistics: ≥ 5 runs/seeds, t-CIs, CRN, paired CIs.
+- New baselines B5v/B6v/B5c/B6c/B10–B13.
+- New tests: cross-tenant, cross-kid, skew, wrap, shared vectors.
+- New E3b (HPACK wire bytes) and E8 (Go prototype in netns + tapbridge, validating the simulator).
+- Oracle-fixed policy.
+- Explicit compute budget with horizon cuts and no materialisation of empty epochs.
+- Reporting rules against interpolation and projection.

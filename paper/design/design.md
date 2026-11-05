@@ -42,12 +42,13 @@ The core primitive is **not new**: sign one Merkle root, give each message an au
 
 **Exact-idea check.** Neither MTAC nor any other work in our searches applies Merkle batching to CDN signed URLs or cookies. If the Writer finds such a paper during final verification, the fallback is the closest unexploited variant: keep the batching primitive as background and make the **adaptive dissemination/epoch control under multi-tenant CDN load** (C3–C4 below) the headline contribution. That part was absent from everything we found.
 
-**Claimed contributions (paper):**
-- **C1.** The first threat model and requirement set for PQ CDN access tokens. It is honest about HMAC (already PQ-secure) and argues that the case for asymmetric tokens rests on trust distribution, not on quantum hardness.
+**Claimed contributions (paper)** (revised by the Critic: see the changes log, D1). C2 is explicitly a *profile* of Merkle batch signatures (CT-RSA'24) and MTL mode, not a new primitive. The headline contributions are the CDN-systems ones (C3, C4, C6) and the head-to-head with the *strong* baselines (B10–B15).
+- **C1.** A threat model and requirement set for PQ CDN access tokens (do not claim "first"). It is honest about HMAC (already PQ-secure) and argues that the case for asymmetric tokens rests on trust distribution, not on quantum hardness.
 - **C2.** EMBER, a token format and protocol: tweak-domain-separated Merkle tree with issuer-salted leaves; one ML-DSA / SLH-DSA (optionally hybrid Ed25519+ML-DSA) signature per epoch; epoch-bounded validity; revocation. Includes a **proof sketch** reducing token unforgeability to EUF-CMA of the root signer plus (second-preimage-type) security of the tweakable hash, and a **truncated-node analysis** (n = 16 B vs 32 B).
 - **C3.** Root dissemination for a CDN fleet: push, pull-on-miss with request coalescing, **root stapling** on the first request, and **two-timescale period roll-up**, with closed-form bandwidth and miss models.
 - **C4.** An **adaptive epoch controller** that minimises user-visible added delay in a single unit (seconds): issuance wait + expected root-miss RTT. It is subject to hard constraints on token size and signer capacity, uses no arbitrary weights, and runs per tenant.
-- **C5.** Measured microbenchmarks (real code: pqcrypto, `cryptography`, a native C path-verify cross-check) and a CDN simulation showing size, % fit, edge CPU, issuer throughput, latency and bandwidth against 9 baselines.
+- **C5.** Measured microbenchmarks. The primary numbers are native: OpenSSL 3.5.4 C/EVP built in the scratchpad, and Go/circl. Python pqcrypto is secondary and labelled. Wire bytes per session are measured with a real HPACK encoder. The comparison covers 15 baselines, including the strong ones: multi-MAC, delegated short-lived Ed25519 keys, KEM-wrapped epoch MAC keys, ML-DSA with a verified-token cache, multi-cookie ML-DSA, and MTL mode.
+- **C6.** A **real Go prototype** (edge verifier, issuer + root service, open-loop load generator) in separate network namespaces joined by the userspace link emulator `tapbridge` (netem is unavailable). It measures edge req/s per core, added latency under load, and real root-miss behaviour. The fleet simulator is **validated against this prototype**, not only against a second simulator (E8).
 
 ---
 
@@ -63,7 +64,8 @@ The core primitive is **not new**: sign one Merkle root, give each message an au
 2. **Multi-CDN and third-party verifiers.** Content owners increasingly use several CDNs. HMAC means sharing the minting secret with every vendor, each of which can mint tokens valid on the others. With public-key tokens, each CDN gets only the public key.
 3. **Accountability.** With HMAC any verifier could have minted a token, so there is no evidence of who issued it. Signatures provide issuer accountability for audit and disputes.
 4. **Delegation.** A public-key issuer can delegate scoped issuing rights (a separate key per tenant or product) without re-keying edges. This is out of scope for evaluation and is mentioned only.
-Industry already chose public-key tokens for these reasons (CloudFront, Media CDN). Those deployments use RSA/ECDSA/Ed25519 and are therefore quantum-vulnerable.
+**Caveat on point 1 (Critic, D5).** A compromised edge can already serve anything it caches without checking any token. Asymmetric tokens only remove *lateral* minting: tokens usable at other edges, other CDNs, or for other tenants and paths. The benefit is therefore a smaller blast radius, quantified in Table V, not "edge compromise is harmless".
+Some vendors offer public-key token options (CloudFront, Media CDN); we do not speculate about their motives. Those deployments use RSA/ECDSA/Ed25519 and are therefore quantum-vulnerable.
 
 **Why PQ, and why now.** Authentication has **no harvest-now-decrypt-later (HNDL) problem**, and the paper must state this (lesson 8 from the prior rejection). Short-lived tokens issued today cannot be forged retroactively in any useful way. The real risks are:
 - (a) Once a CRQC exists, an attacker recovers the long-lived issuer private key from the **public** key (Shor) and mints arbitrary tokens. Public keys are configured in CDN dashboards and edge configs for years.
@@ -109,6 +111,19 @@ Every segment request also carries the token (header bloat over hundreds of requ
 - **G3 Bounded validity.** An edge rejects any token whose Expires exceeds T_epoch + V_max, even if the claims are authentic.
 - **G4 Sibling privacy.** An authentication path reveals nothing about other clients' claims (hiding via 128-bit salts).
 - **G5 Availability.** An edge that cannot get a root fails closed by default. The policy knob is discussed, not evaluated as secure.
+
+**Additional threats the analysis must cover (Critic, D7/D8):**
+- **Replay classes.**
+  - Same-edge and cross-edge replay of a stolen bearer token: as in the status quo.
+  - Cross-epoch replay: prevented by the epoch in the tweak; tested.
+  - Cross-tenant replay in pooled trees: prevented by Tenant in the claims and the tenant id in the leaf tweak; tested.
+  - Cross-kid replay: tested.
+- **Binding options.** IP/ASN claims. An optional DPoP-style `cnf` = H(client public key) claim (+32 B; costs one client signature per request, so it is discussed, not evaluated). TLS-exporter binding is future work.
+- **Clock skew.** Edges apply a tolerance τ_skew (default 5 s) to both the Expires and the T_start + Δ + V_max checks. There is a test with a ±τ_skew clock.
+- **Volume privacy.** N_e in the public root leaks per-tenant issuance volume. Mitigations: pad-to-2^d or bucketed N, dummy leaves, pooling, and stapling/push-only distribution.
+- **Linkability.** (e, i) is a per-token identifier visible on every request. This is the same as a per-token signature in the status quo, but say so.
+- **Side channel.** Root-fetch timing at an edge reveals whether a token for (tenant, e) was recently used there (cache probing). The impact is low; mitigations are push or stapling.
+- **Pooling changes the trust model.** One CDN-held key mints for all pooled tenants. Pooling is only valid when the tenant already delegates issuance to the CDN (D6).
 
 Non-goals: client anonymity or unlinkability (Privacy Pass solves that at 85+ KB, ePrint 2023/414); confidentiality of claims; issuer-key compromise recovery beyond rotation.
 
@@ -241,6 +256,12 @@ Symbols: n node bytes, d = ⌈log₂N⌉, N = λΔ, t_h one tweakable-hash call 
 
 **Theorem (informal).** Adv^{tok}(𝒜) ≤ Adv^{EUF-CMA}_{Sig}(ℬ₁) + Adv^{SM-TCR/2nd-pre}_{Th}(ℬ₂) (+ Adv_{Sig} of the period signature when roll-up is used). Here SM-TCR is single-function multi-target target-collision resistance with distinct tweaks, as used for SLH-DSA.
 
+Critic additions (D9):
+- **Parameters.** State q_h (hash queries) and the target count t ≤ Σ_e (2N_e − 1). The bound is ≈ q_h/2^{8n} classically and O(q_h²/2^{8n}) for a quantum adversary (Grover), with no factor t because the tweaks are distinct. Cite the SPHINCS+ tweakable-hash framework (Bernstein et al., CCS 2019 [TODO-verify]) for SM-TCR/SM-DSPR.
+- **Ordering.** The issuer samples r *after* 𝒜 fixes c in the chosen-claims oracle, so 𝒜 cannot precompute a colliding (c, c′) pair for its own leaf.
+- **Wrap-around.** epoch and idx must never wrap: rotate kid before 2^32 epochs.
+- **Hybrid.** The hybrid root is an AND-combiner (both signatures verify over the same message), with its unforgeability as the max of the components. Cite Bindel et al. hybrid signature definitions [TODO-verify], because the prior paper was criticised on exactly this point.
+
 **Sketch.** Let R* be the root the edge used for e*.
 - **Case 1: R* was never output by the issuer for (kid, e*).** Then the (σ, message) pair the edge verified is a forgery for Sig: either directly on SR, or on PB_p, in which case R* ∈ PB_p means either the period message is forged or there is a collision inside the period tree, which falls under Case 2-type reasoning. This gives ℬ₁.
 - **Case 2: R* = R_{e*}, the honest root.** Recompute both the honest path from leaf i* and 𝒜's path. Because c* differs from the honest c_{i*} (or i* ≥ N_{e*}, which is rejected by the N bound in SR), the two hash chains start from different inputs and end at the same root. So at some position (e*, ℓ, j) they have different inputs and equal outputs under the same tweak. The honest input at that position contains issuer randomness r unknown to 𝒜 before issuance, so 𝒜 could not have pre-selected a colliding pair. It must hit a fixed honest target after seeing it, which is a target-collision / second-preimage event at a unique tweak.
@@ -287,7 +308,39 @@ All baselines use the same claim string; only the authenticator differs.
 | O4 | EMBER, root = hybrid Ed25519+ML-DSA-44, n = 16 | Ours, hybrid at zero per-token cost |
 | (abl.) | O1 w/o salt, w/o tweak, w/o roll-up, w/o stapling | Ablations for dissemination/latency; the salt and tweak ablations change security, not cost, so they are reported for cost only, with a note |
 
-Mention, but do not evaluate: HMAC with per-PoP derived keys. The issuer must mint per-PoP tokens or know the serving PoP in advance, which anycast and multi-CDN routing break.
+**Strong baselines added by the Critic (D2). These are mandatory; reviewers will ask for them.**
+
+| ID | Scheme | What it tests | Evaluated in |
+|---|---|---|---|
+| B5v / B6v | ML-DSA-44/65 per token **+ edge verified-token cache** (LRU keyed by SHA-256(token), TTL = Expires) | Per-request crypto paid once per (session, edge). This is the strongest per-token competitor on CPU. | E2, E8, sim |
+| B5c / B6c | ML-DSA-44/65 per token **split across 2 cookies** | Removes the 4 KB cookie objection. The remaining cost is bytes per request. | E3, E3b |
+| B10 | **Multi-MAC**: one 16-B truncated HMAC per verifier domain (k ∈ {1, 3, 10} CDNs/regions) with independent keys | Answers the multi-CDN argument with symmetric crypto. Edge compromise still mints for its own domain. | E2, E3, Table V |
+| B11 | **Delegated short-lived Ed25519**: an ML-DSA-44-signed epoch certificate over an Ed25519 key valid for V_max; token = claims + Ed25519 sig + key id | Same dissemination as EMBER, ~90-B tokens. PQ security rests on "no CRQC breaks Ed25519 within V_max". | E2, E3, E8, sim (same root-dissemination path) |
+| B12 | **KEM-wrapped epoch HMAC keys**: per epoch the issuer generates k_e and wraps it with ML-KEM-768 to each edge (or to each PoP key); the token is an HMAC under k_e | PQ, tiny tokens. Edge compromise mints only within the live epoch(s), but for all edges. Costs push bandwidth of E·1120 B per epoch. | E2, E3, sim (push bandwidth), Table V |
+| B13 | **MTL mode** (draft-harvey-cfrg-mtl-mode): one growing series per key, ladder re-signed every Δ, condensed signature = path to a rung | The nearest prior construction. Delta vs EMBER: path length grows with series length, not with epoch batch size; ladder fetch vs per-epoch root; state bounded by V_max. | E2 sizes (implemented tree, analytic ladder), sim dissemination |
+| B14 | Macaroons (HMAC chain) | Attenuation, but HMAC trust. | Qualitative, Table V only |
+| B15 | TLS/mTLS-bound or DPoP tokens; PQ-KEM token *encryption* (JWE with ML-KEM) | Orthogonal: binding and confidentiality, not unforgeability. | Qualitative only, explained |
+
+Per-PoP derived HMAC keys (anycast/multi-CDN routing means the issuer does not know the serving PoP) are subsumed by B10 with k = #regions.
+
+**Ablations (D2/D4):**
+- salt off / tweak off (cost only);
+- n = 16 vs 32;
+- roll-up off;
+- stapling off;
+- pooling off;
+- pad-to-2^d on;
+- adaptive vs **oracle best fixed Δ** vs WC;
+- verify cache on/off (for all schemes, including EMBER).
+
+**Trust comparison (Table V, now mandatory).** Columns:
+- secret at edge? (lifetime);
+- one edge compromised: who can it mint for?;
+- PQ assumption (unconditional / time-bounded classical);
+- accountability;
+- token bytes;
+- per-request verify (native);
+- dissemination bytes/s.
 
 ---
 
@@ -318,7 +371,10 @@ Scout B's probe (`results/probe_openssl_speed.csv`) confirms this: in the `openq
 - Samples: ≥2000 per op (≥30 for SLH-DSA-128s sign).
 - Method: pinned to one core (`taskset -c 2`), GC disabled, warm-up 200, `perf_counter_ns`.
 - Report median, p99, and 95% bootstrap CI.
-- Native cross-check: (a) a C program using OpenSSL libcrypto SHA-256 for EMBER path verify (d = 10..24) and HMAC; (b) liboqs native ML-DSA/SLH-DSA (built from source) if the build succeeds.
+- **Primary (Critic, D10).** A native C/EVP benchmark against **OpenSSL 3.5.4** (scratchpad build at `$SP/opt/ossl35`). It covers ML-DSA-44/65/87, SLH-DSA-128s/f, Ed25519, ECDSA-P256, RSA-2048, ML-KEM-768 (for B12), HMAC-SHA256, and EMBER path verify (d = 4..24, n = 16/32).
+- **Statistics.** ≥ 5 independent process runs × ≥ 2000 iterations (SLH-DSA-128s sign: 5 × 10). Report the median of run-medians with a bootstrap 95% CI over runs, plus the pooled p99.
+- **Cross-checks.** Docker OpenSSL 3.6 + oqsprovider `openssl speed`, and Go/circl (used by the E8 prototype). Each must be within 3× of OpenSSL 3.5.4, otherwise investigate.
+- Python pqcrypto numbers are secondary and labelled.
 
 **E2. Token-level benchmarks (real).**
 - Build actual tokens for each scheme with realistic claims: URLPrefix ≈ 60-char path, Expires, Tenant, with and without IP.
@@ -365,16 +421,42 @@ Scout B's probe (`results/probe_openssl_speed.csv`) confirms this: in the `openq
 
 **E6. Sensitivity:** Δ × E heatmap of misses/token; V_max; m (period length); n; root signer; RTT scale; Zipf α.
 
+**E3b. Wire bytes per session (real encoder).**
+- Encode the request headers of a session (manifest + K = 150 segment requests) with Go `golang.org/x/net/http2/hpack`, default 4096-B dynamic table.
+- Token placement: in the URL query (`:path` changes every segment, so the token is not indexed) or in a cookie (indexable only if the entry is ≤ table size).
+- Report upstream header bytes per session for every scheme, including B5c/B6c and EMBER with/without the stapled root on the first request.
+- Also report HTTP/1.1 (no compression).
+- This replaces "% fit" as the main size metric. % fit is kept as a sanity check, since it holds for EMBER by construction.
+
+**E8. Real prototype (Go, netns + tapbridge). This is the non-circular validation (D3).**
+- Components (Go 1.24.7, stdlib + `cloudflare/circl` v1.6.1 for ML-DSA):
+  - **edge**: net/http; verify from query or cookie; serves a fixed in-memory 64 KB object; root cache with singleflight coalescing and a negative cache; optional verified-token LRU; hosts V virtual edges (separate root caches, selected by a header) to emulate E > 1.
+  - **issuer + root service**: timer-Δ batching; ML-DSA-44 root via circl; per-token modes.
+  - **loadgen**: open-loop Poisson sessions; each fetches a token and then K segments at a time-compressed interval.
+- Topology: three namespaces, `cli`, `edge` and `origin`, joined by two `tapbridge` instances (reused tooling from the author's prior work, branch `origin/claude/brave-meitner-l8yswp`, `experiments/src/tapbridge.c`, `scripts/net.sh`), with MTU 1500 and offloads off.
+  - cli↔edge one-way delay 10 ms (RTT 20 ms);
+  - edge↔origin one-way delay 37.5 ms (RTT 75 ms ≈ shield + root service).
+- Cores: loadgen 0, edge 1 (GOMAXPROCS = 1), both tapbridges 2, issuer/root 3.
+- **We do not sweep initcwnd, congestion control or loss, and we do not re-derive any handshake round-trip model.** That is the author's prior work (DO-NOT-REPEAT #3). Connections are kept alive, so TLS is omitted and stated as a limitation.
+- Experiments:
+  - **P1 capacity**: closed-loop max req/s at the edge per scheme (B1, B2, B3, B5, B5v, B11, B12, O1 warm, O1 cold-per-epoch). Run on the loopback within the `edge` ns (no tapbridge) to measure CPU, not the link.
+  - **P2 latency under load**: open loop at 50% and 80% of each scheme's P1 capacity over tapbridge; added latency p50/p99 vs HMAC.
+  - **P3 dissemination validation**: pull and pull_staple modes, V ∈ {10, 50} virtual edges, Δ ∈ {0.1, 1, 10} s, λ ∈ {20, 200} tokens/s, 5 min each. Measure misses/token, miss latency, and root bytes. Run **fleet_mc and the analytic model with the identical configuration and the measured RTTs**, then report rel. error with CIs. This is the validation the paper uses.
+- 5 independent runs per point; Student-t 95% CI over runs.
+- Limitation stated: one VM, so processes share the host; tapbridge is a userspace emulator; edge scale-out beyond one core is simulated.
+
 **E7. DoS stress:** a flood of tokens with random valid-range epoch ids to one edge, with and without coalescing and negative caching. Measures root fetches/s and signature verifications/s.
 
 ### 6.2 Hypotheses (outcomes are whatever the code produces; report refutations)
-- **H1 (size).** EMBER/n16 tokens stay < 512 B encoded for N ≤ 2^20 and fit all four limits in 100% of cases. ML-DSA-44 tokens fail the 2 KB URL limit. ML-DSA-65 and both SLH-DSA variants fail the 4 KB cookie limit.
-- **H2 (edge CPU).** With a warm root cache, EMBER per-request verify is within ≤5× of HMAC-SHA256 and ≥10× cheaper than per-token ML-DSA-44 verify (Python and native measured separately).
+- **H1 (size).** EMBER/n16 tokens stay < 512 B encoded for N ≤ 2^20. Fit is by construction, so the claim is about *bytes per session* (E3b): EMBER ≤ 0.25× B5c upstream header bytes per session in URL form. In cookie form under HPACK the gap may be small; report whatever is measured. B11 and B12 are smaller than EMBER; this is expected and is to be discussed via Table V, not hidden.
+- **H2 (edge CPU).** With a warm root cache, EMBER per-request verify (native/Go) is within ≤5× of HMAC-SHA256 and ≥10× cheaper than *uncached* per-token ML-DSA-44 verify. Against **B5v** (verify cache), report per-session amortised CPU; EMBER's advantage is expected to shrink to the first request per (session, edge). Report P1 req/s per core.
 - **H3 (issuer).** EMBER issuer throughput is hash-bound and ≥100× per-token ML-DSA-44 signing per core at N ≥ 2^8. SLH-DSA-128s becomes a usable root signer: only ≤ k/t_sign roots/s are needed.
 - **H4 (dissemination).** Root bandwidth is < 0.1% of the edges' served bytes for Δ ≥ 0.1 s, under a stated per-segment-size assumption. Roll-up reduces pull misses for low-rate tenants by ≥ 5×.
-- **H5 (controller).** Under diurnal multi-tenant load the adaptive controller achieves lower mean added delay D than every fixed Δ while respecting the size budget and SLO. Fixed small Δ causes high miss rates for tail tenants; fixed large Δ violates the SLO.
+- **H5 (controller).** Under diurnal multi-tenant load the adaptive controller achieves lower mean D than the **oracle best single fixed Δ** (paired CI over ≥ 10 seeds), while respecting the budget and SLO. **Pre-registered demotion rule:** if the improvement is < 10 ms or < 10% (CI including these), C4 becomes a guideline and the paper says so.
 - **H6 (end-to-end).** With pull + stapling or push + roll-up, < 1% of requests incur a root-miss RTT, and the p99 request-latency overhead is < 1 ms of CPU.
 - **H7 (hybrid).** A hybrid root (Ed25519 + ML-DSA-44) changes per-request edge cost by < 1% versus an ML-DSA-only root.
+- **H8 (validation, E8).** fleet_mc predicts the prototype's misses/token and mean miss-added latency within 15% (or within the CI) on all P3 configurations. A failure is reported, and the simulator is corrected or its scope narrowed.
+- **H9 (issuer, native).** With OpenSSL 3.5.4 native timings, EMBER issuer tokens/s per core at N ≥ 2^8 is ≥ 50× per-token ML-DSA-44 native signing, and B11/B12 issuance is comparable to EMBER.
 
 ### 6.3 Figures (8) and tables (4)
 - **Fig 1.** Architecture and message flow: issuer → epoch tree → signed root → tier/edges; client token; stapling and roll-up. A TikZ diagram, no data.
@@ -408,9 +490,55 @@ Scout B's probe (`results/probe_openssl_speed.csv`) confirms this: in the `openq
 10. **Related work** (if not merged into §2) and **Conclusion**; artifact availability.
 Also: AI-assistance declaration per venue policy.
 
+**Defences against each prior-rejection reason (Critic, per coordinator):**
+- *Implausible numbers*: every timing is sanity-checked against `feasibility.md` anchors (ML-DSA-44 verify ~120 µs in OpenSSL; tens of µs on AVX2 implementations). Never ms-level ML-DSA verify.
+- *Interpolated or projected results*: none. Model curves are drawn as lines and labelled "model"; only run points are markers; sims are labelled "simulated".
+- *Marginal implementation-level contribution*: the contribution is a protocol/token format plus fleet dissemination and epoch control, evaluated against strong baselines; the batching primitive is credited to prior work.
+- *Client and server on one host over loopback*: separate netns + tapbridge + pinned cores; the residual single-VM limitation is stated.
+- *Unjustified metrics*: D(Δ) is in seconds; there are no weights or composite scores.
+- *HNDL confusion*: §2 states there is no HNDL for authentication.
+- *Issuer cost*: from native OpenSSL 3.5.4 (scratchpad build), with ≥ 5 runs and 95% CIs.
+
 **Do-not list (from prior rejection):**
 - No DAPV-like "accept provisionally, verify later". EMBER never accepts before the root is verified; stapling and pull are synchronous.
 - No invented risk metrics; D(Δ) is in seconds, from first principles.
 - No projected numbers presented as measured.
 - No ms-level ML-DSA verify claims.
 - No "cross-platform" claim.
+
+
+---
+
+## 8. Limitations (to appear in the paper, Critic D17)
+1. No production CDN deployment or trace. Workload parameters (Zipf exponents, RTTs, segment sizes, URL lengths) are assumptions, swept and listed in Table IV.
+2. The prototype runs on one 4-vCPU VM. Netns + userspace `tapbridge` stands in for netem (unavailable). Edge scale-out (E ≥ 100) is simulated; the simulator is validated only at small scale (E8 P3), so extrapolation to E = 2000 is model-based.
+3. TLS is not included in the prototype (kept-alive connections). It is orthogonal to token verification, and handshake-level PQ costs are the author's separate prior work.
+4. Security is a proof sketch reducing to standard assumptions, not a new machine-checked proof.
+5. Bearer-token replay is unchanged from the status quo. Binding options are discussed, not evaluated.
+6. B11 (short-lived Ed25519) and B12 (KEM-wrapped MAC) may beat EMBER on size. EMBER's advantage is a combination of trust properties (Table V), not dominance on every metric.
+7. Tenant pooling requires the tenant to trust the CDN-held issuer key.
+8. Epoch-bounded validity forces token refresh for long sessions.
+9. The implementations measured (OpenSSL 3.5.4, circl, pqcrypto) are not the fastest AVX2 implementations. Absolute numbers are implementation-specific; ratios are the robust result.
+10. The root stream leaks issuance volume unless padding or bucketing is used.
+
+## 9. Critic changes log (2026-11-05)
+Details and severity are in `design/critique.md`.
+- **D1** Reframed C2 as a profile of batch signatures and MTL. Removed "first". Added C6 (real prototype). MTL mode added as baseline B13.
+- **D2** Added strong baselines: B5v/B6v (verify cache), B5c/B6c (multi-cookie), B10 multi-MAC, B11 delegated short-lived Ed25519, B12 ML-KEM-wrapped epoch HMAC keys, B13 MTL, B14/B15 qualitative. Expanded ablations. Table V (trust comparison) is mandatory.
+- **D3** Added E8: a real Go prototype in netns + tapbridge. Simulator validation now against real measurements (H8). DES-vs-MC is relabelled an internal consistency check.
+- **D4** Controller evaluated against the oracle best fixed Δ, with a pre-registered demotion rule (H5).
+- **D5** G2 benefit restated as lateral blast radius.
+- **D6** Pooling trust caveat; tenant id in the tweak.
+- **D7** Privacy and side channels: volume leak via N_e, linkability, cache-probe timing; mitigations.
+- **D8** Replay classes, binding options, clock-skew tolerance, and new negative tests.
+- **D9** Proof sketch tightened: q_h, targets, salt ordering, no wrap, AND-combiner hybrid with citation.
+- **D10** Native OpenSSL 3.5.4 is the primary timing source. ≥ 5 runs × ≥ 2000 iterations, bootstrap CI over runs, implementation labels, cross-implementation sanity bound.
+- **D11** Sim statistics: ≥ 5 seeds (10 for the controller headline), Student-t CIs, common random numbers, paired-difference CIs.
+- **D12** Compute budget and horizon cuts (spec §5.1).
+- **D13** E3b: bytes per session with a real HPACK encoder. % fit demoted to a sanity check.
+- **D14** Removed speculation about vendor motives.
+- **D15** Token-refresh metric for long sessions.
+- **D16** Bandwidth reported in absolute terms; ratio over the segment-size sweep.
+- **D17** Limitations list (§8).
+- **D18** Revocation propagation metric.
+- Added an explicit mapping of the prior-rejection reasons to defences (§7).
