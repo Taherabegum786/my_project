@@ -1,0 +1,3 @@
+[23:27:29] P1 capacity: edge ns loopback, closed loop 64 conns, warm 5s, 20s x 5 runs
+links up
+b1,1,48273.3,0.993,1.313,3.017,965466,0,100,netns-loopback-edge,go-1.24.7+circl-1.6.1
