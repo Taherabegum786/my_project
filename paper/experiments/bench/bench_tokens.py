@@ -345,20 +345,36 @@ def issuer_bench(out, quick, procs):
         el = time.perf_counter() - t0
         prow("B12-epoch", "ML-KEM-768", "", E, 1, "", "", el * 1e6, "", el * 1e6, "", "pqcrypto-1.0.0+cryptography-50.0.2",
              "E=%d edges; wrap bytes per edge=%d; per-epoch push bytes=%d" % (E, len(wr[0]), E * len(wr[0])))
-    # multi-process (one issuer shard per core)
-    for p in sorted({1, procs}):
-        with mp.get_context("fork").Pool(p) as pool:
-            res = pool.map(_pertoken_worker, [("B5", window)] * p)
-        tps = sum(c / e for c, e in res)
-        prow("B5", "ML-DSA-44", "", 1, p, "", "", "", "", "", tps, "pqcrypto-1.0.0")
-        N = 16384
-        with mp.get_context("fork").Pool(p) as pool:
-            res = pool.map(_ember_worker, [("ML-DSA-44", 16, N, 2 if quick else 10)] * p)
-        tps = sum(tok / tot for tok, tot, _ in res)
-        prow("EMBER", "ML-DSA-44", 16, N, p, "", "", "", "", "", tps, "python(hashlib)+pqcrypto-1.0.0")
-        print("procs=%d B5 / EMBER done" % p, flush=True)
     write_csv(os.path.join(out, "issuer_throughput.csv"), rows)
     return rows
+
+
+def issuer_mp(out, quick, procs):
+    """One issuer shard per core.  Must NOT run under a single-core taskset (workers inherit the affinity):
+    each worker pins itself to core (rank % ncpu)."""
+    window = 2.0 if quick else 10.0
+    rows = []
+    ncpu = os.cpu_count()
+    for p in sorted({1, procs}):
+        for sid, fn, arg in (("B5", _pertoken_worker, ("B5", window)),
+                             ("EMBER", _ember_worker, ("ML-DSA-44", 16, 16384, 2 if quick else 10))):
+            with mp.get_context("fork").Pool(p, initializer=_pin, initargs=(ncpu,)) as pool:
+                res = pool.map(fn, [arg] * p)
+            tps = sum(r[0] / r[1] for r in res)
+            rows.append(dict(scheme=sid, root_signer="ML-DSA-44", N=1 if sid == "B5" else 16384, procs=p,
+                             tokens_per_s=tps, per_proc=tps / p, impl="pqcrypto-1.0.0" + ("" if sid == "B5" else "+hashlib")))
+            print("mp %s procs=%d %.0f tok/s" % (sid, p, tps), flush=True)
+    write_csv(os.path.join(out, "issuer_throughput_mp.csv"), rows)
+
+
+_PIN_CTR = mp.Value("i", 0) if hasattr(mp, "Value") else None
+
+
+def _pin(ncpu):
+    with _PIN_CTR.get_lock():
+        k = _PIN_CTR.value
+        _PIN_CTR.value += 1
+    os.sched_setaffinity(0, {k % ncpu})
 
 
 # ============================================================ model check
@@ -397,13 +413,15 @@ def main():
     ap.add_argument("--out", default="../results")
     ap.add_argument("--quick", action="store_true")
     ap.add_argument("--procs", type=int, default=4)
-    ap.add_argument("--only", default="sizes,verify,issuer")
+    ap.add_argument("--only", default="sizes,verify,issuer")  # add ",mp" (unpinned) for issuer_throughput_mp.csv
     a = ap.parse_args()
     only = a.only.split(",")
     t0 = time.time()
     S = sizes(a.out, a.quick) if "sizes" in only else []
     V = verify_bench(a.out, a.quick) if "verify" in only else []
     I = issuer_bench(a.out, a.quick, a.procs) if "issuer" in only else []
+    if "mp" in only:
+        issuer_mp(a.out, a.quick, a.procs)
     if S and V and I:
         model_check(a.out, S, V, I)
     print("bench_tokens done in %.0f s" % (time.time() - t0))

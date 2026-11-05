@@ -61,7 +61,12 @@
  "controller_reps": 10,
  "controller_wall_s": 4951.9,
  "dissem_horizon_s": 1800.0,
- "dissem_wall_s": 111.3,
+ "dissem_wall_s": 67.5,
  "e2e": "lam_bar=2000, Delta=1 s, horizon 1800 s, 20000 samples per (scheme, mode, rep)",
- "e2e_wall_s": 21.0
+ "e2e_wall_s": 20.1,
+ "sens_horizon_s": 1800.0,
+ "sens_wall_s": 352.6,
+ "dissem_costs_dir": "../results/native_run1",
+ "e2e_costs_dir": "../results/native_run1",
+ "sens_costs_dir": "../results/native_run1"
 }

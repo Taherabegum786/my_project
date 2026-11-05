@@ -256,20 +256,21 @@ def fig7():
         x = np.array(sorted(g.groups))
         bw = [tci(g.get_group(e).root_bw_fleet_Bps)[0] for e in x]
         bh = [tci(g.get_group(e).root_bw_fleet_Bps)[1] for e in x]
-        a.errorbar(x, bw, yerr=bh, fmt=MARKERS[k] + "-", ls=LINES[k], color=SERIES[k], ms=3.5, lw=1, label="EMBER " + m)
+        a.errorbar(x, bw, yerr=bh, fmt=MARKERS[k], ls=LINES[k], color=SERIES[k], ms=3.5, lw=1, label="EMBER " + m)
         mm = [tci(g.get_group(e).miss_per_mreq)[0] for e in x]
         mh = [tci(g.get_group(e).miss_per_mreq)[1] for e in x]
-        b.errorbar(x, mm, yerr=mh, fmt=MARKERS[k] + "-", ls=LINES[k], color=SERIES[k], ms=3.5, lw=1, label="EMBER " + m)
+        b.errorbar(x, mm, yerr=mh, fmt=MARKERS[k], ls=LINES[k], color=SERIES[k], ms=3.5, lw=1, label="EMBER " + m)
     for k, s in ((5, "B11"), (6, "B12")):
         g = dd[dd.scheme == s].groupby("E")
         x = np.array(sorted(g.groups))
-        a.plot(x, [g.get_group(e).root_bw_fleet_Bps.astype(float).mean() for e in x], MARKERS[k] + "-", ls=LINES[k],
+        a.plot(x, [g.get_group(e).root_bw_fleet_Bps.astype(float).mean() for e in x], MARKERS[k], ls=LINES[k],
                color=SERIES[k], ms=3.5, lw=1, label=LABEL[s] + (" (push)" if s == "B12" else " (certs)"))
     a.set_xscale("log"); a.set_yscale("log")
     a.set_xlabel("edges E"); a.set_ylabel("fleet root/key bytes/s (simulated)")
     b.set_xscale("log"); b.set_yscale("log")
     b.set_xlabel("edges E"); b.set_ylabel("root misses per $10^6$ requests")
-    a.legend(fontsize=5.2)
+    h, l = a.get_legend_handles_labels()
+    fig.legend(h, l, fontsize=6, ncol=4, loc="lower center", bbox_to_anchor=(0.5, -0.12))
     a.set_title("(a) dissemination bandwidth, $\\Delta$=1 s", fontsize=7)
     b.set_title("(b) misses, $\\Delta$=1 s", fontsize=7)
     fig.tight_layout()

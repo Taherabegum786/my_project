@@ -17,7 +17,8 @@ for s in $STAGES; do case $s in
   tests)  $PY -m pytest -q tests/ && $PY -m tests.gen_vectors ;;
   native) bash bench/native/run_native.sh "$OUT" ;;
   bench)  taskset -c 2 $PY -m bench.bench_primitives --out "$OUT" $QF
-          taskset -c 2 $PY -m bench.bench_tokens --out "$OUT" $QF --procs ${ISSUER_PROCS:-4}
+          taskset -c 2 $PY -m bench.bench_tokens --out "$OUT" $QF
+          $PY -m bench.bench_tokens --out "$OUT" $QF --only mp --procs ${ISSUER_PROCS:-4}
           $PY -m bench.fit_analysis --out "$OUT" ;;
   sims)   for e in validate sweep_delta controller dissem e2e sens; do
             $IDLE $PY -m sim.run_sim --exp $e --reps $REPS --out "$OUT" --procs $PROCS; done

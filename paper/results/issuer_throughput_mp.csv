@@ -1,0 +1,5 @@
+scheme,root_signer,N,procs,tokens_per_s,per_proc,impl
+B5,ML-DSA-44,1,1,154.0866,154.0866,pqcrypto-1.0.0
+EMBER,ML-DSA-44,16384,1,137339.1073,137339.1073,pqcrypto-1.0.0+hashlib
+B5,ML-DSA-44,1,4,605.7346,151.4336,pqcrypto-1.0.0
+EMBER,ML-DSA-44,16384,4,564732.9096,141183.2274,pqcrypto-1.0.0+hashlib

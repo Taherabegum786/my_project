@@ -85,7 +85,7 @@ def main():
     ap.add_argument("--out", default="../results")
     ap.add_argument("--reps", type=int, default=5)
     a = ap.parse_args()
-    c = Costs(a.out)
+    c = Costs(os.environ.get("EMBER_COSTS_DIR", a.out))
     rows = []
     for v in ("naive", "coalesce+neg", "staple_flood", "staple_flood+rl"):
         for ks in ("all_tenants", "top_tenant", "low_tenant"):

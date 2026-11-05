@@ -61,7 +61,7 @@ COSTS = {}
 def costs(backend="native", rs="ML-DSA-44", n=16):
     k = (backend, rs, n)
     if k not in COSTS:
-        COSTS[k] = Costs(ARGS.out, backend, rs, n)
+        COSTS[k] = Costs(os.environ.get("EMBER_COSTS_DIR", ARGS.out), backend, rs, n)
     return COSTS[k]
 
 
@@ -260,8 +260,9 @@ def _e2e_task(t):
     # per-token baselines: no root misses; CPU per request from native verify costs
     nat = c
     import pandas as pd
-    ns = pd.read_csv(os.path.join(ARGS.out, "native_sig_agg.csv"))
-    pv = pd.read_csv(os.path.join(ARGS.out, "native_pathverify_agg.csv"))
+    cdir = os.environ.get("EMBER_COSTS_DIR", ARGS.out)
+    ns = pd.read_csv(os.path.join(cdir, "native_sig_agg.csv"))
+    pv = pd.read_csv(os.path.join(cdir, "native_pathverify_agg.csv"))
 
     def n_(s_, op):
         return float(ns[(ns.scheme == s_) & (ns.op == op)].median_us.iloc[0]) * 1e-3
@@ -372,6 +373,7 @@ def main():
             "e2e": exp_e2e, "sens": exp_sens, "validate": exp_validate}[a.exp](a)
     info = info or {}
     info["%s_wall_s" % a.exp] = round(time.time() - t0, 1)
+    info["%s_costs_dir" % a.exp] = os.environ.get("EMBER_COSTS_DIR", a.out)
     pj = os.path.join(a.out, "sim_params.json")
     prev = {}
     if os.path.exists(pj):
