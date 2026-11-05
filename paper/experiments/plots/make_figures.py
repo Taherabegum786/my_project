@@ -190,13 +190,13 @@ def fig5():
     d = rd("sim_delta_sweep.csv")
     d = d[(d["mode"] == "pull") & (d.pool == 0) & (d.backend == "native") & d.policy.str.startswith("fixed")]
     d["delta_s"] = d.delta_s.astype(float)
-    fig, axs = plt.subplots(3, 1, figsize=(COL, 4.6), sharex=True)
+    fig, axs3 = plt.subplots(2, 1, figsize=(COL, 3.2), sharex=True)
+    axs = [None] + list(axs3)  # issuance-wait panel dropped (it equals Delta/2, stated in text)
     for k, lam in enumerate(sorted(d.lambda_bar.unique())):
         g = d[d.lambda_bar == lam]
         st = g.groupby("delta_s").agg(list)
         x = st.index.values
-        for ax, col, mcol in ((axs[0], "issue_wait_mean_s", None), (axs[1], "miss_per_token", "model_miss_per_token"),
-                              (axs[2], "D_mean_s", "model_D_s")):
+        for ax, col, mcol in ((axs[1], "miss_per_token", "model_miss_per_token"), (axs[2], "D_mean_s", "model_D_s")):
             m = np.array([tci(v)[0] for v in st[col]])
             h = np.array([tci(v)[1] for v in st[col]])
             ax.errorbar(x, m, yerr=h, fmt=MARKERS[k], color=SERIES[k], ms=3.5, capsize=1.5,
@@ -204,21 +204,19 @@ def fig5():
             if mcol:
                 mv = np.array([np.mean(v) for v in st[mcol]])
                 ax.plot(x, mv, LINES[k], color=SERIES[k], lw=1, label="model, $\\bar\\lambda$=%g/s" % lam)
-    xx = np.logspace(-2, np.log10(60), 50)
-    axs[0].plot(xx, xx / 2, ls="-", color=INK2, lw=0.8, label="model $\\Delta$/2")
-    axs[0].set_ylabel("mean issuance\nwait (s)")
     axs[1].set_ylabel("root misses\nper token")
     axs[2].set_ylabel("D($\\Delta$) (s)")
-    for ax in axs:
+    for ax in axs[1:]:
         ax.set_xscale("log")
-    axs[0].set_yscale("log")
     axs[2].set_yscale("log")
     axs[2].set_xlabel("epoch length $\\Delta$ (s), pull mode, per-tenant trees")
     from matplotlib.lines import Line2D
     axs[1].legend(handles=[Line2D([], [], color=INK2, lw=1, label="model (line)"),
                            Line2D([], [], color=INK2, marker="o", ls="none", ms=3.5, label="simulated (marker)")],
                   fontsize=7, loc="lower left")
-    axs[0].legend(fontsize=7)
+    axs[2].legend(handles=[Line2D([], [], color=SERIES[k], marker=MARKERS[k], ls=LINES[k], lw=1, ms=3.5,
+                                  label="$\\bar\\lambda$=%g/s" % lam) for k, lam in enumerate(sorted(d.lambda_bar.unique()))],
+                  fontsize=7, loc="upper left")
     fig.tight_layout()
     save(fig, OUT, "fig5_delta_tradeoff")
 

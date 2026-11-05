@@ -20,7 +20,7 @@ Primitive tables and figures use run 2. Every simulation uses run 1 (`sim_params
 | 0.049% of requests wait (stapling) | `sim_delta_sweep.csv` mode=pull_staple, Δ=0.01, λ̄=2000, frac_req_waiting (mean over 5 reps); RESULTS_A §5 |
 | Controller no better than fixed 10 ms | `controller_paired.csv`, `sim_controller_summary.csv` (see Table controller) |
 | Roll-up removed only 1.4–2.2% of misses | derived: `sim_dissem.csv` E=500, Δ=1: pull 6,098 vs pull_rollup 6,011 per 1e6 req (1.4%); `sim_delta_sweep.csv` Δ=0.01: 1.069 vs 1.045 misses/token (2.2%) |
-| Hybrid root +41.6% simulated edge CPU | `sim_sens_raw.csv`, root_signer hybrid vs ML-DSA-44, edge_cpu_us_per_req_mean 2.37 vs 1.67 (RESULTS_A §9, H7) |
+| Hybrid root +41.6% simulated edge CPU | `sim_sens.csv` param=root_signer, policy fixed:1, mode pull, metric edge_cpu_us_per_req_mean: Hybrid 2.3691 vs ML-DSA-44 1.67309, ratio 1.416 |
 | 13 baselines | B1–B13, Table baselines (design.md §5) |
 | Misses/token within 4.4% in 24/24 configurations | `proto_validate.csv` metric=miss_per_token, max \|rel_err_mc\| 0.044, pass_mc True ×24 |
 | Industry target ~2029 | cited [cf2026roadmap] (not a measurement) |
@@ -156,5 +156,28 @@ Primitive tables and figures use run 2. Every simulation uses run 1 (`sim_params
 | P1 contended runs, utilisation 0.84–0.88 | `raw/proto/proto_capacity_contended.csv` runs 3–5; RESULTS_B §3.1 |
 | Emulator 624 Mbit/s | RESULTS_B §4 |
 
-## P1 (quiet rerun)
-(filled in after the rerun; see below)
+## P1 (quiet rerun; the only P1 data used in the paper)
+The source is `proto_capacity_agg.csv` as rewritten by the quiet rerun (`P1_QUIET_DONE`: finished 2026-11-05T23:53:50Z; load average before the start was 0.21; edge CPU ≥ 0.99 for all schemes). Per-run rows are in `proto_capacity.csv` (60 rows; minimum `cpu_util_edge` 0.99). The earlier contended data are kept in `raw/proto/proto_capacity_contended.csv` and are cited only in Limitations (utilisation 0.84–0.88 in runs 3–5).
+
+| Claim | Source (`proto_capacity_agg.csv`) |
+|---|---|
+| B1 20.54 µs/req [20.25, 20.82]; 48,340 req/s | b1: edge_cpu_us_per_req_mean 20.5360 [20.2476, 20.8244]; req_per_s_mean 48340.14 |
+| O1 22.91 [22.49, 23.33]; 43,355 req/s | o1: 22.9086 [22.4909, 23.3264]; 43354.72 |
+| 1.12× HMAC | derived 22.9086 / 20.5360 = 1.1155 |
+| 0.897× req/s | o1 ratio_vs_b1_mean 0.8970 |
+| B5 66.24 [65.01, 67.46]; 15,040 req/s; 2.89× EMBER | b5: 66.2354 [65.0097, 67.4612]; 15040.04; derived 66.2354/22.9086 = 2.891 |
+| B5v 37.38; 26,620 req/s; 1.63× | b5v: 37.3799; 26620.40; derived 37.3799/22.9086 = 1.632 |
+| O1a 22.92; O4 22.93 [22.39, 23.47]; +0.09% | o1a 22.9214; o4 22.9285 [22.3888, 23.4681]; derived 22.9285/22.9086 = 1.00087 |
+| B2 71.04, B11 70.36, B3 98.04 | b2 71.0385; b11 70.3552; b3 98.0399 |
+| Rerun req/s higher than contended for every scheme | compare with `raw/proto/proto_capacity_contended.csv` (e.g. b1 37,891 → 48,340; b5 11,900 → 15,040) |
+| Fig. capacity | `figures/fig11_proto_capacity.pdf`, from `proto_capacity.csv` by `experiments/plots/make_figures.py:fig_proto` (edge CPU/req = cpu_util_edge / req_per_s per run; mean ± t-CI) |
+
+## Figures used and regeneration note
+fig2, fig3, fig4, fig5, fig7, fig8, fig11 and fig12 come from `results/figures/` and were copied to `manuscript/figures/`. The Writer regenerated them with `experiments/plots/make_figures.py`. Only presentation changed; no data changed:
+- all fonts ≥ 7 pt;
+- fig4 legend moved below the panels;
+- fig5 issuance-wait panel dropped (it equals Δ/2; stated in the caption);
+- fig8 legend moved outside the axes;
+- fig11 now plots edge CPU µs per request (primary) next to req/s.
+
+Fig. 1 is a TikZ diagram and contains no data.

@@ -5,20 +5,21 @@
 \centering
 \begin{tikzpicture}[
   font=\footnotesize,
-  box/.style={draw, rounded corners=2pt, align=center, minimum height=0.75cm, inner sep=3pt},
-  arr/.style={-{Stealth[length=2mm]}, thick},
-  darr/.style={-{Stealth[length=2mm]}, thick, dashed}]
-\node[box, minimum width=2.3cm] (iss) {Issuer $I$\\ queue $\to$ epoch tree\\ $\sigma_e=\Sig(sk,R_e)$};
-\node[box, right=1.1cm of iss, minimum width=2.1cm] (rs) {Root service\\ \texttt{/ember/kid/e}\\ period bundles};
-\node[box, below=0.9cm of rs, minimum width=2.1cm] (sh) {Shield tier};
-\node[box, below=0.9cm of sh, minimum width=2.1cm] (edge) {Edge $E_j$\\ $pk$, root cache};
-\node[box, below=0.9cm of iss, minimum width=2.3cm] (cli) {Client};
-\draw[arr] (iss) -- node[above]{$SR_e$} (rs);
+  box/.style={draw, rounded corners=2pt, align=center, minimum height=0.7cm, inner sep=2.5pt, fill=white},
+  lab/.style={font=\scriptsize, align=center, fill=white, inner sep=1pt},
+  arr/.style={-{Stealth[length=1.8mm]}, thick},
+  darr/.style={-{Stealth[length=1.8mm]}, thick, dashed}]
+\node[box, minimum width=2.4cm] (iss) at (0,0) {Issuer $I$\\ queue $\to$ epoch tree\\ $\sigma_e=\Sig(sk,R_e)$};
+\node[box, minimum width=2.2cm] (rs) at (5.0,0) {Root service\\ \texttt{/ember/kid/e}\\ period bundles};
+\node[box, minimum width=2.2cm] (sh) at (5.0,-1.65) {Shield tier};
+\node[box, minimum width=2.2cm] (edge) at (5.0,-3.3) {Edge $E_j$\\ $pk$, root cache};
+\node[box, minimum width=2.4cm] (cli) at (0,-3.3) {Client};
+\draw[arr] (iss) -- node[lab, above]{$SR_e$ (signed root)} (rs);
 \draw[arr] (rs) -- (sh);
-\draw[arr] (sh) -- node[right, align=left]{pull on miss\\ (coalesced)} (edge);
-\draw[darr] (rs.east) to[bend left=35] node[right, align=left]{push} (edge.east);
-\draw[arr] (iss) -- node[left, align=right]{token $=$ claims\\ $+\,(e,i,r,\text{path})$\\ $[+SR_e]$} (cli);
-\draw[arr] (cli.south) |- node[pos=0.75, below, align=center]{requests with token;\\ first one may staple $SR_e$} (edge.west);
+\draw[arr] (sh) -- node[lab, left=2pt]{pull on miss\\(coalesced)} (edge);
+\draw[darr] (rs.east) .. controls +(0.9,-0.5) and +(0.9,0.5) .. node[lab, right]{push} (edge.east);
+\draw[arr] (iss) -- node[lab, right=2pt, pos=0.45]{token: claims\\$+(e,i,r,\text{path})$\\$[+SR_e]$} (cli);
+\draw[arr] (cli) -- node[lab, below=3pt, pos=0.42]{requests with token;\\ first one may staple $SR_e$} (edge);
 \end{tikzpicture}
 \caption{EMBER architecture. The issuer signs one root per epoch. Edges obtain it by pull through the shield tier, by push, from a period bundle, or stapled by the client on its first request.}
 \label{fig:arch}
