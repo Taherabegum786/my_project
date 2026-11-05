@@ -1,3 +1,0 @@
-Experimenter B: E8 prototype runs in progress (started see raw/proto/run_proto.log).
-Cores in use: 0 (loadgen; P1 also 2,3), 1 (edge), 2 (tapbridges), 3 (issuer / P2 loadgen).
-Please avoid heavy benchmarks until this file is removed (expected ~100 min); interference is logged in raw/proto/interference.log.

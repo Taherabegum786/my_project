@@ -59,5 +59,9 @@
   "20000": "1 h peak window [10800, 14400] s"
  },
  "controller_reps": 10,
- "controller_wall_s": 4951.9
+ "controller_wall_s": 4951.9,
+ "dissem_horizon_s": 1800.0,
+ "dissem_wall_s": 111.3,
+ "e2e": "lam_bar=2000, Delta=1 s, horizon 1800 s, 20000 samples per (scheme, mode, rep)",
+ "e2e_wall_s": 21.0
 }

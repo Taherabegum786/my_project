@@ -100,6 +100,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("res", nargs="?", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "results"))
     ap.add_argument("--mc-reps", type=int, default=50)
+    ap.add_argument("--replica", action="store_true", help="ignore sim_proto_mc.csv; use the internal replica")
+    ap.add_argument("--out", default="proto_validate.csv")
     a = ap.parse_args()
     res = a.res
     rows = list(csv.DictReader(open(os.path.join(res, "proto_p3_runs.csv"))))
@@ -113,7 +115,7 @@ def main():
                 verify_ms = float(r["median_us"]) / 1000
     ext = {}
     sp = os.path.join(res, "sim_proto_mc.csv")
-    if os.path.exists(sp):
+    if os.path.exists(sp) and not a.replica:
         for r in csv.DictReader(open(sp)):
             ext[(r["mode"], int(r["V"]), float(r["delta_s"]), float(r["lambda"]), r["metric"])] = float(r["mc_mean"])
     g = defaultdict(list)
@@ -139,7 +141,7 @@ def main():
             out.append(dict(mode=mode, V=V, delta_s=d, **{"lambda": lam}, metric=m, n_runs=len(vals), proto_mean=pm,
                             proto_ci_lo=plo, proto_ci_hi=phi, mc_mean=mc, model_value=mv, rel_err_mc=rel_mc,
                             rel_err_model=rel_md, mc_impl=impl, pass_mc=ok))
-    path = os.path.join(res, "proto_validate.csv")
+    path = os.path.join(res, a.out)
     with open(path, "w", newline="") as f:
         wr = csv.DictWriter(f, fieldnames=list(out[0].keys()))
         wr.writeheader()

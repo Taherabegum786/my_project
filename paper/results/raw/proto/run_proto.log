@@ -5,3 +5,5 @@ links up
 [18:29:39] P1 capacity: edge ns loopback, closed loop 64 conns, warm 5s, 20s x 5 runs
 [18:55:56] P2 latency under load over tapbridge A (cli->edge), open loop 50%/80% of P1 mean capacity
 [19:24:32] P3 dissemination validation: pull & pull_staple x lambda {20,200} concurrently; V {10 50}; delta {0.1 1 10}; 60s issuance window
+[22:59:00] Go crypto microbenchmarks (pinned core 1, 5 fresh processes)
+[22:59:58] done: gobench agg

@@ -429,3 +429,13 @@ class Costs:
 
     def bundle_bytes(self, m):
         return 16 + m * (20 + self.n) + self.sig_bytes + 40
+
+
+if __name__ == "__main__":
+    # E8 P3 entry point: python -m sim.fleet_mc --proto-p3 [results_dir] [reps]
+    # reads results/proto_p3_config.json (+ proto_rtt.csv, proto_go_verify.csv), writes results/sim_proto_mc.csv
+    import sys
+    args = [a for a in sys.argv[1:] if a != "--proto-p3"]
+    from sim.proto_mc import main as _proto_main
+    _proto_main(args[0] if args else os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "results"),
+                int(args[1]) if len(args) > 1 else 50)

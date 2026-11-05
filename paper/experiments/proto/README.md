@@ -39,3 +39,14 @@ emulated links, but this is not a multi-host testbed.
   window per run (+ drain), segment interval 200 ms, K ~ geometric(mean 20), token-receipt-to-first-request
   lognormal(median 120 ms, σ 0.5), Zipf(0.8) edge choice, 5 runs. The edge keeps 64 pre-warmed keep-alive
   connections to the root service (as a CDN edge keeps persistent connections to its parent).
+
+## Rerun commands
+- Full: `STAGES="test hpack rtt p1 p2 p3 gobench agg" RUNS=5 bash run_proto.sh` (~100 min).
+- **Standalone P1 rerun on a quiet machine** (planned by the coordinator): `STAGES="p1 agg" RUNS=5 bash run_proto.sh`
+  (~27 min). It recreates the namespaces if missing or stale, overwrites `results/proto_capacity.csv`, logs per-run
+  steal/loadavg to `results/raw/proto/p1_steal.csv`, and re-runs `proto_agg.py`, `validate.py` and
+  `p1_interference.py` on the existing CSVs. `RES=<dir>` redirects all outputs (used for smoke tests).
+- Never edit `run_proto.sh` while it runs (bash reads it incrementally; a mid-run edit produced the harmless
+  `line 131: syntax error` at the end of the first full run).
+- `validate.py --replica --out proto_validate_replica.csv` uses the internal fleet_mc replica instead of
+  `sim_proto_mc.csv` (cross-check).

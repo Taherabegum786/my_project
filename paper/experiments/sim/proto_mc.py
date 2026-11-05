@@ -32,9 +32,9 @@ def main(res, reps=50):
     verify_ms = None
     vp = os.path.join(res, "proto_go_verify.csv")
     if os.path.exists(vp):
-        for r in csv.DictReader(open(vp)):
-            if r.get("op") in ("verify_root_mldsa44", "verify_root"):
-                verify_ms = float(r["median_us"]) / 1000
+        v = [float(r["median_us"]) for r in csv.DictReader(open(vp)) if r.get("op") in ("verify_root_mldsa44", "verify_root")]
+        if v:
+            verify_ms = float(np.median(v)) / 1000   # median over B's runs
     if verify_ms is None:
         verify_ms = 0.1
         print("WARNING: proto_go_verify.csv not found; using 0.1 ms root verify")
