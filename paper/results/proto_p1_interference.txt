@@ -1,0 +1,20 @@
+run
+1    0.0
+2    0.0
+3    0.0
+4    0.0
+5    0.0
+b1 corr(other_cpu,req/s)=+nan corr(other_cpu,edge_util)=+nan
+b11 corr(other_cpu,req/s)=+nan corr(other_cpu,edge_util)=+nan
+b12 corr(other_cpu,req/s)=+nan corr(other_cpu,edge_util)=+nan
+b2 corr(other_cpu,req/s)=+nan corr(other_cpu,edge_util)=+nan
+b3 corr(other_cpu,req/s)=+nan corr(other_cpu,edge_util)=+nan
+b5 corr(other_cpu,req/s)=+nan corr(other_cpu,edge_util)=+nan
+b5v corr(other_cpu,req/s)=+nan corr(other_cpu,edge_util)=+nan
+b6 corr(other_cpu,req/s)=+nan corr(other_cpu,edge_util)=+nan
+b9 corr(other_cpu,req/s)=+nan corr(other_cpu,edge_util)=+nan
+o1 corr(other_cpu,req/s)=+nan corr(other_cpu,edge_util)=+nan
+o1a corr(other_cpu,req/s)=+nan corr(other_cpu,edge_util)=+nan
+o4 corr(other_cpu,req/s)=+nan corr(other_cpu,edge_util)=+nan
+pooled cheap schemes: corr(other_cpu, edge_util)=nan n=25
+P2/P3 window (18:56-19:25) mean other-process CPU %: 234 (n=116 samples)

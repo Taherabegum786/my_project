@@ -23,3 +23,95 @@ b11,2,13966.6,0.995,4.561,9.870,279332,0,149,netns-loopback-edge,go-1.24.7+circl
 b12,2,48785.6,0.995,1.296,3.035,975713,0,106,netns-loopback-edge,go-1.24.7+circl-1.6.1
 o1,2,43722.2,0.993,1.455,3.252,874446,0,309,netns-loopback-edge,go-1.24.7+circl-1.6.1
 o1a,2,43812.3,0.996,1.453,3.242,876248,0,310,netns-loopback-edge,go-1.24.7+circl-1.6.1
+o4,2,43532.1,0.993,1.461,3.271,870642,0,309,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b1,3,47740.8,0.990,1.320,3.200,954817,0,100,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b2,3,13602.5,0.992,4.665,10.487,272050,0,143,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b3,3,10205.2,0.997,6.270,12.946,204104,0,151,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b5,3,14967.3,0.994,4.295,9.137,299346,0,3284,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b5v,3,27060.5,0.996,2.364,5.094,541211,0,3285,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b6,3,12015.9,0.998,5.314,11.076,240318,0,4469,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b9,3,8693.8,0.996,7.343,15.577,173877,0,3369,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b11,3,14649.3,0.996,4.349,9.442,292988,0,149,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b12,3,49371.7,0.995,1.281,2.979,987435,0,106,netns-loopback-edge,go-1.24.7+circl-1.6.1
+o1,3,44198.2,0.996,1.440,3.227,883966,0,309,netns-loopback-edge,go-1.24.7+circl-1.6.1
+o1a,3,44694.5,0.998,1.427,3.110,893890,0,310,netns-loopback-edge,go-1.24.7+circl-1.6.1
+o4,3,43712.8,0.995,1.447,3.381,874257,0,309,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b1,4,49371.3,0.995,1.288,2.839,987426,0,100,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b2,4,14499.4,0.998,4.405,9.356,289988,0,143,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b3,4,10267.9,0.997,6.228,12.900,205360,0,152,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b5,4,15442.4,0.997,4.173,8.699,308849,0,3284,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b5v,4,26970.1,0.997,2.377,5.018,539403,0,3285,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b6,4,11392.0,0.996,5.587,12.089,227841,0,4469,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b9,4,8723.5,0.997,7.341,15.170,174470,0,3369,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b11,4,14503.8,0.997,4.416,9.162,290077,0,149,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b12,4,48759.4,0.996,1.302,2.951,975189,0,106,netns-loopback-edge,go-1.24.7+circl-1.6.1
+o1,4,43684.5,0.995,1.458,3.237,873691,0,309,netns-loopback-edge,go-1.24.7+circl-1.6.1
+o1a,4,43288.0,0.996,1.472,3.268,865761,0,310,netns-loopback-edge,go-1.24.7+circl-1.6.1
+o4,4,43240.1,0.995,1.470,3.306,864803,0,309,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b1,5,48063.1,0.995,1.321,3.014,961263,0,100,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b2,5,14094.9,0.999,4.534,9.569,281898,0,143,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b3,5,10231.9,0.996,6.257,12.882,204639,0,151,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b5,5,15029.1,0.996,4.280,9.033,300583,0,3284,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b5v,5,26830.3,0.995,2.394,5.043,536607,0,3285,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b6,5,11168.2,0.995,5.662,12.745,223364,0,4469,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b9,5,8736.2,0.998,7.340,15.090,174725,0,3369,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b11,5,13959.7,0.997,4.559,10.035,279195,0,149,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b12,5,47623.9,0.994,1.328,3.173,952479,0,106,netns-loopback-edge,go-1.24.7+circl-1.6.1
+o1,5,42692.7,0.990,1.479,3.588,853856,0,309,netns-loopback-edge,go-1.24.7+circl-1.6.1
+o1a,5,42945.6,0.990,1.470,3.432,858914,0,310,netns-loopback-edge,go-1.24.7+circl-1.6.1
+o4,5,44289.7,0.994,1.431,3.288,885794,0,309,netns-loopback-edge,go-1.24.7+circl-1.6.1
+wrote /home/user/my_project/paper/results/proto_capacity_agg.csv
+wrote /home/user/my_project/paper/results/proto_latency.csv
+wrote /home/user/my_project/paper/results/proto_latency_agg.csv
+wrote /home/user/my_project/paper/results/proto_validate.csv | measured edge->origin RTT mean 76.100 ms (n=1000), verify 0.026 ms
+miss_per_token     pass 24/24  max|rel_err_mc| 0.044  max|rel_err_model| 0.148
+miss_lat_mean_ms   pass 8/24  max|rel_err_mc| 0.698  max|rel_err_model| 0.703
+/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3037: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[:, None]
+/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3038: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[None, :]
+/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3037: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[:, None]
+/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3038: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[None, :]
+/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3037: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[:, None]
+/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3038: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[None, :]
+/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3037: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[:, None]
+/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3038: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[None, :]
+/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3037: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[:, None]
+/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3038: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[None, :]
+/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3037: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[:, None]
+/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3038: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[None, :]
+/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3037: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[:, None]
+/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3038: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[None, :]
+/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3037: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[:, None]
+/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3038: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[None, :]
+/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3037: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[:, None]
+/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3038: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[None, :]
+/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3037: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[:, None]
+/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3038: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[None, :]
+/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3037: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[:, None]
+/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3038: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[None, :]
+/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3037: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[:, None]
+/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3038: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[None, :]
+[23:53:41] done: p1 agg
