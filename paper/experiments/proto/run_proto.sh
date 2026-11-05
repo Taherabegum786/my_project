@@ -1,0 +1,128 @@
+#!/bin/bash
+# E8 real prototype + E3b HPACK bytes.  Builds, sets up 3 netns + 2 tapbridges, runs stages.
+#   STAGES="test hpack rtt p1 p2 p3" RUNS=5 bash run_proto.sh
+# Cores: loadgen 0 (P1: 0,2,3 because the tapbridges are idle in P1; P2: 0,3), edge 1 (GOMAXPROCS=1),
+# tapbridges 2, issuer 3.  All on ONE 4-vCPU VM (namespaces share the host; traffic crosses the
+# emulated links).  Outputs -> paper/results/.
+set -euo pipefail
+HERE=$(cd "$(dirname "$0")" && pwd)
+RES=$(cd "$HERE/../../results" && pwd)
+RAW=$RES/raw/proto; mkdir -p "$RAW"
+BIN=$HERE/bin
+STAGES=${STAGES:-"test hpack rtt p1 p2 p3"}
+RUNS=${RUNS:-5}
+P1_DUR=${P1_DUR:-20s}; P1_WARM=${P1_WARM:-5s}
+P2_DUR=${P2_DUR:-15s}; P2_WARM=${P2_WARM:-3s}
+P3_DUR=${P3_DUR:-60s}
+P1_SCHEMES=${P1_SCHEMES:-"b1 b2 b3 b5 b5v b6 b9 b11 b12 o1 o1a o4"}
+P2_SCHEMES=${P2_SCHEMES:-"b1 b2 b3 b5 b5v b11 b12 o1 o1a"}
+P3_V=${P3_V:-"10 50"}; P3_DELTA=${P3_DELTA:-"0.1 1 10"}
+VENV=${VENV:-/tmp/claude-0/-home-user-my-project/4a27d5c9-46a1-5d35-98ec-9a4e85dfb968/scratchpad/venv}
+export GOTOOLCHAIN=local GOFLAGS=-mod=mod
+GO=/usr/local/go/bin/go
+log() { echo "[$(date +%H:%M:%S)] $*" | tee -a "$RAW/run_proto.log"; }
+
+cd "$HERE"
+mkdir -p bin
+for c in edge issuer loadgen hpackbytes gobench; do $GO build -o bin/$c ./$c; done
+gcc -O2 -Wall -o bin/tapbridge netemu/tapbridge.c
+
+# interference sampler: other processes using >5% CPU every 15 s (the VM is shared with other agents)
+( while true; do echo "== $(date +%H:%M:%S) load=$(cut -d' ' -f1-3 /proc/loadavg)"; \
+  ps -eo pcpu,psr,comm --sort=-pcpu | awk 'NR>1 && $1>5' | grep -v -E "edge|issuer|loadgen|tapbridge" || true; sleep 15; done ) >> "$RAW/interference.log" 2>&1 &
+SAMPLER=$!
+trap 'kill $SAMPLER 2>/dev/null || true' EXIT
+
+killall_procs() { pkill -f "$BIN/edge " 2>/dev/null || true; pkill -f "$BIN/issuer " 2>/dev/null || true; sleep 0.3; }
+wait_http() { for i in $(seq 100); do ip netns exec "$1" curl -s -o /dev/null "$2" && return 0; sleep 0.1; done; echo "timeout $2"; return 1; }
+
+for st in $STAGES; do case $st in
+test)
+  log "go test (unit + shared Python vectors)"
+  $GO test -count=1 -v ./tokens/ 2>&1 | tee "$RAW/go_test.log" | tail -3
+  ;;
+hpack)
+  log "E3b hpackbytes"
+  $BIN/hpackbytes -dump "$RAW/slh_in.json"
+  "$VENV/bin/python" -I "$HERE/hpackbytes/gen_slh.py" "$RAW/slh_in.json" "$RAW/slh_out.json"
+  $BIN/hpackbytes -slh "$RAW/slh_out.json" -out "$RES/wire_bytes.csv" -K 150
+  ;;
+rtt)
+  log "RTT probes (ICMP + keep-alive HTTP) over the emulated links"
+  bash netemu/net3.sh down >/dev/null 2>&1 || true; bash netemu/net3.sh up 2 | tee -a "$RAW/run_proto.log"
+  bash netemu/net3.sh check > "$RAW/net_check.txt" 2>&1; cat "$RAW/net_check.txt"
+  rm -f "$RES/proto_rtt.csv"
+  ip netns exec ember_origin taskset -c 3 $BIN/issuer -listen 10.72.0.2:9090 -kids 1:1000 > "$RAW/rtt_issuer.log" 2>&1 &
+  ip netns exec ember_edge env GOMAXPROCS=1 taskset -c 1 $BIN/edge -listen 10.71.0.1:8080 > "$RAW/rtt_edge.log" 2>&1 &
+  wait_http ember_edge http://10.72.0.2:9090/ping; wait_http ember_cli http://10.71.0.1:8080/ping
+  for r in $(seq 1 $RUNS); do
+    ip netns exec ember_edge taskset -c 0 $BIN/loadgen -mode rtt -target 10.72.0.2:9090 -scheme edge_origin -run $r -n 200 -out "$RES/proto_rtt.csv"
+    ip netns exec ember_cli taskset -c 0 $BIN/loadgen -mode rtt -target 10.71.0.1:8080 -scheme cli_edge -run $r -n 200 -out "$RES/proto_rtt.csv"
+  done
+  killall_procs
+  ;;
+p1)
+  log "P1 capacity: edge ns loopback, closed loop 64 conns, warm $P1_WARM, $P1_DUR x $RUNS runs"
+  rm -f "$RES/proto_capacity.csv"
+  ip netns list | grep -q ember_edge || bash netemu/net3.sh up 2
+  for r in $(seq 1 $RUNS); do for s in $P1_SCHEMES; do
+    ip netns exec ember_edge env GOMAXPROCS=1 taskset -c 1 $BIN/edge -listen 127.0.0.1:8080 -reverify-every 1000 > "$RAW/p1_edge_${s}_$r.log" 2>&1 &
+    EP=$!
+    wait_http ember_edge http://127.0.0.1:8080/ping
+    EPID=$(pgrep -f "$BIN/edge -listen 127.0.0.1:8080" | head -1)
+    ip netns exec ember_edge taskset -c 0,2,3 $BIN/loadgen -mode p1 -target 127.0.0.1:8080 -scheme $s -conns 64 -K 150 \
+      -sessions 8000 -warm $P1_WARM -dur $P1_DUR -edgepid $EPID -run $r -net netns-loopback-edge -out "$RES/proto_capacity.csv" \
+      2>>"$RAW/p1_loadgen.log"
+    ip netns exec ember_edge curl -s http://127.0.0.1:8080/stats > "$RAW/p1_stats_${s}_$r.json" || true
+    killall_procs
+  done; done
+  ;;
+p2)
+  log "P2 latency under load over tapbridge A (cli->edge), open loop 50%/80% of P1 mean capacity"
+  rm -f "$RES/proto_latency_runs.csv"
+  ip netns list | grep -q ember_cli || bash netemu/net3.sh up 2
+  for r in $(seq 1 $RUNS); do for frac in 0.5 0.8; do for s in $P2_SCHEMES; do
+    CAP=$(awk -F, -v s=$s 'NR>1 && $1==s {t+=$3; n++} END {if (n) printf "%.1f", t/n}' "$RES/proto_capacity.csv")
+    RATE=$(awk -v c=$CAP -v f=$frac 'BEGIN{printf "%.1f", c*f}')
+    ip netns exec ember_edge env GOMAXPROCS=1 taskset -c 1 $BIN/edge -listen 10.71.0.1:8080 > "$RAW/p2_edge_${s}_${frac}_$r.log" 2>&1 &
+    wait_http ember_cli http://10.71.0.1:8080/ping
+    ip netns exec ember_cli taskset -c 0,3 $BIN/loadgen -mode p2 -target 10.71.0.1:8080 -scheme $s -conns 1024 -K 150 \
+      -sessions 8000 -rate $RATE -loadfrac $frac -warm $P2_WARM -dur $P2_DUR -run $r -net netns-tapbridge \
+      -out "$RES/proto_latency_runs.csv" 2>>"$RAW/p2_loadgen.log"
+    killall_procs
+  done; done; done
+  ;;
+p3)
+  log "P3 dissemination validation: pull & pull_staple x lambda {20,200} concurrently; V {$P3_V}; delta {$P3_DELTA}; $P3_DUR issuance window"
+  rm -f "$RES/proto_p3_runs.csv"
+  ip netns list | grep -q ember_cli || bash netemu/net3.sh up 2
+  for r in $(seq 1 $RUNS); do for V in $P3_V; do for D in $P3_DELTA; do
+    DMS=$(awk -v d=$D 'BEGIN{printf "%d", d*1000}')
+    ip netns exec ember_origin taskset -c 3 $BIN/issuer -listen 10.72.0.2:9090 -kids 1:$DMS,2:$DMS,3:$DMS,4:$DMS > "$RAW/p3_issuer_${V}_${D}_$r.log" 2>&1 &
+    wait_http ember_edge http://10.72.0.2:9090/ping
+    ip netns exec ember_edge env GOMAXPROCS=1 taskset -c 1 $BIN/edge -listen 10.71.0.1:8080 -origin http://10.72.0.2:9090 \
+      -kidalg "" -prewarm 64 > "$RAW/p3_edge_${V}_${D}_$r.log" 2>&1 &
+    wait_http ember_cli http://10.71.0.1:8080/ping
+    ip netns exec ember_cli taskset -c 0 $BIN/loadgen -mode p3 -target 10.71.0.1:8080 -issuer http://10.72.0.2:9090 \
+      -pipes pull:200:1,pull_staple:200:2,pull:20:3,pull_staple:20:4 -V $V -delta $D -alpha 0.8 -kmean 20 -seg 200ms \
+      -first-med-ms 120 -first-sigma 0.5 -dur $P3_DUR -run $r -seed 20261105 -net netns-tapbridge \
+      -out "$RES/proto_p3_runs.csv" -reqout "$RAW/p3_req_V${V}_d${D}_r$r.csv" 2>>"$RAW/p3_loadgen.log"
+    ip netns exec ember_cli curl -s http://10.72.0.2:9090/stats > "$RAW/p3_issuer_stats_V${V}_d${D}_r$r.json" || true
+    gzip -f "$RAW/p3_req_V${V}_d${D}_r$r.csv"
+    killall_procs
+  done; done; done
+  ;;
+gobench)
+  log "Go crypto microbenchmarks (pinned core 1, 5 fresh processes)"
+  rm -f "$RES/proto_go_verify.csv"
+  for r in $(seq 1 $RUNS); do GOMAXPROCS=1 taskset -c 1 $BIN/gobench -run $r -n 2000 -out "$RES/proto_go_verify.csv"; done
+  ;;
+agg)
+  "$VENV/bin/python" proto_agg.py "$RES"
+  "$VENV/bin/python" validate.py "$RES"
+  ;;
+down)
+  bash netemu/net3.sh down
+  ;;
+esac; done
+log "done: $STAGES"

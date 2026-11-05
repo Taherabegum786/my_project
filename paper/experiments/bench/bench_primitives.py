@@ -1,0 +1,150 @@
+"""E1: Python-backend primitive microbenchmarks (SECONDARY timing source; native OpenSSL is primary).
+
+taskset -c 2 python -m bench.bench_primitives --out ../results [--quick]
+-> results/micro_primitives.csv, results/raw/micro_<scheme>_<op>.npy, results/notes_A1_mldsa_sign.md
+"""
+import argparse
+import csv
+import gc
+import os
+import sys
+import time
+
+import numpy as np
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import pqcrypto
+from pqcrypto.sign import ml_dsa_44
+
+from ember.signers import CTX_ROOT, SIGNERS
+from ember.th import Th, tweak
+
+MSG = bytes((ord("a") + i % 26) for i in range(200))  # 200-byte claim string
+rng = np.random.default_rng(20261105)
+
+
+def timed(fn, n, warm=200):
+    for _ in range(min(warm, max(2, n))):
+        fn()
+    gc.disable()
+    t = np.empty(n)
+    pc = time.perf_counter_ns
+    for i in range(n):
+        t0 = pc()
+        fn()
+        t[i] = (pc() - t0) / 1000.0
+    gc.enable()
+    return t
+
+
+def boot_median(x, B=2000):
+    m = np.median(x[rng.integers(0, len(x), (B, len(x)))], axis=1)
+    return np.percentile(m, 2.5), np.percentile(m, 97.5)
+
+
+ITERS = {("SLH-DSA-128s", "keygen"): 30, ("SLH-DSA-128s", "sign"): 30, ("SLH-DSA-128f", "sign"): 200,
+         ("RSA-2048", "keygen"): 50}
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--out", default="../results")
+    ap.add_argument("--quick", action="store_true")
+    a = ap.parse_args()
+    os.makedirs(os.path.join(a.out, "raw"), exist_ok=True)
+    rows = []
+
+    def add(scheme, op, backend, t, sig=None, pk=None):
+        lo, hi = boot_median(t)
+        rows.append(dict(scheme=scheme, op=op, backend=backend, n_iter=len(t), median_us=np.median(t),
+                         p99_us=np.percentile(t, 99), mean_us=t.mean(), ci95_lo_us=lo, ci95_hi_us=hi,
+                         sig_bytes=sig, pk_bytes=pk))
+        np.save(os.path.join(a.out, "raw", "micro_%s_%s.npy" % (scheme, op)), t)
+        print("%-26s %-7s %10.2f us" % (scheme, op, np.median(t)), flush=True)
+
+    base_n = 200 if a.quick else 2000
+    for name, cls in SIGNERS.items():
+        s = cls(CTX_ROOT).keygen()
+        sig = s.sign(MSG)
+        assert s.verify(MSG, sig)
+        for op in ("keygen", "sign", "verify"):
+            n = ITERS.get((name, op), base_n)
+            if a.quick:
+                n = min(n, 30 if name.startswith("SLH") and op != "verify" else n)
+            if op == "keygen":
+                fn = lambda: cls(CTX_ROOT).keygen()
+            elif op == "sign":
+                fn = lambda: s.sign(MSG)
+            else:
+                fn = lambda: s.verify(MSG, sig)
+            add(name, op, s.backend, timed(fn, n, warm=2 if n <= 200 else 200), len(sig), s.pk_len)
+    for n_ in (16, 32):
+        tw = tweak(1, 2, 1, 3, 4)
+        for L in (64, 200):
+            d = os.urandom(L)
+            add("Th-n%d-%dB" % (n_, L), "hash", "hashlib", timed(lambda: Th(tw, d, n_), base_n * 5), n_, 0)
+        add("Th-n%d-tweak+hash" % n_, "hash", "hashlib",
+            timed(lambda: Th(tweak(1, 2, 1, 3, 4), d[:2 * n_], n_), base_n * 5), n_, 0)
+
+    with open(os.path.join(a.out, "micro_primitives.csv"), "w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(rows[0]))
+        w.writeheader()
+        for r in rows:
+            w.writerow({k: (("%.3f" % v) if isinstance(v, float) else v) for k, v in r.items()})
+
+    # ---------------- A1 investigation: pqcrypto ML-DSA-44 sign
+    n = 100 if a.quick else 500
+    pk, sk = ml_dsa_44.keygen()
+    SK = ml_dsa_44.SecretKey(sk)
+    res = {}
+    res["flat sign(sk,msg) pure, no context"] = timed(lambda: ml_dsa_44.sign(sk, MSG), n, 5)
+    res["flat sign, context='EMBER-root'"] = timed(lambda: ml_dsa_44.sign(sk, MSG, context=CTX_ROOT), n, 5)
+    res["object API SecretKey(sk).sign"] = timed(lambda: SK.sign(MSG), n, 5)
+    res["HashML-DSA pre-hash SHA-256"] = timed(lambda: ml_dsa_44.sign(sk, MSG, hash_algorithm=pqcrypto.HashAlgorithm.Sha256), n, 5)
+    res["flat sign, 32-B message"] = timed(lambda: ml_dsa_44.sign(sk, MSG[:32]), n, 5)
+    sig = ml_dsa_44.sign(sk, MSG)
+    res["verify (reference)"] = timed(lambda: ml_dsa_44.verify(pk, MSG, sig), n, 5)
+    res["keygen (reference)"] = timed(lambda: ml_dsa_44.keygen(), n, 5)
+    so = os.path.join(os.path.dirname(pqcrypto.__file__), "pqcrypto.abi3.so")
+    try:
+        crates = sorted({l.strip() for l in os.popen("strings '%s' | grep -oE 'backbone-ml-dsa-[0-9.]+/src/backends/[a-z_]+\\.rs' | sort -u" % so)})
+    except Exception:
+        crates = []
+    native = None
+    agg = os.path.join(a.out, "native_sig_agg.csv")
+    if os.path.exists(agg):
+        import pandas as pd
+        d = pd.read_csv(agg)
+        native = {op: float(d[(d.scheme == "ML-DSA-44") & (d.op == op)].median_us.iloc[0]) for op in ("keygen", "sign", "verify")}
+    with open(os.path.join(a.out, "notes_A1_mldsa_sign.md"), "w") as f:
+        f.write("# A1: pqcrypto 1.0.0 ML-DSA-44 signing (generated by bench/bench_primitives.py)\n\n")
+        f.write("Single process, pinned core, %d iterations each, 200-B message unless noted. Times in microseconds.\n\n" % n)
+        f.write("| variant | median | p10 | p90 | p99 |\n|---|---:|---:|---:|---:|\n")
+        for k, t in res.items():
+            f.write("| %s | %.1f | %.1f | %.1f | %.1f |\n" % (k, np.median(t), np.percentile(t, 10), np.percentile(t, 90), np.percentile(t, 99)))
+        f.write("\nBackend source files compiled into pqcrypto.abi3.so (from `strings`): %s\n\n" % (", ".join(crates) or "n/a"))
+        m = {k: np.median(t) for k, t in res.items()}
+        f.write("sign/verify ratio (pqcrypto): %.1fx; sign/keygen: %.1fx.\n" % (m["flat sign(sk,msg) pure, no context"] / m["verify (reference)"],
+                                                                             m["flat sign(sk,msg) pure, no context"] / m["keygen (reference)"]))
+        if native:
+            f.write("OpenSSL 3.5.4 native (native_sig_agg.csv): keygen %.1f, sign %.1f, verify %.1f us; sign/verify %.1fx.\n" % (
+                native["keygen"], native["sign"], native["verify"], native["sign"] / native["verify"]))
+            f.write("pqcrypto/native: keygen %.1fx, sign %.1fx, verify %.1fx.\n\n" % (
+                m["keygen (reference)"] / native["keygen"], m["flat sign(sk,msg) pure, no context"] / native["sign"],
+                m["verify (reference)"] / native["verify"]))
+        base = m["flat sign(sk,msg) pure, no context"]
+        var = [k for k in m if k not in ("verify (reference)", "keygen (reference)")]
+        spread = max(abs(m[k] / base - 1) for k in var)
+        f.write("Max relative difference among the sign variants: %.1f%%.\n\n" % (100 * spread))
+        f.write("Interpretation: %s The binding is a Rust crate (backbone-ml-dsa) compiled with a portable `soft` backend "
+                "(no AVX2); signing runs the rejection loop (expected ~4.25 iterations for ML-DSA-44), each NTT-heavy, so a "
+                "slow portable NTT inflates sign much more than verify. All issuer-side (sign) claims in the paper therefore use "
+                "the OpenSSL 3.5.4 native numbers; pqcrypto sign times are never presented as 'ML-DSA signing cost'.\n" % (
+                    "The API path, context string, message length and pre-hash mode do not explain the slowdown (variants within %.0f%%)." % (100 * spread)
+                    if spread < 0.2 else "Some API variants differ by more than 20%; see table."))
+    print("wrote", a.out)
+
+
+if __name__ == "__main__":
+    main()

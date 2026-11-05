@@ -1,0 +1,5 @@
+mode,V,delta_s,lambda,run,tokens,requests,rejects,misses,coalesced_waits,miss_per_token,miss_lat_mean_ms,miss_lat_p99_ms,wait_all_mean_ms,wait_all_p99_ms,root_bytes,root_bytes_per_token,edge_sig_verifs,staple_upstream_bytes_per_token,issue_wait_mean_ms,issue_wait_p99_ms,req_lat_p50_ms,req_lat_p99_ms,errors,wall_s,net
+pull,10,0.1,200,1,2045,42376,0,768,740,0.37555,75.930,82.285,58.291,79.686,1890048,924.2,768,0.0,154.9,260.5,20.296,95.960,0,42.2,netns-tapbridge
+pull_staple,10,0.1,200,1,1957,42287,0,759,0,0.38784,0.076,0.166,0.076,0.166,1867899,954.5,759,3298.0,154.5,257.2,20.296,26.889,0,42.2,netns-tapbridge
+pull,10,0.1,20,1,205,4555,0,182,14,0.88780,75.894,82.050,73.083,82.050,447902,2184.9,182,0.0,150.2,257.8,20.299,96.254,0,42.2,netns-tapbridge
+pull_staple,10,0.1,20,1,185,3986,0,159,0,0.85946,0.073,0.147,0.073,0.147,391299,2115.1,159,3298.0,155.3,248.6,20.294,28.420,0,42.2,netns-tapbridge

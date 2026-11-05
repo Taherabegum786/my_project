@@ -1,0 +1,5 @@
+[18:27:22] go test (unit + shared Python vectors)
+[18:27:22] E3b hpackbytes
+[18:27:31] RTT probes (ICMP + keep-alive HTTP) over the emulated links
+links up
+[18:29:39] P1 capacity: edge ns loopback, closed loop 64 conns, warm 5s, 20s x 5 runs

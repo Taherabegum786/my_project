@@ -1,0 +1,13 @@
+rtt min/avg/max/mdev = 20.225/20.695/23.495/0.936 ms
+rtt min/avg/max/mdev = 75.428/75.589/75.978/0.151 ms
+rtt min/avg/max/mdev = 95.567/96.383/101.500/1.722 ms
+== ember_cli
+lo               UNKNOWN        127.0.0.1/8 
+tAc              UNKNOWN        10.71.0.2/24 
+== ember_edge
+lo               UNKNOWN        127.0.0.1/8 
+tAe              UNKNOWN        10.71.0.1/24 
+tBe              UNKNOWN        10.72.0.1/24 
+== ember_origin
+lo               UNKNOWN        127.0.0.1/8 
+tBo              UNKNOWN        10.72.0.2/24 

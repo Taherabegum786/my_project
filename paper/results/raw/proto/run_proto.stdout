@@ -1,0 +1,38 @@
+[18:27:22] go test (unit + shared Python vectors)
+--- PASS: TestSharedVectors (0.00s)
+PASS
+ok  	emberproto/tokens	0.128s
+[18:27:22] E3b hpackbytes
+sig_128s_claims 7856 bytes
+sig_128f_claims 17088 bytes
+sig_128s_root 7856 bytes
+2026/11/05 18:27:31 wrote /home/user/my_project/paper/results/wire_bytes.csv (24 cases)
+[18:27:31] RTT probes (ICMP + keep-alive HTTP) over the emulated links
+links up
+rtt min/avg/max/mdev = 20.225/20.695/23.495/0.936 ms
+rtt min/avg/max/mdev = 75.428/75.589/75.978/0.151 ms
+rtt min/avg/max/mdev = 95.567/96.383/101.500/1.722 ms
+== ember_cli
+lo               UNKNOWN        127.0.0.1/8 
+tAc              UNKNOWN        10.71.0.2/24 
+== ember_edge
+lo               UNKNOWN        127.0.0.1/8 
+tAe              UNKNOWN        10.71.0.1/24 
+tBe              UNKNOWN        10.72.0.1/24 
+== ember_origin
+lo               UNKNOWN        127.0.0.1/8 
+tBo              UNKNOWN        10.72.0.2/24 
+edge_origin rtt p50=75.896 mean=76.282 p99=83.719 ms
+cli_edge rtt p50=20.743 mean=20.823 p99=22.895 ms
+edge_origin rtt p50=75.900 mean=76.089 p99=79.162 ms
+cli_edge rtt p50=20.756 mean=20.862 p99=23.569 ms
+edge_origin rtt p50=75.910 mean=76.081 p99=79.591 ms
+cli_edge rtt p50=20.758 mean=20.931 p99=23.208 ms
+edge_origin rtt p50=75.840 mean=76.133 p99=79.800 ms
+cli_edge rtt p50=20.736 mean=20.927 p99=24.651 ms
+edge_origin rtt p50=75.842 mean=75.918 p99=77.718 ms
+cli_edge rtt p50=20.688 mean=21.333 p99=24.485 ms
+[18:29:39] P1 capacity: edge ns loopback, closed loop 64 conns, warm 5s, 20s x 5 runs
+b1,1,39956.4,0.984,1.545,4.238,799129,0,100,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b2,1,10747.6,0.986,5.861,15.649,214953,0,143,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b3,1,8265.9,0.990,7.657,17.667,165318,0,152,netns-loopback-edge,go-1.24.7+circl-1.6.1

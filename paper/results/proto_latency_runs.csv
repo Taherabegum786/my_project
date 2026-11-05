@@ -1,0 +1,7 @@
+scheme,load_frac,run,rate_target,rate_achieved,p50_ms,p99_ms,n_req,errors,net,impl
+b1,0.50,1,18513.3,18464.0,20.445,28.849,73856,0,netns-tapbridge,go-1.24.7+circl-1.6.1
+b5,0.50,1,6049.4,6036.8,21.341,45.593,24147,0,netns-tapbridge,go-1.24.7+circl-1.6.1
+o1,0.50,1,16065.5,16021.0,20.477,26.468,64084,0,netns-tapbridge,go-1.24.7+circl-1.6.1
+b1,0.80,1,29621.3,29564.5,20.412,30.664,118258,0,netns-tapbridge,go-1.24.7+circl-1.6.1
+b5,0.80,1,9679.0,9625.8,22.304,58.791,38503,0,netns-tapbridge,go-1.24.7+circl-1.6.1
+o1,0.80,1,25704.9,25597.8,20.462,29.579,102391,0,netns-tapbridge,go-1.24.7+circl-1.6.1

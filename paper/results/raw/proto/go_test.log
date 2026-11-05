@@ -1,0 +1,9 @@
+=== RUN   TestEmberRoundTripAndNegatives
+--- PASS: TestEmberRoundTripAndNegatives (0.12s)
+=== RUN   TestPerToken
+--- PASS: TestPerToken (0.00s)
+=== RUN   TestSharedVectors
+    vectors_test.go:170: shared vectors: 128 checks passed (../../tests/vectors.json)
+--- PASS: TestSharedVectors (0.00s)
+PASS
+ok  	emberproto/tokens	0.128s

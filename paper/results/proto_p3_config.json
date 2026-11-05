@@ -1,0 +1,18 @@
+{
+  "doc": "E8 P3 configuration (prototype). To validate fleet_mc (H8), run it with exactly these parameters and write results/sim_proto_mc.csv with columns mode,V,delta_s,lambda,metric,mc_mean (metrics: miss_per_token, miss_lat_mean_ms, wait_all_mean_ms, wait_all_p99_ms, root_bytes_per_token); then run experiments/proto/validate.py.",
+  "modes": ["pull", "pull_staple"],
+  "V_edges": [10, 50],
+  "edge_share": "Zipf alpha=0.8 over V edges, w_v proportional to 1/(v+1)^0.8, NOT permuted; each token's session uses ONE edge (no moves)",
+  "shield_tier": "none: every edge root miss fetches directly from the root service (edge->origin RTT measured, results/proto_rtt.csv path=edge_origin)",
+  "delta_s": [0.1, 1, 10],
+  "lambda_tokens_per_s": [20, 200],
+  "issuance": "Poisson arrivals over a 60 s window; fixed timer-Delta epochs (random phase); empty epochs produce no root",
+  "token_receipt_to_first_request": "lognormal median 120 ms sigma 0.5 (plus constant network delays common to all tokens of an epoch)",
+  "segments_per_session": "1 manifest + K, K geometric on {1,2,...} mean 20, 200 ms apart (all hits after the first request)",
+  "root_fetch_latency": "measured keep-alive HTTP RTT edge->origin (results/proto_rtt.csv) + Go ML-DSA-44 root verify (results/proto_go_verify.csv op=verify_root_mldsa44)",
+  "staple": "pull_staple: first request of every session carries X-EMBER-Root; a miss costs one root verify, no RTT",
+  "signed_root_bytes": 2461,
+  "tenants": "each (mode, lambda) pipeline is its own kid/tenant with its own V virtual edges",
+  "runs": 5,
+  "seed": 20261105
+}
