@@ -1,0 +1,72 @@
+\section{Evaluation Methodology}
+\label{sec:method}
+
+\subsection{Baselines}
+Table~\ref{tab:baselines} lists the schemes. All of them authenticate the same canonical claim string, so only the authenticator differs. B1--B9 are the status quo and naive post-quantum schemes. B10--B13 are the strong alternatives that a fair comparison needs, and B5v, B5c and B6c are variants of B5 and B6. B14 (macaroons~\cite{macaroons2014}) and B15 (DPoP- or TLS-bound tokens~\cite{rfc9449}) address attenuation and binding rather than unforgeability, so we discuss them only qualitatively. The EMBER configurations are O1 (ML-DSA-44 root, $n=16$, the default), O2 ($n=32$), O3 (SLH-DSA-128s root) and O4 (hybrid Ed25519\,+\,ML-DSA-44 root).
+
+\begin{table}[t]
+\centering
+\caption{Baselines (B1--B13) and variants. All are implemented in Python; those marked $\dagger$ are also implemented in the Go prototype.}
+\label{tab:baselines}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lp{6.6cm}@{}}
+\toprule
+ID & Scheme \\
+\midrule
+B1$^\dagger$ & HMAC-SHA256, key shared with all edges (EdgeAuth-like) \\
+B2$^\dagger$, B3$^\dagger$, B4 & Ed25519 (Media CDN), ECDSA P-256 and RSA-2048 (CloudFront) \\
+B5$^\dagger$, B6$^\dagger$ & ML-DSA-44 / ML-DSA-65 per token \\
+B7, B8 & SLH-DSA-SHA2-128s / 128f per token \\
+B9$^\dagger$ & Hybrid Ed25519\,+\,ML-DSA-44 per token \\
+B10 & Multi-MAC: one 16-B HMAC tag per verifier domain, $k\in\{1,3,10\}$ \\
+B11$^\dagger$ & Delegated short-lived Ed25519 key, certified per epoch by ML-DSA-44 (cf.\ delegated credentials~\cite{rfc9345}) \\
+B12$^\dagger$ & Per-epoch HMAC key wrapped with ML-KEM-768~\cite{fips203} to each edge \\
+B13 & MTL mode: condensed signature over a growing series~\cite{draft-mtl-mode} \\
+B5v$^\dagger$ & B5 plus an edge verified-token cache (LRU keyed by SHA-256 of the token) \\
+B5c, B6c & B5/B6 split over two cookies \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Testbed and Implementations}
+All experiments ran on one KVM guest with 4 vCPUs (Intel Xeon at 2.1~GHz, with AVX-512 and SHA-NI) and 15~GB RAM, running Linux~6.18. Every timing names its implementation. The \emph{primary} source for primitive timings is a native C benchmark against OpenSSL~3.5.4 using the EVP interface: 5 fresh processes pinned to one core, with warm-up. Each value is the median of the 5 run medians, with a bootstrap 95\% confidence interval (CI) over the run medians, 2000 resamples. Signatures use 2000 iterations per run, 10 for SLH-DSA-128s signing, and path verification uses $2\cdot10^5$ iterations per run. The Go prototype uses Go~1.24.7 and cloudflare/circl~1.6.1. The Python reference uses pqcrypto~1.0.0 and serves only as a secondary source. Its ML-DSA-44 signing is 15.4$\times$ slower than native because the extension uses a portable Rust backend, so no claim about issuer speed rests on it.
+
+\emph{Two native runs.} The native suite ran twice, before and after a VM reboot, with identical scripts and pinning. Absolute values differ by 15--20\%: ML-DSA-44 sign/verify took 501.8/122.3\us{} in run~1 and 408.8/100.9\us{} in run~2, and a $d=16$ path took 2846.9 and 2341.2~ns. Ratios between schemes are stable. All simulations use run~1, the run available when they started. All primitive tables and figures use run~2. Each number in this paper is tagged with its run in the accompanying trace file.
+
+\subsection{Measurements}
+\textbf{Token sizes} are measured on generated tokens with a 60-character path and no IP claim (118-B canonical claims). \textbf{Wire bytes} per session are encoded with Go's \texttt{x/net/http2/hpack} (4096-B dynamic table, default indexing). A session has 1 manifest and $K=150$ segment requests, plus about 570~B of other Chrome-like headers. We also report HTTP/1.1 and a 64~KiB table.
+
+\textbf{Go prototype.} The prototype has an edge verifier (\texttt{net/http}, root cache with coalescing and a negative cache, optional verified-token LRU, $V$ virtual edges with separate root caches), an issuer and root service with timer-$\Delta$ batching, and an open-loop load generator. Client, edge and origin run in three Linux network namespaces joined by two userspace link emulators, because \texttt{netem} is not available in this kernel. The emulated links have 10~ms and 37.5~ms one-way delay, 1~Gbit/s serialization and a 1500-B MTU. Measured keep-alive round-trip times are 20.98~ms (client$\to$edge) and 76.10~ms (edge$\to$origin). The edge runs on its own core (\texttt{GOMAXPROCS=1}). Three experiments use the prototype. \emph{P1} measures closed-loop edge capacity over the edge namespace's loopback with 64 connections, 150 requests per token, 5~s warm-up and 20~s measurement, 5 runs. Its primary metric is \emph{edge CPU time per request} (edge CPU utilization from \texttt{/proc} divided by req/s), which stays valid when the load generator, not the edge, limits throughput. \emph{P2} measures open-loop latency over the emulated link at 50\% and 80\% of each scheme's P1 capacity. \emph{P3} measures root dissemination: modes pull and pull\_staple, $V\in\{10,50\}$ virtual edges, $\Delta\in\{0.1,1,10\}$~s and $\lambda\in\{20,200\}$ tokens/s, giving 24 configurations, each with a 60~s issuance window and 5 runs. CIs for prototype metrics are Student-$t$ 95\% intervals over the 5 runs.
+
+\textbf{Fleet simulator.} The simulator is an epoch-level Monte Carlo engine with a numba kernel. It replays every first request and every re-route request against per-edge and per-shield root caches with coalescing, and draws CPU costs from the native measurements. Table~\ref{tab:simparams} lists its parameters. All workload and network values are assumptions, and the sensitive ones are swept. We use 5 seeds (10 for the controller), Student-$t$ CIs, and common random numbers across policies, so that comparisons are paired. An independent event-driven simulator agrees with it to within 0.56\% on misses per token, 0.09\% on $D$ and 0.08\% on issuance wait, across 45 metric rows. We report this only as an internal consistency check. The validation against \emph{measured} behavior is the comparison with P3 in Section~\ref{sec:res-validate}.
+
+\begin{table}[t]
+\centering
+\caption{Simulation parameters (assumptions, not measurements). LN($m$,\,$s$): lognormal with median $m$ and log-standard deviation $s$.}
+\label{tab:simparams}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{3.1cm}p{2.3cm}p{2.3cm}@{}}
+\toprule
+Parameter & Default & Sweep \\
+\midrule
+Edges $E$ (shields $E/10$) & 500 & 100, 500, 2000 \\
+Edge traffic share & Zipf(0.8) & 0, 0.8, 1.2 \\
+Tenants, rate share & 1000, Zipf(1.0) & Zipf 0.8--1.2 \\
+Aggregate rate $\bar\lambda$ & 2000 tokens/s & 200, 2000, \num{20000} \\
+Requests per session $K$ & geometric, mean 150, 4~s apart & -- \\
+Edge re-route prob./segment & 0.0005 & 0, 0.0005, 0.005 \\
+$\vmax$; period $P$ & 3600~s; 300~s & 300--86400; 60--1800~s \\
+RTT edge$\to$shield; shield$\to$root & LN(15, 0.5); LN(60, 0.5)~ms & $\times0.5$, $\times2$ \\
+Push propagation & LN(150, 0.5)~ms & $\times0.5$, $\times2$ \\
+Token receipt$\to$first request & LN(120, 0.5)~ms & -- \\
+Mean segment size & 1.5~MB & 0.5, 1.5, 4~MB \\
+Node size; root signer & 16~B; ML-DSA-44 & 32~B; ML-DSA-65, SLH-128s, hybrid \\
+Controller & SLO 2~s, $B=1024$~B, EWMA 0.2 & -- \\
+Horizon & 1~h (sweeps, 1200~s at $\bar\lambda=\num{20000}$), 24~h (controller) & -- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Hypotheses.} We fixed nine hypotheses (H1--H9) and their thresholds before running the experiments. Table~\ref{tab:hyp} in Section~\ref{sec:discussion} reports every outcome, including those that failed.

@@ -1,0 +1,34 @@
+\section{Background and Related Work}
+\label{sec:background}
+
+\subsection{CDN Access Tokens}
+A CDN token consists of \emph{claims} and an \emph{authenticator}. Typical claims are a URL prefix, an expiry time and optionally a client IP range. Media CDN serializes claims as colon- or ampersand-separated fields followed by \texttt{Signature=}, an unpadded base64url Ed25519 signature~\cite{mediacdn-sig}. EdgeAuth uses \texttt{exp=...\textasciitilde acl=...\textasciitilde hmac=...}~\cite{akamai-edgeauth}. Tokens travel in three places. In a query string, an 8000-octet minimum is recommended for URL support~\cite{rfc9110}, and 2~KB is common legacy practice. In a cookie, RFC~6265 requires at least 4096~B per cookie~\cite{rfc6265}. In a header, servers commonly cap total header size, a configuration assumption we state where we use it. In HTTP/2, HPACK~\cite{rfc7541} can index a repeated cookie, but only if the cookie fits in the dynamic table next to the other changing headers. Section~\ref{sec:res-size} shows that this decides whether large tokens are affordable.
+
+Macaroons~\cite{macaroons2014} add attenuation to HMAC bearer tokens but keep HMAC's shared-secret trust. DPoP~\cite{rfc9449} binds tokens to a client key and is orthogonal to how the token itself is authenticated. Post-quantum Privacy Pass~\cite{policharla2023pqpp} provides unlinkable tokens, but at 85--175~KB per token, for a different goal (anonymity).
+
+\subsection{Post-Quantum Signatures}
+FIPS~204 standardizes ML-DSA, with signatures of 2420, 3309 and 4627~B for ML-DSA-44/65/87, and FIPS~205 standardizes SLH-DSA, whose 128s and 128f parameter sets have 7856-B and \num{17088}-B signatures~\cite{fips204,fips205}. RFC~9964 registers ML-DSA for JOSE and COSE~\cite{rfc9964}. Measurements of post-quantum TLS~\cite{sikeridis2020ndss,paquin2020benchmarking,sosnowski2023conext,kampanakis2024ttlb} show that signature \emph{size}, more than CPU, drives the cost of post-quantum authentication. CDNs already deploy ML-KEM key exchange at the edge and toward origins~\cite{akamai2026e2epqc,cf2026pqauthorigins}. KEMTLS replaces handshake signatures with KEMs~\cite{schwabe2020kemtls,celi2021measuring}, but tokens are verified offline and have no handshake to which that idea could apply. Hybrid signatures combine a classical and a post-quantum scheme. We use the AND-combiner, in which both signatures must verify, analyzed by Bindel et al.~\cite{bindel2017hybrid}.
+
+\subsection{Merkle Batch Signing}
+Merkle's tree authentication~\cite{merkle1989} underlies every scheme in this subsection. Aguilar-Melchor et al.~\cite{batchsig2024} formalize batch signatures, in which one inner signature covers a Merkle tree of messages, and prove unforgeability and privacy. In their model each batch signature carries the root signature and is evaluated for TLS. TLS batch signing~\cite{draft-batch-signing} follows the same pattern. MTL mode~\cite{fregly2023mtl,draft-mtl-mode} signs \emph{ladders} over a growing message series and authenticates messages by a \emph{condensed} signature, a path to a ladder rung. It targets settings, such as DNSSEC~\cite{draft-slhdsa-mtl-dnssec}, in which verifiers check a subset of a large, evolving series. Merkle Tree Certificates (MTC)~\cite{draft-mtc,cf2025mtc} batch certificate issuance under signed tree heads that relying parties obtain ahead of time. MTAC~\cite{draft-mtac} profiles the same structure for AI-agent identity, and its authors state that it specifies no runtime authorization. Certificate Transparency~\cite{rfc9162} defines the tree shape that MTC and our implementation follow. SPHINCS$^+$/SLH-DSA introduced the tweakable-hash framework with address-based domain separation~\cite{sphincsplus2019} that our node hashing reuses.
+
+\begin{table}[t]
+\centering
+\caption{Merkle batching approaches compared with EMBER.}
+\label{tab:related}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{1.45cm}p{1.95cm}p{1.95cm}p{2.1cm}@{}}
+\toprule
+ & Root signature per message & Verifiers & Size constraint \\
+\midrule
+Batch sig.~\cite{batchsig2024} & carried in full & one TLS client & none \\
+MTL mode~\cite{draft-mtl-mode} & ladder fetched separately & DNS resolvers & DNS message \\
+MTC~\cite{draft-mtc} & tree head distributed ahead & browsers & TLS flight \\
+\textbf{EMBER} & disseminated by the CDN: pull, push, roll-up, \textbf{stapled} & thousands of edges, $\sim$150 requests per token & URL (2~KB practice), cookie (4096~B) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{What is New Here}
+Searches of the literature and of IETF drafts up to November~2026 found no published scheme that applies Merkle batching to CDN signed URLs or cookies. Table~\ref{tab:related} lists the differences in the setting. Our contribution is therefore not the primitive. It is (i) a token profile that meets URL and cookie budgets, with epoch-bounded validity and revocation, (ii) dissemination of signed roots through the CDN itself, including stapling, and (iii) a measurement study that compares the result with strong symmetric, delegated and cached alternatives. Broader surveys of post-quantum migration~\cite{kampanakis2023vision,alnahawi2024survey} list such application-layer artifacts as open problems.

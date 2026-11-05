@@ -47,7 +47,7 @@ def limits(ax, horiz=False):
     for v, lab in ((2048, "2 KB URL (practice)"), (4096, "4 KB cookie"), (8000, "8000 B URL (RFC 9110)")):
         (ax.axvline if horiz else ax.axhline)(v, color=INK2, lw=0.8, ls=":")
         if horiz:
-            ax.text(v, 1.0, " " + lab, rotation=90, va="top", ha="right", fontsize=5.5, color=INK2,
+            ax.text(v, 1.0, " " + lab, rotation=90, va="top", ha="right", fontsize=7, color=INK2,
                     transform=ax.get_xaxis_transform())
 
 
@@ -76,12 +76,12 @@ def fig2():
     y = np.arange(len(rows))
     ax.barh(y - 0.2, [r[1] for r in rows], height=0.38, color=SERIES[0], label="signed URL (bytes)")
     ax.barh(y + 0.2, [r[2] for r in rows], height=0.38, color=SERIES[1], label="Set-Cookie value (bytes)")
-    ax.set_yticks(y, [r[0] for r in rows], fontsize=6)
+    ax.set_yticks(y, [r[0] for r in rows], fontsize=7)
     ax.invert_yaxis()
     ax.set_xscale("log")
     ax.set_xlabel("bytes (log)")
     limits(ax, horiz=True)
-    ax.legend(loc="lower right", fontsize=6)
+    ax.legend(loc="lower right", fontsize=7)
     ax.grid(axis="y", visible=False)
     save(fig, OUT, "fig2_token_sizes")
 
@@ -99,10 +99,10 @@ def fig3():
         a.plot(L, [cb + 3 + math.ceil(4 * (30 + n * l) / 3) for l in L], LINES[k], color=SERIES[k], lw=1, label="model, n=%d" % n)
     b5 = d[d.scheme == "B5"].token_bytes.iloc[0]
     a.axhline(b5, color=INK2, ls=":", lw=0.8)
-    a.text(0.3, b5 * 0.93, "B5 per-token ML-DSA-44 (%d B)" % b5, fontsize=6, color=INK2, va="top")
+    a.text(0.3, b5 * 0.93, "B5 per-token ML-DSA-44 (%d B)" % b5, fontsize=7, color=INK2, va="top")
     a.set_ylabel("token bytes (b64url)")
     a.set_xlabel("log$_2$ N (tokens per epoch)")
-    a.legend(fontsize=6, ncol=2, loc="center right")
+    a.legend(fontsize=7, ncol=2, loc="center right")
     a.set_ylim(0, b5 * 1.08)
     ia = rd("native_issuer_agg.csv")
     for k, alg in enumerate(["ML-DSA-44", "SLH-DSA-SHA2-128s"]):
@@ -119,7 +119,7 @@ def fig3():
     b.set_xlabel("N (tokens per epoch)")
     b.set_ylabel("issuer tokens/s per core")
     b.set_ylim(1, 2e7)
-    b.legend(fontsize=5, loc="upper left", ncol=1)
+    b.legend(fontsize=7, loc="upper left", ncol=1)
     fig.tight_layout()
     save(fig, OUT, "fig3_size_vs_N")
 
@@ -127,7 +127,7 @@ def fig3():
 # ------------------------------------------------------------------ Fig 4
 def fig4():
     tv = rd("token_verify.csv")
-    fig, (a, b) = plt.subplots(1, 2, figsize=(DCOL, 2.6))
+    fig, (a, b) = plt.subplots(1, 2, figsize=(DCOL, 3.1))
     sel = [("B1", "none"), ("B10k3", "none"), ("B12", "none"), ("B2", "none"), ("B3", "none"), ("B4", "none"),
            ("B11", "none"), ("B5", "none"), ("B6", "none"), ("B9", "none"), ("B7", "none"), ("B8", "none"),
            ("B5v", "hit"), ("B5v", "miss")]
@@ -173,7 +173,7 @@ def _bars(ax, rows, title):
     col = [SERIES[1] if r[3] else SERIES[0] for r in rows]
     ax.barh(y, med, color=col, height=0.7)
     ax.errorbar(p99, y, fmt="|", color="#0b0b0b", ms=5, mew=1, label="p99")
-    ax.set_yticks(y, [r[0] for r in rows], fontsize=5.5)
+    ax.set_yticks(y, [r[0] for r in rows], fontsize=7)
     ax.invert_yaxis()
     ax.set_xscale("log")
     ax.set_xlabel("microseconds per verification (log); bar = median, | = p99")
@@ -181,7 +181,7 @@ def _bars(ax, rows, title):
     ax.grid(axis="y", visible=False)
     from matplotlib.patches import Patch
     ax.legend(handles=[Patch(color=SERIES[0], label="baseline / primitive"), Patch(color=SERIES[1], label="EMBER / Merkle path")],
-              fontsize=5.5, loc="lower right")
+              fontsize=7, loc="lower right")
 
 
 # ------------------------------------------------------------------ Fig 5
@@ -213,8 +213,8 @@ def fig5():
     axs[0].set_yscale("log")
     axs[2].set_yscale("log")
     axs[2].set_xlabel("epoch length $\\Delta$ (s), pull mode, per-tenant trees")
-    axs[1].legend(fontsize=5.2, ncol=2)
-    axs[0].legend(fontsize=5.2)
+    axs[1].legend(fontsize=7, ncol=2)
+    axs[0].legend(fontsize=7)
     fig.tight_layout()
     save(fig, OUT, "fig5_delta_tradeoff")
 
@@ -240,7 +240,7 @@ def fig6():
     axs[2].set_yscale("log")
     axs[2].set_ylabel("mean D per token (s)")
     axs[2].set_xlabel("time of day (h), simulated, $\\bar\\lambda$=%g tokens/s, pull mode" % lam)
-    axs[2].legend(ncol=5, fontsize=6, loc="upper center", bbox_to_anchor=(0.5, -0.45))
+    axs[2].legend(ncol=5, fontsize=7, loc="upper center", bbox_to_anchor=(0.5, -0.45))
     fig.tight_layout()
     save(fig, OUT, "fig6_controller_24h")
 
@@ -270,7 +270,7 @@ def fig7():
     b.set_xscale("log"); b.set_yscale("log")
     b.set_xlabel("edges E"); b.set_ylabel("root misses per $10^6$ requests")
     h, l = a.get_legend_handles_labels()
-    fig.legend(h, l, fontsize=6, ncol=4, loc="lower center", bbox_to_anchor=(0.5, -0.12))
+    fig.legend(h, l, fontsize=7, ncol=4, loc="lower center", bbox_to_anchor=(0.5, -0.12))
     a.set_title("(a) dissemination bandwidth, $\\Delta$=1 s", fontsize=7)
     b.set_title("(b) misses, $\\Delta$=1 s", fontsize=7)
     fig.tight_layout()
@@ -294,7 +294,7 @@ def fig8():
     ax.set_xlabel("added latency per request (ms, log): miss wait + verify CPU (native)")
     ax.set_ylabel("CDF (simulated)")
     ax.set_ylim(0.9, 1.0005)
-    ax.legend(fontsize=5.2, loc="lower right")
+    ax.legend(fontsize=7, loc="lower right")
     save(fig, OUT, "fig8_e2e_cdf")
 
 
@@ -322,7 +322,7 @@ def fig9():
     for i in range(len(Es)):
         for j in range(len(Ds)):
             if not np.isnan(M[i, j]):
-                ax.text(j, i, "%.2f" % M[i, j], ha="center", va="center", fontsize=6,
+                ax.text(j, i, "%.2f" % M[i, j], ha="center", va="center", fontsize=7,
                         color="#0b0b0b" if M[i, j] < 0.5 else "#fcfcfb")
     fig.colorbar(im, ax=ax, label="misses/token (pull, simulated)")
     save(fig, OUT, "fig9_sens_heatmap")
@@ -341,26 +341,40 @@ def fig_wire():
         vals = [keep[(keep.scheme == s) & (keep.placement == p) & (keep.proto == pr)].session_bytes for s in schemes]
         v = [x_.iloc[0] if len(x_) else np.nan for x_ in vals]
         ax.bar(x + (k - len(pls) / 2 + 0.5) * w, v, width=w * 0.92, color=SERIES[k % 8], label="%s, %s" % (pr, p))
-    ax.set_xticks(x, schemes, rotation=45, ha="right", fontsize=6)
+    ax.set_xticks(x, schemes, rotation=45, ha="right", fontsize=7)
     ax.set_yscale("log")
     ax.set_ylabel("upstream header bytes per session\n(1 manifest + K=150 segments, measured)")
-    ax.legend(fontsize=5.5, ncol=3)
+    ax.legend(fontsize=7, ncol=3)
     ax.grid(axis="x", visible=False)
     save(fig, OUT, "fig10_wire_bytes")
 
 
+PROTO_LABEL = {"b1": "B1 HMAC", "b12": "B12 KEM-wrapped HMAC", "o4": "EMBER O4 (hybrid root)",
+               "o1a": "EMBER O1 + root/1000 req", "o1": "EMBER O1 (warm)", "b5v": "B5v ML-DSA-44 + vcache",
+               "b5": "B5 ML-DSA-44", "b11": "B11 deleg. Ed25519", "b2": "B2 Ed25519", "b6": "B6 ML-DSA-65",
+               "b3": "B3 ECDSA P-256", "b9": "B9 Ed25519+ML-DSA-44"}
+
+
 def fig_proto():
-    d = rd("proto_capacity.csv")
-    g = d.groupby("scheme").req_per_s
-    s = sorted(g.groups, key=lambda k: -g.get_group(k).mean())
-    m = [tci(g.get_group(k))[0] for k in s]
-    h = [tci(g.get_group(k))[1] for k in s]
-    fig, ax = plt.subplots(figsize=(COL, 2.4))
-    ax.barh(np.arange(len(s)), m, xerr=h, color=SERIES[0], height=0.7, capsize=1.5)
-    ax.set_yticks(np.arange(len(s)), s, fontsize=6)
-    ax.invert_yaxis()
-    ax.set_xlabel("edge requests/s on one core (Go prototype, measured)")
-    ax.grid(axis="y", visible=False)
+    """P1 edge capacity. Primary metric: edge CPU time per request (edge CPU utilisation / req/s), which stays
+    valid when the load generator rather than the edge limits throughput; req/s shown as secondary panel."""
+    d = rd("proto_capacity.csv").copy()
+    d["us_per_req"] = d.cpu_util_edge / d.req_per_s * 1e6
+    g = d.groupby("scheme")
+    s = sorted(g.groups, key=lambda k: g.get_group(k).us_per_req.mean())
+    fig, (a, b) = plt.subplots(1, 2, figsize=(COL, 2.9), sharey=True, gridspec_kw={"width_ratios": [1.15, 1]})
+    y = np.arange(len(s))
+    for ax, col, scale, lab in ((a, "us_per_req", 1.0, "edge CPU per request (\u00b5s)"),
+                                (b, "req_per_s", 1e-3, "req/s per core (x1000)")):
+        m = [tci(g.get_group(k)[col])[0] * scale for k in s]
+        h = [tci(g.get_group(k)[col])[1] * scale for k in s]
+        cols = [SERIES[1] if k.startswith("o") else SERIES[0] for k in s]
+        ax.barh(y, m, xerr=h, color=cols, height=0.7, capsize=1.5, error_kw={"lw": 0.8})
+        ax.set_xlabel(lab)
+        ax.grid(axis="y", visible=False)
+    a.set_yticks(y, [PROTO_LABEL.get(k, k) for k in s], fontsize=7)
+    a.invert_yaxis()
+    fig.tight_layout(w_pad=0.6)
     save(fig, OUT, "fig11_proto_capacity")
 
 
@@ -382,7 +396,7 @@ def fig_proto_validate():
             ax.set_xscale("log"); ax.set_yscale("log")
         ax.set_xlabel("prototype (measured) " + lab)
         ax.set_ylabel("fleet_mc (simulated) " + lab)
-        ax.legend(fontsize=6)
+        ax.legend(fontsize=7)
     fig.tight_layout()
     save(fig, OUT, "fig12_proto_validation")
 

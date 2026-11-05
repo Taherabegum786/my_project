@@ -1,0 +1,29 @@
+\section{Root Dissemination and Epoch Control}
+\label{sec:dissem}
+
+An edge cannot verify a token until it holds the signed root of the token's epoch. Batch signatures avoid the problem by carrying the root signature in every message~\cite{batchsig2024}. That would cost \num{2420}~B per token for ML-DSA-44, which is what EMBER exists to avoid. We therefore analyze four ways in which a fleet of $E$ edges can obtain roots.
+
+\textbf{Pull on miss.} An edge that lacks $R_e$ fetches $SR_e$ from the root service through the shield tier, with one fetch in flight per $(\mathit{kid},e)$ and negative caching. Roots are immutable objects, so the shield caches them. The first request of a session at a cold edge waits one edge$\to$shield(\,$\to$root service) round trip plus a signature verification.
+
+\textbf{Push.} The issuer fans $SR_e$ out to all edges. No request waits if the push arrives before the client's first request. The fleet bandwidth is $BW_{\text{push}}=E\,(|\sigma|+40)/\Delta$, which grows as $1/\Delta$.
+
+\textbf{Period roll-up.} Every $m$ epochs (period $P=m\Delta$) the issuer signs one bundle with the $m$ epoch roots ($mn+|\sigma|$ bytes). An edge that misses on an epoch of a closed period learns all $m$ roots with one fetch and one verification, and tokens are unchanged.
+
+\textbf{Root stapling.} The issuer returns $SR_e$ with the token. The client sends it once, in header \texttt{X-EMBER-Root} (2.4~KB for ML-DSA-44), on its first request to an edge. The edge verifies $\sigma_e$ and caches the root, so the first request costs one signature verification and no round trip. The idea is analogous to OCSP stapling and to MTL mode's full versus condensed signatures~\cite{draft-mtl-mode}. The stapled header is outside the URL and cookie budgets. A client re-routed to a new edge in mid-session may lack it, which in our model is what makes stapling misses nonzero.
+
+\subsection{Cost Model}
+Let $\lambda$ be a tenant's token rate, $w_v$ the traffic share of edge $v$, $t_h$ one $\Th$ call, and $t_s,t_v$ the root signing and verification times. Assume Poisson token arrivals and pull-only dissemination with one root per epoch. The expected number of root misses per token is then
+\begin{equation}
+M(\Delta)=\frac{1}{\lambda\Delta}\sum_{v=1}^{E}\left(1-e^{-\lambda\Delta w_v}\right),
+\label{eq:miss}
+\end{equation}
+which tends to 1 when $\lambda\Delta\ll E$ (every token is first at its edge) and to $E/(\lambda\Delta)$ when $\lambda\Delta\gg E$. The user-visible added delay per token, in seconds, is
+\begin{equation}
+D(\Delta)=\underbrace{\Delta/2+t_{\text{epoch}}}_{\text{issuance wait}}+M(\Delta)\,F_{\text{miss}},
+\label{eq:D}
+\end{equation}
+where $t_{\text{epoch}}=N t_{\text{leaf}}+(N-1)t_h+t_s+N t_{\text{ser}}$ and $F_{\text{miss}}$ is the round trip to the root service plus $t_v$ (pull), or only $t_v$ (stapling). Per-request edge cost is $t_{\text{req}}=t_{\text{parse}}+(d+1)t_h+t_{\text{lookup}}+(\rho_v/Q_v)\,t_v$, where $\rho_v/Q_v$ is the fraction of requests at edge $v$ that need a new root. Issuer throughput per core tends to $1/(2t_h+t_{\text{ser}})$ as $N$ grows, compared with $1/t_s$ for per-token signing.
+
+\subsection{Epoch Control: From Controller to Guideline}
+\label{sec:controller}
+Eq.~\eqref{eq:D} suggests an interior optimum, because $\Delta/2$ grows while $M(\Delta)$ falls. We built an adaptive controller that, at each epoch close, estimates $\lambda$ by an exponentially weighted moving average (EWMA) and picks $\Delta$ from a 25-point logarithmic grid in $[0.01,60]$~s. The choice minimizes $\hat D(\Delta)$ subject to hard constraints: the token budget ($N\le N_{\max}$), signer capacity ($t_{\text{epoch}}\le k\Delta$), a p99 issuance-latency SLO and an optional push-bandwidth cap. It uses no weighted objectives. Before running the experiment we fixed a demotion rule: if the controller improved mean $D$ over the best \emph{fixed} $\Delta$, chosen in hindsight, by less than 10~ms or 10\%, it would be reported as a guideline rather than a contribution. Section~\ref{sec:res-controller} shows that the rule triggered. The controller always chose the smallest grid value, and a \emph{work-conserving} policy did slightly better. This policy closes the epoch whenever the signer is idle and at least one request is pending.

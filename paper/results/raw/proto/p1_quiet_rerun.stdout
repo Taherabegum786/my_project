@@ -1,3 +1,25 @@
 [23:27:29] P1 capacity: edge ns loopback, closed loop 64 conns, warm 5s, 20s x 5 runs
 links up
 b1,1,48273.3,0.993,1.313,3.017,965466,0,100,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b2,1,13941.2,0.996,4.587,9.648,278825,0,143,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b3,1,10040.2,0.997,6.372,13.251,200805,0,153,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b5,1,14886.2,0.997,4.327,9.049,297724,0,3284,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b5v,1,25805.9,0.991,2.474,5.656,516119,0,3285,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b6,1,11016.7,0.995,5.765,12.558,220335,0,4469,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b9,1,8311.1,0.994,7.641,16.983,166222,0,3369,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b11,1,13718.4,0.993,4.633,10.236,274368,0,149,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b12,1,48483.8,0.995,1.308,2.955,969677,0,106,netns-loopback-edge,go-1.24.7+circl-1.6.1
+o1,1,42476.0,0.991,1.495,3.372,849520,0,309,netns-loopback-edge,go-1.24.7+circl-1.6.1
+o1a,1,42327.9,0.994,1.501,3.384,846559,0,310,netns-loopback-edge,go-1.24.7+circl-1.6.1
+o4,1,41964.4,0.991,1.506,3.683,839296,0,309,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b1,2,48252.2,0.990,1.310,3.056,965045,0,100,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b2,2,14019.6,0.997,4.564,9.577,280393,0,143,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b3,2,10074.7,0.995,6.337,13.576,201495,0,153,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b5,2,14875.2,0.996,4.323,9.164,297504,0,3284,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b5v,2,26435.2,0.995,2.417,5.354,528705,0,3285,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b6,2,10937.9,0.990,5.739,13.852,218759,0,4469,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b9,2,8594.0,0.997,7.452,15.352,171881,0,3369,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b11,2,13966.6,0.995,4.561,9.870,279332,0,149,netns-loopback-edge,go-1.24.7+circl-1.6.1
+b12,2,48785.6,0.995,1.296,3.035,975713,0,106,netns-loopback-edge,go-1.24.7+circl-1.6.1
+o1,2,43722.2,0.993,1.455,3.252,874446,0,309,netns-loopback-edge,go-1.24.7+circl-1.6.1
+o1a,2,43812.3,0.996,1.453,3.242,876248,0,310,netns-loopback-edge,go-1.24.7+circl-1.6.1

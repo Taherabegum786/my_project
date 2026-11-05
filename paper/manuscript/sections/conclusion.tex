@@ -1,0 +1,12 @@
+\section{Conclusion}
+\label{sec:conclusion}
+Per-token post-quantum signatures do not fit CDN access tokens, and HMAC, although post-quantum, leaves a minting key on every edge. \ember{} applies a known primitive, Merkle batch signing, to this setting. It adds a token profile, dissemination of signed roots through the CDN, and stapling. With $2^{16}$ tokens per epoch, tokens are 503~B. Warm verification costs 2.34\us{} natively, and an issuer core produces 1.28 million tokens/s. Stapling reduces the share of requests that wait for a root to 0.049\%. The measurements also bound the design. Verification is 7.9$\times$ HMAC rather than within 5$\times$. Adaptive epoch control gave no benefit over a 10~ms or work-conserving epoch. Period roll-up hardly reduces misses. With large HPACK tables, ML-DSA cookies lose most of their byte penalty. Delegated Ed25519 and KEM-wrapped MAC keys remain smaller alternatives for operators who accept their trust assumptions. Future work includes measurements in a real multi-PoP deployment, a simulator with edge queueing, and binding tokens to TLS exporters.
+
+\section*{Data Availability}
+All code (EMBER library, baselines, native C benchmarks, Go prototype, fleet simulator), raw measurements, aggregated CSV files and figure scripts are in the authors' repository. Every number in this paper is mapped to its source file and row in \texttt{NUMBERS\_TRACE.md}. [Editable: insert public archive DOI or URL before submission.]
+
+\section*{Declaration on the Use of AI Tools}
+[Editable: AI-based tools were used to assist with code, experiments and drafting. The author reviewed and takes responsibility for all content. Adapt to the venue's policy.]
+
+\section*{Acknowledgment}
+[Editable.]
