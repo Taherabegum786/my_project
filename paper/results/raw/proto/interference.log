@@ -313,3 +313,1260 @@
 53.7   3 python
 53.7   2 python
 53.3   3 python
+== 19:00:54 load=6.55 5.03 3.53
+93.6   0 python
+53.4   2 python
+53.3   3 python
+53.0   3 python
+== 19:01:09 load=6.42 5.08 3.57
+93.6   3 python
+53.2   2 python
+53.1   1 python
+52.8   0 python
+== 19:01:24 load=6.52 5.17 3.62
+93.7   2 python
+52.9   1 python
+52.9   3 python
+52.6   3 python
+== 19:01:39 load=6.62 5.26 3.68
+93.7   3 python
+52.7   1 python
+52.6   2 python
+52.4   0 python
+== 19:01:54 load=6.42 5.28 3.71
+93.8   0 python
+52.8   3 python
+52.7   1 python
+52.5   2 python
+== 19:02:09 load=6.31 5.32 3.75
+93.8   3 python
+53.1   2 python
+53.0   2 python
+52.8   0 python
+== 19:02:24 load=6.02 5.30 3.77
+93.8   3 python
+53.3   2 python
+53.3   1 python
+53.3   0 python
+== 19:02:39 load=5.81 5.29 3.79
+93.9   0 python
+53.6   2 python
+53.6   3 python
+53.6   1 python
+== 19:02:54 load=6.00 5.35 3.84
+93.9   3 python
+53.6   0 python
+53.6   2 python
+53.6   1 python
+== 19:03:09 load=5.94 5.37 3.87
+93.9   3 python
+53.8   0 python
+53.7   2 python
+53.6   1 python
+== 19:03:24 load=5.95 5.40 3.90
+94.0   3 python
+53.9   0 python
+53.8   0 python
+53.7   2 python
+== 19:03:39 load=5.74 5.38 3.92
+94.0   0 python
+54.0   2 python
+54.0   1 python
+53.8   1 python
+== 19:03:54 load=5.72 5.40 3.95
+94.0   0 python
+54.2   3 python
+54.1   1 python
+53.9   2 python
+== 19:04:09 load=5.93 5.46 3.99
+94.1   3 python
+54.3   1 python
+54.2   2 python
+54.0   2 python
+== 19:04:24 load=6.04 5.50 4.03
+94.1   3 python
+54.4   0 python
+54.3   2 python
+54.1   1 python
+== 19:04:39 load=5.89 5.49 4.05
+94.1   3 python
+54.4   1 python
+54.2   0 python
+54.1   2 python
+== 19:04:54 load=5.77 5.49 4.07
+94.2   3 python
+54.3   1 python
+54.1   0 python
+53.9   0 python
+== 19:05:09 load=5.61 5.46 4.09
+94.2   0 python
+54.2   3 python
+54.1   2 python
+53.9   1 python
+== 19:05:24 load=5.78 5.51 4.13
+94.2   3 python
+54.2   0 python
+54.1   2 python
+53.8   0 python
+== 19:05:40 load=5.92 5.55 4.16
+94.2   3 python
+54.1   0 python
+54.0   2 python
+53.6   1 python
+== 19:05:55 load=6.03 5.59 4.20
+94.2   3 python
+54.1   2 python
+53.9   0 python
+53.5   0 python
+== 19:06:10 load=6.15 5.64 4.24
+94.2   1 python
+54.0   2 python
+53.8   3 python
+53.4   3 python
+== 19:06:25 load=6.43 5.72 4.29
+94.2   3 python
+53.8   0 python
+53.6   2 python
+53.2   0 python
+== 19:06:40 load=6.55 5.79 4.33
+94.2   0 python
+53.7   3 python
+53.5   2 python
+53.1   1 python
+== 19:06:55 load=6.64 5.85 4.38
+94.3   3 python
+53.6   2 python
+53.4   0 python
+53.1   1 python
+== 19:07:10 load=6.66 5.89 4.41
+94.3   3 python
+53.4   2 python
+53.3   0 python
+52.9   2 python
+== 19:07:25 load=6.49 5.89 4.44
+94.3   3 python
+53.3   1 python
+53.2   1 python
+52.9   2 python
+== 19:07:40 load=6.39 5.90 4.46
+94.4   3 python
+53.4   0 python
+53.3   2 python
+53.0   0 python
+== 19:07:55 load=6.31 5.90 4.49
+94.4   0 python
+53.5   0 python
+53.4   1 python
+53.1   2 python
+== 19:08:10 load=6.17 5.89 4.51
+94.4   3 python
+53.7   1 python
+53.6   0 python
+53.3   2 python
+== 19:08:25 load=5.98 5.87 4.52
+94.4   3 python
+53.8   2 python
+53.8   0 python
+53.4   0 python
+== 19:08:40 load=6.05 5.89 4.55
+94.5   2 python
+53.9   0 python
+53.9   1 python
+53.5   1 python
+== 19:08:55 load=6.09 5.91 4.58
+94.5   3 python
+54.0   1 python
+53.9   0 python
+53.5   2 python
+== 19:09:10 load=5.92 5.88 4.59
+94.5   3 python
+54.0   0 python
+54.0   2 python
+53.5   0 python
+== 19:09:25 load=5.78 5.85 4.61
+94.5   0 python
+54.1   1 python
+54.0   2 python
+53.6   3 python
+== 19:09:40 load=5.83 5.86 4.63
+94.6   0 python
+54.1   3 python
+54.0   2 python
+53.6   3 python
+== 19:09:55 load=6.03 5.90 4.66
+94.6   1 python
+54.1   0 python
+54.1   2 python
+53.6   0 python
+== 19:10:10 load=5.88 5.87 4.67
+94.6   3 python
+54.2   0 python
+54.1   1 python
+53.7   1 python
+== 19:10:25 load=5.61 5.81 4.67
+94.6   3 python
+54.0   1 python
+53.9   0 python
+53.5   2 python
+== 19:10:40 load=5.67 5.82 4.70
+94.7   3 python
+53.9   0 python
+53.8   2 python
+53.5   0 python
+== 19:10:55 load=5.74 5.83 4.72
+94.7   3 python
+53.8   2 python
+53.8   0 python
+53.4   0 python
+== 19:11:10 load=5.73 5.82 4.73
+94.7   0 python
+53.8   3 python
+53.7   1 python
+53.4   2 python
+== 19:11:25 load=5.79 5.83 4.75
+94.7   0 python
+53.6   3 python
+53.6   0 python
+53.2   3 python
+== 19:11:40 load=6.08 5.89 4.79
+94.8   0 python
+53.6   3 python
+53.5   1 python
+53.1   2 python
+== 19:11:55 load=6.20 5.93 4.82
+94.8   3 python
+53.4   1 python
+53.4   0 python
+53.0   2 python
+== 19:12:10 load=6.31 5.97 4.85
+94.8   0 python
+53.4   3 python
+53.4   2 python
+52.9   1 python
+== 19:12:25 load=6.39 6.00 4.88
+94.8   3 python
+53.2   0 python
+53.2   0 python
+52.7   1 python
+== 19:12:41 load=6.43 6.03 4.91
+94.9   0 python
+53.2   1 python
+53.2   3 python
+52.6   3 python
+== 19:12:56 load=6.70 6.11 4.96
+94.9   0 python
+53.1   2 python
+53.1   3 python
+52.6   3 python
+== 19:13:11 load=6.62 6.12 4.98
+94.9   3 python
+53.1   0 python
+53.1   1 python
+52.5   2 python
+== 19:13:26 load=6.91 6.22 5.03
+94.9   3 python
+53.2   2 python
+53.1   0 python
+52.6   1 python
+== 19:13:41 load=6.56 6.17 5.03
+94.9   0 python
+53.3   1 python
+53.3   3 python
+52.7   2 python
+== 19:13:56 load=6.15 6.10 5.03
+95.0   0 python
+53.4   3 python
+53.4   1 python
+52.8   2 python
+== 19:14:11 load=6.04 6.08 5.04
+95.0   3 python
+53.5   0 python
+53.5   2 python
+52.8   1 python
+== 19:14:26 load=5.81 6.02 5.03
+95.0   1 python
+53.6   0 python
+53.6   2 python
+52.9   3 python
+== 19:14:41 load=5.92 6.04 5.06
+95.0   3 python
+53.6   1 python
+53.6   0 python
+52.9   1 python
+== 19:14:56 load=6.09 6.07 5.08
+95.0   0 python
+53.7   1 python
+53.7   3 python
+53.0   2 python
+== 19:15:11 load=6.14 6.08 5.10
+95.0   3 python
+53.7   1 python
+53.7   2 python
+53.1   0 python
+== 19:15:26 load=5.89 6.03 5.10
+95.1   0 python
+53.8   1 python
+53.7   3 python
+53.1   2 python
+== 19:15:41 load=6.04 6.06 5.12
+95.1   0 python
+53.9   1 python
+53.8   3 python
+53.2   2 python
+== 19:15:56 load=5.87 6.02 5.13
+95.1   0 python
+53.9   2 python
+53.8   1 python
+53.2   3 python
+== 19:16:11 load=5.75 5.99 5.13
+95.1   3 python
+53.8   0 python
+53.7   2 python
+53.1   1 python
+== 19:16:26 load=5.94 6.02 5.16
+95.1   3 python
+53.8   2 python
+53.7   0 python
+53.1   0 python
+== 19:16:41 load=5.95 6.02 5.17
+95.1   2 python
+53.8   1 python
+53.6   3 python
+53.1   2 python
+== 19:16:56 load=5.97 6.02 5.18
+95.2   3 python
+53.8   1 python
+53.6   2 python
+53.0   3 python
+== 19:17:11 load=6.11 6.05 5.21
+95.2   0 python
+53.7   2 python
+53.5   3 python
+52.9   3 python
+== 19:17:26 load=6.01 6.03 5.22
+95.2   0 python
+53.6   1 python
+53.5   3 python
+52.9   2 python
+== 19:17:41 load=6.06 6.04 5.23
+53.8   2 python
+53.7   3 python
+53.1   0 python
+== 19:17:56 load=5.88 6.01 5.23
+54.1   2 python
+53.9   1 python
+53.3   3 python
+== 19:18:11 load=6.04 6.04 5.26
+54.1   3 python
+54.0   0 python
+53.4   2 python
+== 19:18:26 load=6.09 6.05 5.28
+54.2   2 python
+54.0   3 python
+53.5   1 python
+== 19:18:41 load=6.14 6.07 5.29
+54.3   3 python
+54.2   0 python
+53.6   3 python
+== 19:18:56 load=6.12 6.06 5.30
+54.5   0 python
+54.3   0 python
+53.8   3 python
+== 19:19:11 load=5.73 5.98 5.29
+54.7   3 python
+54.6   0 python
+54.0   2 python
+== 19:19:26 load=5.49 5.91 5.28
+54.9   3 python
+54.8   0 python
+54.3   1 python
+== 19:19:41 load=5.54 5.90 5.28
+55.2   3 python
+55.0   0 python
+54.5   1 python
+== 19:19:56 load=5.65 5.91 5.29
+55.3   3 python
+55.2   1 python
+54.7   0 python
+== 19:20:11 load=5.65 5.89 5.30
+55.5   1 python
+55.4   3 python
+54.8   0 python
+== 19:20:26 load=5.74 5.90 5.31
+55.6   3 python
+55.5   2 python
+54.9   0 python
+== 19:20:41 load=5.36 5.81 5.29
+55.8   0 python
+55.7   1 python
+55.2   3 python
+== 19:20:56 load=5.40 5.80 5.29
+56.0   2 python
+56.0   3 python
+55.4   0 python
+== 19:21:11 load=5.09 5.71 5.27
+56.2   2 python
+56.2   0 python
+55.6   3 python
+== 19:21:26 load=5.08 5.67 5.27
+56.4   1 python
+56.4   0 python
+55.8   3 python
+== 19:21:41 load=5.15 5.66 5.27
+56.6   2 python
+56.6   3 python
+56.0   0 python
+== 19:21:56 load=5.13 5.63 5.27
+56.7   0 python
+56.7   3 python
+56.1   2 python
+== 19:22:11 load=5.17 5.61 5.27
+56.9   2 python
+56.8   3 python
+56.2   0 python
+== 19:22:27 load=5.06 5.57 5.26
+57.0   3 python
+57.0   2 python
+56.5   0 python
+== 19:22:42 load=4.97 5.52 5.25
+57.3   3 python
+57.2   0 python
+56.7   2 python
+== 19:22:57 load=4.97 5.49 5.24
+57.4   3 python
+57.3   2 python
+56.7   3 python
+== 19:23:12 load=5.07 5.49 5.25
+57.4   3 python
+57.3   2 python
+56.8   1 python
+== 19:23:27 load=5.19 5.50 5.25
+57.5   0 python
+57.4   3 python
+56.9   2 python
+== 19:23:42 load=5.22 5.49 5.25
+57.6   2 python
+57.5   0 python
+57.0   3 python
+== 19:23:57 load=5.09 5.45 5.24
+57.7   2 python
+57.6   3 python
+57.1   1 python
+== 19:24:12 load=5.44 5.51 5.27
+57.8   0 python
+57.7   2 python
+57.2   3 python
+== 19:24:27 load=5.28 5.47 5.26
+57.9   2 python
+57.8   0 python
+57.3   3 python
+== 19:24:42 load=5.51 5.51 5.28
+58.1   1 python
+57.9   2 python
+57.5   3 python
+== 19:24:57 load=5.47 5.50 5.28
+58.2   3 python
+58.0   0 python
+57.6   1 python
+== 19:25:12 load=5.52 5.51 5.28
+58.3   1 python
+58.1   3 python
+57.6   0 python
+== 19:25:27 load=5.57 5.52 5.29
+58.3   2 python
+58.1   1 python
+57.7   3 python
+== 19:25:42 load=5.16 5.42 5.26
+58.5   3 python
+58.3   2 python
+57.8   1 python
+== 19:25:57 load=4.76 5.32 5.23
+58.8   3 python
+58.6   2 python
+58.2   0 python
+== 19:26:12 load=4.37 5.21 5.19
+59.1   3 python
+58.9   2 python
+58.5   1 python
+== 19:26:27 load=4.28 5.15 5.17
+59.3   3 python
+59.1   2 python
+58.7   2 python
+== 19:26:42 load=4.37 5.12 5.16
+59.4   3 python
+59.1   1 python
+58.7   2 python
+== 19:26:57 load=4.68 5.15 5.17
+59.4   0 python
+59.1   3 python
+58.8   2 python
+== 19:27:12 load=4.29 5.04 5.14
+59.3   3 python
+59.2   3 python
+58.7   3 python
+== 19:27:27 load=4.37 5.02 5.13
+78.7   3 python
+77.9   0 python
+75.6   2 python
+== 19:27:42 load=4.20 4.96 5.11
+87.9   0 python
+87.2   3 python
+85.0   2 python
+== 19:27:57 load=3.93 4.86 5.07
+91.5   1 python
+91.1   2 python
+89.5   3 python
+== 19:28:12 load=3.80 4.78 5.04
+91.3   1 python
+91.1   2 python
+89.4   3 python
+== 19:28:27 load=4.01 4.78 5.04
+87.1   2 python
+86.9   1 python
+85.0   3 python
+== 19:28:42 load=4.31 4.81 5.04
+83.9   2 python
+83.9   1 python
+82.7   3 python
+== 19:28:57 load=4.48 4.82 5.04
+81.4   3 python
+81.3   0 python
+81.1   0 python
+== 19:29:12 load=4.59 4.83 5.04
+80.9   2 python
+80.6   3 python
+80.1   0 python
+== 19:29:27 load=4.47 4.79 5.02
+81.9   1 python
+81.8   2 python
+81.6   3 python
+== 19:29:42 load=4.14 4.70 4.99
+83.5   3 python
+83.5   2 python
+83.3   0 python
+== 19:29:57 load=4.18 4.68 4.98
+83.9   1 python
+83.7   3 python
+83.7   2 python
+== 19:30:12 load=4.60 4.75 5.00
+82.3   3 python
+81.9   1 python
+81.9   0 python
+== 19:30:27 load=4.63 4.74 4.99
+80.9   3 python
+80.5   2 python
+80.3   1 python
+== 19:30:42 load=5.26 4.87 5.03
+79.7   3 python
+79.6   2 python
+79.0   0 python
+== 19:30:57 load=4.99 4.83 5.01
+78.8   2 python
+78.6   1 python
+78.6   0 python
+== 19:31:12 load=4.85 4.81 5.00
+79.7   1 python
+79.5   2 python
+79.4   0 python
+== 19:31:27 load=4.44 4.72 4.97
+80.8   0 python
+80.6   2 python
+80.6   1 python
+== 19:31:42 load=4.20 4.65 4.94
+81.2   3 python
+81.2   1 python
+81.2   2 python
+== 19:31:57 load=4.57 4.71 4.96
+80.8   1 python
+80.4   2 python
+80.4   0 python
+== 19:32:12 load=4.65 4.73 4.96
+80.3   1 python
+79.8   0 python
+79.5   3 python
+== 19:32:27 load=4.80 4.76 4.97
+79.8   3 python
+79.0   1 python
+79.0   0 python
+== 19:32:42 load=5.21 4.85 4.99
+79.5   3 python
+78.5   1 python
+78.3   0 python
+== 19:32:57 load=4.79 4.77 4.97
+80.3   2 python
+78.9   1 python
+78.8   3 python
+== 19:33:12 load=4.39 4.69 4.93
+81.0   2 python
+79.8   1 python
+79.6   0 python
+== 19:33:27 load=4.16 4.62 4.91
+81.5   3 python
+80.3   0 python
+80.0   1 python
+== 19:33:42 load=4.28 4.62 4.90
+81.6   1 python
+80.4   2 python
+80.0   0 python
+== 19:33:58 load=4.64 4.69 4.92
+81.1   3 python
+80.0   1 python
+79.8   0 python
+== 19:34:13 load=4.72 4.70 4.92
+80.9   3 python
+79.6   0 python
+79.5   1 python
+== 19:34:28 load=4.71 4.70 4.92
+80.6   3 python
+79.2   0 python
+79.2   1 python
+== 19:34:43 load=4.69 4.70 4.91
+80.7   3 python
+79.6   1 python
+79.3   0 python
+== 19:34:58 load=4.39 4.63 4.89
+81.2   3 python
+80.1   2 python
+79.9   1 python
+== 19:35:13 load=4.08 4.55 4.86
+81.6   0 python
+80.4   3 python
+80.3   0 python
+== 19:35:28 load=4.14 4.54 4.85
+81.4   1 python
+80.3   3 python
+80.0   2 python
+== 19:35:43 load=4.55 4.61 4.87
+81.2   0 python
+79.9   1 python
+79.5   3 python
+== 19:35:58 load=4.79 4.67 4.88
+80.9   0 python
+79.5   2 python
+79.1   1 python
+== 19:36:13 load=5.29 4.78 4.92
+80.4   1 python
+79.2   2 python
+78.8   3 python
+== 19:36:28 load=4.92 4.73 4.90
+80.6   3 python
+79.3   0 python
+78.9   2 python
+== 19:36:43 load=4.57 4.66 4.87
+81.1   1 python
+79.8   3 python
+79.4   2 python
+== 19:36:58 load=4.38 4.61 4.85
+81.4   1 python
+80.1   3 python
+79.7   2 python
+== 19:37:13 load=4.15 4.55 4.83
+81.2   1 python
+79.9   2 python
+79.5   3 python
+== 19:37:28 load=4.46 4.60 4.84
+80.9   3 python
+79.5   1 python
+79.2   2 python
+== 19:37:43 load=4.64 4.64 4.85
+80.7   1 python
+79.3   2 python
+78.8   3 python
+== 19:37:58 load=4.71 4.65 4.85
+80.5   0 python
+79.0   1 python
+78.6   3 python
+== 19:38:13 load=4.54 4.62 4.83
+80.7   1 python
+79.3   2 python
+78.8   3 python
+== 19:38:28 load=4.20 4.54 4.80
+81.1   0 python
+79.7   2 python
+79.2   1 python
+== 19:38:43 load=4.17 4.51 4.79
+81.3   3 python
+80.0   2 python
+79.5   1 python
+== 19:38:58 load=4.44 4.56 4.80
+81.3   0 python
+80.0   2 python
+79.6   1 python
+== 19:39:13 load=4.41 4.54 4.79
+81.1   2 python
+79.8   0 python
+79.4   3 python
+== 19:39:28 load=4.62 4.58 4.80
+81.0   3 python
+79.7   1 python
+79.2   0 python
+== 19:39:43 load=4.50 4.56 4.79
+80.8   3 python
+79.6   0 python
+79.0   1 python
+== 19:39:58 load=4.52 4.56 4.79
+80.9   2 python
+79.7   3 python
+79.1   0 python
+== 19:40:13 load=4.39 4.53 4.78
+81.2   0 python
+80.1   1 python
+79.4   3 python
+== 19:40:28 load=4.08 4.46 4.75
+81.4   3 python
+80.3   2 python
+79.6   1 python
+== 19:40:43 load=4.23 4.47 4.75
+81.3   3 python
+80.2   1 python
+79.5   0 python
+== 19:40:58 load=4.75 4.58 4.78
+81.1   2 python
+79.9   0 python
+79.2   1 python
+== 19:41:13 load=4.88 4.61 4.79
+80.9   1 python
+79.6   3 python
+79.0   2 python
+== 19:41:28 load=4.90 4.63 4.79
+80.5   0 python
+79.3   2 python
+78.8   3 python
+== 19:41:43 load=4.77 4.62 4.78
+80.6   1 python
+79.3   2 python
+78.9   0 python
+== 19:41:58 load=4.38 4.54 4.75
+80.9   0 python
+79.6   1 python
+79.2   3 python
+== 19:42:13 load=4.23 4.49 4.73
+81.1   1 python
+79.8   0 python
+79.4   3 python
+== 19:42:28 load=4.65 4.57 4.76
+81.0   3 python
+79.7   0 python
+79.3   1 python
+== 19:42:43 load=5.16 4.69 4.79
+80.8   0 python
+79.5   2 python
+79.2   1 python
+== 19:42:58 load=5.38 4.75 4.81
+80.5   3 python
+79.2   1 python
+79.0   0 python
+== 19:43:13 load=5.82 4.88 4.85
+80.3   0 python
+79.0   1 python
+78.8   3 python
+== 19:43:28 load=5.20 4.79 4.82
+80.4   0 python
+79.1   1 python
+78.9   3 python
+== 19:43:43 load=4.71 4.70 4.79
+80.7   3 python
+79.4   0 python
+79.2   2 python
+== 19:43:58 load=4.48 4.65 4.77
+80.9   0 python
+79.6   1 python
+79.4   3 python
+== 19:44:13 load=4.52 4.65 4.77
+80.9   2 python
+79.6   0 python
+79.4   1 python
+== 19:44:28 load=4.62 4.67 4.78
+80.7   2 python
+79.4   0 python
+79.3   3 python
+== 19:44:43 load=4.70 4.68 4.78
+80.6   3 python
+79.2   0 python
+79.2   1 python
+== 19:44:58 load=4.71 4.68 4.78
+80.5   0 python
+79.2   3 python
+79.0   3 python
+== 19:45:13 load=4.39 4.62 4.75
+80.5   2 python
+79.3   3 python
+79.1   1 python
+== 19:45:28 load=4.29 4.59 4.74
+80.8   2 python
+79.5   3 python
+79.4   0 python
+== 19:45:43 load=4.00 4.51 4.71
+80.9   3 python
+79.7   2 python
+79.6   2 python
+== 19:45:58 load=4.37 4.56 4.73
+80.9   1 python
+79.6   0 python
+79.6   3 python
+== 19:46:13 load=4.81 4.65 4.76
+80.6   2 python
+79.4   3 python
+79.4   0 python
+== 19:46:29 load=4.76 4.65 4.75
+80.4   1 python
+79.3   3 python
+79.2   2 python
+== 19:46:44 load=4.65 4.63 4.75
+80.2   2 python
+79.1   3 python
+79.0   0 python
+== 19:46:59 load=4.85 4.68 4.76
+80.2   2 python
+79.2   3 python
+79.0   0 python
+== 19:47:14 load=4.59 4.63 4.74
+80.4   0 python
+79.4   2 python
+79.3   3 python
+== 19:47:29 load=4.77 4.67 4.75
+80.5   0 python
+79.4   2 python
+79.3   3 python
+== 19:47:44 load=5.13 4.75 4.78
+80.4   0 python
+79.3   1 python
+79.2   3 python
+== 19:47:59 load=5.46 4.85 4.81
+80.2   1 python
+79.2   3 python
+79.0   0 python
+== 19:48:14 load=5.65 4.92 4.83
+80.0   0 python
+79.1   3 python
+78.9   2 python
+== 19:48:29 load=5.49 4.92 4.84
+79.9   2 python
+79.0   0 python
+78.8   3 python
+== 19:48:44 load=5.16 4.88 4.82
+80.1   0 python
+79.2   3 python
+79.0   2 python
+== 19:48:59 load=4.92 4.84 4.81
+80.2   3 python
+79.4   0 python
+79.1   1 python
+== 19:49:14 load=4.87 4.83 4.81
+80.2   3 python
+79.3   0 python
+79.2   1 python
+== 19:49:29 load=5.15 4.89 4.83
+80.1   3 python
+79.3   3 python
+79.1   2 python
+== 19:49:44 load=5.64 5.01 4.87
+80.0   3 python
+79.1   2 python
+79.0   1 python
+== 19:49:59 load=5.73 5.06 4.89
+79.9   0 python
+79.1   3 python
+78.9   3 python
+== 19:50:14 load=5.33 5.00 4.87
+79.9   0 python
+79.1   3 python
+78.9   1 python
+== 19:50:29 load=4.89 4.92 4.85
+80.1   3 python
+79.3   2 python
+79.1   0 python
+== 19:50:44 load=4.55 4.84 4.82
+80.1   0 python
+79.4   3 python
+79.2   3 python
+== 19:50:59 load=4.49 4.82 4.81
+79.9   3 python
+79.3   0 python
+79.1   1 python
+== 19:51:14 load=5.13 4.94 4.85
+79.7   2 python
+79.2   0 python
+78.9   1 python
+== 19:51:29 load=4.95 4.91 4.85
+79.6   1 python
+79.0   3 python
+78.8   0 python
+== 19:51:44 load=5.03 4.93 4.85
+79.4   3 python
+78.9   2 python
+78.7   0 python
+== 19:51:59 load=4.65 4.85 4.83
+79.6   1 python
+79.1   3 python
+78.8   2 python
+== 19:52:14 load=4.28 4.76 4.80
+79.7   1 python
+79.2   3 python
+78.9   2 python
+33.3   0 gzip
+== 19:52:29 load=4.53 4.79 4.81
+79.6   2 python
+79.2   3 python
+78.9   1 python
+== 19:52:44 load=4.99 4.88 4.84
+79.5   2 python
+79.1   1 python
+78.8   0 python
+== 19:52:59 load=5.07 4.90 4.85
+79.4   0 python
+79.0   3 python
+78.7   2 python
+== 19:53:14 load=5.64 5.04 4.89
+79.2   3 python
+78.8   0 python
+78.6   2 python
+== 19:53:29 load=5.33 5.00 4.88
+79.3   2 python
+78.9   3 python
+78.6   1 python
+== 19:53:44 load=4.88 4.92 4.86
+79.5   3 python
+79.0   2 python
+78.8   1 python
+== 19:53:59 load=4.61 4.86 4.84
+79.5   3 python
+79.1   3 python
+78.9   1 python
+== 19:54:14 load=4.54 4.83 4.83
+79.5   2 python
+79.1   1 python
+78.9   3 python
+== 19:54:29 load=4.91 4.91 4.85
+79.4   0 python
+79.0   2 python
+78.9   3 python
+== 19:54:44 load=4.97 4.93 4.86
+79.3   0 python
+78.9   3 python
+78.8   2 python
+== 19:54:59 load=4.83 4.90 4.85
+79.3   1 python
+78.9   2 python
+78.8   0 python
+== 19:55:14 load=4.78 4.88 4.85
+79.4   3 python
+79.0   0 python
+78.9   2 python
+== 19:55:29 load=4.45 4.81 4.82
+79.6   1 python
+79.1   1 python
+79.1   2 python
+== 19:55:44 load=4.47 4.79 4.82
+79.6   3 python
+79.1   0 python
+79.1   1 python
+== 19:55:59 load=4.37 4.75 4.80
+79.5   2 python
+79.0   0 python
+79.0   1 python
+== 19:56:14 load=4.59 4.78 4.81
+79.5   0 python
+79.0   3 python
+79.0   2 python
+== 19:56:29 load=4.89 4.84 4.83
+79.4   3 python
+78.9   2 python
+78.8   1 python
+== 19:56:44 load=4.76 4.81 4.82
+79.4   2 python
+78.8   0 python
+78.8   3 python
+== 19:56:59 load=4.37 4.72 4.79
+79.6   3 python
+79.0   2 python
+79.0   1 python
+== 19:57:14 load=4.38 4.70 4.79
+79.7   3 python
+79.1   1 python
+79.1   0 python
+== 19:57:29 load=4.65 4.75 4.80
+79.6   3 python
+79.0   1 python
+79.0   0 python
+== 19:57:44 load=5.02 4.83 4.83
+79.5   3 python
+79.0   2 python
+78.9   0 python
+== 19:57:59 load=5.21 4.89 4.84
+79.5   0 python
+78.9   2 python
+78.9   1 python
+== 19:58:14 load=4.88 4.83 4.83
+79.4   0 python
+78.9   1 python
+78.9   3 python
+== 19:58:30 load=4.67 4.79 4.81
+79.5   2 python
+79.0   3 python
+79.0   0 python
+== 19:58:45 load=4.54 4.75 4.80
+79.7   3 python
+79.1   1 python
+79.1   1 python
+== 19:59:00 load=4.36 4.69 4.78
+79.8   2 python
+79.2   0 python
+79.2   3 python
+== 19:59:15 load=4.80 4.78 4.81
+79.7   2 python
+79.1   1 python
+79.1   0 python
+== 19:59:30 load=5.21 4.87 4.84
+79.7   2 python
+79.1   3 python
+79.1   1 python
+== 19:59:45 load=5.17 4.88 4.84
+79.7   0 python
+79.0   1 python
+79.0   2 python
+== 20:00:00 load=5.20 4.90 4.85
+79.7   3 python
+79.1   1 python
+79.0   2 python
+== 20:00:15 load=4.85 4.84 4.83
+79.8   0 python
+79.2   2 python
+79.1   3 python
+== 20:00:30 load=4.66 4.80 4.81
+79.9   3 python
+79.3   2 python
+79.2   3 python
+== 20:00:45 load=4.97 4.86 4.83
+79.9   3 python
+79.2   2 python
+79.1   0 python
+== 20:01:00 load=5.11 4.90 4.85
+79.7   3 python
+79.1   2 python
+79.0   1 python
+== 20:01:15 load=5.40 4.97 4.87
+79.6   2 python
+79.0   3 python
+78.9   0 python
+== 20:01:30 load=4.99 4.90 4.85
+79.5   2 python
+78.9   3 python
+78.8   0 python
+== 20:01:45 load=4.76 4.86 4.84
+79.7   3 python
+79.0   0 python
+78.9   1 python
+== 20:02:00 load=4.53 4.80 4.82
+79.8   3 python
+79.1   2 python
+79.0   3 python
+== 20:02:15 load=4.69 4.82 4.83
+79.8   3 python
+79.1   0 python
+79.0   2 python
+== 20:02:30 load=4.70 4.82 4.82
+79.7   0 python
+79.0   2 python
+79.0   3 python
+== 20:02:45 load=4.55 4.78 4.81
+79.6   0 python
+79.0   2 python
+78.9   3 python
+== 20:03:00 load=4.51 4.75 4.80
+79.5   1 python
+78.9   0 python
+78.9   3 python
+== 20:03:15 load=4.47 4.73 4.79
+79.6   2 python
+78.9   0 python
+78.9   1 python
+== 20:03:30 load=4.29 4.68 4.78
+79.7   2 python
+79.0   3 python
+79.0   1 python
+== 20:03:45 load=4.14 4.63 4.76
+79.8   0 python
+79.1   2 python
+79.1   1 python
+== 20:04:00 load=4.19 4.62 4.75
+79.8   3 python
+79.1   0 python
+79.1   2 python
+== 20:04:15 load=4.48 4.67 4.77
+79.7   0 python
+79.0   2 python
+79.0   3 python
+== 20:04:30 load=4.83 4.73 4.79
+79.7   2 python
+79.0   1 python
+79.0   0 python
+== 20:04:45 load=4.69 4.71 4.78
+79.6   3 python
+78.9   2 python
+78.9   0 python
+== 20:05:00 load=4.91 4.76 4.79
+79.7   0 python
+79.0   2 python
+79.0   3 python
+== 20:05:15 load=4.65 4.71 4.78
+79.8   3 python
+79.1   1 python
+79.1   2 python
+== 20:05:30 load=4.67 4.70 4.77
+79.8   3 python
+79.1   0 python
+79.1   2 python
+== 20:05:45 load=4.83 4.74 4.78
+79.7   3 python
+79.0   2 python
+79.0   0 python
+== 20:06:00 load=5.10 4.80 4.80
+79.6   3 python
+78.9   2 python
+78.9   1 python
+== 20:06:15 load=4.86 4.76 4.79
+79.4   3 python
+78.8   2 python
+78.8   0 python
+== 20:06:30 load=4.88 4.77 4.79
+79.5   1 python
+78.8   2 python
+78.8   3 python
+== 20:06:45 load=4.61 4.72 4.78
+79.6   3 python
+78.9   0 python
+78.9   2 python
+== 20:07:00 load=4.41 4.66 4.76
+79.6   3 python
+79.0   0 python
+78.9   2 python
+== 20:07:15 load=4.61 4.70 4.77
+79.6   1 python
+78.9   3 python
+78.9   2 python
+== 20:07:30 load=4.47 4.66 4.75
+79.6   3 python
+78.9   2 python
+78.8   1 python
+== 20:07:45 load=4.21 4.60 4.73
+79.5   2 python
+78.8   0 python
+78.8   1 python
+== 20:08:00 load=4.15 4.57 4.72
+79.5   1 python
+78.8   0 python
+78.7   3 python
+== 20:08:15 load=3.89 4.49 4.69
+79.6   3 python
+78.9   2 python
+78.8   1 python
+== 20:08:30 load=3.69 4.42 4.66
+79.7   3 python
+79.0   1 python
+78.9   2 python
+== 20:08:46 load=4.29 4.51 4.69
+79.7   3 python
+79.0   0 python
+78.9   1 python
+== 20:09:01 load=4.82 4.62 4.72
+79.7   0 python
+79.0   3 python
+78.9   3 python
+== 20:09:16 load=5.12 4.69 4.74
+79.6   1 python
+78.9   3 python
+78.9   0 python
+== 20:09:31 load=5.45 4.78 4.77
+79.6   0 python
+78.9   2 python
+78.8   3 python
+== 20:09:46 load=5.56 4.84 4.79
+79.6   2 python
+78.9   3 python
+78.9   1 python
+== 20:10:01 load=5.21 4.80 4.78
+79.7   1 python
+79.0   3 python
+79.0   2 python
+== 20:10:16 load=5.03 4.78 4.77
+79.8   1 python
+79.1   0 python
+79.0   3 python
+== 20:10:31 load=5.41 4.87 4.81
+79.7   0 python
+79.0   1 python
+78.9   3 python
+== 20:10:46 load=5.31 4.88 4.81
+79.6   0 python
+79.0   3 python
+78.8   1 python
+== 20:11:01 load=5.62 4.97 4.84
+79.5   1 python
+78.9   3 python
+78.8   0 python
+== 20:11:16 load=5.33 4.94 4.83
+79.4   3 python
+78.8   1 python
+78.7   0 python
+== 20:11:31 load=5.08 4.91 4.82
+79.5   3 python
+78.9   1 python
+78.7   0 python
+== 20:11:46 load=4.70 4.83 4.80
+96.9   3 gzip
+79.6   2 python
+79.0   0 python
+78.8   1 python
+== 20:12:01 load=4.55 4.79 4.79
+79.5   3 python
+79.0   0 python
+78.8   1 python
+== 20:12:16 load=4.55 4.78 4.78
+79.5   0 python
+78.9   3 python
+78.8   1 python
+== 20:12:31 load=4.52 4.76 4.78
+79.5   1 python
+78.8   0 python
+78.7   3 python
+== 20:12:46 load=4.49 4.74 4.77
+79.4   0 python
+78.8   3 python
+78.6   2 python
+== 20:13:01 load=4.02 4.62 4.73
+79.4   2 python
+78.9   0 python
+78.7   1 python
+== 20:13:16 load=3.79 4.54 4.70
+79.5   3 python
+79.0   0 python
+78.8   1 python
+== 20:13:31 load=3.69 4.48 4.68
+79.6   0 python
+79.0   1 python
+78.8   3 python
+== 20:13:46 load=4.05 4.52 4.69
+79.5   1 python
+79.0   2 python
+78.8   0 python
+== 20:14:01 load=4.12 4.51 4.68
+79.5   3 python
+79.0   1 python
+78.8   0 python
+== 20:14:16 load=4.08 4.49 4.67
+79.4   1 python
+78.9   0 python
+78.7   3 python
+== 20:14:31 load=3.92 4.43 4.65
+79.4   3 python
+78.9   0 python
+78.7   1 python
+== 20:14:46 load=3.71 4.36 4.62
+79.5   2 python
+79.0   1 python
+78.8   3 python
+== 20:15:01 load=3.78 4.34 4.61
+79.5   1 python
+79.1   2 python
+78.8   2 python
