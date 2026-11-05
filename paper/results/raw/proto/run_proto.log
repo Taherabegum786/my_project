@@ -3,3 +3,4 @@
 [18:27:31] RTT probes (ICMP + keep-alive HTTP) over the emulated links
 links up
 [18:29:39] P1 capacity: edge ns loopback, closed loop 64 conns, warm 5s, 20s x 5 runs
+[18:55:56] P2 latency under load over tapbridge A (cli->edge), open loop 50%/80% of P1 mean capacity
