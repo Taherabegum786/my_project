@@ -95,3 +95,6 @@ o1a,5,29502.7,0.866,2.006,7.608,590054,0,310,netns-loopback-edge,go-1.24.7+circl
 o4,5,29795.6,0.881,1.983,7.647,595919,0,309,netns-loopback-edge,go-1.24.7+circl-1.6.1
 [18:55:56] P2 latency under load over tapbridge A (cli->edge), open loop 50%/80% of P1 mean capacity
 b1,0.50,1,18945.8,18966.9,24.863,37.654,284503,0,netns-tapbridge,go-1.24.7+circl-1.6.1
+b2,0.50,1,5413.9,5399.1,24.016,53.653,80987,0,netns-tapbridge,go-1.24.7+circl-1.6.1
+b3,0.50,1,4044.1,4024.3,23.494,31.376,60365,0,netns-tapbridge,go-1.24.7+circl-1.6.1
+b5,0.50,1,5951.2,5923.5,25.934,68.033,88853,0,netns-tapbridge,go-1.24.7+circl-1.6.1
