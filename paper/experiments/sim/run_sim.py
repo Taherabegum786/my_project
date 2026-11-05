@@ -176,17 +176,15 @@ def _dissem_task(t):
         r = s.summary(A)
         vmax = s.p["v_max_s"]
         epochs_rate = A.epochs / s.horizon
+        # per-edge root state upper bound: every epoch root of every tenant within V_max
         if m in ("pull_rollup", "push_rollup"):
-            per_rate = A.periods / s.horizon
-            m_mean = epochs_rate / max(per_rate, 1e-12)
-            state = (vmax / P) * per_rate * P * 0 + epochs_rate * vmax * c.n  # verified roots kept as n-byte hashes
-            state = epochs_rate * vmax * (c.n + 20)
+            state = epochs_rate * vmax * (c.n + 20)              # verified roots kept as (meta, n-byte root)
         else:
             state = epochs_rate * vmax * (c.n + 20 + c.sig_bytes)  # signed roots kept
         rows.append(dict(scheme="EMBER-O1", mode=m, E=E, delta_s=delta, P_s=P, rep=rep,
                          root_bw_fleet_Bps=r["root_bw_fleet_Bps"], root_bw_per_edge_Bps=r["root_bw_fleet_Bps"] / E,
                          miss_per_mreq=r["miss_per_mreq"], miss_per_token=r["miss_per_token"],
-                         edge_root_state_bytes=state * (E if False else 1) / 1.0,
+                         edge_root_state_bytes=state,
                          staple_bytes_per_session=r["staple_bytes_per_session"],
                          refresh_per_session=r["refresh_per_session"],
                          revocation_propagation_s=_revocation(m, P, s, rep),
@@ -195,7 +193,7 @@ def _dissem_task(t):
     # B12 (KEM-wrapped HMAC): push-only, per epoch Delta, E wraps of (1088 + 48) B, per tenant with traffic
     T = s.p["T"]
     cert_bytes = 48 + 2420 + 40
-    tenants_active = sum(1 for _ in range(T))
+    tenants_active = T
     rows.append(dict(scheme="B11", mode="pull", E=E, delta_s=s.p["v_max_s"], P_s=P, rep=rep,
                      root_bw_fleet_Bps=(E + s.S) * tenants_active * cert_bytes / s.p["v_max_s"],
                      root_bw_per_edge_Bps=tenants_active * cert_bytes / s.p["v_max_s"], miss_per_mreq="",

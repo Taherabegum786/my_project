@@ -52,3 +52,51 @@
 == 18:34:52 load=2.95 2.34 1.54
 == 18:35:07 load=2.84 2.34 1.56
 == 18:35:22 load=2.72 2.34 1.57
+== 18:35:37 load=2.48 2.30 1.57
+== 18:35:52 load=2.32 2.27 1.57
+== 18:36:07 load=2.18 2.24 1.57
+98.6   3 python
+== 18:36:22 load=2.29 2.26 1.59
+99.2   3 python
+== 18:36:37 load=2.45 2.30 1.61
+98.7   3 python
+== 18:36:52 load=2.59 2.34 1.64
+98.7   3 python
+== 18:37:07 load=2.54 2.34 1.65
+98.8   3 python
+== 18:37:22 load=2.86 2.42 1.69
+98.8   3 python
+== 18:37:37 load=2.81 2.43 1.70
+98.9   3 python
+== 18:37:52 load=2.85 2.46 1.73
+99.0   3 python
+== 18:38:07 load=2.58 2.42 1.72
+== 18:38:22 load=2.46 2.40 1.73
+== 18:38:37 load=2.66 2.45 1.76
+99.0   2 python
+== 18:38:52 load=2.66 2.46 1.77
+98.8   2 python
+== 18:39:07 load=3.18 2.58 1.82
+98.6   2 python
+== 18:39:22 load=3.22 2.62 1.85
+98.7   2 python
+== 18:39:37 load=3.62 2.74 1.90
+98.6   2 python
+98.3   0 python
+== 18:39:52 load=3.94 2.85 1.95
+98.5   2 python
+70.9   0 python
+49.0   0 python
+== 18:40:08 load=4.10 2.94 1.99
+98.6   2 python
+73.9   0 python
+== 18:40:23 load=4.23 3.02 2.04
+98.6   2 python
+81.1   0 python
+== 18:40:38 load=4.09 3.06 2.06
+98.5   2 python
+85.0   0 python
+2026-11-05T18:40:51+00:00 Experimenter A: from ~18:38 to ~18:52 ran bench_primitives (core 2, still finishing, single-thread) and sim validate (core 0, stopped at 18:52). Further heavy A jobs deferred until PROTO_RUNNING.txt is removed.
+== 18:40:53 load=3.77 3.04 2.07
+98.5   2 python
+== 18:41:08 load=3.45 3.00 2.08
