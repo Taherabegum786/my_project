@@ -41,12 +41,12 @@ Transport & Prefer URL or header placement. With HTTP/2 cookies and a large HPAC
 Hypothesis & Outcome & Evidence \\
 \midrule
 H1 token $<$512~B to $N{=}2^{20}$; $\le0.25\times$ B5c bytes & partly & 503~B at $2^{16}$, 588~B at $2^{20}$; 0.144$\times$ (h2), 0.256$\times$ (HTTP/1.1) \\
-H2 verify $\le5\times$ HMAC, $\ge10\times$ cheaper than ML-DSA & partly & 7.9$\times$ and 43$\times$ native; 3.6$\times$ and 10.7$\times$ Go \\
+H2 verify $\le5\times$ HMAC, $\ge10\times$ cheaper than ML-DSA & partly & 7.9$\times$ and 43$\times$ native; 3.6$\times$ and 10.7$\times$ Go; 1.12$\times$ HMAC per HTTP request \\
 H3/H9 issuer $\ge50\times$ per-token signing; B11/B12 comparable & partly & 192--522$\times$ native; B11 $\ge$14$\times$ slower \\
 H4 root $<0.1\%$ of bytes; roll-up $\ge5\times$ fewer misses & partly & $\le5.3\cdot10^{-5}$ except per-tenant push; roll-up 1.4--2.2\% \\
 H5 adaptive beats best fixed $\Delta$ & refuted & $\le$0.83~ms; demoted \\
 H6 $<1\%$ requests wait; p99 CPU $<1$~ms & supported & staple 0.049\% \\
-H7 hybrid root $<1\%$ edge cost & refuted (sim.) & +41.6\% simulated; not resolvable in P1 \\
+H7 hybrid root $<1\%$ edge cost & mixed & +0.09\% in P1 (warm); +41.6\% simulated \\
 H8 simulator within 15\% of prototype & partly & misses 24/24; latency 8/24 \\
 \bottomrule
 \end{tabular}
@@ -57,7 +57,7 @@ H8 simulator within 15\% of prototype & partly & misses 24/24; latency 8/24 \\
 \begin{itemize}
 \item \emph{Single machine.} All prototype components share one 4-vCPU KVM guest. Network namespaces and a userspace link emulator stand in for netem, which is unavailable. No physical NIC is involved, and the emulator's throughput (about 624~Mbit/s in a bulk test) probably shaped the B5/B5v latency tails at 80\% load. TLS is not included: connections are kept-alive HTTP/1.1, and the response body is 64~B, so P1 measures verification and request handling, not content delivery.
 \item \emph{Timing variability.} The two native runs differ by 15--20\% in absolute value across a VM reboot. Simulations use run~1 and primitive tables use run~2. Ratios are stable, but absolute values are implementation- and host-specific. circl verification is 3.6--4.0$\times$ faster than OpenSSL's.
-\item \emph{Load-generator-bound capacity runs.} In the first P1 campaign, other experiments competed for the load generator's cores. In three of five runs the cheap schemes stopped saturating the edge (utilization 0.84--0.88), so their req/s values are lower bounds. We reran P1 on a quiet machine, use only the rerun, and treat edge CPU per request as the primary metric. P2 load levels were derived from the first campaign.
+\item \emph{Load-generator-bound capacity runs.} In the first P1 campaign, other experiments competed for the load generator's cores. In three of five runs the cheap schemes stopped saturating the edge (edge utilization 0.84--0.88), so their req/s values were lower bounds. We reran P1 on a quiet machine (load average 0.21 at the start, edge utilization $\ge0.99$ in all runs) and report only the rerun, with edge CPU per request as the primary metric. The rerun gives higher req/s than the first campaign for every scheme, so absolute capacity is sensitive to host conditions. P2 load levels were set from the first campaign's capacities, and P2 was not repeated.
 \item \emph{Simulator scope.} The simulator has no edge-CPU or link queueing and does not charge for decoding the stapled header. It under-predicts pull-miss latency at $\Delta=10$~s by 36--45\% (118--137~ms measured vs.\ 75.9~ms) and staple-miss latency by about 0.05~ms. It is validated against the prototype only at small scale ($V\le50$), so results for $E=2000$ are model-based extrapolations.
 \item \emph{Workload assumptions.} We used no production CDN trace. Zipf exponents, RTTs, segment sizes, URL lengths and the re-route rate are assumptions, listed and swept in Table~\ref{tab:simparams}. Low-rate tenants were not reported separately.
 \item \emph{Security.} The security argument is a proof sketch that reduces to standard assumptions, not a machine-checked proof. Bearer-token replay is unchanged from the status quo. Pooling requires tenants to trust the CDN-held key. Epoch-bounded validity forces token refresh in long sessions.

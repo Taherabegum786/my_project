@@ -64,7 +64,7 @@ Fig.~\ref{fig:verify} and Table~\ref{tab:primitives} give per-verification costs
 \caption{Native primitive costs (OpenSSL~3.5.4, run~2; median [95\% CI], \textmu s; sizes in bytes).}
 \label{tab:primitives}
 \footnotesize
-\setlength{\tabcolsep}{2.5pt}
+\setlength{\tabcolsep}{1.6pt}
 \begin{tabular}{@{}lrrll@{}}
 \toprule
 Scheme & pk & sig & sign & verify \\
@@ -83,9 +83,14 @@ EMBER path $d{=}16$ & -- & 286 & -- & 2.34 [2.33, 2.46] \\
 \end{tabular}
 \end{table}
 
-%%P1-BEGIN
-\textbf{Whole-request edge cost (P1).} PLACEHOLDER
-%%P1-END
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig11_proto_capacity.pdf}
+\caption{Edge capacity of the Go prototype (P1, quiet rerun, one edge core, edge utilization $\ge0.99$ in all runs; mean and 95\% $t$-CI over 5 runs). Left: edge CPU per HTTP request (primary metric). Right: requests/s.}
+\label{fig:capacity}
+\end{figure}
+
+\textbf{Whole-request edge cost (P1).} Fig.~\ref{fig:capacity} shows the cost of a complete HTTP request, including Go's request parsing and response, on a single saturated edge core. Edge utilization was at least 0.99 in every one of the 60 runs. A request carrying an HMAC token (B1) costs 20.54\us{} [20.25, 20.82] of edge CPU. A warm EMBER request (O1) costs 22.91\us{} [22.49, 23.33], 1.12$\times$ HMAC, and one core serves \num{43355} req/s against \num{48340} for HMAC (0.897$\times$). Per-token ML-DSA-44 (B5) costs 66.24\us{} [65.01, 67.46], 2.89$\times$ EMBER, at \num{15040} req/s. Adding a verification cache (B5v) lowers this to 37.38\us{} (\num{26620} req/s), still 1.63$\times$ EMBER, because every request must parse and hash a 3.3~KB token. Re-verifying the root every 1000 requests (O1a, 22.92\us) or using a hybrid root (O4, 22.93\us{} [22.39, 23.47]) is indistinguishable from O1. Per-request crypto and token size, not post-quantum verification as such, determine edge cost: in Go, per-token ML-DSA-44 (66.24\us) is cheaper than Ed25519 (71.04\us), B11 (70.36\us) and ECDSA P-256 (98.04\us).
 
 \subsection{Issuer Throughput}
 Per-token ML-DSA-44 signing limits a native issuer core to $1/408.8\,\mu\text{s}\approx\num{2446}$ tokens/s. EMBER with an ML-DSA-44 root issues \num{469254} tokens/s per core [\num{319698}, \num{729692}] at $N=2^8$ and \num{1275990} [\num{1161768}, \num{1282009}] at $N=2^{14}$, 192$\times$ and 522$\times$ more (Fig.~\ref{fig:sizeN}, bottom). At large $N$ the cost is dominated by leaf hashing and base64url encoding. SLH-DSA-128s, which manages only $1/306.5\,\text{ms}\approx3.26$ tokens/s when signing per token, becomes a usable root signer: \num{49063} tokens/s at $N=2^{14}$. Its 306~ms signature, however, lies on the issuance path. In simulation it raises $D$ from 0.575~s to 0.927~s in pull mode at $\Delta=1$~s. B11 is not comparable to EMBER on issuance, contrary to our hypothesis: native Ed25519 signing (30.1\us) limits it to about \num{33000} tokens/s, so EMBER issues at least 14$\times$ faster. B12 tokens are as cheap as HMAC to issue, but every epoch requires $E$ key wraps, which take 37.6~ms at $E=500$ in our Python implementation. The Go prototype confirms the trend independently: its issuer reaches about \num{432000} tokens/s at $N=1024$, 53$\times$ its per-token ML-DSA-44 signing.
@@ -143,7 +148,7 @@ Table~\ref{tab:ops} and Fig.~\ref{fig:dissem} compare the modes. \textbf{Staplin
 
 Fig.~\ref{fig:e2e} shows the per-request added latency. With stapling, p99 is 0.0017~ms, 0.05\% of requests exceed 1~ms and p99.9 is 0.12~ms. Plain pull has p99 0.123~ms and p99.9 112~ms, where root-miss round trips dominate. Per-token ML-DSA-44 adds 0.122~ms to \emph{every} request, and B5v has p99 0.125~ms. Simulated edge CPU, including amortized root verification, is 1.2--1.7\us{} per request for EMBER in pull mode.
 
-\emph{Hybrid root.} The hybrid root leaves warm per-request cost unchanged (20.27 vs.\ 19.98\us{} in Python, +1.5\%). In the Go prototype O4 and O1 are indistinguishable (Section~\ref{sec:res-cpu}). With per-tenant trees, however, each (edge, epoch) root serves about one session, so the additional Ed25519 root verification raises \emph{simulated} mean edge CPU per request by 41.6\% (2.37 vs.\ 1.67\us). The absolute cost remains at the microsecond level, but our hypothesis of a $<1\%$ change is refuted.
+\emph{Hybrid root.} The hybrid root leaves warm per-request cost unchanged (20.27 vs.\ 19.98\us{} in Python, +1.5\%). In the Go prototype O4 and O1 differ by 0.09\% per request, with overlapping CIs (Section~\ref{sec:res-cpu}). With per-tenant trees, however, each (edge, epoch) root serves about one session, so the additional Ed25519 root verification raises \emph{simulated} mean edge CPU per request by 41.6\% (2.37 vs.\ 1.67\us). The absolute cost remains at the microsecond level, but our hypothesis of a $<1\%$ change is refuted.
 
 \subsection{Epoch Control}
 \label{sec:res-controller}
@@ -153,7 +158,7 @@ Fig.~\ref{fig:e2e} shows the per-request added latency. With stapling, p99 is 0.
 \caption{24-h diurnal workload, pull mode (simulated). $D$ in ms [95\% $t$-CI]. Paired: adaptive minus policy (common random numbers).}
 \label{tab:controller}
 \footnotesize
-\setlength{\tabcolsep}{2.5pt}
+\setlength{\tabcolsep}{1.8pt}
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
 $\bar\lambda$ (seeds) & adaptive $D$ & best fixed $D$ & paired diff. & WC $D$ \\
@@ -191,9 +196,10 @@ We flooded one simulated edge with \num{10000} fake tokens/s. When the fake epoc
 \caption{Trust and cost comparison. Bytes: measured token, 60-character path. Verify: native OpenSSL~3.5.4 median per request (EMBER: path, $d=16$). Dissemination: simulated fleet bytes/s for $E=500$, $\bar\lambda=2000$/s, $\Delta=1$~s.}
 \label{tab:trust}
 \footnotesize
-\begin{tabular}{@{}llllrrr@{}}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lllp{2.6cm}rp{2.2cm}r@{}}
 \toprule
-Scheme & Secret at edge & One compromised edge can mint for & PQ assumption & Bytes & Verify (\textmu s) & Dissem.\ (kB/s) \\
+Scheme & Secret at edge & One compromised edge mints for & PQ assumption & Bytes & Verify (\textmu s) & Dissem.\ (kB/s) \\
 \midrule
 B1 HMAC & yes (key lifetime) & all edges, all paths of the key & unconditional & 166 & 0.30 & 0 \\
 B10 multi-MAC, $k{=}3$ & yes & its own domain & unconditional & 187 & 0.30 & 0 \\

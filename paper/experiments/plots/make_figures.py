@@ -90,7 +90,7 @@ def fig2():
 def fig3():
     d = rd("token_sizes.csv")
     d = d[(d.url_path_len == 60) & (d.with_ip == 0)]
-    fig, (a, b) = plt.subplots(2, 1, figsize=(COL, 3.8))
+    fig, (a, b) = plt.subplots(2, 1, figsize=(COL, 4.3))
     for k, (o, n) in enumerate((("O1", 16), ("O2", 32))):
         r = d[d.scheme == o].sort_values("log2N")
         a.plot(r.log2N, r.token_bytes, MARKERS[k], color=SERIES[k], label="measured, n=%d" % n)
@@ -118,8 +118,8 @@ def fig3():
     b.set_yscale("log")
     b.set_xlabel("N (tokens per epoch)")
     b.set_ylabel("issuer tokens/s per core")
-    b.set_ylim(1, 2e7)
-    b.legend(fontsize=7, loc="upper left", ncol=1)
+    b.set_ylim(1, 2e10)
+    b.legend(fontsize=7, loc="upper left", ncol=1, handlelength=1.6, borderaxespad=0.2)
     fig.tight_layout()
     save(fig, OUT, "fig3_size_vs_N")
 
@@ -163,6 +163,7 @@ def fig4():
         nrows.append(("vcache key SHA-256 (3.5 KB token)", r.ns_median.iloc[0] / 1e3, r.ns_p99.iloc[0] / 1e3, 0))
     _bars(b, nrows, "Native OpenSSL 3.5.4 (C, EVP)")
     fig.tight_layout()
+    fig.legend(handles=fig._ember_handles, loc="lower center", ncol=2, fontsize=7, bbox_to_anchor=(0.5, -0.04))
     save(fig, OUT, "fig4_verify_cost")
 
 
@@ -180,8 +181,8 @@ def _bars(ax, rows, title):
     ax.set_title(title, fontsize=7)
     ax.grid(axis="y", visible=False)
     from matplotlib.patches import Patch
-    ax.legend(handles=[Patch(color=SERIES[0], label="baseline / primitive"), Patch(color=SERIES[1], label="EMBER / Merkle path")],
-              fontsize=7, loc="lower right")
+    ax.figure._ember_handles = [Patch(color=SERIES[0], label="baseline / primitive"),
+                                Patch(color=SERIES[1], label="EMBER / Merkle path")]
 
 
 # ------------------------------------------------------------------ Fig 5
@@ -213,7 +214,10 @@ def fig5():
     axs[0].set_yscale("log")
     axs[2].set_yscale("log")
     axs[2].set_xlabel("epoch length $\\Delta$ (s), pull mode, per-tenant trees")
-    axs[1].legend(fontsize=7, ncol=2)
+    from matplotlib.lines import Line2D
+    axs[1].legend(handles=[Line2D([], [], color=INK2, lw=1, label="model (line)"),
+                           Line2D([], [], color=INK2, marker="o", ls="none", ms=3.5, label="simulated (marker)")],
+                  fontsize=7, loc="lower left")
     axs[0].legend(fontsize=7)
     fig.tight_layout()
     save(fig, OUT, "fig5_delta_tradeoff")
@@ -280,7 +284,7 @@ def fig7():
 # ------------------------------------------------------------------ Fig 8
 def fig8():
     d = rd("sim_e2e_latency.csv")
-    fig, ax = plt.subplots(figsize=(COL, 2.6))
+    fig, ax = plt.subplots(figsize=(COL * 0.62, 2.6))
     series = [("EMBER-O1", "pull"), ("EMBER-O1", "pull_staple"), ("EMBER-O1", "push"), ("EMBER-O1", "push_rollup"),
               ("B1-HMAC", "none"), ("B5-ML-DSA-44", "none"), ("B5v-ML-DSA-44+vcache", "none"), ("B11-DelegEd25519", "none")]
     for k, (s, m) in enumerate(series):
@@ -291,10 +295,10 @@ def fig8():
         ax.plot(np.maximum(v, 1e-4), y, ls=LINES[k], color=SERIES[k], lw=1.2,
                 label=(s.replace("EMBER-O1", "EMBER") + ("" if m == "none" else " " + m)))
     ax.set_xscale("log")
-    ax.set_xlabel("added latency per request (ms, log): miss wait + verify CPU (native)")
+    ax.set_xlabel("added latency per request (ms)")
     ax.set_ylabel("CDF (simulated)")
     ax.set_ylim(0.9, 1.0005)
-    ax.legend(fontsize=7, loc="lower right")
+    ax.legend(fontsize=7, loc="upper left", bbox_to_anchor=(1.01, 1.0), handlelength=2.2)
     save(fig, OUT, "fig8_e2e_cdf")
 
 
@@ -362,10 +366,10 @@ def fig_proto():
     d["us_per_req"] = d.cpu_util_edge / d.req_per_s * 1e6
     g = d.groupby("scheme")
     s = sorted(g.groups, key=lambda k: g.get_group(k).us_per_req.mean())
-    fig, (a, b) = plt.subplots(1, 2, figsize=(COL, 2.9), sharey=True, gridspec_kw={"width_ratios": [1.15, 1]})
+    fig, (a, b) = plt.subplots(1, 2, figsize=(COL, 3.0), sharey=True, gridspec_kw={"width_ratios": [1.15, 1]})
     y = np.arange(len(s))
-    for ax, col, scale, lab in ((a, "us_per_req", 1.0, "edge CPU per request (\u00b5s)"),
-                                (b, "req_per_s", 1e-3, "req/s per core (x1000)")):
+    for ax, col, scale, lab in ((a, "us_per_req", 1.0, "edge CPU, $\\mu$s/req"),
+                                (b, "req_per_s", 1e-3, "req/s ($10^3$)")):
         m = [tci(g.get_group(k)[col])[0] * scale for k in s]
         h = [tci(g.get_group(k)[col])[1] * scale for k in s]
         cols = [SERIES[1] if k.startswith("o") else SERIES[0] for k in s]
@@ -374,7 +378,7 @@ def fig_proto():
         ax.grid(axis="y", visible=False)
     a.set_yticks(y, [PROTO_LABEL.get(k, k) for k in s], fontsize=7)
     a.invert_yaxis()
-    fig.tight_layout(w_pad=0.6)
+    fig.tight_layout(w_pad=1.2)
     save(fig, OUT, "fig11_proto_capacity")
 
 

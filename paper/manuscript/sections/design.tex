@@ -33,12 +33,17 @@ where $\mathit{type}\in\{\textsc{leaf},\textsc{node},\textsc{root},\textsc{perio
 \begin{equation}
 SR_e=(\mathit{kid},e,T_{\text{start}},\Delta_e,N_e,R_e,\sigma_e),
 \end{equation}
-where $\sigma_e=\Sig(sk,\texttt{"EMBER-root"}\|\mathit{kid}\|e\|T_{\text{start}}\|\Delta_e\|N_e\|R_e)$, using the FIPS~204/205 context string \texttt{EMBER-root}. In the hybrid variant $\sigma_e=\sigma_{\text{Ed25519}}\|\sigma_{\text{ML-DSA-44}}$ over the same message, and both components must verify (an AND-combiner~\cite{bindel2017hybrid}).
+where
+\begin{equation}
+\sigma_e=\Sig\big(sk,\texttt{"EMBER-root"}\|\mathit{kid}\|e\|T_{\text{start}}\|\Delta_e\|N_e\|R_e\big),
+\end{equation}
+signed with the FIPS~204/205 context string \texttt{EMBER-root}. In the hybrid variant $\sigma_e=\sigma_{\text{Ed25519}}\|\sigma_{\text{ML-DSA-44}}$ over the same message, and both components must verify (an AND-combiner~\cite{bindel2017hybrid}).
 
 \subsection{Token Format}
 A token is a textual claim string followed by one base64url blob:
-\begin{center}\small
-\texttt{URLPrefix=\ldots:Expires=\ldots:Tenant=\ldots[:IP=\ldots]:E=}\textit{blob}
+\begin{center}\footnotesize
+\texttt{URLPrefix=\ldots:Expires=\ldots:Tenant=\ldots}\\
+\texttt{[:IP=\ldots]:E=}\textit{blob}
 \end{center}
 with $\textit{blob}=\mathrm{b64url}(\mathit{ver}_1\|\mathit{alg}_1\|\mathit{kid}_4\|e_4\|i_4\|r_{16}\|\text{path}_{n d})$, i.e., $30+nd$ raw bytes. With $c_{\text{enc}}$ bytes of encoded claims, the token size is
 \begin{equation}
@@ -66,8 +71,11 @@ Algorithm~\ref{alg:issue} gives issuance and Algorithm~\ref{alg:verify} edge ver
   \State $\sigma\gets\Sig(sk,\texttt{"EMBER-root"}\|\mathit{kid}\|e\|T_{\text{start}}\|\Delta\|N\|R)$
   \State \textsc{Publish}$(SR_e)$ at \texttt{/ember/}$\mathit{kid}$\texttt{/}$e$ (immutable)
   \State if push mode: send $SR_e$ to edges through the tier tree
-  \State every $m$ epochs: publish bundle $PB_p$ with $\sigma_p$ over $\mathrm{MTH}(R_{e_1},\dots,R_{e_m})$
-  \For{$i<N$} resolve $B[i].\mathit{future}$ with $(c_i,\mathit{kid},e,i,r_i,\textsc{Path}(\mathit{levels},i))$ [and $SR_e$]
+  \State every $m$ epochs: publish bundle $PB_p$, signed
+  \Statex \hspace{\algorithmicindent} over $\mathrm{MTH}(R_{e_1},\dots,R_{e_m})$
+  \For{$i<N$}
+    \State $\pi_i\gets\textsc{Path}(\mathit{levels},i)$
+    \State resolve $B[i].\mathit{future}$ with $(c_i,\mathit{kid},e,i,r_i,\pi_i)$ [$+SR_e$]
   \EndFor
 \EndProcedure
 \end{algorithmic}

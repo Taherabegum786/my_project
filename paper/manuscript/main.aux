@@ -1,0 +1,212 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{akamai-edgeauth}
+\citation{rfc2104}
+\citation{cloudfront-signers}
+\citation{mediacdn-sig}
+\citation{shor1997}
+\citation{cf2026roadmap}
+\citation{fips204,fips205}
+\citation{rfc9964}
+\citation{rfc6265}
+\citation{rfc9964}
+\citation{merkle1989}
+\citation{batchsig2024}
+\citation{fregly2023mtl,draft-mtl-mode}
+\citation{draft-mtc}
+\citation{draft-batch-signing}
+\@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{section.1}\protected@file@percent }
+\newlabel{sec:intro}{{I}{1}{Introduction}{section.1}{}}
+\citation{mediacdn-sig}
+\citation{akamai-edgeauth}
+\citation{rfc9110}
+\citation{rfc6265}
+\citation{rfc7541}
+\citation{macaroons2014}
+\citation{rfc9449}
+\citation{policharla2023pqpp}
+\citation{fips204,fips205}
+\citation{rfc9964}
+\citation{sikeridis2020ndss,paquin2020benchmarking,sosnowski2023conext,kampanakis2024ttlb}
+\citation{akamai2026e2epqc,cf2026pqauthorigins}
+\citation{schwabe2020kemtls,celi2021measuring}
+\citation{bindel2017hybrid}
+\citation{merkle1989}
+\citation{batchsig2024}
+\citation{draft-batch-signing}
+\citation{fregly2023mtl,draft-mtl-mode}
+\citation{draft-slhdsa-mtl-dnssec}
+\citation{draft-mtc,cf2025mtc}
+\citation{draft-mtac}
+\citation{rfc9162}
+\citation{sphincsplus2019}
+\citation{batchsig2024}
+\citation{draft-mtl-mode}
+\citation{draft-mtc}
+\citation{kampanakis2023vision,alnahawi2024survey}
+\@writefile{toc}{\contentsline {section}{\numberline {II}Background and Related Work}{2}{section.2}\protected@file@percent }
+\newlabel{sec:background}{{II}{2}{Background and Related Work}{section.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}CDN Access Tokens}{2}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Post-Quantum Signatures}{2}{subsection.2.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Merkle batching approaches compared with EMBER.}}{2}{table.1}\protected@file@percent }
+\newlabel{tab:related}{{I}{2}{Merkle batching approaches compared with EMBER}{table.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Merkle Batch Signing}{2}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-D}}What is New Here}{2}{subsection.2.4}\protected@file@percent }
+\citation{rfc9449}
+\citation{sphincsplus2019}
+\citation{rfc9162}
+\citation{bindel2017hybrid}
+\@writefile{toc}{\contentsline {section}{\numberline {III}System and Threat Model}{3}{section.3}\protected@file@percent }
+\newlabel{sec:threat}{{III}{3}{System and Threat Model}{section.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Entities}{3}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Why Not Simply HMAC?}{3}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Adversary}{3}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-D}}Goals and Requirements}{3}{subsection.3.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces EMBER architecture. The issuer signs one root per epoch. Edges obtain it by pull through the shield tier, by push, from a period bundle, or stapled by the client on its first request.}}{3}{figure.1}\protected@file@percent }
+\newlabel{fig:arch}{{1}{3}{EMBER architecture. The issuer signs one root per epoch. Edges obtain it by pull through the shield tier, by push, from a period bundle, or stapled by the client on its first request}{figure.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}EMBER Design}{3}{section.4}\protected@file@percent }
+\newlabel{sec:design}{{IV}{3}{EMBER Design}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Primitives and Notation}{3}{subsection.4.1}\protected@file@percent }
+\citation{sphincsplus2019}
+\citation{bindel2017hybrid}
+\citation{sphincsplus2019}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces Issuer: epoch closing and publication}}{4}{algorithm.1}\protected@file@percent }
+\newlabel{alg:issue}{{1}{4}{Algorithms}{algorithm.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Token Format}{4}{subsection.4.2}\protected@file@percent }
+\newlabel{eq:size}{{3}{4}{Token Format}{equation.4.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Algorithms}{4}{subsection.4.3}\protected@file@percent }
+\@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces Edge: per-request verification}}{4}{algorithm.2}\protected@file@percent }
+\newlabel{alg:verify}{{2}{4}{Algorithms}{algorithm.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}Security Argument}{4}{subsection.4.4}\protected@file@percent }
+\newlabel{sec:security}{{\mbox  {IV-D}}{4}{Security Argument}{subsection.4.4}{}}
+\newlabel{thm:uf}{{1}{4}{}{theorem.1}{}}
+\citation{batchsig2024}
+\citation{fips205}
+\citation{cf2026pqauthorigins}
+\citation{batchsig2024}
+\citation{draft-mtl-mode}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Root Dissemination and Epoch Control}{5}{section.5}\protected@file@percent }
+\newlabel{sec:dissem}{{V}{5}{Root Dissemination and Epoch Control}{section.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Cost Model}{5}{subsection.5.1}\protected@file@percent }
+\newlabel{eq:miss}{{5}{5}{Cost Model}{equation.5.5}{}}
+\newlabel{eq:D}{{6}{5}{Cost Model}{equation.5.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Epoch Control: From Controller to Guideline}{5}{subsection.5.2}\protected@file@percent }
+\newlabel{sec:controller}{{\mbox  {V-B}}{5}{Epoch Control: From Controller to Guideline}{subsection.5.2}{}}
+\citation{macaroons2014}
+\citation{rfc9449}
+\citation{rfc9345}
+\citation{fips203}
+\citation{draft-mtl-mode}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Baselines (B1--B13) and variants. All are implemented in Python; those marked $\dagger $ are also implemented in the Go prototype.}}{6}{table.2}\protected@file@percent }
+\newlabel{tab:baselines}{{II}{6}{Baselines (B1--B13) and variants. All are implemented in Python; those marked $\dagger $ are also implemented in the Go prototype}{table.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Evaluation Methodology}{6}{section.6}\protected@file@percent }
+\newlabel{sec:method}{{VI}{6}{Evaluation Methodology}{section.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-A}}Baselines}{6}{subsection.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-B}}Testbed and Implementations}{6}{subsection.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-C}}Measurements}{6}{subsection.6.3}\protected@file@percent }
+\citation{rfc6265}
+\citation{rfc9110}
+\citation{rfc6265}
+\citation{rfc9110}
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Simulation parameters (assumptions, not measurements). LN($m$,\,$s$): lognormal with median $m$ and log-standard deviation $s$.}}{7}{table.3}\protected@file@percent }
+\newlabel{tab:simparams}{{III}{7}{Simulation parameters (assumptions, not measurements). LN($m$,\,$s$): lognormal with median $m$ and log-standard deviation $s$}{table.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Encoded token size per scheme (measured; 60-character path). Vertical lines: 2~KB URL practice, 4096-B cookie~\cite  {rfc6265}, 8000-B URL recommendation~\cite  {rfc9110}.}}{7}{figure.2}\protected@file@percent }
+\newlabel{fig:sizes}{{2}{7}{Encoded token size per scheme (measured; 60-character path). Vertical lines: 2~KB URL practice, 4096-B cookie~\cite {rfc6265}, 8000-B URL recommendation~\cite {rfc9110}}{figure.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Results}{7}{section.7}\protected@file@percent }
+\newlabel{sec:results}{{VII}{7}{Results}{section.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-A}}Token Size and Bytes on the Wire}{7}{subsection.7.1}\protected@file@percent }
+\newlabel{sec:res-size}{{\mbox  {VII-A}}{7}{Token Size and Bytes on the Wire}{subsection.7.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces Upstream request-header bytes per session (1 manifest + 150 segments; measured with Go HPACK, 4096-B table unless noted).}}{7}{table.4}\protected@file@percent }
+\newlabel{tab:wire}{{IV}{7}{Upstream request-header bytes per session (1 manifest + 150 segments; measured with Go HPACK, 4096-B table unless noted)}{table.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-B}}Edge Verification Cost}{7}{subsection.7.2}\protected@file@percent }
+\newlabel{sec:res-cpu}{{\mbox  {VII-B}}{7}{Edge Verification Cost}{subsection.7.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Top: EMBER token size vs.\ $\log _2 N$ (markers measured, lines Eq.~\eqref  {eq:size}). Bottom: native issuer throughput per core (OpenSSL~3.5.4, run~2), with per-token signing rates as horizontal lines.}}{8}{figure.3}\protected@file@percent }
+\newlabel{fig:sizeN}{{3}{8}{Top: EMBER token size vs.\ $\log _2 N$ (markers measured, lines Eq.~\eqref {eq:size}). Bottom: native issuer throughput per core (OpenSSL~3.5.4, run~2), with per-token signing rates as horizontal lines}{figure.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Native primitive costs (OpenSSL~3.5.4, run~2; median [95\% CI], \textmu s; sizes in bytes).}}{8}{table.5}\protected@file@percent }
+\newlabel{tab:primitives}{{V}{8}{Native primitive costs (OpenSSL~3.5.4, run~2; median [95\% CI], \textmu s; sizes in bytes)}{table.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-C}}Issuer Throughput}{8}{subsection.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-D}}Latency Under Load (P2)}{8}{subsection.7.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-E}}Dissemination and End-to-End Latency}{8}{subsection.7.5}\protected@file@percent }
+\newlabel{sec:res-dissem}{{\mbox  {VII-E}}{8}{Dissemination and End-to-End Latency}{subsection.7.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Per-verification cost (bar: median; tick: p99). Left: Python reference, full \texttt  {verify()} (secondary source). Right: native OpenSSL~3.5.4 primitives and EMBER path verification (primary source, run~2).}}{9}{figure.4}\protected@file@percent }
+\newlabel{fig:verify}{{4}{9}{Per-verification cost (bar: median; tick: p99). Left: Python reference, full \texttt {verify()} (secondary source). Right: native OpenSSL~3.5.4 primitives and EMBER path verification (primary source, run~2)}{figure.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Edge capacity of the Go prototype (P1, quiet rerun, one edge core, edge utilization $\ge 0.99$ in all runs; mean and 95\% $t$-CI over 5 runs). Left: edge CPU per HTTP request (primary metric). Right: requests/s.}}{9}{figure.5}\protected@file@percent }
+\newlabel{fig:capacity}{{5}{9}{Edge capacity of the Go prototype (P1, quiet rerun, one edge core, edge utilization $\ge 0.99$ in all runs; mean and 95\% $t$-CI over 5 runs). Left: edge CPU per HTTP request (primary metric). Right: requests/s}{figure.5}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces Operating points (simulated; $\bar  \lambda =2000$/s, $E=500$, 5 seeds, CI half-widths $<1\%$ of the mean).}}{9}{table.6}\protected@file@percent }
+\newlabel{tab:ops}{{VI}{9}{Operating points (simulated; $\bar \lambda =2000$/s, $E=500$, 5 seeds, CI half-widths $<1\%$ of the mean)}{table.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Pull mode, per-tenant trees (simulated, 5 seeds; model lines from Eqs.~\eqref  {eq:miss}--\eqref  {eq:D}). Root misses barely fall with $\Delta $ until $\lambda \Delta $ approaches $E$, so $D(\Delta )$ is minimized at the smallest $\Delta $.}}{10}{figure.6}\protected@file@percent }
+\newlabel{fig:delta}{{6}{10}{Pull mode, per-tenant trees (simulated, 5 seeds; model lines from Eqs.~\eqref {eq:miss}--\eqref {eq:D}). Root misses barely fall with $\Delta $ until $\lambda \Delta $ approaches $E$, so $D(\Delta )$ is minimized at the smallest $\Delta $}{figure.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces 24-h diurnal workload, pull mode (simulated). $D$ in ms [95\% $t$-CI]. Paired: adaptive minus policy (common random numbers).}}{10}{table.7}\protected@file@percent }
+\newlabel{tab:controller}{{VII}{10}{24-h diurnal workload, pull mode (simulated). $D$ in ms [95\% $t$-CI]. Paired: adaptive minus policy (common random numbers)}{table.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-F}}Epoch Control}{10}{subsection.7.6}\protected@file@percent }
+\newlabel{sec:res-controller}{{\mbox  {VII-F}}{10}{Epoch Control}{subsection.7.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-G}}Simulator Validation Against the Prototype}{10}{subsection.7.7}\protected@file@percent }
+\newlabel{sec:res-validate}{{\mbox  {VII-G}}{10}{Simulator Validation Against the Prototype}{subsection.7.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-H}}Denial of Service}{10}{subsection.7.8}\protected@file@percent }
+\newlabel{sec:res-dos}{{\mbox  {VII-H}}{10}{Denial of Service}{subsection.7.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-I}}Trust and Cost Summary}{10}{subsection.7.9}\protected@file@percent }
+\citation{rfc9964}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Dissemination vs.\ fleet size ($\Delta =1$~s, $\bar  \lambda =2000$/s; simulated). (a) Fleet root, key or certificate bytes/s. (b) Root misses per $10^6$ requests.}}{11}{figure.7}\protected@file@percent }
+\newlabel{fig:dissem}{{7}{11}{Dissemination vs.\ fleet size ($\Delta =1$~s, $\bar \lambda =2000$/s; simulated). (a) Fleet root, key or certificate bytes/s. (b) Root misses per $10^6$ requests}{figure.7}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {VIII}{\ignorespaces Trust and cost comparison. Bytes: measured token, 60-character path. Verify: native OpenSSL~3.5.4 median per request (EMBER: path, $d=16$). Dissemination: simulated fleet bytes/s for $E=500$, $\bar  \lambda =2000$/s, $\Delta =1$~s.}}{11}{table.8}\protected@file@percent }
+\newlabel{tab:trust}{{VIII}{11}{Trust and cost comparison. Bytes: measured token, 60-character path. Verify: native OpenSSL~3.5.4 median per request (EMBER: path, $d=16$). Dissemination: simulated fleet bytes/s for $E=500$, $\bar \lambda =2000$/s, $\Delta =1$~s}{table.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Added latency per request (miss wait plus native verification CPU; simulated, $5\times \num {20000}$ samples per curve). Upper tail shown.}}{11}{figure.8}\protected@file@percent }
+\newlabel{fig:e2e}{{8}{11}{Added latency per request (miss wait plus native verification CPU; simulated, $5\times \num {20000}$ samples per curve). Upper tail shown}{figure.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VIII}Discussion}{11}{section.8}\protected@file@percent }
+\newlabel{sec:discussion}{{VIII}{11}{Discussion}{section.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VIII-A}}Deployment Guidance}{11}{subsection.8.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Simulator (fleet Monte Carlo, 50 seeds, fed measured RTTs) vs.\ prototype (P3, 5 runs, 95\% CI) on 24 configurations. Left: misses per token, 24/24 within 15\% or inside the CI. Right: mean miss latency. Pull at $\Delta \le 1$~s matches; pull at $\Delta =10$~s and stapled misses do not.}}{12}{figure.9}\protected@file@percent }
+\newlabel{fig:validate}{{9}{12}{Simulator (fleet Monte Carlo, 50 seeds, fed measured RTTs) vs.\ prototype (P3, 5 runs, 95\% CI) on 24 configurations. Left: misses per token, 24/24 within 15\% or inside the CI. Right: mean miss latency. Pull at $\Delta \le 1$~s matches; pull at $\Delta =10$~s and stapled misses do not}{figure.9}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {IX}{\ignorespaces Recommended EMBER parameters.}}{12}{table.9}\protected@file@percent }
+\newlabel{tab:params}{{IX}{12}{Recommended EMBER parameters}{table.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VIII-B}}Limitations}{12}{subsection.8.2}\protected@file@percent }
+\newlabel{sec:limits}{{\mbox  {VIII-B}}{12}{Limitations}{subsection.8.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {X}{\ignorespaces Pre-registered hypotheses and outcomes.}}{12}{table.10}\protected@file@percent }
+\newlabel{tab:hyp}{{X}{12}{Pre-registered hypotheses and outcomes}{table.10}{}}
+\bibstyle{IEEEtran}
+\bibdata{references}
+\bibcite{akamai-edgeauth}{1}
+\bibcite{rfc2104}{2}
+\bibcite{cloudfront-signers}{3}
+\bibcite{mediacdn-sig}{4}
+\bibcite{shor1997}{5}
+\bibcite{cf2026roadmap}{6}
+\bibcite{fips204}{7}
+\bibcite{fips205}{8}
+\bibcite{rfc9964}{9}
+\bibcite{rfc6265}{10}
+\bibcite{merkle1989}{11}
+\bibcite{batchsig2024}{12}
+\bibcite{fregly2023mtl}{13}
+\bibcite{draft-mtl-mode}{14}
+\bibcite{draft-mtc}{15}
+\bibcite{draft-batch-signing}{16}
+\bibcite{rfc9110}{17}
+\bibcite{rfc7541}{18}
+\bibcite{macaroons2014}{19}
+\bibcite{rfc9449}{20}
+\bibcite{policharla2023pqpp}{21}
+\bibcite{sikeridis2020ndss}{22}
+\bibcite{paquin2020benchmarking}{23}
+\@writefile{toc}{\contentsline {section}{\numberline {IX}Conclusion}{13}{section.9}\protected@file@percent }
+\newlabel{sec:conclusion}{{IX}{13}{Conclusion}{section.9}{}}
+\@writefile{toc}{\contentsline {section}{References}{13}{section*.4}\protected@file@percent }
+\bibcite{sosnowski2023conext}{24}
+\bibcite{kampanakis2024ttlb}{25}
+\bibcite{akamai2026e2epqc}{26}
+\bibcite{cf2026pqauthorigins}{27}
+\bibcite{schwabe2020kemtls}{28}
+\bibcite{celi2021measuring}{29}
+\bibcite{bindel2017hybrid}{30}
+\bibcite{draft-slhdsa-mtl-dnssec}{31}
+\bibcite{cf2025mtc}{32}
+\bibcite{draft-mtac}{33}
+\bibcite{rfc9162}{34}
+\bibcite{sphincsplus2019}{35}
+\bibcite{kampanakis2023vision}{36}
+\bibcite{alnahawi2024survey}{37}
+\bibcite{rfc9345}{38}
+\bibcite{fips203}{39}
+\gdef \@abspage@last{14}
