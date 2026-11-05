@@ -15,7 +15,8 @@ DEFAULTS = dict(
     horizon_s=86400.0,
     K_mean=150.0,          # segments per session (geometric)
     seg_interval_s=4.0,
-    p_move=0.01,           # per-segment probability that a request lands on a different edge (anycast/failover)
+    p_move=0.0005,         # per-segment probability that the session is re-routed to another edge (anycast/failover);
+                           # afterwards it stays there, so only the first request at the new edge is replayed (~7% of sessions switch)
     v_max_s=3600.0,
     P_s=300.0,             # period (roll-up) length in seconds
     rtt_ce_ms=(20.0, 0.6),     # client->edge RTT lognormal (median, sigma)

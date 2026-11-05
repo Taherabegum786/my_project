@@ -28,7 +28,8 @@ class Acc:
         self.cnt = np.zeros(8, np.int64)
         self.nver = 0
         self.tokens_missed = 0
-        self.cpu_vals = {}   # cost (s) -> weight (requests)
+        self.cpu_d = np.zeros(64)      # requests by path length d without a signature verification
+        self.cpu_dv = np.zeros(64)     # requests by d that also verified a root/bundle/staple signature
         self.bytes_pull = 0.0
         self.bytes_push = 0.0
         self.bytes_staple = 0.0
@@ -51,15 +52,14 @@ class Acc:
             self.ts_hW = np.zeros((ts_bins, F.H_NB))
         self.ts_bins = ts_bins
 
-    def add_cpu(self, vals, wts):
-        u, inv = np.unique(vals, return_inverse=True)
-        s = np.bincount(inv, weights=wts)
-        for a, b in zip(u, s):
-            self.cpu_vals[a] = self.cpu_vals.get(a, 0.0) + b
-
-    def cpu_stats(self):
-        v = np.array(sorted(self.cpu_vals))
-        w = np.array([self.cpu_vals[x] for x in v])
+    def cpu_stats(self, costs):
+        d = np.arange(64)
+        ok = (self.cpu_d + self.cpu_dv) > 0
+        base = costs.path_cost(d[ok])
+        v = np.concatenate([base, base + costs.t_verify])
+        w = np.concatenate([self.cpu_d[ok], self.cpu_dv[ok]])
+        o = np.argsort(v)
+        v, w = v[o], w[o]
         if w.sum() == 0:
             return float("nan"), float("nan")
         c = np.cumsum(w) / w.sum()
@@ -212,10 +212,9 @@ class Sim:
                         A.bytes_pull += (cnt[0] + cnt[1]) * c.sr_bytes + (cnt[2] + cnt[3]) * mean_bundle
                         if m == "pull_staple":
                             A.bytes_staple += W.size * c.sr_bytes
-                        cost = ep_cost[te]
-                        A.add_cpu(np.concatenate([cost, cost + c.t_verify]),
-                                  np.concatenate([req - nver, nver.astype(float)]))
                         dd = ep_d[te]
+                        A.cpu_d += np.bincount(dd, weights=req - nver, minlength=64)[:64]
+                        A.cpu_dv += np.bincount(dd, weights=nver.astype(float), minlength=64)[:64]
                         A.d_hist += np.bincount(dd, minlength=64)[:64]
                         A.refresh += np.floor(K * p["seg_interval_s"] / p["v_max_s"]).sum()
                         if decile:
@@ -232,9 +231,9 @@ class Sim:
                             A.ts_miss += np.bincount(bi, weights=(nver > 0).astype(float), minlength=A.ts_bins)
                             A.ts_delta += np.bincount(bi, weights=ep_delta[te], minlength=A.ts_bins)
                             np.maximum.at(A.ts_dmax, bi, dd.astype(float))
-                            np.add.at(A.ts_hW, (bi, F.hidx(W)), 1.0)
+                            A.ts_hW += np.bincount(bi * F.H_NB + F.hidx(W), minlength=A.ts_bins * F.H_NB).reshape(A.ts_bins, F.H_NB)
                         if e2e_res is not None and (pol, m) in e2e_res:
-                            e2e_res[(pol, m)].append((rw.copy(), rk.copy(), req.sum(), cost, req, nver))
+                            e2e_res[(pol, m)].append((rw.copy(), rk.copy(), dd.copy(), req.copy(), nver.copy()))
                         i0 = i1
                 # model (pull, first-request misses only), token-weighted
                 if not pol.startswith("fixed:"):
@@ -253,7 +252,7 @@ class Sim:
         """Flat dict of the standard metrics for one accumulator."""
         p, c = self.p, self.c
         H = self.horizon
-        cpu_mean, cpu_p99 = A.cpu_stats()
+        cpu_mean, cpu_p99 = A.cpu_stats(c)
         miss = A.cnt[0] + A.cnt[2]
         d_nz = np.nonzero(A.d_hist)[0]
         served = A.requests * p["seg_bytes"]

@@ -21,12 +21,21 @@ H_EDGES = np.concatenate([[0.0], np.logspace(np.log10(H_LO), np.log10(H_HI), H_N
 H_MID = np.concatenate([[0.0], np.sqrt(H_EDGES[1:-1] * H_EDGES[2:])])
 
 
+_L0 = np.log10(H_LO)
+_STEP = (np.log10(H_HI) - np.log10(H_LO)) / (H_NB - 1)
+
+
 def hidx(v):
-    return np.clip(np.searchsorted(H_EDGES, v, side="right") - 1, 0, H_NB - 1)
+    v = np.asarray(v, float)
+    with np.errstate(divide="ignore"):
+        i = np.floor((np.log10(np.maximum(v, 1e-300)) - _L0) / _STEP).astype(np.int64) + 1
+    i[v < H_LO] = 0
+    return np.clip(i, 0, H_NB - 1)
 
 
 def hist_add(h, v, w=None):
-    np.add.at(h, hidx(v), 1.0 if w is None else w)
+    if np.size(v):
+        h += np.bincount(hidx(v), weights=w, minlength=H_NB)[:H_NB]
 
 
 def hist_q(h, q):
