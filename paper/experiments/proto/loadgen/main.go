@@ -60,6 +60,7 @@ var (
 	deltaS    = flag.Float64("delta", 1, "p3 label: epoch Δ (s)")
 	reqOut    = flag.String("reqout", "", "p3: per-request CSV (optional)")
 	n         = flag.Int("n", 500, "rtt samples")
+	treeN     = flag.Int("tree", 1024, "p1/p2 o1: tokens per EMBER tree (pooled: tenants spread over 100 ids)")
 )
 
 // ------------------------------------------------------------------ raw HTTP/1.1 client
@@ -216,7 +217,7 @@ func buildPool(S int) *pool {
 		if *scheme == "o4" {
 			alg = tokens.AlgHybrid
 		}
-		const per = 1024
+		per := *treeN
 		tnow := uint64(time.Now().UnixMilli())
 		for e := 0; e*per < S; e++ {
 			var cs []tokens.Claims
@@ -225,6 +226,7 @@ func buildPool(S int) *pool {
 			}
 			for i := range cs {
 				cs[i].Expires = int64(tnow/1000) + 3000
+				cs[i].Tenant = uint32(1 + (e*per+i)%100) // pooled tree: many tenants per root
 			}
 			kid := uint32(1)
 			if *scheme == "o4" {
@@ -287,7 +289,7 @@ func p1() {
 	var measuring atomic.Bool
 	var stop atomic.Bool
 	lat := make([][]float64, *conns)
-	var errs atomic.Int64
+	var errs, retries atomic.Int64
 	var wg sync.WaitGroup
 	for c := 0; c < *conns; c++ {
 		wg.Add(1)
@@ -307,6 +309,10 @@ func p1() {
 						extra = "X-Token-Sig: " + p.staples[si] + "\r\n"
 					}
 					st, _, err := h.do(mkReq(path, p.toks[si], extra))
+					if err == nil && st == 401 && p.staples != nil { // Staple-Required: retry with the staple
+						retries.Add(1)
+						st, _, err = h.do(mkReq(path, p.toks[si], "X-Token-Sig: "+p.staples[si]+"\r\n"))
+					}
 					if err != nil || st != 200 {
 						errs.Add(1)
 						if err != nil {
@@ -341,12 +347,14 @@ func p1() {
 	if ss.wrap.Load() > 0 || errs.Load()-e0 > 0 {
 		log.Printf("WARNING scheme=%s wraps=%d errors=%d", *scheme, ss.wrap.Load(), errs.Load()-e0)
 	}
-	appendCSV(*out, "scheme,run,req_per_s,cpu_util_edge,p50_ms,p99_ms,n_req,errors,token_bytes,net,impl",
-		fmt.Sprintf("%s,%d,%.1f,%.3f,%.3f,%.3f,%d,%d,%d,%s,go-1.24.7+circl-1.6.1", *scheme, *run, float64(len(all))/el, cpu,
-			pct(all, 50), pct(all, 99), len(all), errs.Load()-e0, len(p.toks[0]), *netLabel))
+	appendCSV(*out, "scheme,run,req_per_s,cpu_util_edge,p50_ms,p99_ms,n_req,errors,token_bytes,net,impl,retries,tree",
+		fmt.Sprintf("%s,%d,%.1f,%.3f,%.3f,%.3f,%d,%d,%d,%s,go-1.24.7+circl-1.6.1,%d,%d", *scheme, *run, float64(len(all))/el, cpu,
+			pct(all, 50), pct(all, 99), len(all), errs.Load()-e0, len(p.toks[0]), *netLabel, retries.Load(), *treeN))
 }
 
 // ------------------------------------------------------------------ P2
+
+var p2retries atomic.Int64
 
 func p2() {
 	p := buildPool(*sessions)
@@ -375,8 +383,16 @@ func p2() {
 					si, j = ss.get(), 0
 				}
 				path := fmt.Sprintf("%sseg%05d.m4s", p.prefix[si], j)
+				extra := ""
+				if j == 0 && p.staples != nil {
+					extra = "X-Token-Sig: " + p.staples[si] + "\r\n"
+				}
 				j++
-				st, _, err := h.do(mkReq(path, p.toks[si], ""))
+				st, _, err := h.do(mkReq(path, p.toks[si], extra))
+				if err == nil && st == 401 && p.staples != nil {
+					p2retries.Add(1)
+					st, _, err = h.do(mkReq(path, p.toks[si], "X-Token-Sig: "+p.staples[si]+"\r\n"))
+				}
 				done := time.Now()
 				if err != nil || st != 200 {
 					errs.Add(1)
@@ -410,9 +426,9 @@ func p2() {
 	close(jobs)
 	wg.Wait()
 	achieved := float64(len(lat)) / dur.Seconds()
-	appendCSV(*out, "scheme,load_frac,run,rate_target,rate_achieved,p50_ms,p99_ms,n_req,errors,net,impl",
-		fmt.Sprintf("%s,%.2f,%d,%.1f,%.1f,%.3f,%.3f,%d,%d,%s,go-1.24.7+circl-1.6.1", *scheme, *loadFrac, *run, *rate, achieved,
-			pct(lat, 50), pct(lat, 99), len(lat), errs.Load(), *netLabel))
+	appendCSV(*out, "scheme,load_frac,run,rate_target,rate_achieved,p50_ms,p99_ms,n_req,errors,net,impl,retries,tree",
+		fmt.Sprintf("%s,%.2f,%d,%.1f,%.1f,%.3f,%.3f,%d,%d,%s,go-1.24.7+circl-1.6.1,%d,%d", *scheme, *loadFrac, *run, *rate, achieved,
+			pct(lat, 50), pct(lat, 99), len(lat), errs.Load(), *netLabel, p2retries.Load(), *treeN))
 }
 
 // ------------------------------------------------------------------ P3
@@ -648,5 +664,7 @@ func main() {
 		p3()
 	case "rtt":
 		rtt()
+	case "p4":
+		p4()
 	}
 }

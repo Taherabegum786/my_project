@@ -1,0 +1,35 @@
+== 16:53:07 load=2.85 1.72 0.77 steal=1512
+30.4   3 python
+10.1   2 claude
+ 8.6   1 python
+== 16:53:22 load=2.95 1.80 0.81 steal=1575
+31.3   3 python
+10.2   1 claude
+ 8.6   0 python
+== 16:53:37 load=3.72 2.04 0.90 steal=1634
+30.4   3 python
+10.4   1 claude
+ 9.4   3 python
+== 16:53:52 load=3.97 2.18 0.97 steal=1692
+30.3   3 python
+10.4   2 claude
+ 9.2   3 python
+== 16:54:07 load=3.96 2.27 1.02 steal=1752
+30.0   3 python
+10.5   2 claude
+ 8.8   3 python
+== 16:54:22 load=3.74 2.31 1.05 steal=1811
+29.2   3 python
+10.5   0 claude
+ 8.6   3 python
+== 16:54:37 load=3.87 2.41 1.10 steal=1865
+29.0   3 python
+10.6   3 claude
+ 8.4   3 python
+== 16:54:52 load=3.76 2.45 1.14 steal=1905
+28.9   3 python
+10.7   3 claude
+ 8.2   3 python
+== 16:55:07 load=3.88 2.55 1.19 steal=1957
+10.7   3 claude
+ 8.7   3 python

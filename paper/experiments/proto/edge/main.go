@@ -72,7 +72,8 @@ type server struct {
 	vcacheMu sync.Mutex
 	vcache   map[[32]byte]int64
 	scacheMu sync.Mutex
-	scache   map[[16]byte]int64 // R1 B5s: H(ref|claims) -> expiry
+	scache   map[skey]int64 // B5s/M2: (vedge, H(ref|claims)) -> expiry
+	r2       r2state
 	sver     atomic.Int64
 	statsMu  sync.Mutex
 	stats    map[uint32]*kidStats
@@ -133,6 +134,13 @@ func (s *server) getRoot(v int, kid, e uint32, staple string) (*tokens.SignedRoo
 		select {
 		case <-ent.done:
 			if ent.err == nil {
+				if *rcacheCap > 0 {
+					s.mu.Lock()
+					if s.roots[k] == ent {
+						s.rootTouchLocked(k)
+					}
+					s.mu.Unlock()
+				}
 				return ent.sr, "hit", 0, nil
 			}
 			if time.Now().Before(ent.negUntil) {
@@ -149,6 +157,10 @@ func (s *server) getRoot(v int, kid, e uint32, staple string) (*tokens.SignedRoo
 			atomic.AddInt64(&s.ks(kid).Coalesced, 1)
 			return ent.sr, "coalesced", time.Since(t0), ent.err
 		}
+	}
+	if staple == "" && *emberMiss == "401" {
+		s.mu.Unlock()
+		return nil, "staple-required", 0, errStapleRequired{}
 	}
 	ent = &rootEntry{done: make(chan struct{})}
 	s.roots[k] = ent
@@ -190,6 +202,11 @@ func (s *server) getRoot(v int, kid, e uint32, staple string) (*tokens.SignedRoo
 		ent.negUntil = time.Now().Add(*negTTL)
 	} else {
 		ent.sr = sr
+		s.mu.Lock()
+		if s.roots[k] == ent {
+			s.rootTouchLocked(k)
+		}
+		s.mu.Unlock()
 	}
 	close(ent.done)
 	return sr, event, time.Since(t0), err
@@ -261,6 +278,10 @@ func (s *server) handle(w http.ResponseWriter, r *http.Request) {
 		atomic.AddInt64(&st.Requests, 1)
 		var sr *tokens.SignedRoot
 		sr, event, wait, err = s.getRoot(v, b.Kid, b.Epoch, r.Header.Get("X-EMBER-Root"))
+		if _, sr401 := err.(errStapleRequired); sr401 {
+			s.stapleRequired(w, "ember-root")
+			return
+		}
 		if err != nil {
 			s.deny(w, "root:"+err.Error())
 			return
@@ -291,16 +312,17 @@ func (s *server) handle(w http.ResponseWriter, r *http.Request) {
 			s.deny(w, "parse")
 			return
 		}
-		s.scacheMu.Lock()
-		exp, ok := s.scache[key]
-		s.scacheMu.Unlock()
-		if ok && exp >= now.Unix() {
+		v := 0
+		if hv := r.Header.Get("X-VEdge"); hv != "" {
+			v, _ = strconv.Atoi(hv)
+		}
+		st := r.Header.Get("X-Token-Sig")
+		if s.scacheGet(v, key, now.Unix()) {
 			event = "scache-hit"
 			break
 		}
-		st := r.Header.Get("X-Token-Sig")
 		if st == "" {
-			s.deny(w, "staple required")
+			s.stapleRequired(w, "m2-sig")
 			return
 		}
 		t0 := time.Now()
@@ -311,12 +333,7 @@ func (s *server) handle(w http.ResponseWriter, r *http.Request) {
 		}
 		wait = time.Since(t0)
 		event = "staple"
-		s.scacheMu.Lock()
-		if len(s.scache) > 1<<21 {
-			s.scache = map[[16]byte]int64{}
-		}
-		s.scache[key] = c.Expires
-		s.scacheMu.Unlock()
+		s.scachePut(v, key, c.Expires)
 	case tokens.B5v:
 		h := sha256.Sum256([]byte(tok))
 		s.vcacheMu.Lock()
@@ -407,7 +424,9 @@ func (s *server) admin(w http.ResponseWriter, r *http.Request) {
 func (s *server) statsH(w http.ResponseWriter, r *http.Request) {
 	s.statsMu.Lock()
 	out := map[string]interface{}{"requests": s.reqs.Load(), "rejects": s.rejects.Load(),
-		"vcache_hits": s.vhits.Load(), "vcache_miss": s.vmiss.Load(), "b5s_staple_verifs": s.sver.Load()}
+		"vcache_hits": s.vhits.Load(), "vcache_miss": s.vmiss.Load(), "b5s_staple_verifs": s.sver.Load(),
+		"staple_required": s.r2.s401.Load(), "m2_evictions": s.r2.sEvict.Load(), "root_evictions": s.r2.rEvict.Load(),
+		"flushes": s.r2.flushes.Load()}
 	kids := map[string]kidStats{}
 	for k, v := range s.stats {
 		kids[strconv.Itoa(int(k))] = kidStats{atomic.LoadInt64(&v.Fetches), atomic.LoadInt64(&v.FetchBytes),
@@ -430,7 +449,9 @@ func main() {
 	}
 	k := tokens.DeriveKeys(*seed)
 	s := &server{keys: k, ver: tokens.NewVerifier(k), roots: map[rootKey]*rootEntry{},
-		vcache: map[[32]byte]int64{}, scache: map[[16]byte]int64{}, stats: map[uint32]*kidStats{}, body: make([]byte, *bodyLen)}
+		vcache: map[[32]byte]int64{}, scache: map[skey]int64{}, stats: map[uint32]*kidStats{}, body: make([]byte, *bodyLen)}
+	s.r2.scacheLRU = map[int]*lru[[16]byte]{}
+	s.r2.rootLRU = map[int]*lru[rootKey]{}
 	s.client = &http.Client{Timeout: 5 * time.Second, Transport: &http.Transport{
 		MaxIdleConns: 256, MaxIdleConnsPerHost: 256, IdleConnTimeout: 600 * time.Second,
 		DialContext: (&net.Dialer{Timeout: 3 * time.Second, KeepAlive: 30 * time.Second}).DialContext}}
@@ -452,6 +473,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) { w.Write([]byte("pong")) })
 	mux.HandleFunc("/stats", s.statsH)
+	mux.HandleFunc("/admin/flush", s.flush)
 	mux.HandleFunc("/admin/", s.admin)
 	mux.HandleFunc("/", s.handle)
 	srv := &http.Server{Addr: *listen, Handler: mux, MaxHeaderBytes: 1 << 16, ReadHeaderTimeout: 30 * time.Second,

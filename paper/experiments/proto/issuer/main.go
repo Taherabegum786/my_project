@@ -28,6 +28,8 @@ var (
 	seed   = flag.Uint64("seed", 20261105, "key seed")
 	kids   = flag.String("kids", "1:1000", "kid:delta_ms[:alg],...")
 	vmax   = flag.Int64("vmax", 3600, "V_max seconds")
+	m2kids = flag.String("m2kids", "", "comma list of kids issued as M2 (stapled per-token ML-DSA-44, signed immediately)")
+	m2set  = map[uint32]bool{}
 )
 
 type req struct {
@@ -99,6 +101,20 @@ func (is *issuer) run(s *stream) {
 func (is *issuer) issue(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 	kid, _ := strconv.Atoi(q.Get("kid"))
+	if m2set[uint32(kid)] { // R2 M2: per-token signature, no batching wait
+		t0 := time.Now()
+		ten, _ := strconv.Atoi(q.Get("tenant"))
+		c := tokens.Claims{URLPrefix: q.Get("prefix"), Tenant: uint32(ten), Expires: time.Now().Unix() + *vmax}
+		tok, sig, err := tokens.SignStapled(is.keys, c, uint32(kid), tokens.RandFill)
+		if err != nil {
+			w.WriteHeader(500)
+			return
+		}
+		w.Header().Set("X-Token-Sig", sig)
+		w.Header().Set("X-Issue-Wait-Us", strconv.FormatInt(time.Since(t0).Microseconds(), 10))
+		w.Write([]byte(tok))
+		return
+	}
 	s := is.streams[uint32(kid)]
 	if s == nil {
 		w.WriteHeader(404)
@@ -138,7 +154,15 @@ func (is *issuer) root(w http.ResponseWriter, r *http.Request) {
 func main() {
 	flag.Parse()
 	is := &issuer{keys: tokens.DeriveKeys(*seed), streams: map[uint32]*stream{}, roots: map[[2]uint32][]byte{}}
+	for _, k := range strings.Split(*m2kids, ",") {
+		if x, err := strconv.Atoi(k); err == nil {
+			m2set[uint32(x)] = true
+		}
+	}
 	for _, spec := range strings.Split(*kids, ",") {
+		if spec == "" {
+			continue
+		}
 		f := strings.Split(spec, ":")
 		kid, _ := strconv.Atoi(f[0])
 		d, _ := strconv.Atoi(f[1])
