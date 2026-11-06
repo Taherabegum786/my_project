@@ -12,6 +12,7 @@ Outputs: results/r1_*.csv, results/tables/tab_r1_*.tex, results/figures/fig13..f
 stdout (r1_summary.txt).
 """
 import argparse
+import math
 import os
 import sys
 
@@ -168,7 +169,7 @@ def deciles():
                 for r in g.itertuples()))
     # figure 13: (a) fraction of tokens with N_e=1 per decile vs Delta (per tenant, lam=2000)
     setup()
-    fig, axs = plt.subplots(1, 3, figsize=(DCOL, 2.3))
+    fig, axs = plt.subplots(1, 3, figsize=(DCOL, 2.5))
     ax = axs[0]
     for k, pol in enumerate(("fixed:0.01", "fixed:0.1", "fixed:1", "wc")):
         g = a[(a.lambda_bar == 2000) & (a.pooling == "tenant") & (a.policy == pol)].sort_values("decile")
@@ -178,7 +179,7 @@ def deciles():
     ax.set_ylabel("% of tokens in single-token trees")
     ax.set_title("(a) per-tenant trees, $\\bar\\lambda$=2000/s", fontsize=7)
     ax.set_xticks(range(1, 11))
-    ax.legend(fontsize=6.5)
+    ax.legend(fontsize=7)
     return a, fig, axs
 
 
@@ -200,16 +201,21 @@ def oprg_fig(a, fig, axs):
         g = a[(a.pooling == pool) & (a.policy == pol) & (a["mode"] == "staple_always") & (a.lambda_bar == 2000)]
         if len(g):
             r = g.iloc[0]
-            ax.plot(r.tok_bytes_p50, 1e3 * r.D_mean_s, MARKERS[k], color=SERIES[k], ms=5)
+            # encoder token size (118-B claims, token_sizes_r1.csv): M2 = 148 B; EMBER = Eq.(3) at the median depth
+            xb = 148 if pol == "pertoken" else 118 + 3 + math.ceil(4 * (30 + 16 * round(r.d_p50)) / 3)
+            ax.plot(xb, 1e3 * r.D_mean_s, MARKERS[k], color=SERIES[k], ms=5)
+            short = {"pertoken": "M2", "wc": "WC", "fixed:0.01": "10 ms", "fixed:0.1": "100 ms"}[pol]
             if pol != "wc" or pool != "tenant":   # per-tenant WC coincides with M2; labelled jointly
-                ax.annotate(lab + (" = per-tenant WC" if pol == "pertoken" else ""), (r.tok_bytes_p50, 1e3 * r.D_mean_s),
-                            fontsize=5.5, xytext=(4, -6 if pol == "pertoken" else 3), textcoords="offset points")
-    ax.set_yscale("symlog", linthresh=1)
-    ax.set_xlabel("median token bytes (URL)")
+                ax.annotate(("M2, per-tenant WC" if pol == "pertoken" else ("1 pool " if pool == "global" else "per-tenant ") + short),
+                            (xb, 1e3 * r.D_mean_s), fontsize=7, xytext=(5, -3 if pol == "pertoken" else (-12 if pool == "tenant" else 4)),
+                            textcoords="offset points")
+    ax.set_xlim(135, 400)
+    ax.set_yscale("log")
+    ax.set_xlabel("median URL token bytes (encoder)")
     ax.set_ylabel("mean added delay D (ms), staple-all")
     ax.set_title("(c) $\\bar\\lambda$=2000/s: size vs delay", fontsize=7)
     h, l = axs[1].get_legend_handles_labels()
-    fig.legend(h, l, fontsize=6.5, ncol=6, loc="lower center", bbox_to_anchor=(0.5, -0.1))
+    fig.legend(h, l, fontsize=7, ncol=3, loc="lower center", bbox_to_anchor=(0.5, -0.17))
     fig.tight_layout()
     save(fig, os.path.join(IN, "figures"), "fig13_operating_region")
 
@@ -228,7 +234,7 @@ def pmove():
             100 * r.frac_req_waiting_hi, r.miss_per_token, r.staple_installs_per_token, r.moves_per_token, 1e3 * r.D_mean_s,
             r.staple_bytes_per_session))
     setup()
-    fig, axs = plt.subplots(1, 2, figsize=(DCOL * 0.75, 2.2))
+    fig, axs = plt.subplots(1, 2, figsize=(DCOL, 2.3))
     for k, (pool, pol, mode, lab) in enumerate((("tenant", "fixed:0.01", "pull", "pull, per-tenant $\\Delta$=10 ms"),
                                                 ("tenant", "fixed:0.01", "pull_staple", "staple first req., per-tenant 10 ms"),
                                                 ("tenant", "fixed:1", "pull_staple", "staple first req., per-tenant 1 s"),
@@ -245,10 +251,12 @@ def pmove():
         ax.set_xlabel("per-segment re-route probability $p_{move}$\n(leftmost point: $p_{move}$=0)")
         ax.axvline(5e-4, color=INK2, lw=0.7, ls=":")
     axs[0].set_yscale("symlog", linthresh=0.01)
+    axs[0].set_ylim(0, 3)
     axs[0].set_ylabel("% of requests that wait (simulated)")
     axs[1].set_ylabel("root installs+fetches per token\n(P3-style miss definition)")
-    axs[0].legend(fontsize=6, loc="upper left")
     fig.tight_layout()
+    h, l = axs[0].get_legend_handles_labels()
+    fig.legend(h, l, fontsize=7, ncol=3, loc="lower center", bbox_to_anchor=(0.5, -0.2))
     save(fig, os.path.join(IN, "figures"), "fig14_pmove_sensitivity")
     return a
 
@@ -435,7 +443,7 @@ def b11(a_oprg):
                             lam, pool, pol, r.issuer_cpu_us_per_token, r.issuer_cpu_cores, t_ed_s, lam * t_ed_s * 1e-6,
                             r.sig_verifs_per_edge_per_s))
     setup()
-    fig, ax = plt.subplots(figsize=(COL, 2.3))
+    fig, ax = plt.subplots(figsize=(COL, 2.6))
     tb = np.logspace(np.log10(60), np.log10(30 * 86400), 200)
     for k, (V, lab) in enumerate(((3600.0, "$V_{max}$=1 h"), (600.0, "$V_{max}$=10 min"))):
         Lmax = tb - V
@@ -455,9 +463,9 @@ def b11(a_oprg):
     ax2.spines["right"].set_visible(True)
     h1, l1 = ax.get_legend_handles_labels()
     h2, l2 = ax2.get_legend_handles_labels()
-    ax.legend(h1 + h2, l1 + l2, fontsize=6, loc="upper left")
-    ax.text(0.3, 0.05, "left of dotted line: B11 unsafe for\nevery $L$; EMBER/M2 preferable", transform=ax.transAxes,
-            fontsize=6, color=INK2)
+    fig.legend(h1 + h2, l1 + l2, fontsize=7, loc="lower center", ncol=1, bbox_to_anchor=(0.5, -0.32))
+    ax.text(0.98, 0.27, "left of a dotted line: B11 unsafe\nfor every $L$ at that $V_{max}$", transform=ax.transAxes,
+            fontsize=7, color=INK2, va="bottom", ha="right")
     save(fig, os.path.join(IN, "figures"), "fig15_b11_tradeoff")
 
 

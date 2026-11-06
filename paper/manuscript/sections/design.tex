@@ -1,5 +1,7 @@
-\section{EMBER Design}
+\section{Design Space}
 \label{sec:design}
+
+All schemes authenticate the same canonical claim string, so only the authenticator and its delivery differ. Fig.~\ref{fig:arch} shows the two post-quantum designs this paper focuses on.
 
 \begin{figure}[t]
 \centering
@@ -9,133 +11,83 @@
   lab/.style={font=\scriptsize, align=center, fill=white, inner sep=1pt},
   arr/.style={-{Stealth[length=1.8mm]}, thick},
   darr/.style={-{Stealth[length=1.8mm]}, thick, dashed}]
-\node[box, minimum width=2.4cm] (iss) at (0,0) {Issuer $I$\\ queue $\to$ epoch tree\\ $\sigma_e=\Sig(sk,R_e)$};
-\node[box, minimum width=2.2cm] (rs) at (5.0,0) {Root service\\ \texttt{/ember/kid/e}\\ period bundles};
-\node[box, minimum width=2.2cm] (sh) at (5.0,-1.65) {Shield tier};
-\node[box, minimum width=2.2cm] (edge) at (5.0,-3.3) {Edge $E_j$\\ $pk$, root cache};
-\node[box, minimum width=2.4cm] (cli) at (0,-3.3) {Client};
-\draw[arr] (iss) -- node[lab, above]{$SR_e$ (signed root)} (rs);
+\node[box, minimum width=2.4cm] (iss) at (0,0) {Issuer $I$\\ M2: sign each token\\ EMBER: sign root $R_e$};
+\node[box, minimum width=2.2cm] (rs) at (5.0,0) {Root service\\ (EMBER only)};
+\node[box, minimum width=2.2cm] (sh) at (5.0,-1.55) {Shield tier};
+\node[box, minimum width=2.2cm] (edge) at (5.0,-3.2) {Edge $E_j$\\ $pk$, verified cache};
+\node[box, minimum width=2.4cm] (cli) at (0,-3.2) {Client};
+\draw[arr] (iss) -- node[lab, above]{$SR_e$} (rs);
 \draw[arr] (rs) -- (sh);
-\draw[arr] (sh) -- node[lab, left=2pt]{pull on miss\\(coalesced)} (edge);
+\draw[arr] (sh) -- node[lab, left=2pt]{pull on miss\\(fallback)} (edge);
 \draw[darr] (rs.east) .. controls +(0.9,-0.5) and +(0.9,0.5) .. node[lab, right]{push} (edge.east);
-\draw[arr] (iss) -- node[lab, right=2pt, pos=0.45]{token: claims\\$+(e,i,r,\text{path})$\\$[+SR_e]$} (cli);
-\draw[arr] (cli) -- node[lab, below=3pt, pos=0.42]{requests with token;\\ first one may staple $SR_e$} (edge);
+\draw[arr] (iss) -- node[lab, right=2pt, pos=0.45]{URL token\\$+$ signature or $SR_e$\\(to staple)} (cli);
+\draw[arr] (cli) -- node[lab, below=3pt, pos=0.42]{requests with URL token;\\ staple on new edge} (edge);
 \end{tikzpicture}
-\caption{EMBER architecture. The issuer signs one root per epoch. Edges obtain it by pull through the shield tier, by push, from a period bundle, or stapled by the client on its first request.}
+\caption{Stapled post-quantum tokens. In M2 the client staples its token's ML-DSA signature on the first request to each edge. In EMBER it staples the signed epoch root $SR_e$ (MTL's ``full'' signature) and the URL carries a Merkle path. Pull from the root service through the shield tier and push are EMBER fallbacks.}
 \label{fig:arch}
 \end{figure}
 
-Fig.~\ref{fig:arch} shows the architecture. The issuer collects token requests during an epoch $e$ of length $\Delta_e$, builds a Merkle tree over salted leaves, signs the root once and returns to each client a token containing its claims and authentication path. Edges verify a token by recomputing the root from the path and comparing it with a cached, signature-verified root.
+\subsection{Per-Token Signatures, Cached or Stapled}
+\textbf{B5/B6} put an ML-DSA-44/65 signature in every token. \textbf{B5v} adds an edge cache of verified tokens, keyed by SHA-256 of the token, so verification runs once per (token, edge). The 3.3~KB token is still sent and hashed on every request. \textbf{M2} (stapled per-token ML-DSA-44) separates the signature from the token. The URL token is the claims followed by \texttt{:S=}b64url($\mathit{kid}\,\|\,$16-B nonce). On its first request to an edge, the client sends the 2,420-B signature over (claims, nonce) in a header. The edge verifies it, caches $H(\mathit{ref}\,\|\,\text{claims})$ as verified until the expiry, and from then on hashes about 138~B per request. M2 is the $N=1$ special case of EMBER, and it is also B5v without the per-request resend. Its security is the EUF-CMA security of ML-DSA plus the collision resistance of the cache key.
 
-\subsection{Primitives and Notation}
-Let $H$ be SHA-256 and $n\in\{16,32\}$ the node length in bytes. We use the tweakable hash $\Th(T,x)=\mathrm{trunc}_n(H(T\,\|\,x))$ with a fixed-length 26-byte tweak
-$T=\texttt{"EMBERv1\textbackslash0"}\|\mathit{kid}\|e\|\mathit{type}\|\ell\|j\|\mathit{tenant}$,
-where $\mathit{type}\in\{\textsc{leaf},\textsc{node},\textsc{root},\textsc{period}\}$, $\ell$ is the tree level and $j$ the node index. As in SLH-DSA's address-based domain separation~\cite{sphincsplus2019}, every hash call at every position of every epoch is a distinct function instance. The tenant identifier separates tenants that share a pooled tree. Leaf $i$ of epoch $e$ is $L_i=\Th(T_{\textsc{leaf}}(e,i),\,r_i\,\|\,\mathrm{enc}(c_i))$, where $c_i$ are the canonical claims and $r_i\in\{0,1\}^{128}$ is a salt chosen by the issuer \emph{after} it receives the claims. Inner nodes are $\Th(T_{\textsc{node}}(e,\ell,j),\,\text{left}\,\|\,\text{right})$. The tree has the RFC~9162 shape~\cite{rfc9162}: an unpaired node is promoted, so the path length is at most $d=\lceil\log_2 N_e\rceil$. The signed epoch root is
-\begin{equation}
-SR_e=(\mathit{kid},e,T_{\text{start}},\Delta_e,N_e,R_e,\sigma_e),
-\end{equation}
-where
-\begin{equation}
-\sigma_e=\Sig\big(sk,\texttt{"EMBER-root"}\|\mathit{kid}\|e\|T_{\text{start}}\|\Delta_e\|N_e\|R_e\big),
-\end{equation}
-signed with the FIPS~204/205 context string \texttt{EMBER-root}. In the hybrid variant $\sigma_e=\sigma_{\text{Ed25519}}\|\sigma_{\text{ML-DSA-44}}$ over the same message, and both components must verify (an AND-combiner~\cite{bindel2017hybrid}).
+\subsection{EMBER: Pooled Epoch-Merkle Batching}
+\label{sec:ember}
+\emph{Notation.} $H$ is SHA-256 truncated to $n\in\{16,32\}$ bytes. The tweakable hash is $\Th(T,x)=\mathrm{trunc}_n(H(T\|x))$ with a fixed-length 26-B tweak $T=\texttt{"EMBERv1\textbackslash0"}\|\mathit{kid}\|e\|\mathit{type}\|\ell\|j\|\mathit{tenant}$, so every node position of every epoch is a distinct function~\cite{sphincsplus2019}. Leaf $i$ of epoch $e$ is $L_i=\Th(T_{\textsc{leaf}}(e,i),\,r_i\|\mathrm{enc}(c_i))$, where $r_i$ is a 128-bit salt that the issuer draws \emph{after} it receives the claims $c_i$. Inner nodes are $\Th(T_{\textsc{node}}(e,\ell,j),\,\text{left}\|\text{right})$, and the tree has the RFC~9162 shape~\cite{rfc9162}, with depth $d=\lceil\log_2N_e\rceil$. The signed epoch root is $SR_e=(\mathit{kid},e,T_{\text{start}},\Delta_e,N_e,R_e,\sigma_e)$, where $\sigma_e=\Sig(sk,\texttt{"EMBER-root"}\|\mathit{kid}\|e\|T_{\text{start}}\|\Delta_e\|N_e\|R_e)$ is ML-DSA-44 with the FIPS~204 context string \texttt{EMBER-root}. In the hybrid variant, $\sigma_e$ is an Ed25519 signature and an ML-DSA-44 signature over the same message, and both must verify.
 
-\subsection{Token Format}
-A token is a textual claim string followed by one base64url blob:
-\begin{center}\footnotesize
-\texttt{URLPrefix=\ldots:Expires=\ldots:Tenant=\ldots}\\
-\texttt{[:IP=\ldots]:E=}\textit{blob}
-\end{center}
-with $\textit{blob}=\mathrm{b64url}(\mathit{ver}_1\|\mathit{alg}_1\|\mathit{kid}_4\|e_4\|i_4\|r_{16}\|\text{path}_{n d})$, i.e., $30+nd$ raw bytes. With $c_{\text{enc}}$ bytes of encoded claims, the token size is
+\emph{Token.} The URL token is \texttt{URLPrefix=\ldots:Expires=\ldots:} \texttt{Tenant=\ldots:E=}\textit{blob}, where the blob is the base64url encoding of version, algorithm, $\mathit{kid}$, $e$, $i$, $r_i$ and the path, $30+nd$ raw bytes in all. With $c_{\text{enc}}$ bytes of encoded claims,
 \begin{equation}
-S_{\text{tok}}=c_{\text{enc}}+3+\lceil 4(30+n d)/3\rceil .
+S_{\text{tok}}=c_{\text{enc}}+3+\lceil 4(30+nd)/3\rceil .
 \label{eq:size}
 \end{equation}
-Eq.~\eqref{eq:size} reproduces all 26 measured token sizes exactly (Section~\ref{sec:res-size}). The root signer does not affect token size.
+Our encoder implements Eq.~\eqref{eq:size}. With a 60-character path ($c_{\text{enc}}=118$) it yields 161, 268, 332 and 460~B for $N=1$, $2^5$, $2^8$ and $2^{14}$, against 148~B for M2.
 
-\subsection{Algorithms}
-Algorithm~\ref{alg:issue} gives issuance and Algorithm~\ref{alg:verify} edge verification. The issuer closes an epoch when its timer $\Delta_e$ fires, or earlier when the count trigger $N_{\max}=2^{d_{\max}}$ is reached. The count trigger enforces the size budget: with budget $B$, $d_{\max}=\lfloor(3B/4-30-c_{\text{enc}})/n\rfloor$.
+\emph{Issuance and pooling.} The issuer collects requests for $\Delta$ seconds, or until a count cap $N_{\max}$ is reached, and then closes the epoch. Closing builds the tree ($2N-1$ hashes), signs the root once, and returns to each client its token and $SR_e$ (Algorithm~\ref{alg:issue}, Appendix~\ref{app:alg}). The unit of batching is the \emph{pool}, meaning the set of tenants that share a tree. Batching saves signatures only when a pool receives many tokens per $\Delta$. With $P$ pools the issuer makes at most $P/\Delta$ signatures per second, independent of the token rate. Pooling lets one issuer key mint tokens for every tenant in the pool. It is therefore appropriate only when the tenants already delegate issuance to the CDN or belong to one trust domain. Tenant is part of the claims and of the leaf tweak, so leaves cannot be replayed across tenants.
 
-\begin{algorithm}[t]
-\caption{Issuer: epoch closing and publication}
-\label{alg:issue}
-\small
-\begin{algorithmic}[1]
-\Procedure{Issue}{$c$}
-  \State $r\gets\$\{0,1\}^{128}$; append $(c,r,\mathit{future})$ to $Q$; \Return await $\mathit{future}$
-\EndProcedure
-\Procedure{CloseEpoch}{}\Comment{timer $\Delta_e$, or $|Q|=N_{\max}$}
-  \State $B\gets Q$; $Q\gets[\,]$; $e\gets e+1$; $N\gets|B|$
-  \Statex \hspace{\algorithmicindent}\Comment{rotate $\mathit{kid}$ before $e$ or $i$ would wrap}
-  \State $L_i\gets\Th(T_{\textsc{leaf}}(e,i),\,B[i].r\,\|\,\mathrm{enc}(B[i].c))$ for $i<N$
-  \State $(R,\mathit{levels})\gets\textsc{BuildTree}(e,L)$ \Comment{$N-1$ node hashes}
-  \State $\sigma\gets\Sig(sk,\texttt{"EMBER-root"}\|\mathit{kid}\|e\|T_{\text{start}}\|\Delta\|N\|R)$
-  \State \textsc{Publish}$(SR_e)$ at \texttt{/ember/}$\mathit{kid}$\texttt{/}$e$ (immutable)
-  \State if push mode: send $SR_e$ to edges through the tier tree
-  \State every $m$ epochs: publish bundle $PB_p$, signed
-  \Statex \hspace{\algorithmicindent} over $\mathrm{MTH}(R_{e_1},\dots,R_{e_m})$
-  \For{$i<N$}
-    \State $\pi_i\gets\textsc{Path}(\mathit{levels},i)$
-    \State resolve $B[i].\mathit{future}$ with $(c_i,\mathit{kid},e,i,r_i,\pi_i)$ [$+SR_e$]
-  \EndFor
-\EndProcedure
-\end{algorithmic}
-\end{algorithm}
+\emph{Verification} is given in Algorithm~\ref{alg:verify}. Revocation uses short $\vmax$ (1~h by default), signed lists of revoked $(e,i)$ pairs at 8~B each, or withdrawal of a whole epoch root.
 
 \begin{algorithm}[t]
-\caption{Edge: per-request verification}
+\caption{Edge verification of an EMBER token}
 \label{alg:verify}
 \small
 \begin{algorithmic}[1]
 \Procedure{Verify}{$\mathit{tok},\mathit{url},\mathit{now}$}
-  \State parse $c$ and $(\mathit{kid},e,i,r,\text{path})$; reject if malformed or $\mathit{kid}$ unknown
+  \State parse claims $c$ and $(\mathit{kid},e,i,r,\text{path})$; reject if malformed or $\mathit{kid}$ unknown
   \State reject if $\mathit{now}>c.\mathit{Exp}+\tau$ or $c.\mathit{Exp}>T_{\text{start}}(e)+\Delta_e+\vmax+\tau$
-  \State reject if $c.\mathit{URLPrefix}$ is not a prefix of $\mathit{url}$, or IP binding fails
-  \State reject if $(e,i)\in\mathit{Revoked}$ or $i\ge N_e$
+  \State reject if URL prefix or IP binding fails, $(e,i)$ revoked, or $i\ge N_e$
   \State $R\gets\mathit{RootCache}[\mathit{kid},e]$
   \If{$R=\bot$}
-    \If{stapled header \texttt{X-EMBER-Root} present} verify $\sigma_e$; insert
-    \ElsIf{$e$ lies in a closed period $p$} fetch $PB_p$ (coalesced); verify $\sigma_p$ and MTH; insert all $m$ roots
-    \Else{} fetch $SR_e$ via shield (coalesced, negative-cached); verify $\sigma_e$; insert
+    \If{a stapled $SR_e$ is present} verify $\sigma_e$ (per-client rate limit); cache
+    \Else{} fetch $SR_e$ via shield (coalesced, negative-cached); verify; cache
     \EndIf
-    \State on failure or timeout: \Return reject (fail closed)
+    \State on failure or timeout: \Return reject \Comment{fail closed}
   \EndIf
   \State $x\gets\Th(T_{\textsc{leaf}}(e,i),r\|\mathrm{enc}(c))$
-  \For{each sibling $s_\ell$ in path} $x\gets\Th(T_{\textsc{node}}(e,\ell,\cdot),\mathrm{order}(x,s_\ell,i,\ell))$
+  \For{each sibling $s_\ell$ in path} $x\gets\Th(T_{\textsc{node}}(e,\ell,\cdot),\mathrm{order}(x,s_\ell))$
   \EndFor
-  \State \Return $x\stackrel{\text{ct}}{=}R$ \Comment{constant-time compare}
+  \State \Return $x\stackrel{\text{ct}}{=}R$
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
 
-\emph{Revocation.} Validity is bounded by $\vmax$ (default 1~h). Beyond that, the issuer publishes signed revocation deltas as sets of $(e,i)$ pairs, 8~B per revoked token, together with the period bundles. Edges check them with a hash-set lookup. A whole epoch can be revoked by withdrawing $R_e$, and the key can be rotated through $\mathit{kid}$.
+\subsection{Root Dissemination}
+\label{sec:dissem}
+An edge cannot verify an EMBER token until it holds $R_e$. There are four ways to get it there. \textbf{Pull}: the edge fetches $SR_e$ through the shield on a miss, with coalesced fetches. \textbf{Push}: the issuer fans each root out to all edges, at fleet bandwidth $BW_{\text{push}}=T_{\text{active}}\,E\,(|\sigma|+40)/\Delta$ for $T_{\text{active}}$ active pools. \textbf{Period roll-up}: every $m$ epochs one signed bundle lists the $m$ roots. \textbf{Stapling}: the client sends $SR_e$ in a header, either on its first request (\emph{staple-first}) or on every request to an edge it has not used before (\emph{staple-all}). The stapled header is the 2,461-B signed root, \num{3298}~B as an HTTP/1.1 header line. With staple-all, verification does not depend on the root service at all, which matters because edges fail closed: during an outage of the root service or the shield tier, pull-only edges reject every token of an epoch they have not cached, while stapled tokens still verify. For Poisson token arrivals in pull mode, the expected number of root misses per token at edges with traffic shares $w_v$ is
+\begin{equation}
+M(\Delta)=\frac{1}{\lambda\Delta}\sum_{v=1}^{E}\bigl(1-e^{-\lambda\Delta w_v}\bigr).
+\label{eq:miss}
+\end{equation}
+The added delay per token is $D=\Delta/2+t_{\text{epoch}}+M(\Delta)F_{\text{miss}}$, where $F_{\text{miss}}$ is the root round trip plus $t_v$ (pull), or $t_v$ alone (stapling). When $\lambda\Delta\ll E$, $M\to1$: almost every token is the first at its edge in its epoch, so only stapling or push avoids the round trip.
 
-\emph{Pooling.} A CDN-operated issuer can place several low-rate tenants in one tree. This raises $N_e$ and the chance that an edge already holds the root. Tenant is a claim and part of the leaf tweak, so a leaf cannot be replayed across tenants. Pooling is appropriate only when the tenant already trusts the CDN to mint its tokens.
-
-\subsection{Security Argument}
+\subsection{Security}
 \label{sec:security}
-
-\begin{definition}[Token unforgeability]
-In game $\mathrm{UF}$-$\mathrm{TOK}$, $\mathcal{A}$ receives $pk$, the stream of signed roots and period bundles, and the state of all edges. It adaptively queries $\textsc{Issue}(c)$ and causes epochs to close. $\mathcal{A}$ wins if an honest edge's \textsc{Verify} accepts a token carrying $(c^*,e^*,i^*)$ such that leaf $i^*$ of epoch $e^*$ was not issued for claims $c^*$, or $(e^*,i^*)$ is revoked.
-\end{definition}
-
 \begin{theorem}
 \label{thm:uf}
-Let $p\le\sum_e(2N_e-1)$ be the number of tree positions, counting period trees, at which the issuer evaluates $\Th$. For every $\mathcal{A}$ that makes $q_h$ queries to $\Th$, there are adversaries $\mathcal{B}_1,\mathcal{B}_2$ with about the same running time such that
-\begin{equation}
-\Adv^{\mathrm{uf\text{-}tok}}_{\ember}(\mathcal{A})\le\Adv^{\mathrm{euf\text{-}cma}}_{\Sig}(\mathcal{B}_1)+\Adv^{\mathrm{sm\text{-}tcr}}_{\Th,p}(\mathcal{B}_2),
-\end{equation}
-where $\mathrm{sm\text{-}tcr}$ is single-function, multi-target target-collision resistance with distinct tweaks~\cite{sphincsplus2019}. Root and period signatures share $sk$ but use distinct context strings, so a single EUF-CMA term covers both. For the hybrid root, $\Adv^{\mathrm{euf\text{-}cma}}_{\Sig}$ is at most the smaller of the two components' advantages~\cite{bindel2017hybrid}.
+Suppose an adversary $\mathcal{A}$ makes $q_h$ queries to $\Th$ and the issuer evaluates $\Th$ at $p\le\sum_e(2N_e-1)$ tree positions. Then there exist $\mathcal{B}_1,\mathcal{B}_2$ with about the same running time such that
+$\Adv^{\mathrm{uf\text{-}tok}}_{\ember}(\mathcal{A})\le\Adv^{\mathrm{euf\text{-}cma}}_{\Sig}(\mathcal{B}_1)+\Adv^{\mathrm{sm\text{-}tcr}}_{\Th,p}(\mathcal{B}_2)$.
 \end{theorem}
-
 \begin{IEEEproof}[Proof sketch]
-Let $R^*$ be the root that the edge used for $(\mathit{kid},e^*)$. \emph{Case 1: the issuer never output $R^*$ for $(\mathit{kid},e^*)$.} The edge verified $\sigma$ on a message that the issuer never signed, either $SR_{e^*}$ or a period message $PB_p$, which $\mathcal{B}_1$ outputs as a forgery. If $PB_p$ is honest but lists $R^*$, the list hashes to the honest period MTH, which gives a period-tree collision at a fixed honest target; this is handled as in Case~2. \emph{Case 2: $R^*=R_{e^*}$ is honest.} Since $i^*<N_{e^*}$ is enforced, honest leaf $i^*$ exists with claims $c_{i^*}\neq c^*$. The honest and adversarial hash chains for position $i^*$ start from different inputs and end at the same root, so at some position $(e^*,\ell,j)$ they have different inputs and equal outputs under the same tweak. The honest input at the lowest such position contains the salt $r_{i^*}$, which the issuer chose after $\mathcal{A}$ fixed $c_{i^*}$, or contains a value derived from it. $\mathcal{A}$ therefore could not have prepared a colliding pair in advance; it must hit a fixed honest target, which $\mathcal{B}_2$ turns into an sm-tcr break. Because tweaks are distinct, the $p$ targets give no multi-target speed-up~\cite{sphincsplus2019}. Revoked $(e^*,i^*)$ are rejected by line~5 of Algorithm~\ref{alg:verify}. Cross-epoch, cross-tenant and cross-$\mathit{kid}$ replays change a tweak component and fall under Case~2. Epoch and index counters must not wrap, so $\mathit{kid}$ is rotated first.
+Let $R^*$ be the root the edge used. If the issuer never produced $R^*$ for $(\mathit{kid},e^*)$, then the verified $\sigma$ is a forgery, which $\mathcal{B}_1$ outputs. Otherwise $R^*=R_{e^*}$ is honest, and since $i^*<N_{e^*}$ is enforced, an honest leaf $i^*$ exists whose claims differ from $c^*$. The honest and adversarial hash chains start from different inputs and reach the same root. So at some position they have different inputs and equal outputs under the same tweak. The honest input there contains the salt $r_{i^*}$, which was chosen after $\mathcal{A}$ fixed $c_{i^*}$, or a value derived from it. $\mathcal{A}$ therefore hits a fixed honest target, which is an sm-tcr break; distinct tweaks rule out multi-target speed-ups~\cite{sphincsplus2019}. Replays across epochs, tenants or $\mathit{kid}$ change the tweak and fall into the second case.
 \end{IEEEproof}
+This is a sketch, not a new proof. For $n=32$, plain collision resistance suffices, matching batch signatures~\cite{batchsig2024}. The root and period-bundle signatures use distinct context strings. The hybrid root is an AND-combiner, at least as strong as its stronger component~\cite{bindel2017hybrid}. sm-tcr is defined for a keyed hash family. Our tweak contains $\mathit{kid}$ and the epoch but no random public seed (SLH-DSA's PK.seed). We therefore recommend adding a 16-B random seed per $\mathit{kid}$ to the tweak, carried in $SR_e$. This adds 16~B to the staple and nothing to tokens. We did not measure this variant. \emph{Truncation:} ML-DSA-44 is a category-2 parameter set~\cite{fips204}. With $n=16$, the generic second-preimage bound is about $2^{128}$ classically and $2^{64}$ with Grover. The \emph{token} therefore offers category-1 security, the same generic level as SLH-DSA-128's 16-B hashes~\cite{fips205}. Use $n=32$ for higher categories (+341~B at $N=2^{16}$). The issuer-chosen salt is mandatory, because $\mathcal{A}$ must not control both inputs of a collision.
 
-Plain collision resistance of $\Th$ also suffices when $n=32$. That matches the proof structure of batch signatures~\cite{batchsig2024}, which we cite as the formal basis. We do not claim a new full proof. G2 holds structurally, and G4 holds because every sibling is a $\Th$ output over an input containing 128 fresh salt bits.
-
-\emph{Truncation to $n=16$.} With 128-bit outputs, the generic sm-tcr bound is about $q_h/2^{128}$ classically and $O(q_h^2/2^{128})$ quantumly. This is the same generic level at which SLH-DSA-128s/f, which also uses 16-byte tweakable hashes, is placed in NIST category~1~\cite{fips205}. Collision attacks, at about $2^{43}$ quantum cost for 128-bit outputs, would matter only if $\mathcal{A}$ controlled both inputs. Issuer salting prevents this, which is why the salt is mandatory for $n=16$. Epoch-bounded validity (G3) additionally confines a useful forgery to $\vmax$ after the epoch. This is defense in depth and not part of the bound. We recommend $n=16$ with ML-DSA-44 or SLH-DSA-128 roots, and $n=32$ for category-3/5 deployments.
-
-\emph{Other threats.} \emph{Downgrade:} once a tenant has switched to \ember{} keys, edges must stop accepting classical tokens for that tenant, as with post-quantum origin authentication~\cite{cf2026pqauthorigins}. \emph{Privacy:} $N_e$ in a public root leaks per-tenant issuance volume. Padding to $2^d$ (at most 12\% issuer slowdown in our Python implementation), pooling, or stapling-only distribution avoid this. The pair $(e,i)$ is a per-token identifier, as a per-token signature already is. \emph{Side channel:} root-fetch timing reveals whether a token of $(\mathit{tenant},e)$ was recently used at an edge; push or stapling removes it. \emph{DoS:} tokens naming fake epochs can trigger root fetches, and fake stapled roots trigger signature verifications. Section~\ref{sec:res-dos} measures both.
-
-Correctness was checked by 51 Python tests: round trips, bit-flip rejection in every claims byte and in salts, paths and indices, epoch, $\mathit{kid}$ and tenant replays, skewed clocks, revocation, hybrid halves, stapled and negatively cached roots, and every baseline. A further 128 cross-implementation test vectors are verified identically by the Go port.
+\emph{Other threats.} Downgrade: once a tenant has switched, edges must reject classical tokens for that tenant. Privacy: $N_e$ in a public root leaks issuance volume, and the pair $(e,i)$ identifies a token, as a per-token signature already does. Padding the tree to $2^d$ hides the volume. It slowed our Python issuer by 12.45\% at $N=1000$, but the worst case is $N=2^k+1$, where the analytic native cost rises by 38.9\% at $N=2^{14}+1$. DoS: tokens naming fake epochs trigger root fetches, and fake staples trigger signature verifications (Section~\ref{sec:res-other}). Replaying a \emph{valid} staple costs nothing at an edge that has the root cached, and costs at most one verification per $(\mathit{kid},e)$ elsewhere. Per-client limits bound both cases.

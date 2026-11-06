@@ -1,65 +1,49 @@
 \section{Discussion}
 \label{sec:discussion}
 
-\subsection{Deployment Guidance}
-Table~\ref{tab:params} lists the parameters we recommend on the basis of these measurements.
-
-\begin{table}[t]
+\begin{table*}[t]
 \centering
-\caption{Recommended EMBER parameters.}
-\label{tab:params}
-\footnotesize
+\caption{Trust and cost comparison. Bytes: encoder URL token, 60-character path. Verify: native OpenSSL~3.5.4 medians. Dissemination: simulated fleet traffic for $E=500$ ($\bar\lambda=2000$/s) or per-session staple bytes.}
+\label{tab:trust}
+\scriptsize
 \setlength{\tabcolsep}{3pt}
-\begin{tabular}{@{}p{2.2cm}p{5.9cm}@{}}
+\begin{tabular}{@{}llp{2.9cm}p{2.0cm}rp{3.0cm}p{2.6cm}@{}}
 \toprule
-Parameter & Recommendation and evidence \\
+Scheme & Secret at edge & One compromised edge mints for & PQ assumption & Bytes & Verify (\textmu s) & Dissemination \\
 \midrule
-Node size $n$ & 16~B with ML-DSA-44 or SLH-DSA-128 roots (category~1); 32~B for category-3/5 profiles (+341~B at $N=2^{16}$). \\
-Root signer & ML-DSA-44. SLH-DSA-128s only if issuance can absorb a 306~ms signature per epoch. Hybrid root only if policy requires it (+41.6\% simulated edge CPU with per-tenant trees). \\
-Epoch close & Work-conserving, or a fixed $\Delta$ of about 10~ms, with count trigger $N_{\max}=2^{16}$ (token $\le$503~B for 118-B claims). Adaptive control brought no measurable gain. \\
-Dissemination & Pull with stapling on the first request to each edge, coalesced pull as fallback. Avoid per-tenant push at small $\Delta$ (GB/s at $E\ge500$). \\
-Validity & $\vmax$ = 1~h; skew tolerance $\tau$ = 5~s; refresh tokens for longer sessions. \\
-Period bundles & $P$ = 300~s, used to carry revocation deltas and bound root state, not to reduce misses. \\
-DoS & Per-client limits on fetches and staples; fetch only for configured $\mathit{kid}$s and epochs within $[\mathit{now}-\vmax-P,\mathit{now}]$. \\
-Transport & Prefer URL or header placement. With HTTP/2 cookies and a large HPACK table, the byte advantage over ML-DSA cookies is small. \\
+B1 HMAC & yes (key lifetime) & all edges, all paths of the key & unconditional & 166 & 0.30 & none \\
+B10 multi-MAC, $k{=}3$ & yes & its own domain & unconditional & 187 & 0.30 & none \\
+B12 KEM-wrapped HMAC & yes (epoch keys) & all edges, live epochs & unconditional & 171 & 0.30 & 283.5~MB/s key push \\
+B2 Ed25519 & no & none & none (Shor) & 209 & 94.6 & none \\
+B11 delegated Ed25519 & no & none & no break within $L+\vmax$ & 214 & 94.6 per (key, edge) & 0.383~MB/s ($L=1$~h) \\
+B5 ML-DSA-44 & no & none & unconditional & \num{3350} & 100.9 per request & none \\
+B5v + verify cache & no & none & unconditional & \num{3350} & 100.9 first, 2.19 hit & none \\
+\textbf{M2} stapled ML-DSA-44 & no & none & unconditional & 148 & 100.9 per (token, edge), $\le$0.21 hit & staple \num{2921}~B/session (h2) \\
+EMBER pooled, staple-all & no & none & unconditional & 268 & 0.89 path ($d{=}5$) + 100.9 per (root, edge) & staple \num{2968}~B/session (h2) \\
+EMBER per-tenant, pull & no & none & unconditional & 161--247 & 0.24--0.75 path ($d{=}0$--4) + root & 8.41~MB/s ($\Delta=1$~s) \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-\emph{When to choose something else.} If one operator controls all edges and accepts a shared key, HMAC (B1) is post-quantum, cheapest and simplest. Per-domain multi-MAC (B10) contains a multi-CDN breach to one domain at HMAC cost. If an operator accepts the assumption that no CRQC breaks Ed25519 within the delegation lifetime, B11 gives 214-B tokens over the same dissemination path. B12 gives 171-B tokens, but it pushes a short-lived minting secret to every edge, at 283~MB/s of key traffic for $E=500$ in our simulation. Per-token ML-DSA-44 with a verification cache (B5v) is competitive on CPU and, with a large HPACK table, on cookie bytes. Its cost lies in URL form, HTTP/1.1, the first request of each session, and 3.3~KB tokens that every request must parse and hash. \ember{} is the option for operators who want edges to hold no secret and no classical-only assumption.
+\subsection{Deployment Guidance}
+Table~\ref{tab:trust} summarizes the trust and cost trade-offs. Our recommendations follow from the measurements.
 
-\emph{Integration.} The signed root is a small, immutable, cacheable object, so it can be encoded as a COSE or JWS object with the ML-DSA algorithms of RFC~9964~\cite{rfc9964}. Existing token-auth configuration (key ids, URL-prefix claims) carries over. The edge change is one hash loop and a root cache.
+\textbf{1. If edges may hold a minting key, use HMAC.} HMAC (B1) is post-quantum and the cheapest option. Per-domain multi-MAC (B10) confines a multi-CDN breach to one vendor at HMAC cost.
 
-\begin{table}[t]
-\centering
-\caption{Pre-registered hypotheses and outcomes.}
-\label{tab:hyp}
-\footnotesize
-\setlength{\tabcolsep}{2.5pt}
-\begin{tabular}{@{}p{3.3cm}p{1.2cm}p{3.5cm}@{}}
-\toprule
-Hypothesis & Outcome & Evidence \\
-\midrule
-H1 token $<$512~B to $N{=}2^{20}$; $\le0.25\times$ B5c bytes & partly & 503~B at $2^{16}$, 588~B at $2^{20}$; 0.144$\times$ (h2), 0.256$\times$ (HTTP/1.1) \\
-H2 verify $\le5\times$ HMAC, $\ge10\times$ cheaper than ML-DSA & partly & 7.9$\times$ and 43$\times$ native; 3.6$\times$ and 10.7$\times$ Go; 1.12$\times$ HMAC per HTTP request \\
-H3/H9 issuer $\ge50\times$ per-token signing; B11/B12 comparable & partly & 192--522$\times$ native; B11 $\ge$14$\times$ slower \\
-H4 root $<0.1\%$ of bytes; roll-up $\ge5\times$ fewer misses & partly & $\le5.3\cdot10^{-5}$ except per-tenant push; roll-up 1.4--2.2\% \\
-H5 adaptive beats best fixed $\Delta$ & refuted & $\le$0.83~ms; demoted \\
-H6 $<1\%$ requests wait; p99 CPU $<1$~ms & supported & staple 0.049\% \\
-H7 hybrid root $<1\%$ edge cost & mixed & +0.09\% in P1 (warm); +41.6\% simulated \\
-H8 simulator within 15\% of prototype & partly & misses 24/24; latency 8/24 \\
-\bottomrule
-\end{tabular}
-\end{table}
+\textbf{2. Otherwise, staple.} Detaching the signature from the token and sending it once per edge connection fixes the edge for any signature scheme. M2 matches HMAC in edge CPU (Table~\ref{tab:p1}) and is the smallest post-quantum option in URL form; in cookie form it is within 0.4\% of the smallest (Table~\ref{tab:wire}). Clients should staple on every new edge contact, not only on the first request (Fig.~\ref{fig:pmove}). Stapling also removes the root service as an availability dependency.
+
+\textbf{3. Batch only when the issuer is the bottleneck, and then pool.} Per-token signing costs the issuer $\lambda\times408.8$\us, about 0.41 cores per $10^3$ tokens/s per key. Pooled EMBER at $\Delta=10$~ms costs at most $1/\Delta$ root signatures per second plus hashing. In our runs this stayed at or below 0.057 cores up to \num{20000} tokens/s, and at $\lambda\ge10^3$/s trees hold at least about 10 tokens. Below about $10^3$ tokens/s per issuer key, the saving is under half a core: 0.046 cores at 200/s. That does not justify 5.4~ms of extra delay, 120--184 more bytes per token and the extra path hashing at the edge, so M2 is the better choice. Above that rate, use one pooled tree per issuer key with $\Delta\approx10$~ms and staple-all. Pooling requires that the tenants of a pool trust a shared issuer key. With per-tenant keys, batching saves only 1.2$\times$, and M2 should be used. Work-conserving closing self-limits issuer CPU to one core per pool at sub-millisecond delay (0.62~ms at \num{20000}/s), which suits pools whose rate fits on one signer core.
+
+\textbf{4. Consider B11 if its assumption holds.} Delegated Ed25519 is smaller and cheaper to disseminate. It is appropriate when breaking one Ed25519 key is believed to take longer than $L+\vmax$ (Section~\ref{sec:res-b11}). Short $\vmax$ is the effective lever.
+
+\textbf{5. Operational settings.} Use a node size of $n=16$ for category-1 tokens and $n=32$ above that. Add a per-$\mathit{kid}$ public seed to the tweak. Set $\vmax=1$~h and a skew tolerance $\tau=5$~s. Apply per-client limits on staples and fetches, and fetch roots only for configured $\mathit{kid}$s and recent epochs. Do not deploy per-tenant push or rely on roll-up to reduce misses.
 
 \subsection{Limitations}
 \label{sec:limits}
 \begin{itemize}
-\item \emph{Single machine.} All prototype components share one 4-vCPU KVM guest. Network namespaces and a userspace link emulator stand in for netem, which is unavailable. No physical NIC is involved, and the emulator's throughput (about 624~Mbit/s in a bulk test) probably shaped the B5/B5v latency tails at 80\% load. TLS is not included: connections are kept-alive HTTP/1.1, and the response body is 64~B, so P1 measures verification and request handling, not content delivery.
-\item \emph{Timing variability.} The two native runs differ by 15--20\% in absolute value across a VM reboot. Simulations use run~1 and primitive tables use run~2. Ratios are stable, but absolute values are implementation- and host-specific. circl verification is 3.6--4.0$\times$ faster than OpenSSL's.
-\item \emph{Load-generator-bound capacity runs.} In the first P1 campaign, other experiments competed for the load generator's cores. In three of five runs the cheap schemes stopped saturating the edge (edge utilization 0.84--0.88), so their req/s values were lower bounds. We reran P1 on a quiet machine (load average 0.21 at the start, edge utilization $\ge0.99$ in all runs) and report only the rerun, with edge CPU per request as the primary metric. The rerun gives higher req/s than the first campaign for every scheme, so absolute capacity is sensitive to host conditions. P2 load levels were set from the first campaign's capacities, and P2 was not repeated.
-\item \emph{Simulator scope.} The simulator has no edge-CPU or link queueing and does not charge for decoding the stapled header. It under-predicts pull-miss latency at $\Delta=10$~s by 36--45\% (118--137~ms measured vs.\ 75.9~ms) and staple-miss latency by about 0.05~ms. It is validated against the prototype only at small scale ($V\le50$), so results for $E=2000$ are model-based extrapolations.
-\item \emph{Workload assumptions.} We used no production CDN trace. Zipf exponents, RTTs, segment sizes, URL lengths and the re-route rate are assumptions, listed and swept in Table~\ref{tab:simparams}. Low-rate tenants were not reported separately.
-\item \emph{Security.} The security argument is a proof sketch that reduces to standard assumptions, not a machine-checked proof. Bearer-token replay is unchanged from the status quo. Pooling requires tenants to trust the CDN-held key. Epoch-bounded validity forces token refresh in long sessions.
-\item \emph{Shortened prototype runs.} P3 used 60~s issuance windows instead of 5~min, and four concurrent pipelines. P2 used 15~s measurement windows.
+\item \emph{One VM.} All prototype components share one 4-vCPU KVM guest. Network namespaces and a userspace link emulator stand in for \texttt{netem}, and there is no physical NIC and no TLS. P1 runs over loopback, so it measures edge CPU per request, not network effects. Separate P1 campaigns differed by about 10\% in absolute value.
+\item \emph{Two native runs.} Absolute costs differ by 15--20\% across a VM reboot. Everything except the controller study and the simulator consistency check uses the second run (Appendix~\ref{app:secondary}).
+\item \emph{Simulator scope.} The simulator is validated against the prototype only for miss and byte counts, at small scale ($V\le50$), and without re-routes or a shield tier. It has no edge-CPU or link queueing, so it under-predicts pull-miss latency for timer-aligned bursts (118--137~ms measured vs.\ 75.9~ms). Workload parameters (Zipf exponents, RTTs, $K$, $p_{\text{move}}$) are assumptions, and $p_{\text{move}}$ alone determines staple-first waiting.
+\item \emph{Clients.} We tested Chrome~153, curl/nghttp2 and Go, but not Firefox or Safari.
+\item \emph{Security.} We give a proof sketch, not a machine-checked proof. The public-seed variant was not implemented. Bearer-token replay is unchanged from the status quo. Pooling concentrates minting in one key.
 \end{itemize}

@@ -52,6 +52,18 @@ H.~Krawczyk, M.~Bellare, and R.~Canetti, ``{HMAC}: Keyed-hashing for message
   Available: \url{https://cloud.google.com/media-cdn/docs/generate-signatures}
 \BIBentrySTDinterwordspacing
 
+\bibitem{liang2014httpscdn}
+J.~Liang, J.~Jiang, H.~Duan, K.~Li, T.~Wan, and J.~Wu, ``When {HTTPS} meets
+  {CDN}: A case of authentication in delegated service,'' in \emph{Proc. IEEE
+  Symposium on Security and Privacy (S\&P)}, 2014, pp. 67--82.
+
+\bibitem{cangialosi2016keysharing}
+F.~Cangialosi, T.~Chung, D.~Choffnes, D.~Levin, B.~M. Maggs, A.~Mislove, and
+  C.~Wilson, ``Measurement and analysis of private key sharing in the {HTTPS}
+  ecosystem,'' in \emph{Proc. ACM SIGSAC Conference on Computer and
+  Communications Security (CCS '16)}.\hskip 1em plus 0.5em minus 0.4em\relax
+  ACM, 2016, pp. 628--640.
+
 \bibitem{shor1997}
 P.~W. Shor, ``Polynomial-time algorithms for prime factorization and discrete
   logarithms on a quantum computer,'' \emph{SIAM Journal on Computing},
@@ -68,21 +80,11 @@ B.~Westerbaan, ``Cloudflare targets 2029 for full post-quantum security,''
 {National Institute of Standards and Technology}, ``Module-lattice-based
   digital signature standard,'' NIST, FIPS 204, Aug. 2024.
 
-\bibitem{fips205}
-------, ``Stateless hash-based digital signature standard,'' NIST, FIPS 205,
-  Aug. 2024.
-
 \bibitem{rfc9964}
 \BIBentryALTinterwordspacing
 M.~Prorock and O.~Steele, ``{ML-DSA} for {JSON} object signing and encryption
   ({JOSE}) and {CBOR} object signing and encryption ({COSE}),'' RFC 9964, May
   2026. [Online]. Available: \url{https://www.rfc-editor.org/rfc/rfc9964}
-\BIBentrySTDinterwordspacing
-
-\bibitem{rfc6265}
-\BIBentryALTinterwordspacing
-A.~Barth, ``{HTTP} state management mechanism,'' RFC 6265, Apr. 2011. [Online].
-  Available: \url{https://www.rfc-editor.org/rfc/rfc6265}
 \BIBentrySTDinterwordspacing
 
 \bibitem{merkle1989}
@@ -99,38 +101,26 @@ C.~Aguilar-Melchor, M.~R. Albrecht, T.~Bailleux, N.~Bindel, J.~Howe,
 \bibitem{fregly2023mtl}
 A.~Fregly, J.~Harvey, B.~S. Kaliski~Jr., and S.~Sheth, ``Merkle tree ladder
   mode: Reducing the size impact of {NIST} {PQC} signature algorithms in
-  practice,'' in \emph{Topics in Cryptology -- CT-RSA 2023}, ser. LNCS.\hskip
-  1em plus 0.5em minus 0.4em\relax Springer, 2023.
-
-\bibitem{draft-mtl-mode}
-\BIBentryALTinterwordspacing
-J.~Harvey \emph{et~al.}, ``Merkle tree ladder ({MTL}) mode signatures,'' IETF
-  Internet-Draft draft-harvey-cfrg-mtl-mode-09, work in progress, Mar. 2026.
-  [Online]. Available:
-  \url{https://datatracker.ietf.org/doc/html/draft-harvey-cfrg-mtl-mode-09}
-\BIBentrySTDinterwordspacing
-
-\bibitem{draft-mtc}
-\BIBentryALTinterwordspacing
-D.~Benjamin, D.~O'Brien, B.~Westerbaan, L.~Valenta, and F.~Valsorda, ``Merkle
-  tree certificates,'' IETF Internet-Draft
-  draft-ietf-plants-merkle-tree-certs-02, work in progress, Mar. 2026.
-  [Online]. Available:
-  \url{https://www.ietf.org/archive/id/draft-ietf-plants-merkle-tree-certs-02.html}
-\BIBentrySTDinterwordspacing
-
-\bibitem{draft-batch-signing}
-\BIBentryALTinterwordspacing
-D.~Benjamin, ``Batch signing for {TLS},'' IETF Internet-Draft
-  draft-ietf-tls-batch-signing-00, work in progress, Jan. 2020. [Online].
-  Available:
-  \url{https://datatracker.ietf.org/doc/html/draft-ietf-tls-batch-signing}
-\BIBentrySTDinterwordspacing
+  practice,'' in \emph{Topics in Cryptology -- CT-RSA 2023}, ser. LNCS, vol.
+  13871.\hskip 1em plus 0.5em minus 0.4em\relax Springer, 2023, pp. 415--441.
 
 \bibitem{rfc9110}
 \BIBentryALTinterwordspacing
 R.~T. Fielding, M.~Nottingham, and J.~Reschke, ``{HTTP} semantics,'' RFC 9110,
   Jun. 2022. [Online]. Available: \url{https://www.rfc-editor.org/rfc/rfc9110}
+\BIBentrySTDinterwordspacing
+
+\bibitem{ms-urllength}
+\BIBentryALTinterwordspacing
+{Microsoft}, ``Maximum {URL} length is 2,083 characters in {Internet Explorer}
+  ({KB} 208427),'' Microsoft Support, accessed 2026-11-06. [Online]. Available:
+  \url{https://support.microsoft.com/kb/208427}
+\BIBentrySTDinterwordspacing
+
+\bibitem{rfc6265}
+\BIBentryALTinterwordspacing
+A.~Barth, ``{HTTP} state management mechanism,'' RFC 6265, Apr. 2011. [Online].
+  Available: \url{https://www.rfc-editor.org/rfc/rfc6265}
 \BIBentrySTDinterwordspacing
 
 \bibitem{rfc7541}
@@ -139,26 +129,15 @@ R.~Peon and H.~Ruellan, ``{HPACK}: Header compression for {HTTP/2},'' RFC 7541,
   May 2015. [Online]. Available: \url{https://www.rfc-editor.org/rfc/rfc7541}
 \BIBentrySTDinterwordspacing
 
-\bibitem{macaroons2014}
-A.~Birgisson, J.~G. Politz, {\'U}.~Erlingsson, A.~Taly, M.~Vrable, and
-  M.~Lentczner, ``Macaroons: Cookies with contextual caveats for decentralized
-  authorization in the cloud,'' in \emph{Network and Distributed System
-  Security Symposium (NDSS)}, 2014.
-
-\bibitem{rfc9449}
+\bibitem{rfc9113}
 \BIBentryALTinterwordspacing
-D.~Fett, B.~Campbell, J.~Bradley, T.~Lodderstedt, M.~B. Jones, and D.~Waite,
-  ``{OAuth} 2.0 demonstrating proof of possession ({DPoP}),'' RFC 9449, Sep.
-  2023. [Online]. Available: \url{https://www.rfc-editor.org/rfc/rfc9449}
+M.~Thomson and C.~Benfield, ``{HTTP/2},'' RFC 9113, Jun. 2022. [Online].
+  Available: \url{https://www.rfc-editor.org/rfc/rfc9113}
 \BIBentrySTDinterwordspacing
 
-\bibitem{policharla2023pqpp}
-\BIBentryALTinterwordspacing
-G.-V. Policharla, B.~Westerbaan, A.~Faz-Hern{\'a}ndez, and C.~A. Wood,
-  ``Post-quantum privacy pass via post-quantum anonymous credentials,'' IACR
-  Cryptology ePrint Archive, Paper 2023/414, 2023. [Online]. Available:
-  \url{https://eprint.iacr.org/2023/414}
-\BIBentrySTDinterwordspacing
+\bibitem{fips205}
+{National Institute of Standards and Technology}, ``Stateless hash-based
+  digital signature standard,'' NIST, FIPS 205, Aug. 2024.
 
 \bibitem{sikeridis2020ndss}
 D.~Sikeridis, P.~Kampanakis, and M.~Devetsikiotis, ``Post-quantum
@@ -187,6 +166,13 @@ P.~Kampanakis and W.~Childs-Klein, ``The impact of data-heavy, post-quantum
   \url{https://eprint.iacr.org/2024/176}
 \BIBentrySTDinterwordspacing
 
+\bibitem{cf2023pqorigins}
+\BIBentryALTinterwordspacing
+{Cloudflare}, ``Cloudflare now uses post-quantum cryptography to talk to your
+  origin server,'' Cloudflare Blog, Sep. 2023. [Online]. Available:
+  \url{https://blog.cloudflare.com/post-quantum-to-origins/}
+\BIBentrySTDinterwordspacing
+
 \bibitem{akamai2026e2epqc}
 \BIBentryALTinterwordspacing
 {Akamai}, ``Future-proofing the {Internet}: {Akamai} achieves end-to-end
@@ -197,7 +183,7 @@ P.~Kampanakis and W.~Childs-Klein, ``The impact of data-heavy, post-quantum
 \bibitem{cf2026pqauthorigins}
 \BIBentryALTinterwordspacing
 {Cloudflare}, ``Post-quantum authentication to origins is now supported,''
-  Cloudflare Blog, Jun. 2026. [Online]. Available:
+  Cloudflare Blog, 2026. [Online]. Available:
   \url{https://blog.cloudflare.com/post-quantum-authentication-to-origins/}
 \BIBentrySTDinterwordspacing
 
@@ -219,12 +205,44 @@ N.~Bindel, U.~Herath, M.~McKague, and D.~Stebila, ``Transitioning to a
   Cryptography (PQCrypto 2017)}, ser. LNCS, vol. 10346.\hskip 1em plus 0.5em
   minus 0.4em\relax Springer, 2017, pp. 384--405.
 
+\bibitem{draft-batch-signing}
+\BIBentryALTinterwordspacing
+D.~Benjamin, ``Batch signing for {TLS},'' IETF Internet-Draft
+  draft-ietf-tls-batch-signing-00 (expired), Jan. 2020. [Online]. Available:
+  \url{https://datatracker.ietf.org/doc/html/draft-ietf-tls-batch-signing}
+\BIBentrySTDinterwordspacing
+
+\bibitem{draft-mtl-mode}
+\BIBentryALTinterwordspacing
+J.~Harvey \emph{et~al.}, ``Merkle tree ladder ({MTL}) mode signatures,'' IETF
+  Internet-Draft draft-harvey-cfrg-mtl-mode-09, work in progress, Mar. 2026.
+  [Online]. Available:
+  \url{https://datatracker.ietf.org/doc/html/draft-harvey-cfrg-mtl-mode-09}
+\BIBentrySTDinterwordspacing
+
+\bibitem{draft-mldsa-mtl-dnssec}
+\BIBentryALTinterwordspacing
+A.~Kaizer, J.~Harvey, B.~S. Kaliski~Jr., and S.~Sheth, ``{ML-DSA-MTL} for
+  {DNSSEC},'' IETF Internet-Draft draft-kaizer-dnsop-ml-dsa-mtl-dnssec-01, work
+  in progress, Aug. 2026. [Online]. Available:
+  \url{https://www.ietf.org/archive/id/draft-kaizer-dnsop-ml-dsa-mtl-dnssec-01.html}
+\BIBentrySTDinterwordspacing
+
 \bibitem{draft-slhdsa-mtl-dnssec}
 \BIBentryALTinterwordspacing
 A.~Fregly \emph{et~al.}, ``{SLH-DSA-MTL} for {DNSSEC},'' IETF Internet-Draft
-  draft-fregly-dnsop-slh-dsa-mtl-dnssec-05, work in progress, Sep. 2025.
+  draft-fregly-dnsop-slh-dsa-mtl-dnssec-06, work in progress, Mar. 2026.
   [Online]. Available:
-  \url{https://www.ietf.org/archive/id/draft-fregly-dnsop-slh-dsa-mtl-dnssec-05.html}
+  \url{https://datatracker.ietf.org/doc/draft-fregly-dnsop-slh-dsa-mtl-dnssec/}
+\BIBentrySTDinterwordspacing
+
+\bibitem{draft-mtc}
+\BIBentryALTinterwordspacing
+D.~Benjamin, D.~O'Brien, B.~Westerbaan, L.~Valenta, and F.~Valsorda, ``Merkle
+  tree certificates,'' IETF Internet-Draft
+  draft-ietf-plants-merkle-tree-certs-05, work in progress, Jul. 2026.
+  [Online]. Available:
+  \url{https://www.ietf.org/archive/id/draft-ietf-plants-merkle-tree-certs-05.txt}
 \BIBentrySTDinterwordspacing
 
 \bibitem{cf2025mtc}
@@ -235,18 +253,18 @@ L.~Valenta, C.~Patton, V.~Gon{\c{c}}alves, and B.~Westerbaan, ``Keeping the
   \url{https://blog.cloudflare.com/bootstrap-mtc/}
 \BIBentrySTDinterwordspacing
 
+\bibitem{cf2026mtcca}
+\BIBentryALTinterwordspacing
+{Cloudflare}, ``Building a post-quantum certificate authority with {Merkle}
+  tree certificates,'' Cloudflare Blog, 2026. [Online]. Available:
+  \url{https://blog.cloudflare.com/pq-ca-with-mtcs/}
+\BIBentrySTDinterwordspacing
+
 \bibitem{draft-mtac}
 \BIBentryALTinterwordspacing
 R.~Burls, ``Merkle tree agent certificates ({MTAC}),'' IETF Internet-Draft
   draft-burls-mtac-01, work in progress, Oct. 2026. [Online]. Available:
   \url{https://datatracker.ietf.org/doc/html/draft-burls-mtac-01}
-\BIBentrySTDinterwordspacing
-
-\bibitem{rfc9162}
-\BIBentryALTinterwordspacing
-B.~Laurie, E.~Messeri, and R.~Stradling, ``Certificate transparency version
-  2.0,'' RFC 9162, Dec. 2021. [Online]. Available:
-  \url{https://www.rfc-editor.org/rfc/rfc9162}
 \BIBentrySTDinterwordspacing
 
 \bibitem{sphincsplus2019}
@@ -255,17 +273,6 @@ D.~J. Bernstein, A.~H{\"u}lsing, S.~K{\"o}lbl, R.~Niederhagen, J.~Rijneveld,
   SIGSAC Conference on Computer and Communications Security (CCS '19)}.\hskip
   1em plus 0.5em minus 0.4em\relax ACM, 2019, pp. 2129--2146.
 
-\bibitem{kampanakis2023vision}
-P.~Kampanakis and T.~Lepoint, ``Vision paper: Do we need to change some things?
-  open questions posed by the upcoming post-quantum migration to existing
-  standards and deployments,'' in \emph{Security Standardisation Research (SSR
-  2023)}, ser. LNCS.\hskip 1em plus 0.5em minus 0.4em\relax Springer, 2023.
-
-\bibitem{alnahawi2024survey}
-N.~Alnahawi, J.~M{\"u}ller, J.~Oupick{\'y}, and A.~Wiesmaier, ``A comprehensive
-  survey on post-quantum {TLS},'' \emph{IACR Communications in Cryptology},
-  vol.~1, no.~2, 2024.
-
 \bibitem{rfc9345}
 \BIBentryALTinterwordspacing
 R.~Barnes, S.~Iyengar, N.~Sullivan, and E.~Rescorla, ``Delegated credentials
@@ -273,8 +280,49 @@ R.~Barnes, S.~Iyengar, N.~Sullivan, and E.~Rescorla, ``Delegated credentials
   \url{https://www.rfc-editor.org/rfc/rfc9345}
 \BIBentrySTDinterwordspacing
 
+\bibitem{macaroons2014}
+A.~Birgisson, J.~G. Politz, {\'U}.~Erlingsson, A.~Taly, M.~Vrable, and
+  M.~Lentczner, ``Macaroons: Cookies with contextual caveats for decentralized
+  authorization in the cloud,'' in \emph{Network and Distributed System
+  Security Symposium (NDSS)}, 2014.
+
+\bibitem{rfc9449}
+\BIBentryALTinterwordspacing
+D.~Fett, B.~Campbell, J.~Bradley, T.~Lodderstedt, M.~B. Jones, and D.~Waite,
+  ``{OAuth} 2.0 demonstrating proof of possession ({DPoP}),'' RFC 9449, Sep.
+  2023. [Online]. Available: \url{https://www.rfc-editor.org/rfc/rfc9449}
+\BIBentrySTDinterwordspacing
+
+\bibitem{policharla2023pqpp}
+\BIBentryALTinterwordspacing
+G.-V. Policharla, B.~Westerbaan, A.~Faz-Hern{\'a}ndez, and C.~A. Wood,
+  ``Post-quantum privacy pass via post-quantum anonymous credentials,'' IACR
+  Cryptology ePrint Archive, Paper 2023/414, 2023. [Online]. Available:
+  \url{https://eprint.iacr.org/2023/414}
+\BIBentrySTDinterwordspacing
+
+\bibitem{springall2016shortcuts}
+D.~Springall, Z.~Durumeric, and J.~A. Halderman, ``Measuring the security harm
+  of {TLS} crypto shortcuts,'' in \emph{Proceedings of the 2016 Internet
+  Measurement Conference (IMC '16)}.\hskip 1em plus 0.5em minus 0.4em\relax
+  ACM, 2016, pp. 33--47.
+
+\bibitem{rfc9162}
+\BIBentryALTinterwordspacing
+B.~Laurie, E.~Messeri, and R.~Stradling, ``Certificate transparency version
+  2.0,'' RFC 9162, Dec. 2021. [Online]. Available:
+  \url{https://www.rfc-editor.org/rfc/rfc9162}
+\BIBentrySTDinterwordspacing
+
 \bibitem{fips203}
 {National Institute of Standards and Technology}, ``Module-lattice-based
   key-encapsulation mechanism standard,'' NIST, FIPS 203, Aug. 2024.
+
+\bibitem{litinski2023ecc}
+\BIBentryALTinterwordspacing
+D.~Litinski, ``How to compute a 256-bit elliptic curve private key with only 50
+  million {Toffoli} gates,'' arXiv:2306.08585, 2023. [Online]. Available:
+  \url{https://arxiv.org/abs/2306.08585}
+\BIBentrySTDinterwordspacing
 
 \end{thebibliography}

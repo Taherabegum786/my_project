@@ -1,183 +1,187 @@
-# NUMBERS_TRACE: every numeric claim in the EMBER manuscript, mapped to its source
+# NUMBERS_TRACE (revision 1): every numeric claim in the manuscript, mapped to its source
 
-All paths are relative to `paper/results/`. "run 1" / "run 2" refer to the two native OpenSSL 3.5.4 runs:
-- run 1 (before the VM reboot) is in `native_run1/`;
-- run 2 (after the reboot) is in the top-level `native_*_agg.csv` files.
+All paths are relative to `paper/results/`. "Derived" means arithmetic on the listed values, with the formula shown.
 
-Primitive tables and figures use run 2. Every simulation uses run 1 (`sim_params.json`, `*_costs_dir`).
-"Derived" means arithmetic done on the listed values, with the formula shown.
+**Cost runs.**
+- **run 2** (post-reboot native OpenSSL 3.5.4; top-level `native_*_agg.csv`) feeds every table and every simulation. This includes the R1 reruns of sweep, dissem, e2e, sens, DoS, oprg and pmove (`RESULTS_R1.md` §1).
+- **run 1** (`native_run1/`, `sim_costs_run1/`) feeds only the controller study (`sim_controller_*.csv`, `controller_paired.csv`) and the DES-vs-MC check (`sim_validate.csv`).
 
-## Abstract / Introduction / Conclusion
+"oprg" means `r1_oprg_agg.csv`. Unless stated, its rows are mode `staple_always`.
+
+## Abstract
 | Claim | Source |
 |---|---|
-| Token sizes 3,350 (B5) to 22,907 (B8) B; B6 4,535; B7 10,598 | `token_sizes.csv` rows with `url_path_len=60, with_ip=0`, column `token_bytes` |
-| EMBER token 503 B at N=2^16 | `token_sizes.csv` O1, n=16, log2N=16, path 60 |
-| Warm verify 2.34 µs (native) | `native_pathverify_agg.csv` impl=evp, d=16, n=16, ns_median 2341.2 [2334.1, 2455.5] (run 2) |
-| 43× less than ML-DSA-44 verify | derived: 100.9 µs (`native_sig_agg.csv` ML-DSA-44 verify) / 2.3412 µs = 43.1 |
-| 7.9× HMAC | derived: 2341.2 ns / 297.1 ns (`native_pathverify_agg.csv` op=hmac) = 7.88 |
-| 1.28 million tokens/s per issuer core | `native_issuer_agg.csv` ML-DSA-44, N=16384, n=16: tokens_per_s 1,275,990 |
-| 0.144× header bytes of B5c (HTTP/2, URL) | derived from `wire_bytes.csv`: O1 N=2^14 url h2-hpack 66,344 / B5c cookie2 h2-hpack 460,984 |
-| 0.049% of requests wait (stapling) | `sim_delta_sweep.csv` mode=pull_staple, Δ=0.01, λ̄=2000, frac_req_waiting (mean over 5 reps); RESULTS_A §5 |
-| Controller no better than fixed 10 ms | `controller_paired.csv`, `sim_controller_summary.csv` (see Table controller) |
-| Roll-up removed only 1.4–2.2% of misses | derived: `sim_dissem.csv` E=500, Δ=1: pull 6,098 vs pull_rollup 6,011 per 1e6 req (1.4%); `sim_delta_sweep.csv` Δ=0.01: 1.069 vs 1.045 misses/token (2.2%) |
-| Hybrid root +41.6% simulated edge CPU | `sim_sens.csv` param=root_signer, policy fixed:1, mode pull, metric edge_cpu_us_per_req_mean: Hybrid 2.3691 vs ML-DSA-44 1.67309, ratio 1.416 |
-| 13 baselines | B1–B13, Table baselines (design.md §5) |
-| Misses/token within 4.4% in 24/24 configurations | `proto_validate.csv` metric=miss_per_token, max \|rel_err_mc\| 0.044, pass_mc True ×24 |
-| Industry target ~2029 | cited [cf2026roadmap] (not a measurement) |
+| 14 baselines | B1–B13 plus M2 (Table baselines) |
+| 148-B URL token (M2) | `token_sizes_r1.csv` M2-B5s, url_path_len 60, with_ip 0: token_bytes 148 |
+| 22.33 vs 22.80 µs edge CPU | `proto_capacity_r1_agg.csv`: b5s 22.328, b1 22.796 |
+| 19× at 2,000/s | oprg λ̄=2000, tenant/pertoken issuer_cpu_cores 0.817505 vs global/fixed:0.01 0.042461; derived 0.8175/0.04246 = 19.25 |
+| 144× at 20,000/s | oprg λ̄=20000: 8.17544 vs 0.056686; derived 144.2 |
+| 268-B tokens | `token_sizes_r1.csv` EMBER-O1 log2N 5 path 60: 268. The pool's d_p50 = 5 comes from oprg λ̄=2000 global fixed:0.01 |
+| +5.4 ms delay | oprg λ̄=2000 global fixed:0.01 D_mean_s 0.005426 (5.43 ms); text rounds to 5.4 |
+| per-tenant 1.2× | oprg λ̄=2000 tenant fixed:0.01 issuer 0.674408 vs 0.817505; derived 1.21 |
+| Chrome adopts 64 KiB; curl/Go clamp to 4096 | `hpack_clients.csv` column table_size_updates |
 
-## Section IV (design)
+## I. Introduction
 | Claim | Source |
 |---|---|
-| 26-byte tweak; 30-byte header | `experiments/ember/th.py`, `ember/token.py`; RESULTS_A §0 (spec deviation) |
-| Eq. (2) reproduces all 26 measured sizes exactly | `model_check.csv` quantity=token_bytes, rel_err 0.0000 (26 rows) |
-| Padding ≤12% issuer slowdown | `issuer_throughput.csv` (Python): N=1000, 54.5k → 47.7k tokens/s |
-| 51 tests; 128 cross-implementation vectors | `experiments/tests/test_ember.py` (pytest: 51 passed); `raw/proto/go_test.log` |
-| Revocation entry 8 B | design: (epoch 4 B, index 4 B) |
-| ~2^43 quantum collision cost for 128-bit output | generic BHT bound 2^(128/3) (design.md §4.6; analytic, not measured) |
+| 3,350-B ML-DSA-44 token | `token_sizes.csv` B5 path 60 |
+| 2,420-B signature | FIPS 204 |
+| 25.7 B/request (Chrome, 64 KiB) | `hpack_clients.csv` chrome-153-headless 65536 steady_block_bytes_mean |
+| 24 of 24 rows, 12 configurations | `proto_validate.csv` metric miss_per_token: 24 rows = 12 configs × 2 modes, all pass_mc True |
+| ~10³ tokens/s threshold | derived in §VII-A (see below) |
+| 2029 roadmap | cited [cf2026roadmap] |
 
-## Section V (dissemination)
+## II. Background
 | Claim | Source |
 |---|---|
-| Stapled header 2.4 KB for ML-DSA-44 | ML-DSA-44 signature 2,420 B (FIPS 204) plus root fields |
-| Root signature 2,420 B per token if carried | FIPS 204 |
-| 25-point grid [0.01, 60] s; SLO 2 s; B = 1024; EWMA 0.2 | `sim_params.json` |
+| 8000 octets; 2,083 characters; 4096 B/cookie | RFC 9110; Microsoft KB 208427; RFC 6265 |
+| ML-DSA 2420/3309/4627; SLH 7856/17088 | FIPS 204/205 |
+| Privacy Pass 85–175 KB | [policharla2023pqpp] |
 
-## Section VI (methodology)
+## IV. Design space
 | Claim | Source |
 |---|---|
-| 4 vCPU Xeon 2.1 GHz, AVX-512, SHA-NI, KVM, Linux 6.18 | `env.txt` |
-| pqcrypto ML-DSA-44 sign 15.4× native | `notes_A1_mldsa_sign.md`; derived: 6,301 µs (`micro_primitives.csv`) / 408.8 µs |
-| Run 1 vs run 2: 501.8/122.3 vs 408.8/100.9 µs; 2,846.9 vs 2,341.2 ns | `native_run1/native_sig_agg.csv`, `native_run1/native_pathverify_agg.csv` vs top-level files |
-| 118-B canonical claims | `token_sizes.csv` claims_bytes for path 60 |
-| ~570 B other headers; K=150; 4096-B table | RESULTS_B §1; `experiments/proto/hpackbytes/` |
-| Link delays 10 / 37.5 ms; 1 Gbit/s; MTU 1500 | RESULTS_B testbed; `raw/proto/net_check.txt` |
-| RTT 20.98 / 76.10 ms (mean keep-alive) | `proto_rtt.csv` (RESULTS_B §5) |
-| P1: 64 conns, 150 req/token, 5 s + 20 s, 5 runs | `experiments/proto/run_proto.sh`; RESULTS_B §3 |
-| P3: 24 configurations, 60 s window, 5 runs | `proto_p3_config.json`, `proto_p3_runs.csv` |
-| DES vs MC: 0.56% / 0.09% / 0.08%; 45 rows | `sim_validate.csv` (RESULTS_A §5) |
-| Table simparams values | `sim_params.json`, `tables/tab4_simparams.tex` |
+| M2 header 2,420 B; ~138 B hashed per request | `RESULTS_R1.md` §3 (bench_r1; `baselines/stapled.py`) |
+| 26-B tweak; 30-B blob header | `experiments/ember/th.py`, `ember/token.py` |
+| Encoder sizes 161/268/332/460 B (N = 1, 2^5, 2^8, 2^14); M2 148 B | `token_sizes_r1.csv` path 60, ip 0 |
+| Eq. (size) implemented by the encoder | `model_check.csv` token_bytes rel_err 0 (stated as implementation, not validation) |
+| 2N−1 hashes; ≤ P/Δ signatures/s | construction |
+| Signed root 2,461 B; header line 3,298 B | `token_sizes_r1.csv` staple_raw_bytes, staple_header_http11_bytes |
+| Vmax 1 h; 8 B per revoked token | `sim_params.json` v_max_s; design (4 B epoch + 4 B index) |
+| ML-DSA-44 category 2 | FIPS 204 |
+| +341 B for n=32 at N=2^16 | `token_sizes.csv` O2 844 − O1 503 |
+| 2^128 / 2^64 generic bounds | analytic (n = 16 bytes) |
+| Padding 12.45% at N=1000 (Python) | `issuer_throughput.csv`: 54,471 → 47,687 tokens/s |
+| Worst case +38.9% at N=2^14+1 | `r1_summary.txt` "Padding" section (analytic from `native_issuer_agg.csv` components) |
+| 16-B seed proposal | design recommendation (not measured) |
 
-## Section VII (results)
-### A. Size and wire bytes
+## V. Methodology
 | Claim | Source |
 |---|---|
-| B9 3,435; B1 166; B2 209; B4 465; B12 171; B11 214; B10 k=3 187 | `token_sizes.csv` path 60 |
-| 0% of B5/B6 URLs fit 2 KB; 0% of B6 cookies fit 4 KB; B7/B8 fit nothing | `fit.csv`, `tables/tab3_fit.tex` |
-| O1: 375 (2^10), 503 (2^16), 588 (2^20), 673 (2^24); O2 844 at 2^16 | `token_sizes.csv` |
-| ~21 B per level | derived: (503 − 375)/6 = 21.3 |
-| 6.7× smaller than B5 | derived: 3,350 / 503 = 6.66 |
-| B13 504 B at a 2^16 series | `token_sizes.csv` B13 rows (RESULTS_A §3) |
-| Table wire-bytes rows | `wire_bytes.csv`: session_bytes for h2-hpack, http1.1 and h2-hpack-t64k |
-| 0.256× in HTTP/1.1 | derived: 151,451 / 592,522 |
-| ~87 KB token-independent headers | `wire_bytes.csv` none/http1.1 86,823 |
-| 3,036.9 B per request | `wire_bytes.csv` B5 cookie h2-hpack bytes_per_req_mean |
-| Staple +2,954 B per session | derived: 69,298 − 66,344 |
+| 4 vCPU, Xeon 2.1 GHz, AVX-512, SHA-NI, Linux 6.18, 15 GB | `env.txt`; BRIEF |
+| run 1 vs run 2: 122.3 vs 100.9 µs; 15–20% | `native_sig_minmax.csv` / `r1_summary.txt` "NATIVE PRIMITIVES" |
+| Misses bit-identical; D moved ≤ 0.1 ms (96.17 → 96.08 ms) | `r1_table6_agg.csv` (run1 and run2 columns); `RESULTS_R1.md` §1 |
+| Link delays 10 / 37.5 ms; 1 Gbit/s; MTU 1500 | RESULTS_B testbed |
+| P1: 1 core, 64 conns, K=150, 5 runs | `run_proto.sh`; `proto_capacity_r1.csv` |
+| P3: V {10,50}, Δ {0.1,1,10}, λ {20,200}, 60 s, 5 runs | `proto_p3_config.json` |
+| 3,311-B cookie value; 150 fetches | `hpack_clients.csv` cookie_value_bytes, seg_requests |
+| E=500, Zipf 0.8, 50 shields, T=1000 Zipf 1.0, λ̄ ∈ {200, 2000, 20000}, K mean 150, 4 s, p_move 0.0005, RTTs 15/60/120 ms | `sim_params.json` |
+| ~7% of sessions move once | RESULTS_A §10.3 (0.0751 re-routes per token, `r1_pmove_agg.csv` moves_per_token at 5e-4) |
+| Hypotheses fixed in commit 3148c65 (2026-11-05 18:07 UTC) | `git log -- paper/design/design.md`; the first result commit is 44e8685 (18:31) |
 
-### B. Edge verification
+## VI. Results
+### A. Primitives and naive tokens
 | Claim | Source |
 |---|---|
-| Table primitives (sign/verify medians, CIs) | `native_sig_agg.csv` (run 2); `tables/tab2_primitives.tex` |
-| ML-DSA-44 verify 100.9 [100.2, 120.4]; Ed25519 94.6 | `native_sig_agg.csv` |
-| d ≤ 8 → 4.3×: 1,283.9 ns | `native_pathverify_agg.csv` d=8; derived 1283.9/297.1 = 4.32 |
-| 0.75 µs at d=4, 3.41 µs at d=24; ~0.13 µs per level | `native_pathverify_agg.csv`; derived (3407.0 − 751.7)/20 = 132.8 ns |
-| Go: 3.074 µs, HMAC 0.853, ML-DSA-44 32.76; 3.6× and 10.7× | `proto_go_verify_agg.csv`; derived 3.074/0.853 = 3.60; 32.76/3.074 = 10.66 |
-| circl 3.6–4.0× faster than OpenSSL | RESULTS_A §1 cross-implementation check (`proto_go_verify.csv` root verify 25–28 µs vs 100.9 µs) |
-| P1 numbers | see the P1 section below |
+| Table primitives (medians, [min–max]) | `native_sig_agg.csv` (median_us, ci95_lo_us/ci95_hi_us = min/max of the 5 run medians, as listed in `r1_summary.txt`); `native_pathverify_agg.csv` |
+| Raw key sizes 65 / 270 | the v1 table's key encoding; the CSV pk_bytes (91 / 294) are SPKI. RSA is dropped from the R1 table |
+| Path d=0 0.24 µs, d=16 2.34 µs, HMAC 0.30 µs | `native_pathverify_agg.csv` evp d0 235.01, d16 2341.20, hmac 297.12 ns |
+| 43× / 7.9× | derived 100.939/2.3412 = 43.1; 2341.2/297.12 = 7.88 |
+| Go 3.07 vs 32.76 µs; 10.7×; circl 3.6–4.0× faster | `proto_go_verify_agg.csv`; RESULTS_A §1 |
+| B5 3,350; B6 4,535; B7 10,598; B1 166; B2 209; B11 214; B12 171; B5c cookie 1,687 | `token_sizes.csv` path 60 |
 
-### C. Issuer
+### B. Stapling fixes the edge
 | Claim | Source |
 |---|---|
-| ≈2,446 tokens/s per-token ML-DSA-44 | derived: 1 / 408.8 µs |
-| 469,254 [319,698, 729,692] at 2^8; 1,275,990 [1,161,768, 1,282,009] at 2^14 | `native_issuer_agg.csv` |
-| 192× and 522× | derived: 469,254/2,446 = 191.8; 1,275,990/2,446 = 521.7 |
-| SLH-128s per-token ≈ 3.26 tokens/s; 49,063 at 2^14 | derived 1/306.464 ms; `native_issuer_agg.csv` SLH-DSA-128s N=16384 |
-| D 0.575 → 0.927 s with SLH-128s root | `sim_sens.csv` param=root_signer (RESULTS_A §5) |
-| B11 ~33,000 tokens/s; ≥14× | derived 1/30.1 µs = 33.2k; 469,254/33,223 = 14.1 |
-| B12 wraps 37.6 ms at E=500 | `issuer_throughput.csv` B12 wrap rows (Python) |
-| Go issuer ~432k tokens/s at N=1024; 53× | `proto_go_verify_agg.csv` issue_epoch_1024 2,372 µs → 1024/2.372 ms; sign_token_b5 123.9 µs → 8.07k/s |
+| Table P1 (req/s, µs/req, CIs, token B) | `proto_capacity_r1_agg.csv` |
+| 7,419 staple verifications / 1,108,422 requests (one run) | `raw/proto_r1/p1_stats_b5s_1.json` (RESULTS_R1 §3) |
+| EMBER 17% more than M2 | derived 26.16/22.33 = 1.17 |
+| Earlier campaign B1 20.54 vs 22.80 (~10%) | `proto_capacity_agg.csv` b1 20.536 vs `proto_capacity_r1_agg.csv` b1 22.796 |
+| M2 D 0.41 ms | oprg λ̄=2000 tenant pertoken D_mean_s 0.000409 |
+| K < 154 (d=5), K < 96 (d=8) | derived 100.939/(0.88931−0.23501) = 154.3; 100.939/(1.28394−0.23501) = 96.2 (`native_pathverify_agg.csv`) |
+| Mean K = 150 | `sim_params.json` K_mean |
+| 0.953 vs 1.509 µs/req | oprg λ̄=2000 pertoken / global fixed:0.01 edge_cpu_us_per_req_mean |
 
-### D. P2
+### C. Operating region (Table oprg, Fig. 13)
 | Claim | Source |
 |---|---|
-| B2 −1.25, B3 −1.39 ms at 50% | `proto_latency_agg.csv` added_p50_ms_vs_hmac_mean |
-| O1 −3.24 [−6.82, 0.34]; B5 +11.47 [5.09, 17.85]; B5v p50 80.05 | `proto_latency_agg.csv` load_frac 0.80 |
-| 9.5k / 16.4k req/s; ~260 / 450 Mbit/s; tapbridge ~624 Mbit/s | `proto_latency_agg.csv` rate_achieved; RESULTS_B §4 (derived) |
-| zero errors | `proto_latency_agg.csv` errors_total |
+| All table cells | oprg rows (staple_always). Columns: frac_tok_N1, mean_tokens_per_tree, issuer_cpu_cores, edge_cpu_us_per_req_mean, busiest_edge_verifs_per_s, D_mean_s. Token B is the encoder size at d_p50 (`token_sizes_r1.csv` and Eq. (size) with 118-B claims: d0 161, d1 183, d2 204, d4 247, d5 268, d8 332) |
+| 71.5% N_e=1; 1.22/tree; decile 1 69% of tokens, 59.4% N_e=1 | oprg tenant fixed:0.01 λ̄=2000; `r1_oprg_deciles_agg.csv` (RESULTS_R1 §2) |
+| 1,646 sig/s | oprg issuer_sigs_per_s 1645.85 |
+| 20 and 200 tokens/tree; 100 sig/s | oprg global fixed:0.01 mean_tokens_per_tree 19.998 / 199.99; issuer_sigs_per_s 100 |
+| hot edge 1,658 → 151 | oprg λ̄=20000 pertoken 1658.38; global fixed:0.01 151.33 |
+| fleet CPU 0.456 vs 0.288; 5.18 vs 2.88; 1.6–1.8× | oprg fleet_edge_cpu_cores; derived 1.58, 1.80 |
+| regions: 89.5/s | oprg λ̄=2000 region50 fixed:0.01 busiest_edge_verifs_per_s 89.52 |
+| λ̄=200 saving 0.046 cores | derived 0.081729 − 0.035511 |
+| 41,774 / 469,254 / 1,275,990 tokens/s; 2,446 | `native_issuer_agg.csv` ML-DSA-44 n16 N=16 / 256 / 16384; derived 1/408.8 µs |
+| λΔ ≥ 1.6×10^4 | N = 2^14 = 16,384 |
 
-### E. Dissemination / end-to-end
+### D. Wire bytes and HPACK clients
 | Claim | Source |
 |---|---|
-| Table operating points | `sim_delta_sweep.csv` λ̄=2000, E=500 (means over 5 reps; RESULTS_A §5) |
-| Model 0.862 vs simulated 0.921 | `sim_delta_sweep.csv` pull, Δ=1, columns model_miss_per_token, miss_per_token |
-| Re-route sensitivity: 0 / 0.058 / 0.56 | `sim_sens.csv` param=p_move |
-| 387 vs 6,098 misses per 1e6 req | `sim_dissem.csv` E=500, Δ=1 |
-| Staple fleet bandwidth 0.46–0.65 MB/s; push 140 MB/s–2.75 GB/s; B12 57 MB/s–1.13 GB/s; B11 0.08–1.5 MB/s | `sim_dissem.csv` root_bw_fleet_Bps (means) |
-| Push 2.27 GB/s at Δ=0.01 | `sim_delta_sweep.csv` push Δ=0.01 root_bw_fleet_Bps |
-| Revocation propagation 150 s | `sim_dissem.csv` revocation_propagation_s |
-| E2E p99 / p99.9 / >1 ms shares | `sim_e2e_latency.csv` (RESULTS_A §5 table) |
-| Simulated edge CPU 1.2–1.7 µs | `sim_delta_sweep.csv` edge_cpu_us_per_req_mean (pull) |
-| Hybrid 20.27 vs 19.98 µs (+1.5%) | `token_verify.csv` O4/O1 warm N=2^16 |
+| Table wire | `wire_bytes_r1.csv` (h2-hpack, h2-hpack-t64k; url and cookie); `tables/tab_r1_hpack.tex` |
+| 0.095× | derived 43,401/457,831 |
+| M2 within 1.3% of HMAC | derived 27,048/26,706 = 1.013 |
+| 11.7–12.0 KB; HMAC 9.1 KB | table cookie 64 KiB column |
+| Staple increments 2,968 (EMBER), 2,921 (M2); 3,298 B header line | `wire_bytes_r1.csv` (RESULTS_R1 §9 item 11) |
+| Chrome 65536 update in 3 runs; 25.7 B/req; ~6.5 KB total; 2,993–3,000 B/req at 4096 | `hpack_clients.csv` |
+| curl / Go clamp to 4096 | `hpack_clients.csv` table_size_updates [4096] |
+| Go default 4096 (source) | x/net v0.38.0 `http2/config.go:98` (RESULTS_R1 §7) |
 
-### F. Controller
+### E. Dissemination and stapling sensitivity
 | Claim | Source |
 |---|---|
-| Table controller values | `controller_paired.csv`, `tables/tab5_controller.tex` |
-| WC better by 4.93 / 4.41 ms; 1.0 ms worse at 20000 | `controller_paired.csv` policy=wc diff |
-| Fixed Δ ≥ 3 s violates SLO in all bins | `sim_controller_summary.csv` slo column |
+| Table dissem (T and P8) | `r1_table6_agg.csv` / `tables/tab_r1_table6.tex` Δ = 0.01 rows (run 2) |
+| push 2.27 GB/s | `sim_delta_sweep.csv` push pool0 Δ=0.01 λ̄=2000 native root_bw_fleet_Bps 2.267e9 |
+| 150 vs 120 ms | `sim_params.json` push_ms, first_req_ms |
+| roll-up 1.4–2.3%: 6,098 → 6,011; 1.069 → 1.045 | `sim_dissem.csv` E=500 Δ=1 miss_per_mreq 6097.6 / 6010.7 (1.4%); `sim_delta_sweep.csv` pool0 Δ=0.01: 1.069464 → 1.044814 (2.3%) |
+| ≤ 1.0e-4 except per-tenant push | table root/served |
+| 0 / 0.049% / 0.48% / 0.95% | `r1_pmove_agg.csv` tenant fixed:0.01 pull_staple frac_req_waiting at p_move 0 / 5e-4 / 5e-3 / 1e-2 |
+| staple-all 0%; 2,501–6,254 B | `r1_pmove_agg.csv` staple_always staple_bytes_per_session |
+
+### F. B11
+| Claim | Source |
+|---|---|
+| B11 214 B; 30.1 µs/token; 0.383 MB/s at L=1 h; EMBER pull 8.41 MB/s | `token_sizes.csv`; `native_sig_agg.csv` Ed25519 sign; `r1_b11_tradeoff.csv` L=3600; `sim_dissem.csv` |
+| L=60 s: 16.7 fetches/s/edge, 0.17% core, 23 MB/s | `r1_b11_tradeoff.csv` L=60 |
+| 38 h per key (2D-local) | [litinski2023ecc] abstract |
+| Issuer µs/token 408.8 / 337.2 / 21.2 / 2.83 | oprg issuer_cpu_us_per_token |
 
 ### G. Validation
 | Claim | Source |
 |---|---|
-| 24/24, 4.4%, model 14.8% | `proto_validate.csv` |
-| 0.05116 [0.05036, 0.05196] vs 0.05067 | `proto_validate.csv` pull/pull_staple V=10 Δ=1 λ=200 miss_per_token |
-| 8/8 pull Δ ≤ 1: 76.9–78.5 vs 75.9 ms | `proto_validate.csv` metric miss_lat_mean_ms |
-| Δ=10: 118–137 ms; ~4,400 tokens; first-request p50 136.8 vs 23.6 ms | `proto_validate.csv`; RESULTS_B §5 (`raw/proto/p3_req_*.csv.gz`) |
-| Staple 0.074–0.086 vs 0.026 ms | `proto_validate.csv`; `sim_proto_mc.csv` |
-| 36–45% under-prediction | `proto_validate.csv` rel_err_mc (0.36–0.446) |
+| 24/24, max 4.4% | `proto_validate.csv` miss_per_token and root bytes rows |
+| 76.9–78.5 vs 75.9 ms; 118–137 ms; ~4,400 tokens; 0.074–0.086 vs 0.026 ms | `proto_validate.csv` miss_lat_mean_ms; RESULTS_B §5 |
+| Installs counted as misses | RESULTS_R1 §6 |
 
-### H. DoS
+### H. Other
 | Claim | Source |
 |---|---|
-| 9,270–9,636 fetches/s, 4,630 verifs/s, 0.48 core; 7,680 → 65; 10^4 verifs, 1.03 cores; 100/s, 0.027 | `dos.csv` attack_rate 10000 rows |
+| DoS 9,270–9,636 fetches/s; 4,630 verifs/s; 0.484 core; 7,680 → 65; staple flood 1.026; limited 0.0269 (run 2) | `dos.csv` (run 2), `r1_summary.txt` "DoS" section |
+| Hybrid 1.405 → 1.982 µs (+41.1%) | `sim_sens.csv` root_signer fixed:1 pull edge_cpu_us_per_req_mean; derived 1.4106 |
+| ~141 requests per verification | `r1_summary.txt` amortisation: tenant fixed:0.01 pull 141.2 |
+| Ed25519 verify 94.6 µs | `native_sig_agg.csv` |
+| P1 O4 vs O1 0.09% | `proto_capacity_agg.csv` o4 22.9285 / o1 22.9086 |
+| E2E means 0.0503 / 0.0049 / 0.101 / 0.486 ms; p99.9 112 ms; 10× | `sim_e2e_latency.csv` (r1_summary "E2E means"); derived 0.0503/0.0049 = 10.3 |
 
-### Trust table
+## VII. Discussion
 | Claim | Source |
 |---|---|
-| All values | `tables/tab6_trust.tex` (from `token_sizes.csv`, `native_*_agg.csv` run 2, `sim_dissem.csv`) |
-| B5v hit 2.19 µs | `native_pathverify_agg.csv` op sha256 over 3.5 KB token (2,191 ns) |
-| ~3× larger than HMAC | derived: 503/166 = 3.03 |
+| Trust table | bytes: `token_sizes.csv` / `token_sizes_r1.csv`; verify: `native_sig_agg.csv`, `native_pathverify_agg.csv` (M2 hit ≤ th_200B 207 ns; B5v hit sha256_3500B 2,191 ns; d=5 889 ns; d=0–4 235–752 ns); dissemination: `sim_dissem.csv` (B12 283.5 MB/s, EMBER pull 8.41 MB/s), `r1_b11_tradeoff.csv`, `wire_bytes_r1.csv` staple increments |
+| 0.41 cores per 10³ tokens/s | derived 1000 × 408.8 µs |
+| ≤ 0.057 cores up to 20,000/s; ≥ 10 tokens/tree at λ ≥ 10³ | oprg global fixed:0.01; derived λΔ = 10 |
+| 120–184 more bytes | derived 268−148, 332−148 |
+| WC 0.62 ms at 20,000/s; 1 core | oprg λ̄=20000 global wc D 0.000624, issuer 0.99997 |
+| τ = 5 s | design default |
 
-## Section VIII (discussion, limitations)
+## Appendix
 | Claim | Source |
 |---|---|
-| +341 B for n=32 at 2^16 | derived: 844 − 503 |
-| B12 283 MB/s at E=500 | `sim_dissem.csv` B12 E=500 (283,521 kB/s) |
-| Hypothesis table | the rows above; RESULTS_A §9, RESULTS_B §6 |
-| P1 contended runs, utilisation 0.84–0.88 | `raw/proto/proto_capacity_contended.csv` runs 3–5; RESULTS_B §3.1 |
-| Emulator 624 Mbit/s | RESULTS_B §4 |
+| Controller: −0.001 [−0.004, 0.002]; +0.005 [0.001, 0.010]; −0.83 [−0.91, −0.75]; WC 4.93 / 4.41; SLO | `controller_paired.csv` (run 1) |
+| D moved ≤ 0.1 ms: 96.17 → 96.08 | `r1_table6_agg.csv` / RESULTS_R1 §1 |
+| DES vs MC 0.56 / 0.09 / 0.08%, 45 rows | `sim_validate.csv` (run 1) |
+| P2 utilisation 0.35–0.40 and 0.57–0.64; O1 −2.60 [−6.29, 0.55]; B5 +12.14 [3.17, 16.52]; B5v +11.75 [2.61, 203.82] | `proto_latency_r1.csv` (r1_summary "P2 RELABELLED") |
+| 260–450 Mbit/s; 624 Mbit/s | RESULTS_B §4 |
+| Earlier campaign values 20.54 / 22.91 / 22.93 / 37.38 / 66.24 / 71.04 / 98.04 / 115.74 | `proto_capacity_agg.csv` (quiet run, 2026-11-05 23:53) |
+| SLH-128s root D 0.575 → 0.881 s; RTT×0.5 staple D 0.503 s | `sim_sens.csv` (run 2) |
+| Hypothesis table | the rows above; H1 v1 data: `token_sizes.csv` 503/588, `wire_bytes.csv` 0.144/0.256; H2 whole request derived 26.16/22.80 = 1.15; H6 p99 max 2.61 µs (`sim_delta_sweep.csv` native max edge_cpu_us_per_req_p99); H9 192–522× (`native_issuer_agg.csv` N=2^8 and 2^14 / 2,446) |
 
-## P1 (quiet rerun; the only P1 data used in the paper)
-The source is `proto_capacity_agg.csv` as rewritten by the quiet rerun (`P1_QUIET_DONE`: finished 2026-11-05T23:53:50Z; load average before the start was 0.21; edge CPU ≥ 0.99 for all schemes). Per-run rows are in `proto_capacity.csv` (60 rows; minimum `cpu_util_edge` 0.99). The earlier contended data are kept in `raw/proto/proto_capacity_contended.csv` and are cited only in Limitations (utilisation 0.84–0.88 in runs 3–5).
+## Figures
+- Fig. 1 is TikZ and has no data.
+- Figs. 13, 14 and 15 come from `r1_oprg_agg.csv` + `r1_oprg_deciles_agg.csv`, `r1_pmove_agg.csv` and `r1_b11_tradeoff.csv`. They were regenerated for legibility by `experiments/plots/writer_r1_figs.py`, which calls the `make_r1.py` plotting functions with fonts ≥ 7 pt, legends moved outside the data and encoder token sizes in Fig. 13c. No CSV changed (checked by md5), and `r1_summary.txt` was not rewritten.
+- Fig. 12 comes from `proto_validate.csv` (log axes, `make_figures.py`).
 
-| Claim | Source (`proto_capacity_agg.csv`) |
+## Addendum
+| Claim | Source |
 |---|---|
-| B1 20.54 µs/req [20.25, 20.82]; 48,340 req/s | b1: edge_cpu_us_per_req_mean 20.5360 [20.2476, 20.8244]; req_per_s_mean 48340.14 |
-| O1 22.91 [22.49, 23.33]; 43,355 req/s | o1: 22.9086 [22.4909, 23.3264]; 43354.72 |
-| 1.12× HMAC | derived 22.9086 / 20.5360 = 1.1155 |
-| 0.897× req/s | o1 ratio_vs_b1_mean 0.8970 |
-| B5 66.24 [65.01, 67.46]; 15,040 req/s; 2.89× EMBER | b5: 66.2354 [65.0097, 67.4612]; 15040.04; derived 66.2354/22.9086 = 2.891 |
-| B5v 37.38; 26,620 req/s; 1.63× | b5v: 37.3799; 26620.40; derived 37.3799/22.9086 = 1.632 |
-| O1a 22.92; O4 22.93 [22.39, 23.47]; +0.09% | o1a 22.9214; o4 22.9285 [22.3888, 23.4681]; derived 22.9285/22.9086 = 1.00087 |
-| B2 71.04, B11 70.36, B3 98.04 | b2 71.0385; b11 70.3552; b3 98.0399 |
-| Rerun req/s higher than contended for every scheme | compare with `raw/proto/proto_capacity_contended.csv` (e.g. b1 37,891 → 48,340; b5 11,900 → 15,040) |
-| Fig. capacity | `figures/fig11_proto_capacity.pdf`, from `proto_capacity.csv` by `experiments/plots/make_figures.py:fig_proto` (edge CPU/req = cpu_util_edge / req_per_s per run; mean ± t-CI) |
-
-## Figures used and regeneration note
-fig2, fig3, fig4, fig5, fig7, fig8, fig11 and fig12 come from `results/figures/` and were copied to `manuscript/figures/`. The Writer regenerated them with `experiments/plots/make_figures.py`. Only presentation changed; no data changed:
-- all fonts ≥ 7 pt;
-- fig4 legend moved below the panels;
-- fig5 issuance-wait panel dropped (it equals Δ/2; stated in the caption);
-- fig8 legend moved outside the axes;
-- fig11 now plots edge CPU µs per request (primary) next to req/s.
-
-Fig. 1 is a TikZ diagram and contains no data.
+| M2 within 0.4% of the smallest in cookie form | `wire_bytes_r1.csv` cookie h2 64 KiB: M2 11,711 vs B5 11,667; derived 1.0038. At 4 KiB M2 (12,114) is the smallest PQ option |
