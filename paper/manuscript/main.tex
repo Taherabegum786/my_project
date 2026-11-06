@@ -14,6 +14,7 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{cite}
 \usepackage{url}
+\usepackage{placeins}
 \usepackage{siunitx}
 \sisetup{group-separator={,},group-minimum-digits=4}
 
@@ -34,7 +35,7 @@
 
 \begin{document}
 
-\title{Post-Quantum Access Tokens for CDNs:\\ Stapling Fixes the Edge, Batching Fixes the Issuer}
+\title{Post-Quantum Access Tokens for CDNs:\\ Stapling Fixes the Edge,\\ Pooled Batching Fixes the Issuer}
 
 % ---- AUTHOR BLOCK (EDITABLE PLACEHOLDER) ----
 \author{Dhavan~Arjampudi%
@@ -42,7 +43,7 @@
 \thanks{[Editable: funding statement, ORCID, corresponding-author note.]}}
 % ---- END AUTHOR BLOCK ----
 
-\markboth{Manuscript submitted for review (revision 1)}{Arjampudi: Post-Quantum Access Tokens for CDNs}
+\markboth{Manuscript submitted for review}{Arjampudi: Post-Quantum Access Tokens for CDNs}
 
 \maketitle
 
@@ -56,8 +57,10 @@
 \input{sections/discussion}
 \input{sections/conclusion}
 
+\FloatBarrier
 \appendices
 \input{sections/appendix}
+\FloatBarrier
 
 \bibliographystyle{IEEEtran}
 \bibliography{references}

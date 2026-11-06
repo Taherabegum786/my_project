@@ -1,27 +1,3 @@
-\section{EMBER Issuance}
-\label{app:alg}
-
-\begin{algorithm}[h]
-\caption{Issuer: epoch closing and publication}
-\label{alg:issue}
-\small
-\begin{algorithmic}[1]
-\Procedure{Issue}{$c$}
-  \State $r\gets\$\{0,1\}^{128}$; append $(c,r,\mathit{future})$ to the pool's queue $Q$; \Return await $\mathit{future}$
-\EndProcedure
-\Procedure{CloseEpoch}{}\Comment{timer $\Delta$, or $|Q|=N_{\max}$, or signer idle (WC)}
-  \State $B\gets Q$; $Q\gets[\,]$; $e\gets e+1$; $N\gets|B|$ \Comment{rotate $\mathit{kid}$ before $e$ or $i$ wraps}
-  \State $L_i\gets\Th(T_{\textsc{leaf}}(e,i),\,B[i].r\,\|\,\mathrm{enc}(B[i].c))$ for $i<N$
-  \State $(R,\mathit{levels})\gets\textsc{BuildTree}(e,L)$
-  \State $\sigma\gets\Sig(sk,\texttt{"EMBER-root"}\|\mathit{kid}\|e\|T_{\text{start}}\|\Delta\|N\|R)$
-  \State publish $SR_e$ at \texttt{/ember/}$\mathit{kid}$\texttt{/}$e$ (immutable); push if configured
-  \For{$i<N$}
-    \State resolve $B[i].\mathit{future}$ with $(c_i,\mathit{kid},e,i,r_i,\textsc{Path}(\mathit{levels},i))$ and $SR_e$
-  \EndFor
-\EndProcedure
-\end{algorithmic}
-\end{algorithm}
-
 \section{Secondary Results}
 \label{app:secondary}
 
@@ -29,7 +5,7 @@
 
 \emph{Simulator consistency (first-run costs).} An independent event-driven simulator agrees with the Monte Carlo engine to within 0.56\% on misses per token, 0.09\% on $D$ and 0.08\% on issuance wait, over 45 metric rows ($\bar\lambda=200$/s, $E=100$, 1~h, 5 seeds). This checks the implementation for internal consistency only. It is not a validation.
 
-\emph{Latency under load (P2).} We ran P2 open loop over the emulated 21~ms link. Its load levels were set from an earlier, contended capacity campaign. Measured against the quiet P1 capacities, the nominal 50\% and 80\% levels correspond to 0.35--0.40 and 0.57--0.64 utilization. At about 0.6 utilization, the per-run median added p50 relative to HMAC, with [min, max] over runs, was $-2.60$~ms [$-6.29$, 0.55] for O1, +12.14~ms [3.17, 16.52] for B5 and +11.75~ms [2.61, 203.82] for B5v, one of whose runs collapsed. We attribute the B5 and B5v tails to the userspace link emulator, which carried 3.3~KB URLs at roughly 260--450~Mbit/s against about 624~Mbit/s in a bulk test. We did not verify this.
+\emph{Latency under load (P2).} P2 ran open loop over the emulated 21~ms link, at load levels set from an earlier, contended capacity campaign. Measured against the quiet P1 capacities, the nominal 50\% and 80\% levels correspond to 0.35--0.40 and 0.57--0.64 utilization. At about 0.6 utilization, the added p50 relative to HMAC was as follows (per-run median, [min, max] over runs): O1 $-2.60$~ms [$-6.29$, 0.55], B5 +12.14~ms [3.17, 16.52] and B5v +11.75~ms [2.61, 203.82]. One B5v run collapsed. We attribute the B5 and B5v tails, which we did not verify, to the userspace link emulator. It carried 3.3~KB URLs at roughly 260--450~Mbit/s, against about 624~Mbit/s in a bulk test.
 
 \emph{Earlier capacity campaign.} A quiet P1 campaign over 12 schemes, with edge utilization $\ge0.99$ in all 60 runs, measured edge CPU per request of 20.54\us{} for B1, 22.91 for O1, 22.93 for O4 (hybrid root), 37.38 for B5v, 66.24 for B5, 71.04 for Ed25519, 98.04 for ECDSA P-256 and 115.74 for the per-token hybrid.
 
@@ -38,7 +14,7 @@
 \section{Hypothesis Outcomes}
 \label{app:hyp}
 
-\begin{table}[h]
+\begin{table}[!h]
 \centering
 \caption{Hypotheses fixed before the experiments (commit \texttt{3148c65}) and their outcomes.}
 \label{tab:hyp}
@@ -50,10 +26,10 @@ Hypothesis & Outcome & Evidence \\
 \midrule
 H1 EMBER token $<$512~B to $N{=}2^{20}$; $\le0.25\times$ B5c bytes/session & partly & 503~B at $2^{16}$, 588~B at $2^{20}$; 0.144$\times$ (h2 URL), 0.256$\times$ (HTTP/1.1); M2 smaller still \\
 H2 verify $\le5\times$ HMAC and $\ge10\times$ cheaper than ML-DSA & partly & native 7.9$\times$ / 43$\times$; Go 3.6$\times$ / 10.7$\times$; whole request 1.15$\times$ HMAC \\
-H3 issuer $\ge100\times$ per-token (Python), $N\ge2^8$ & cond. & holds at $N\ge2^8$, reached only with pooled trees \\
+H3 issuer $\ge100\times$ per-token signing, $N\ge2^8$ & cond. & holds at $N\ge2^8$, reached only with pooled trees \\
 H4 root bytes $<0.1\%$; roll-up $\ge5\times$ fewer misses & partly & $\le1.04\cdot10^{-4}$ except per-tenant push ($5.0\cdot10^{-3}$); roll-up 1.4--2.3\% \\
 H5 adaptive beats best fixed $\Delta$ & refuted & $\le$0.83~ms; demoted \\
-H6 $<1\%$ requests wait; p99 edge CPU $<1$~ms & yes (model) & 0.049\% at default $p_{\text{move}}$, 0 with staple-all; p99 $\le$2.61\us \\
+H6 $<1\%$ requests wait; p99 edge CPU $<1$~ms & yes (model) & 0.049\% at default $p_{\text{move}}$, 0 with staple-all; p99 $\le$2.61\us{} (max over the second-run sweep) \\
 H7 hybrid root $<1\%$ edge cost & mixed & +0.09\% in P1; +41.1\% simulated \\
 H8 simulator within 15\% of prototype & partly & misses and bytes 24/24 rows; latency 8/24 \\
 H9 native issuer $\ge50\times$ per-token; B11/B12 comparable & partly & 192--522$\times$ at $N{=}2^8$--$2^{14}$; B11 issues faster than per-tenant EMBER \\

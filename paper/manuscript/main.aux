@@ -1,0 +1,186 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{akamai-edgeauth}
+\citation{rfc2104}
+\citation{cloudfront-signers}
+\citation{mediacdn-sig}
+\citation{liang2014httpscdn,cangialosi2016keysharing}
+\citation{shor1997}
+\citation{cf2026roadmap}
+\citation{fips204,rfc9964}
+\citation{merkle1989,batchsig2024,fregly2023mtl}
+\@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{section.1}\protected@file@percent }
+\newlabel{sec:intro}{{I}{1}{Introduction}{section.1}{}}
+\citation{mediacdn-sig}
+\citation{akamai-edgeauth}
+\citation{rfc9110}
+\citation{ms-urllength}
+\citation{rfc6265}
+\citation{rfc7541}
+\citation{rfc9113}
+\citation{rfc7541}
+\citation{fips204}
+\citation{fips205}
+\citation{rfc9964}
+\citation{sikeridis2020ndss,paquin2020benchmarking,sosnowski2023conext,kampanakis2024ttlb}
+\citation{cf2023pqorigins,akamai2026e2epqc}
+\citation{cf2026pqauthorigins}
+\citation{schwabe2020kemtls,celi2021measuring}
+\citation{bindel2017hybrid}
+\citation{merkle1989}
+\citation{batchsig2024}
+\citation{draft-batch-signing}
+\citation{fregly2023mtl,draft-mtl-mode}
+\citation{draft-mldsa-mtl-dnssec}
+\citation{draft-slhdsa-mtl-dnssec}
+\citation{draft-mtc,cf2025mtc}
+\citation{cf2026mtcca}
+\citation{draft-mtac}
+\citation{sphincsplus2019}
+\citation{rfc9345}
+\citation{macaroons2014}
+\citation{rfc9449}
+\citation{policharla2023pqpp}
+\citation{springall2016shortcuts,cangialosi2016keysharing}
+\@writefile{toc}{\contentsline {section}{\numberline {II}Background and Related Work}{2}{section.2}\protected@file@percent }
+\newlabel{sec:background}{{II}{2}{Background and Related Work}{section.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}CDN Access Tokens and Header Compression}{2}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Post-Quantum Signatures and Their Cost}{2}{subsection.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Merkle Batch Signing and Signed Tree Heads}{2}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-D}}Other Token Designs}{2}{subsection.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {III}System and Threat Model}{2}{section.3}\protected@file@percent }
+\newlabel{sec:threat}{{III}{2}{System and Threat Model}{section.3}{}}
+\citation{rfc9449}
+\citation{sphincsplus2019}
+\citation{rfc9162}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Stapled post-quantum tokens. In M2 the client staples its token's ML-DSA signature on the first request of each connection. In EMBER it staples the signed epoch root $SR_e$ (MTL's ``full'' signature) and the URL carries a Merkle path. Pull from the root service through the shield tier and push are EMBER fallbacks.}}{3}{figure.1}\protected@file@percent }
+\newlabel{fig:arch}{{1}{3}{Stapled post-quantum tokens. In M2 the client staples its token's ML-DSA signature on the first request of each connection. In EMBER it staples the signed epoch root $SR_e$ (MTL's ``full'' signature) and the URL carries a Merkle path. Pull from the root service through the shield tier and push are EMBER fallbacks}{figure.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Design Space}{3}{section.4}\protected@file@percent }
+\newlabel{sec:design}{{IV}{3}{Design Space}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Per-Token Signatures, Cached or Stapled}{3}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}EMBER: Pooled Epoch-Merkle Batching}{3}{subsection.4.2}\protected@file@percent }
+\newlabel{sec:ember}{{\mbox  {IV-B}}{3}{EMBER: Pooled Epoch-Merkle Batching}{subsection.4.2}{}}
+\newlabel{eq:size}{{1}{3}{EMBER: Pooled Epoch-Merkle Batching}{equation.4.1}{}}
+\citation{sphincsplus2019}
+\citation{batchsig2024}
+\citation{bindel2017hybrid}
+\citation{fips204}
+\citation{fips205}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces Edge verification of an EMBER token}}{4}{algorithm.1}\protected@file@percent }
+\newlabel{alg:verify}{{1}{4}{EMBER: Pooled Epoch-Merkle Batching}{algorithm.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Root Dissemination}{4}{subsection.4.3}\protected@file@percent }
+\newlabel{sec:dissem}{{\mbox  {IV-C}}{4}{Root Dissemination}{subsection.4.3}{}}
+\newlabel{eq:miss}{{2}{4}{Root Dissemination}{equation.4.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}Security}{4}{subsection.4.4}\protected@file@percent }
+\newlabel{sec:security}{{\mbox  {IV-D}}{4}{Security}{subsection.4.4}{}}
+\newlabel{thm:uf}{{1}{4}{}{theorem.1}{}}
+\citation{fips203}
+\citation{draft-mtl-mode}
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Schemes compared: 13 baselines, M2 and variants. All are implemented in Python; $\dagger $ marks schemes that are also in the Go prototype.}}{5}{table.1}\protected@file@percent }
+\newlabel{tab:baselines}{{I}{5}{Schemes compared: 13 baselines, M2 and variants. All are implemented in Python; $\dagger $ marks schemes that are also in the Go prototype}{table.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Evaluation Methodology}{5}{section.5}\protected@file@percent }
+\newlabel{sec:method}{{V}{5}{Evaluation Methodology}{section.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Results}{5}{section.6}\protected@file@percent }
+\newlabel{sec:results}{{VI}{5}{Results}{section.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-A}}Primitive Costs and Naive Post-Quantum Tokens}{5}{subsection.6.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Native primitive costs (OpenSSL~3.5.4, second run): median of 5 run medians [min--max of run medians], \textmu s. Key sizes are raw keys (ECDSA: 65-B point; RSA: 270-B modulus and exponent), not SPKI.}}{6}{table.2}\protected@file@percent }
+\newlabel{tab:primitives}{{II}{6}{Native primitive costs (OpenSSL~3.5.4, second run): median of 5 run medians [min--max of run medians], \textmu s. Key sizes are raw keys (ECDSA: 65-B point; RSA: 270-B modulus and exponent), not SPKI}{table.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Whole-request edge cost in the Go prototype (P1; one edge core, same session for all schemes, $K=150$; mean [95\% $t$-CI] over 5 runs). The prototype uses a shorter claim string than the encoder table, so its tokens are smaller (B1 100~B vs.\ 166~B; M2 83~B vs.\ 148~B).}}{6}{table.3}\protected@file@percent }
+\newlabel{tab:p1}{{III}{6}{Whole-request edge cost in the Go prototype (P1; one edge core, same session for all schemes, $K=150$; mean [95\% $t$-CI] over 5 runs). The prototype uses a shorter claim string than the encoder table, so its tokens are smaller (B1 100~B vs.\ 166~B; M2 83~B vs.\ 148~B)}{table.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-B}}Stapling Fixes the Edge}{6}{subsection.6.2}\protected@file@percent }
+\newlabel{sec:res-edge}{{\mbox  {VI-B}}{6}{Stapling Fixes the Edge}{subsection.6.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces Operating points with every metric at the same configuration (simulated; staple-all; token size from the encoder). Issuer: cores of ML-DSA-44 signing and tree work. Edge: crypto \textmu s per request. Hot: ML-DSA verifications/s at the busiest edge. $D$: mean added delay.}}{6}{table.4}\protected@file@percent }
+\newlabel{tab:oprg}{{IV}{6}{Operating points with every metric at the same configuration (simulated; staple-all; token size from the encoder). Issuer: cores of ML-DSA-44 signing and tree work. Edge: crypto \textmu s per request. Hot: ML-DSA verifications/s at the busiest edge. $D$: mean added delay}{table.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-C}}Batching Fixes the Issuer, Only When Pooled}{6}{subsection.6.3}\protected@file@percent }
+\newlabel{sec:res-oprg}{{\mbox  {VI-C}}{6}{Batching Fixes the Issuer, Only When Pooled}{subsection.6.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Operating region (simulated, second-run costs, 5 seeds). (a) Share of tokens in single-token trees by tenant-rate decile, per-tenant trees. (b) Issuer CPU against aggregate rate. (c) Median URL token size (encoder) against mean added delay with staple-all.}}{7}{figure.2}\protected@file@percent }
+\newlabel{fig:oprg}{{2}{7}{Operating region (simulated, second-run costs, 5 seeds). (a) Share of tokens in single-token trees by tenant-rate decile, per-tenant trees. (b) Issuer CPU against aggregate rate. (c) Median URL token size (encoder) against mean added delay with staple-all}{figure.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Request-header bytes per session (1 + 150 requests on one connection; Go HPACK encoder at 4096-B and 64~KiB tables; same placement for all schemes). Each request also carries about 570~B of other, Chrome-like headers, including a changing \texttt  {:path}. These evict a 3.3~KB cookie from a 4096-B table.}}{7}{table.5}\protected@file@percent }
+\newlabel{tab:wire}{{V}{7}{Request-header bytes per session (1 + 150 requests on one connection; Go HPACK encoder at 4096-B and 64~KiB tables; same placement for all schemes). Each request also carries about 570~B of other, Chrome-like headers, including a changing \texttt {:path}. These evict a 3.3~KB cookie from a 4096-B table}{table.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-D}}Bytes on the Wire and Real HPACK Encoders}{7}{subsection.6.4}\protected@file@percent }
+\newlabel{sec:res-wire}{{\mbox  {VI-D}}{7}{Bytes on the Wire and Real HPACK Encoders}{subsection.6.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces Dissemination modes, EMBER at $\bar  \lambda =2000$/s, $\Delta =10$~ms (simulated, 5 seeds). T: per-tenant trees. P8: 8 pooled shards. Wait: share of requests that wait for a root.}}{7}{table.6}\protected@file@percent }
+\newlabel{tab:dissem}{{VI}{7}{Dissemination modes, EMBER at $\bar \lambda =2000$/s, $\Delta =10$~ms (simulated, 5 seeds). T: per-tenant trees. P8: 8 pooled shards. Wait: share of requests that wait for a root}{table.6}{}}
+\citation{litinski2023ecc}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Sensitivity of stapling to mid-session re-routes (simulated, $\bar  \lambda =2000$/s). Left: share of requests that wait for a root or signature. Right: root installs plus fetches per token (the prototype's miss definition). For pull this is the fetch count (1.0--2.4 per token), and it coincides with the staple-all curve. M2 and EMBER staple-first overlap almost exactly in both panels. The dotted line marks the default $p_{\text  {move}}=0.0005$.}}{8}{figure.3}\protected@file@percent }
+\newlabel{fig:pmove}{{3}{8}{Sensitivity of stapling to mid-session re-routes (simulated, $\bar \lambda =2000$/s). Left: share of requests that wait for a root or signature. Right: root installs plus fetches per token (the prototype's miss definition). For pull this is the fetch count (1.0--2.4 per token), and it coincides with the staple-all curve. M2 and EMBER staple-first overlap almost exactly in both panels. The dotted line marks the default $p_{\text {move}}=0.0005$}{figure.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-E}}Dissemination and the Stapling Assumption}{8}{subsection.6.5}\protected@file@percent }
+\newlabel{sec:res-dissem}{{\mbox  {VI-E}}{8}{Dissemination and the Stapling Assumption}{subsection.6.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-F}}When Delegated Ed25519 (B11) Suffices}{8}{subsection.6.6}\protected@file@percent }
+\newlabel{sec:res-b11}{{\mbox  {VI-F}}{8}{When Delegated Ed25519 (B11) Suffices}{subsection.6.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces B11 safety against quantum key recovery (analytic). A delegated key is exposed for its lifetime $L$ plus $V_{\max }$. It is safe only if one Ed25519 key takes longer than $L+V_{\max }$ to break. Right axis: fleet certificate traffic at that $L$ ($E=500$, $T=1000$).}}{8}{figure.4}\protected@file@percent }
+\newlabel{fig:b11}{{4}{8}{B11 safety against quantum key recovery (analytic). A delegated key is exposed for its lifetime $L$ plus $\vmax $. It is safe only if one Ed25519 key takes longer than $L+\vmax $ to break. Right axis: fleet certificate traffic at that $L$ ($E=500$, $T=1000$)}{figure.4}{}}
+\citation{litinski2023ecc}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-G}}Simulator Validation Against the Prototype}{9}{subsection.6.7}\protected@file@percent }
+\newlabel{sec:res-validate}{{\mbox  {VI-G}}{9}{Simulator Validation Against the Prototype}{subsection.6.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-H}}Other Results}{9}{subsection.6.8}\protected@file@percent }
+\newlabel{sec:res-other}{{\mbox  {VI-H}}{9}{Other Results}{subsection.6.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Discussion}{9}{section.7}\protected@file@percent }
+\newlabel{sec:discussion}{{VII}{9}{Discussion}{section.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-A}}Deployment Guidance}{9}{subsection.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-B}}Limitations}{9}{subsection.7.2}\protected@file@percent }
+\newlabel{sec:limits}{{\mbox  {VII-B}}{9}{Limitations}{subsection.7.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Simulator (50 seeds, fed the measured RTTs) against the prototype (P3, 5 runs, 95\% CI) for 12 configurations in pull and staple-first modes. Left: misses per token. Right: mean miss latency.}}{10}{figure.5}\protected@file@percent }
+\newlabel{fig:validate}{{5}{10}{Simulator (50 seeds, fed the measured RTTs) against the prototype (P3, 5 runs, 95\% CI) for 12 configurations in pull and staple-first modes. Left: misses per token. Right: mean miss latency}{figure.5}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces Trust and cost comparison. Bytes: encoder URL token, 60-character path. Verify: native OpenSSL~3.5.4 medians. Dissemination: simulated fleet traffic for $E=500$ ($\bar  \lambda =2000$/s) or per-session staple bytes.}}{10}{table.7}\protected@file@percent }
+\newlabel{tab:trust}{{VII}{10}{Trust and cost comparison. Bytes: encoder URL token, 60-character path. Verify: native OpenSSL~3.5.4 medians. Dissemination: simulated fleet traffic for $E=500$ ($\bar \lambda =2000$/s) or per-session staple bytes}{table.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VIII}Conclusion}{10}{section.8}\protected@file@percent }
+\newlabel{sec:conclusion}{{VIII}{10}{Conclusion}{section.8}{}}
+\bibstyle{IEEEtran}
+\bibdata{references}
+\bibcite{akamai-edgeauth}{1}
+\bibcite{rfc2104}{2}
+\bibcite{cloudfront-signers}{3}
+\bibcite{mediacdn-sig}{4}
+\bibcite{liang2014httpscdn}{5}
+\@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  A: Secondary Results}{11}{section*.4}\protected@file@percent }
+\newlabel{app:secondary}{{A}{11}{\appendixname \nobreakspace \thesectiondis \\* Secondary Results}{section*.4}{}}
+\@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  B: Hypothesis Outcomes}{11}{section*.5}\protected@file@percent }
+\newlabel{app:hyp}{{B}{11}{\appendixname \nobreakspace \thesectiondis \\* Hypothesis Outcomes}{section*.5}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {VIII}{\ignorespaces Hypotheses fixed before the experiments (commit \texttt  {3148c65}) and their outcomes.}}{11}{table.8}\protected@file@percent }
+\newlabel{tab:hyp}{{VIII}{11}{Hypotheses fixed before the experiments (commit \texttt {3148c65}) and their outcomes}{table.8}{}}
+\@writefile{toc}{\contentsline {section}{References}{11}{section*.6}\protected@file@percent }
+\bibcite{cangialosi2016keysharing}{6}
+\bibcite{shor1997}{7}
+\bibcite{cf2026roadmap}{8}
+\bibcite{fips204}{9}
+\bibcite{rfc9964}{10}
+\bibcite{merkle1989}{11}
+\bibcite{batchsig2024}{12}
+\bibcite{fregly2023mtl}{13}
+\bibcite{rfc9110}{14}
+\bibcite{ms-urllength}{15}
+\bibcite{rfc6265}{16}
+\bibcite{rfc7541}{17}
+\bibcite{rfc9113}{18}
+\bibcite{fips205}{19}
+\bibcite{sikeridis2020ndss}{20}
+\bibcite{paquin2020benchmarking}{21}
+\bibcite{sosnowski2023conext}{22}
+\bibcite{kampanakis2024ttlb}{23}
+\bibcite{cf2023pqorigins}{24}
+\bibcite{akamai2026e2epqc}{25}
+\bibcite{cf2026pqauthorigins}{26}
+\bibcite{schwabe2020kemtls}{27}
+\bibcite{celi2021measuring}{28}
+\bibcite{bindel2017hybrid}{29}
+\bibcite{draft-batch-signing}{30}
+\bibcite{draft-mtl-mode}{31}
+\bibcite{draft-mldsa-mtl-dnssec}{32}
+\bibcite{draft-slhdsa-mtl-dnssec}{33}
+\bibcite{draft-mtc}{34}
+\bibcite{cf2025mtc}{35}
+\bibcite{cf2026mtcca}{36}
+\bibcite{draft-mtac}{37}
+\bibcite{sphincsplus2019}{38}
+\bibcite{rfc9345}{39}
+\bibcite{macaroons2014}{40}
+\bibcite{rfc9449}{41}
+\bibcite{policharla2023pqpp}{42}
+\bibcite{springall2016shortcuts}{43}
+\bibcite{rfc9162}{44}
+\bibcite{fips203}{45}
+\bibcite{litinski2023ecc}{46}
+\gdef \@abspage@last{12}

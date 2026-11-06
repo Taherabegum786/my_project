@@ -234,17 +234,19 @@ def pmove():
             100 * r.frac_req_waiting_hi, r.miss_per_token, r.staple_installs_per_token, r.moves_per_token, 1e3 * r.D_mean_s,
             r.staple_bytes_per_session))
     setup()
-    fig, axs = plt.subplots(1, 2, figsize=(DCOL, 2.3))
+    fig, axs = plt.subplots(1, 2, figsize=(DCOL * 0.74, 2.5))
     for k, (pool, pol, mode, lab) in enumerate((("tenant", "fixed:0.01", "pull", "pull, per-tenant $\\Delta$=10 ms"),
                                                 ("tenant", "fixed:0.01", "pull_staple", "staple first req., per-tenant 10 ms"),
                                                 ("tenant", "fixed:1", "pull_staple", "staple first req., per-tenant 1 s"),
                                                 ("global", "fixed:0.01", "pull_staple", "staple first req., 1 pool 10 ms"),
                                                 ("tenant", "pertoken", "pull_staple", "M2, staple first req."),
-                                                ("tenant", "fixed:0.01", "staple_always", "staple every new edge"))):
+                                                ("tenant", "fixed:0.01", "staple_always", "staple-all (every new connection)"))):
         g = a[(a.pooling == pool) & (a.policy == pol) & (a["mode"] == mode)].sort_values("p_move")
         x = np.maximum(g.p_move, 3e-5)
         axs[0].plot(x, 100 * g.frac_req_waiting, marker=MARKERS[k], ls=LINES[k], color=SERIES[k], ms=3.2, lw=1, label=lab)
-        axs[1].plot(x, g.staple_installs_per_token + (g.miss_per_token if mode != "pull" else 0), marker=MARKERS[k],
+        # P3-style miss definition = root fetches (misses) + staple installs; for pull there are no installs, so
+        # this is miss_per_token alone (round-2 fix: v2 plotted 0 for pull)
+        axs[1].plot(x, g.staple_installs_per_token + g.miss_per_token, marker=MARKERS[k],
                     ls=LINES[k], color=SERIES[k], ms=3.2, lw=1)
     for ax in axs:
         ax.set_xscale("log")
@@ -445,11 +447,13 @@ def b11(a_oprg):
     setup()
     fig, ax = plt.subplots(figsize=(COL, 2.6))
     tb = np.logspace(np.log10(60), np.log10(30 * 86400), 200)
-    for k, (V, lab) in enumerate(((3600.0, "$V_{max}$=1 h"), (600.0, "$V_{max}$=10 min"))):
+    for k, (V, lab) in enumerate(((3600.0, "$V_{max}$=1 h"), (600.0, "$V_{max}$=10 min (shorter $V_{max}$ = the lever)"))):
         Lmax = tb - V
         Lmax[Lmax <= 0] = np.nan
         ax.plot(tb / 3600, Lmax / 60, ls=LINES[k], color=SERIES[k], lw=1.3, label="longest safe $L$, " + lab)
         ax.axvline(V / 3600, color=SERIES[k], lw=0.7, ls=":")
+        ax.text(V / 3600, 1.0, " $t$=%s" % ("1 h" if V == 3600 else "10 min"), transform=ax.get_xaxis_transform(),
+                fontsize=7, color=SERIES[k], va="bottom", ha="center")
     ax.set_xscale("log"); ax.set_yscale("log")
     ax.set_xlabel("adversary time to break one Ed25519 key, $t_{break}$ (h)")
     ax.set_ylabel("max. delegation lifetime $L$ (min)")

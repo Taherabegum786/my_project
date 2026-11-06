@@ -1,4 +1,4 @@
-# NUMBERS_TRACE (revision 1): every numeric claim in the manuscript, mapped to its source
+# NUMBERS_TRACE (revision 2): every numeric claim in the manuscript, mapped to its source
 
 All paths are relative to `paper/results/`. "Derived" means arithmetic on the listed values, with the formula shown.
 
@@ -11,7 +11,7 @@ All paths are relative to `paper/results/`. "Derived" means arithmetic on the li
 ## Abstract
 | Claim | Source |
 |---|---|
-| 14 baselines | B1–B13 plus M2 (Table baselines) |
+| 13 baselines and M2 | B1–B13 plus M2 (Table baselines) |
 | 148-B URL token (M2) | `token_sizes_r1.csv` M2-B5s, url_path_len 60, with_ip 0: token_bytes 148 |
 | 22.33 vs 22.80 µs edge CPU | `proto_capacity_r1_agg.csv`: b5s 22.328, b1 22.796 |
 | 19× at 2,000/s | oprg λ̄=2000, tenant/pertoken issuer_cpu_cores 0.817505 vs global/fixed:0.01 0.042461; derived 0.8175/0.04246 = 19.25 |
@@ -185,3 +185,26 @@ All paths are relative to `paper/results/`. "Derived" means arithmetic on the li
 | Claim | Source |
 |---|---|
 | M2 within 0.4% of the smallest in cookie form | `wire_bytes_r1.csv` cookie h2 64 KiB: M2 11,711 vs B5 11,667; derived 1.0038. At 4 KiB M2 (12,114) is the smallest PQ option |
+
+## Round-2 additions
+| Claim | Location | Source |
+|---|---|---|
+| Recovery RTT 20.98 ms | §IV-A | `proto_rtt.csv` client→edge mean (RESULTS_B §5) |
+| M2 staple header line 3,242 B | §IV-A | `token_sizes_r1.csv` M2-B5s staple_header_http11_bytes |
+| Cache entry 24 B (16-B key + 8-B expiry) | §IV-A | `experiments/proto/edge/main.go`: `scache map[[16]byte]int64` (payload only; hash-table overhead not measured) |
+| 165.8/s and 1,658/s new (token, edge) pairs at the busiest edge | §IV-A, §VII-A | oprg tenant/pertoken staple_always busiest_edge_verifs_per_s: 165.80 (λ̄=2000), 1658.38 (λ̄=20000) |
+| 0.60 M / 5.97 M entries; 14.3 / 143 MB | §IV-A, §VII-A | derived 165.80×3600 = 596,879 × 24 B = 14.3 MB; 1658.38×3600 = 5,970,175 × 24 B = 143.3 MB (upper bound: entries live ≤ V_max = 3600 s) |
+| B1 100 B vs 166 B; M2 83 B vs 148 B | Table P1 caption | `proto_capacity_r1_agg.csv` token_bytes; `token_sizes.csv` / `token_sizes_r1.csv` path 60 |
+| 16-B nonce vs 32-B tag | §VI-B | token formats (`baselines/stapled.py`; HMAC-SHA256 tag) |
+| circl sign 121.2 µs (root), 123.9 µs (token) | §VI-C, §VII-A | `proto_go_verify_agg.csv` sign_root_mldsa44 121.170, sign_token_b5 123.858 |
+| ~3.4-fold fewer cores with circl | §VI-C | derived 408.8/121.17 = 3.37 |
+| 0.12 cores per 10³ tokens/s with circl | §VII-A | derived 1000 × 121.2 µs = 0.121 |
+| threshold ≈3.4×10³ tokens/s (circl) vs ≈10³ (OpenSSL) | Intro, §VI-C, §VII-A, Conclusion | derived: rate at which per-token signing costs 0.4088 cores: 0.4088/121.17 µs = 3,374/s; 0.4088/408.8 µs = 1,000/s |
+| N=16 issuer CI 18,248–50,049 | §VI-C | `native_issuer_agg.csv` ML-DSA-44 N=16 tps_ci95_lo/hi (bootstrap) |
+| ~570 B of other headers per request | Table wire caption | RESULTS_B §1 (hpackbytes header set) |
+| Go client 228 B/request at 4096; curl 2,671 B/request | Abstract, Intro, §VI-D | `hpack_clients.csv` go-x-net 228.4/228.5; curl 2670.7/2675.7 |
+| Litinski: 38 h/key (2D-local); 300–700× cheaper and ~10 min/key with non-local connections | §VI-F, §VII-A, Conclusion | [litinski2023ecc] arXiv abstract (verified by web search 2026-11-06): "one key every 10 minutes using 6000 modules" at 10% threshold, 10-µs code cycle |
+| Fig. 3 right, pull curve 1.0–2.4 fetches/token | Fig. 3 caption | `r1_pmove_agg.csv` tenant fixed:0.01 pull miss_per_token 0.996126 → 2.432818 (plotted as installs + misses after the `make_r1.py` fix) |
+| 24 rows per metric = 12 configs × 2 modes; 12 independent comparisons | §VI-G, Intro | `proto_validate.csv` (12 configurations × {pull, pull_staple} per metric) |
+| H6 p99 ≤ 2.61 µs | App. B | single source: `sim_delta_sweep.csv` native, max edge_cpu_us_per_req_p99 = 2.613 (`r1_oprg_agg` max is 2.21; RESULTS_R1's 1.71/1.42 refer to subsets) |
+| Staple bytes units | §IV-C, §VI-D, §VI-E | raw signed root 2,461 B and HTTP/1.1 line 3,298 B (`token_sizes_r1.csv`); h2 session increments 2,968/2,921 B (`wire_bytes_r1.csv`); simulator raw bytes per session 2,501–6,254 B (`r1_pmove_agg.csv` staple_bytes_per_session) |

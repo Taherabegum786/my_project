@@ -383,7 +383,7 @@ def fig_proto():
 
 def fig_proto_validate():
     d = rd("proto_validate.csv")
-    fig, axs = plt.subplots(1, 2, figsize=(DCOL, 2.4))
+    fig, axs = plt.subplots(1, 2, figsize=(DCOL * 0.70, 2.5))
     for ax, met, lab in ((axs[0], "miss_per_token", "misses per token"), (axs[1], "miss_lat_mean_ms", "mean miss latency (ms)")):
         g = d[d.metric == met]
         for k, mode in enumerate(sorted(g["mode"].unique())):

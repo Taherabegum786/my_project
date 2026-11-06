@@ -223,9 +223,9 @@ J.~Harvey \emph{et~al.}, ``Merkle tree ladder ({MTL}) mode signatures,'' IETF
 \bibitem{draft-mldsa-mtl-dnssec}
 \BIBentryALTinterwordspacing
 A.~Kaizer, J.~Harvey, B.~S. Kaliski~Jr., and S.~Sheth, ``{ML-DSA-MTL} for
-  {DNSSEC},'' IETF Internet-Draft draft-kaizer-dnsop-ml-dsa-mtl-dnssec-01, work
-  in progress, Aug. 2026. [Online]. Available:
-  \url{https://www.ietf.org/archive/id/draft-kaizer-dnsop-ml-dsa-mtl-dnssec-01.html}
+  {DNSSEC},'' IETF Internet-Draft draft-kaizer-dnsop-ml-dsa-mtl-dnssec-02, work
+  in progress, Sep. 2026. [Online]. Available:
+  \url{https://www.ietf.org/archive/id/draft-kaizer-dnsop-ml-dsa-mtl-dnssec-02.txt}
 \BIBentrySTDinterwordspacing
 
 \bibitem{draft-slhdsa-mtl-dnssec}
