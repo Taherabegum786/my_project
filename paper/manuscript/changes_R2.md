@@ -63,8 +63,8 @@ Source: `results/RESULTS_R2_PROTO.md` and the `proto_*_r2_agg.csv` files. All ru
   - P2 latency: M2 and pooled EMBER add −0.11 to +0.01 ms to median latency relative to HMAC, and every CI includes 0. B5 adds 0.81 and 1.55 ms.
   - The old P2 (R1) appendix paragraph is marked superseded and shortened.
 - **The recovery claim in §IV-A was corrected, because the data contradict "a recovery costs one client–edge round trip".**
-  - A cache flush on a live connection costs about one extra round trip: 35.8 ms mean (p99 62 ms) against a 20.3 ms base RTT.
-  - An edge restart costs a reconnect: 263 ms mean (p99 427 ms), about 13 RTTs. M2 and EMBER pay the same here.
+  - A cache flush on a live connection adds about 36 ms (35.8 ms mean, p99 62 ms), about 1.8× the 20.3 ms base RTT.
+  - An edge restart costs a reconnect: 258 ms (EMBER) to 263 ms (M2) mean, p99 about 427 ms, about 13 RTTs. M2 and EMBER pay the same here.
   - A single event caused about 6 recoveries per 1,000 requests, and no request failed.
   - With a 64-entry cache, M2 retries on 55% of requests against 10% for pooled EMBER. With 256 entries, neither retries.
   - "We did not measure how often recovery occurs" was removed. The production frequency of flushes and restarts is still stated as unknown.

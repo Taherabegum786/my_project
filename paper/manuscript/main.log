@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.5)  6 NOV 2026 18:19
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.5)  6 NOV 2026 21:58
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1121,7 +1121,7 @@ Here is how much of TeX's memory you used:
  48326 multiletter control sequences out of 15000+600000
  717437 words of font info for 197 fonts, out of 8000000 for 9000
  62 hyphenation exceptions out of 8191
- 84i,15n,87p,1985b,1045s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,15n,87p,1996b,1045s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texli
@@ -1149,7 +1149,7 @@ exmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts
 /type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/tim
 es/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
 
-Output written on main.pdf (13 pages, 542583 bytes).
+Output written on main.pdf (13 pages, 542447 bytes).
 PDF statistics:
  803 PDF objects out of 1000 (max. 8388607)
  598 compressed objects within 6 object streams

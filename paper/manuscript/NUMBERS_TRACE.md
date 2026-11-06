@@ -297,3 +297,4 @@ Inputs (native run 2): t_v = ML-DSA-44 verify median 100.939 µs (`native_sig_ag
 | §VI-B "Its absolute values differ by about 10% for B1 (20.54 vs 22.80 µs)" removed (now in §VII-B) | §VI-B | — |
 | Pull misses when λΔw_v ≫ 1: M ≈ E/(λΔ) | §IV-C | analytic limit of Eq. (miss): 1 − e^{−x} → 1 |
 | Fig. 13 → `fig13` at 0.88 textwidth; fig14/fig12 resized (0.62/0.58 textwidth); fig12 moved earlier in the source | layout only | no data change |
+| "about 36 ms (1.8 round trips)" on a live connection; "258–263 ms reconnect" | Abstract, §IV-A, §VII-A, Conclusion | flush retry_extra_mean 35.78 (m2) / 35.81 (ember) ms; derived 35.8/20.3 = 1.76; restart reconnect_extra_mean 257.67 (ember) – 262.9 (m2) ms |
