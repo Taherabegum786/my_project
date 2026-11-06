@@ -52,7 +52,7 @@
   "2000": 3600.0,
   "20000": 1200.0
  },
- "sweep_delta_wall_s": 1866.7,
+ "sweep_delta_wall_s": 802.5,
  "controller_horizon_s": {
   "200": 86400.0,
   "2000": 86400.0,
@@ -61,12 +61,13 @@
  "controller_reps": 10,
  "controller_wall_s": 4951.9,
  "dissem_horizon_s": 1800.0,
- "dissem_wall_s": 67.5,
+ "dissem_wall_s": 252.6,
  "e2e": "lam_bar=2000, Delta=1 s, horizon 1800 s, 20000 samples per (scheme, mode, rep)",
- "e2e_wall_s": 20.1,
+ "e2e_wall_s": 35.4,
  "sens_horizon_s": 1800.0,
  "sens_wall_s": 352.6,
- "dissem_costs_dir": "../results/native_run1",
- "e2e_costs_dir": "../results/native_run1",
- "sens_costs_dir": "../results/native_run1"
+ "dissem_costs_dir": "../results",
+ "e2e_costs_dir": "../results",
+ "sens_costs_dir": "../results/native_run1",
+ "sweep_delta_costs_dir": "../results"
 }

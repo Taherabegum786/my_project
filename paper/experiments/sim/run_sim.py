@@ -358,6 +358,69 @@ def exp_validate(a):
     return {"validate_horizon_s": hor}
 
 
+# ============================================================ R1: operating region (reviewer M1/M2, checklist 1-2)
+R1_POOLS = {"tenant": (0, {}), "shard8": (1, {"n_shards": 8}), "global": (1, {"n_shards": 1}),
+            "region10": (2, {"regions": 10}), "region50": (2, {"regions": 50})}
+R1_MODES = ["pull", "pull_staple", "staple_always"]
+R1_KEYS = ("frac_tok_N1", "frac_tok_N_le4", "d_p50", "d_p99", "tok_bytes_p50", "tok_bytes_p99", "mean_tokens_per_tree",
+           "issuer_sigs_per_s", "issuer_cpu_cores", "issuer_cpu_us_per_token", "issue_wait_mean_s", "issue_wait_p99_s",
+           "miss_per_token", "frac_req_waiting", "miss_latency_p99_ms", "D_mean_s", "staple_installs_per_token",
+           "moves_per_token", "staple_bytes_per_session", "edge_cpu_us_per_req_mean", "edge_cpu_us_per_req_p99",
+           "sig_verifs_per_edge_per_s", "req_per_sig_verify", "busiest_edge_req_per_s", "busiest_edge_verifs_per_s",
+           "busiest_edge_cpu_frac", "max_edge_cpu_frac", "fleet_edge_cpu_cores", "root_bw_fleet_Bps", "root_bw_ratio")
+
+
+def _oprg_task(t):
+    lam, pname, rep, hor, pols, extra = t
+    pool, kw = R1_POOLS[pname]
+    s = Sim(costs(), lam_bar=lam, diurnal_a=0.0, horizon_s=hor, **kw, **extra)
+    t0 = time.time()
+    acc = s.run(rep, pols, R1_MODES, pool=pool)
+    rows, drows = [], []
+    for (pol, m), A in acc.items():
+        r = s.summary(A)
+        base = dict(lambda_bar=lam, pooling=pname, policy=pol, mode=m, rep=rep, horizon_s=hor,
+                    **{k: v for k, v in extra.items()})
+        rows.append(dict(base, **{k: r[k] for k in R1_KEYS}))
+        if m == "pull":
+            for k in range(10):
+                if ("dec%d_tokens" % k) in r:
+                    drows.append(dict(base, mode="any", decile=k, tokens=r["dec%d_tokens" % k],
+                                      frac_tok_N1=r["dec%d_frac_N1" % k], d_p50=r["dec%d_d_p50" % k]))
+    print("oprg lam=%g %s rep=%d %s done in %.0f s" % (lam, pname, rep, extra, time.time() - t0), flush=True)
+    return rows, drows
+
+
+def exp_oprg(a):
+    hz = {200: 3600.0, 2000: 3600.0, 20000: a.hor20k}
+    if QUICK:
+        hz = {200: 300.0, 2000: 300.0, 20000: 60.0}
+    pols = ["fixed:0.01", "fixed:0.1", "fixed:1", "wc"]
+    tasks = []
+    for lam in (200, 2000, 20000):
+        for pname in R1_POOLS:
+            for r in range(a.reps):
+                tasks.append((lam, pname, r, hz[lam], pols + (["pertoken"] if pname == "tenant" else []), {}))
+    tasks.sort(key=lambda t: -t[0] * t[3] * (2 if t[1].startswith("region") else 1))
+    res = pmap(_oprg_task, tasks, a.procs)
+    write(os.path.join(a.out, "sim_oprg.csv"), sum([r[0] for r in res], []))
+    write(os.path.join(a.out, "sim_oprg_deciles.csv"), sum([r[1] for r in res], []))
+    return {"oprg_horizon_s": hz, "oprg_note": "R1 operating-region sweep; pooling tenant/shard8/global/region10/region50"}
+
+
+def exp_pmove(a):
+    """R1 (reviewer M4, checklist 5): stapling sensitivity to the per-segment re-route probability."""
+    hor = 300.0 if QUICK else 1800.0
+    tasks = []
+    for pm in (0.0, 1e-4, 2e-4, 5e-4, 1e-3, 2e-3, 5e-3, 1e-2):
+        for pname, pols in (("tenant", ["fixed:0.01", "fixed:1", "pertoken"]), ("global", ["fixed:0.01", "wc"])):
+            for r in range(a.reps):
+                tasks.append((2000.0, pname, r, hor, pols, {"p_move": pm}))
+    res = pmap(_oprg_task, tasks, a.procs)
+    write(os.path.join(a.out, "sim_pmove.csv"), sum([r[0] for r in res], []))
+    return {"pmove_horizon_s": hor}
+
+
 def main():
     global ARGS
     ap = argparse.ArgumentParser()
@@ -370,7 +433,8 @@ def main():
     ARGS = a = ap.parse_args()
     t0 = time.time()
     info = {"exp_sweep": exp_sweep, "sweep_delta": exp_sweep, "controller": exp_controller, "dissem": exp_dissem,
-            "e2e": exp_e2e, "sens": exp_sens, "validate": exp_validate}[a.exp](a)
+            "e2e": exp_e2e, "sens": exp_sens, "validate": exp_validate,
+            "oprg": exp_oprg, "pmove": exp_pmove}[a.exp](a)
     info = info or {}
     info["%s_wall_s" % a.exp] = round(time.time() - t0, 1)
     info["%s_costs_dir" % a.exp] = os.environ.get("EMBER_COSTS_DIR", a.out)

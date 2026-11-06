@@ -1,0 +1,72 @@
+{
+ "E": 500,
+ "alpha_e": 0.8,
+ "T": 1000,
+ "alpha_t": 1.0,
+ "lam_bar": 2000.0,
+ "diurnal_a": 0.6,
+ "horizon_s": 86400.0,
+ "K_mean": 150.0,
+ "seg_interval_s": 4.0,
+ "p_move": 0.0005,
+ "v_max_s": 3600.0,
+ "P_s": 300.0,
+ "rtt_ce_ms": [
+  20.0,
+  0.6
+ ],
+ "rtt_es_ms": [
+  15.0,
+  0.5
+ ],
+ "rtt_sr_ms": [
+  60.0,
+  0.5
+ ],
+ "push_ms": [
+  150.0,
+  0.5
+ ],
+ "first_req_ms": [
+  120.0,
+  0.5
+ ],
+ "shields_per_edge": 0.1,
+ "seg_bytes": 1500000.0,
+ "n": 16,
+ "root_signer": "ML-DSA-44",
+ "claims_bytes": 104,
+ "slo_s": 2.0,
+ "budget_B": 1024,
+ "ewma": 0.2,
+ "grid_n": 25,
+ "grid_lo": 0.01,
+ "grid_hi": 60.0,
+ "n_shards": 8,
+ "seed": 20261105,
+ "seed_rule": "replicate r uses SEED + 1000*r; per (tenant, chunk) SeedSequence([SEED+1000r, tenant, chunk])",
+ "validate_horizon_s": 3600.0,
+ "validate_wall_s": 2124.1,
+ "sweep_delta_horizon_s": {
+  "200": 3600.0,
+  "2000": 3600.0,
+  "20000": 1200.0
+ },
+ "sweep_delta_wall_s": 1866.7,
+ "controller_horizon_s": {
+  "200": 86400.0,
+  "2000": 86400.0,
+  "20000": "1 h peak window [10800, 14400] s"
+ },
+ "controller_reps": 10,
+ "controller_wall_s": 4951.9,
+ "dissem_horizon_s": 1800.0,
+ "dissem_wall_s": 67.5,
+ "e2e": "lam_bar=2000, Delta=1 s, horizon 1800 s, 20000 samples per (scheme, mode, rep)",
+ "e2e_wall_s": 20.1,
+ "sens_horizon_s": 1800.0,
+ "sens_wall_s": 352.6,
+ "dissem_costs_dir": "../results/native_run1",
+ "e2e_costs_dir": "../results/native_run1",
+ "sens_costs_dir": "../results/native_run1"
+}

@@ -183,8 +183,9 @@ func appendCSV(path, header, row string) {
 // ------------------------------------------------------------------ token pools (p1/p2)
 
 type pool struct {
-	toks   []string
-	prefix []string
+	toks    []string
+	prefix  []string
+	staples []string // R1 b5s: X-Token-Sig value per session (sent on the first request of the session)
 }
 
 func post(addr, path string, body []byte) {
@@ -232,6 +233,15 @@ func buildPool(S int) *pool {
 			sr, toks := tokens.IssueEpoch(k, alg, kid, uint32(e+1), tnow, 1000, cs, tokens.RandFill)
 			post(*target, fmt.Sprintf("/admin/root?v=0&kid=%d", kid), sr.Marshal())
 			p.toks = append(p.toks, toks...)
+		}
+	case tokens.B5s:
+		for i := 0; i < S; i++ {
+			t, st, err := tokens.SignStapled(k, cl(i), 1, tokens.RandFill)
+			if err != nil {
+				log.Fatal(err)
+			}
+			p.toks = append(p.toks, t)
+			p.staples = append(p.staples, st)
 		}
 	default:
 		aux := 1
@@ -292,7 +302,11 @@ func p1() {
 				for j := 0; j < *K && !stop.Load(); j++ {
 					path := fmt.Sprintf("%sseg%05d.m4s", p.prefix[si], j)
 					t0 := time.Now()
-					st, _, err := h.do(mkReq(path, p.toks[si], ""))
+					extra := ""
+					if j == 0 && p.staples != nil {
+						extra = "X-Token-Sig: " + p.staples[si] + "\r\n"
+					}
+					st, _, err := h.do(mkReq(path, p.toks[si], extra))
 					if err != nil || st != 200 {
 						errs.Add(1)
 						if err != nil {

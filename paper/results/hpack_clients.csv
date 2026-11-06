@@ -1,0 +1,11 @@
+client,advertised_table,cookie_value_bytes,seg_requests,first_seg_block_bytes,seg_block_bytes_total,steady_block_bytes_mean,cookie_len_seen,table_size_updates
+chrome-153-headless,65536,3311,150,2762,6537,25.7,3322,[65536]
+chrome-153-headless,65536,3311,150,2761,6536,25.7,3322,[65536]
+chrome-153-headless,65536,3311,150,2760,6535,25.7,3322,[65536]
+curl-8.5.0-nghttp2-1.59.0,65536,3311,150,2694,400577,2670.7,3322,[4096]
+go-x-net-v0.38.0-default,65536,3311,150,2697,34211,228.4,3322,[4096]
+chrome-153-headless,4096,3311,150,2750,448608,2992.7,3322,
+chrome-153-headless,4096,3311,150,2756,449508,2998.7,3322,
+chrome-153-headless,4096,3311,150,2757,449638,2999.7,3322,
+curl-8.5.0-nghttp2-1.59.0,4096,3311,150,2699,401327,2675.7,3322,[4096]
+go-x-net-v0.38.0-default,4096,3311,150,2699,34235,228.5,3322,[4096]

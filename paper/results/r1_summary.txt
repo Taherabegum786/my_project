@@ -1,0 +1,166 @@
+
+=== TABLE VI REBUILD (sim_delta_sweep.csv, lam=2000, native; per-tenant pool=0 and pooled pool=1) ===
+pool=0 pull        fixed:0.01 miss/tok=1.0695 D=96.08 ms (run1 96.17) wait=0.7100% root/served=2.35e-05 cpu mean/p99=1.012/0.639 us (run1 1.195/0.725) tok p50=147
+pool=1 pull        fixed:0.01 miss/tok=1.0536 D=94.26 ms (run1 94.35) wait=0.7051% root/served=2.3e-05 cpu mean/p99=1.200/0.752 us (run1 1.412/0.896) tok p50=190
+pool=0 pull_staple fixed:0.01 miss/tok=0.0733 D=11.63 ms (run1 11.73) wait=0.0486% root/served=1.62e-06 cpu mean/p99=1.012/0.639 us (run1 1.195/0.725) tok p50=147
+pool=1 pull_staple fixed:0.01 miss/tok=0.0714 D=11.46 ms (run1 11.56) wait=0.0473% root/served=1.57e-06 cpu mean/p99=1.200/0.752 us (run1 1.412/0.896) tok p50=190
+pool=0 push        fixed:0.01 miss/tok=0.6220 D=19.72 ms (run1 19.82) wait=0.4125% root/served=0.00501 cpu mean/p99=0.713/0.639 us (run1 0.832/0.725) tok p50=147
+pool=1 push        fixed:0.01 miss/tok=0.6156 D=19.65 ms (run1 19.74) wait=0.4097% root/served=0.00219 cpu mean/p99=0.908/0.752 us (run1 1.058/0.896) tok p50=190
+pool=0 pull_rollup fixed:0.01 miss/tok=1.0448 D=93.24 ms (run1 93.33) wait=0.6937% root/served=4.55e-05 cpu mean/p99=0.996/0.639 us (run1 1.175/0.725) tok p50=147
+pool=1 pull_rollup fixed:0.01 miss/tok=1.0034 D=89.85 ms (run1 89.94) wait=0.6719% root/served=5.05e-05 cpu mean/p99=1.167/0.752 us (run1 1.372/0.896) tok p50=190
+pool=0 push_rollup fixed:0.01 miss/tok=1.0115 D=91.27 ms (run1 91.36) wait=0.6716% root/served=0.000104 cpu mean/p99=0.974/0.639 us (run1 1.148/0.725) tok p50=147
+pool=1 push_rollup fixed:0.01 miss/tok=0.9972 D=89.72 ms (run1 89.81) wait=0.6678% root/served=5.32e-05 cpu mean/p99=1.163/0.752 us (run1 1.367/0.896) tok p50=190
+pool=0 pull        fixed:1    miss/tok=0.9208 D=575.25 ms (run1 575.36) wait=0.6601% root/served=1.86e-05 cpu mean/p99=1.405/1.422 us (run1 1.673/1.692) tok p50=233
+pool=1 pull        fixed:1    miss/tok=0.5942 D=543.88 ms (run1 544.02) wait=0.5417% root/served=8.69e-06 cpu mean/p99=1.741/1.422 us (run1 2.073/1.692) tok p50=318
+pool=0 pull_staple fixed:1    miss/tok=0.0584 D=505.36 ms (run1 505.46) wait=0.0387% root/served=1.28e-06 cpu mean/p99=1.405/1.422 us (run1 1.673/1.692) tok p50=233
+pool=1 pull_staple fixed:1    miss/tok=0.0292 D=502.98 ms (run1 503.11) wait=0.0193% root/served=6.23e-07 cpu mean/p99=1.741/1.422 us (run1 2.073/1.692) tok p50=318
+pool=0 push        fixed:1    miss/tok=0.5519 D=513.90 ms (run1 514.01) wait=0.3830% root/served=0.00152 cpu mean/p99=1.158/1.422 us (run1 1.374/1.692) tok p50=233
+pool=1 push        fixed:1    miss/tok=0.3872 D=512.01 ms (run1 512.14) wait=0.3133% root/served=2.86e-05 cpu mean/p99=1.602/1.422 us (run1 1.905/1.692) tok p50=318
+pool=0 pull_rollup fixed:1    miss/tok=0.9077 D=574.13 ms (run1 574.24) wait=0.6515% root/served=2.01e-05 cpu mean/p99=1.396/1.422 us (run1 1.662/1.692) tok p50=233
+pool=1 pull_rollup fixed:1    miss/tok=0.5775 D=543.57 ms (run1 543.70) wait=0.5306% root/served=8.8e-06 cpu mean/p99=1.729/1.422 us (run1 2.059/1.692) tok p50=318
+pool=0 push_rollup fixed:1    miss/tok=0.8748 D=572.17 ms (run1 572.27) wait=0.6296% root/served=4.99e-05 cpu mean/p99=1.374/1.422 us (run1 1.636/1.692) tok p50=233
+pool=1 push_rollup fixed:1    miss/tok=0.5713 D=543.41 ms (run1 543.55) wait=0.5265% root/served=8.86e-06 cpu mean/p99=1.725/1.422 us (run1 2.054/1.692) tok p50=318
+wrote tables/tab_r1_table6.tex
+
+=== HPACK LIKE-FOR-LIKE (wire_bytes_r1.csv; x/net hpack v0.38.0; session = 1 + 150 requests) ===
+b1                     url     h2-hpack       session=26706 first=485 token=127
+b1                     url     h2-hpack-t64k  session=24918 first=489 token=127
+b1                     url     http1.1        session=107057 first=707 token=127
+b1                     cookie  h2-hpack       session=9148 first=489 token=127
+b1                     cookie  h2-hpack-t64k  session=9121 first=493 token=127
+b1                     cookie  http1.1        session=109171 first=721 token=127
+b11                    url     h2-hpack       session=33277 first=525 token=175
+b11                    url     h2-hpack-t64k  session=30825 first=529 token=175
+b11                    url     http1.1        session=114305 first=755 token=175
+b11                    cookie  h2-hpack       session=9308 first=529 token=175
+b11                    cookie  h2-hpack-t64k  session=9161 first=533 token=175
+b11                    cookie  http1.1        session=116419 first=769 token=175
+b5                     url     h2-hpack       session=457831 first=3031 token=3311
+b5                     url     h2-hpack-t64k  session=410359 first=3035 token=3311
+b5                     url     http1.1        session=587841 first=3891 token=3311
+b5                     cookie  h2-hpack       session=458568 first=3035 token=3311
+b5                     cookie  h2-hpack-t64k  session=11667 first=3039 token=3311
+b5                     cookie  http1.1        session=589955 first=3905 token=3311
+b5c                    cookie2 h2-hpack       session=460833 first=3050 token=3311
+b5c                    cookie2 h2-hpack-t64k  session=11932 first=3054 token=3311
+b5c                    cookie2 http1.1        session=592522 first=3922 token=3311
+b5s+staple             url     h2-hpack       session=27048 first=3060 token=109
+b5s+staple             url     h2-hpack-t64k  session=25273 first=3064 token=109
+b5s+staple             url     http1.1        session=107581 first=3931 token=109
+b5s+staple             cookie  h2-hpack       session=12114 first=3065 token=109
+b5s+staple             cookie  h2-hpack-t64k  session=11711 first=3069 token=109
+b5s+staple             cookie  http1.1        session=109695 first=3945 token=109
+o1_N2^0+staple         url     h2-hpack       session=29095 first=3125 token=122
+o1_N2^0+staple         url     h2-hpack-t64k  session=26988 first=3129 token=122
+o1_N2^0+staple         url     http1.1        session=109600 first=4000 token=122
+o1_N2^0+staple         cookie  h2-hpack       session=12213 first=3128 token=122
+o1_N2^0+staple         cookie  h2-hpack-t64k  session=11774 first=3132 token=122
+o1_N2^0+staple         cookie  http1.1        session=111714 first=4014 token=122
+o1_N2^5+staple         url     h2-hpack       session=43401 first=3203 token=229
+o1_N2^5+staple         url     h2-hpack-t64k  session=39966 first=3207 token=229
+o1_N2^5+staple         url     http1.1        session=125757 first=4107 token=229
+o1_N2^5+staple         cookie  h2-hpack       session=13165 first=3207 token=229
+o1_N2^5+staple         cookie  h2-hpack-t64k  session=11853 first=3211 token=229
+o1_N2^5+staple         cookie  http1.1        session=127871 first=4121 token=229
+o1_N2^8+staple         url     h2-hpack       session=52389 first=3245 token=293
+o1_N2^8+staple         url     h2-hpack-t64k  session=47958 first=3249 token=293
+o1_N2^8+staple         url     http1.1        session=135421 first=4171 token=293
+o1_N2^8+staple         cookie  h2-hpack       session=13466 first=3248 token=293
+o1_N2^8+staple         cookie  h2-hpack-t64k  session=11894 first=3252 token=293
+o1_N2^8+staple         cookie  http1.1        session=137535 first=4185 token=293
+o1_N2^14+staple        url     h2-hpack       session=69161 first=3357 token=421
+o1_N2^14+staple        url     h2-hpack-t64k  session=63012 first=3361 token=421
+o1_N2^14+staple        url     http1.1        session=154749 first=4299 token=421
+o1_N2^14+staple        cookie  h2-hpack       session=14090 first=3362 token=421
+o1_N2^14+staple        cookie  h2-hpack-t64k  session=12008 first=3366 token=421
+o1_N2^14+staple        cookie  http1.1        session=156863 first=4313 token=421
+o1_N2^14               url     h2-hpack       session=66193 first=721 token=421
+o1_N2^14               url     h2-hpack-t64k  session=60454 first=725 token=421
+o1_N2^14               url     http1.1        session=151451 first=1001 token=421
+o1_N2^14               cookie  h2-hpack       session=10775 first=726 token=421
+o1_N2^14               cookie  h2-hpack-t64k  session=9358 first=730 token=421
+o1_N2^14               cookie  http1.1        session=153565 first=1015 token=421
+staple overhead o1_N2^14 h2-hpack: first request +2636 B, session +2968 B
+staple overhead o1_N2^14 http1.1: first request +3298 B, session +3298 B
+staple overhead b5s h2-hpack: first request +2589 B, session +2921 B
+staple overhead b5s http1.1: first request +3242 B, session +3242 B
+staple overhead o1_N2^5 h2-hpack: first request +2635 B, session +2967 B
+staple overhead o1_N2^5 http1.1: first request +3298 B, session +3298 B
+wrote tables/tab_r1_hpack.tex
+
+=== HPACK CLIENT ENCODERS (hpack_clients.csv; h2probe; 3311-B cookie value, 150 requests) ===
+chrome-153-headless          advertised=4096   runs=3 steady B/req=2992.7/2998.7/2999.7 total seg block B=448608/449508/449638 first=2750/2756/2757 size-updates=none
+chrome-153-headless          advertised=65536  runs=3 steady B/req=25.7/25.7/25.7 total seg block B=6537/6536/6535 first=2762/2761/2760 size-updates=[65536]
+curl-8.5.0-nghttp2-1.59.0    advertised=65536  runs=1 steady B/req=2670.7 total seg block B=400577 first=2694 size-updates=[4096]
+go-x-net-v0.38.0-default     advertised=65536  runs=1 steady B/req=228.4 total seg block B=34211 first=2697 size-updates=[4096]
+
+=== P2 RELABELLED (proto_latency_r1.csv): utilisation vs QUIET P1 capacity; per-run median [min, max] ===
+b1   nominal 0.5 -> util 0.39 [0.39, 0.39] of quiet P1; p50 25.29 [24.86, 26.30] ms; p99 41.2 [35.5, 43.0]; added p50 vs B1 0.00 [0.00, 0.00]
+b1   nominal 0.8 -> util 0.63 [0.63, 0.63] of quiet P1; p50 31.22 [27.69, 33.81] ms; p99 105.9 [52.0, 180.6]; added p50 vs B1 0.00 [0.00, 0.00]
+b11  nominal 0.5 -> util 0.39 [0.39, 0.39] of quiet P1; p50 24.40 [23.78, 26.46] ms; p99 42.3 [36.4, 46.0]; added p50 vs B1 -0.93 [-1.51, 0.16]
+b11  nominal 0.8 -> util 0.62 [0.62, 0.62] of quiet P1; p50 29.21 [27.38, 45.15] ms; p99 73.6 [67.0, 229.0]; added p50 vs B1 0.11 [-6.42, 13.93]
+b12  nominal 0.5 -> util 0.37 [0.37, 0.37] of quiet P1; p50 25.50 [24.15, 27.09] ms; p99 37.0 [34.6, 41.1]; added p50 vs B1 -0.10 [-0.72, 0.91]
+b12  nominal 0.8 -> util 0.59 [0.59, 0.59] of quiet P1; p50 29.77 [26.38, 35.23] ms; p99 92.0 [43.0, 235.1]; added p50 vs B1 -1.14 [-6.16, 6.13]
+b2   nominal 0.5 -> util 0.38 [0.38, 0.39] of quiet P1; p50 23.91 [23.56, 25.62] ms; p99 39.7 [33.2, 53.7]; added p50 vs B1 -1.05 [-1.93, -0.69]
+b2   nominal 0.8 -> util 0.62 [0.61, 0.62] of quiet P1; p50 28.46 [27.66, 29.97] ms; p99 101.7 [72.2, 142.7]; added p50 vs B1 -2.57 [-4.74, -0.02]
+b3   nominal 0.5 -> util 0.40 [0.40, 0.40] of quiet P1; p50 23.75 [23.49, 25.39] ms; p99 32.5 [31.4, 39.1]; added p50 vs B1 -1.37 [-1.88, -0.91]
+b3   nominal 0.8 -> util 0.63 [0.63, 0.64] of quiet P1; p50 28.46 [26.44, 30.48] ms; p99 120.1 [61.2, 191.8]; added p50 vs B1 -2.76 [-4.62, 1.39]
+b5   nominal 0.5 -> util 0.39 [0.39, 0.40] of quiet P1; p50 25.93 [25.15, 26.47] ms; p99 42.0 [40.3, 68.0]; added p50 vs B1 0.79 [-1.15, 1.07]
+b5   nominal 0.8 -> util 0.63 [0.63, 0.63] of quiet P1; p50 41.24 [34.39, 49.06] ms; p99 141.0 [94.0, 273.8]; added p50 vs B1 12.14 [3.17, 16.52]
+b5v  nominal 0.5 -> util 0.39 [0.38, 0.39] of quiet P1; p50 26.45 [22.22, 27.01] ms; p99 42.3 [37.4, 44.8]; added p50 vs B1 1.16 [-4.08, 2.05]
+b5v  nominal 0.8 -> util 0.62 [0.62, 0.62] of quiet P1; p50 45.55 [33.83, 232.92] ms; p99 302.6 [90.7, 372.2]; added p50 vs B1 11.75 [2.61, 203.82]
+o1   nominal 0.5 -> util 0.36 [0.35, 0.36] of quiet P1; p50 25.03 [23.71, 27.14] ms; p99 35.6 [33.9, 134.7]; added p50 vs B1 -0.25 [-1.15, 0.84]
+o1   nominal 0.8 -> util 0.57 [0.57, 0.57] of quiet P1; p50 27.52 [26.59, 28.62] ms; p99 51.8 [40.6, 69.0]; added p50 vs B1 -2.60 [-6.29, 0.55]
+o1a  nominal 0.5 -> util 0.36 [0.36, 0.36] of quiet P1; p50 25.09 [24.29, 27.41] ms; p99 35.9 [35.2, 40.2]; added p50 vs B1 -0.20 [-0.57, 1.10]
+o1a  nominal 0.8 -> util 0.58 [0.58, 0.58] of quiet P1; p50 28.05 [27.35, 30.23] ms; p99 57.7 [46.6, 77.6]; added p50 vs B1 -1.00 [-5.76, 0.35]
+
+=== NATIVE PRIMITIVES: run-2 median [min-max of 5 run medians]; run-1 median ===
+ECDSA-P256           sign   23.0 [22.9-31.1] run1 27.3
+ECDSA-P256           verify 69.6 [69.5-70.0] run1 83.9
+ED25519              sign   30.1 [30.1-30.4] run1 35.8
+ED25519              verify 94.6 [93.8-96.2] run1 114.1
+ML-DSA-44            sign   408.8 [386.9-452.4] run1 501.8
+ML-DSA-44            verify 100.9 [100.2-120.4] run1 122.3
+ML-DSA-65            sign   676.5 [673.5-682.7] run1 805.0
+ML-DSA-65            verify 154.8 [154.6-165.8] run1 183.1
+ML-DSA-87            sign   808.7 [796.3-871.5] run1 960.0
+ML-DSA-87            verify 244.8 [243.5-250.0] run1 290.7
+RSA-2048             sign   314.1 [309.4-340.5] run1 365.1
+RSA-2048             verify 20.7 [18.8-24.2] run1 22.1
+SLH-DSA-SHA2-128f    sign   14435.8 [14293.6-14486.4] run1 17387.7
+SLH-DSA-SHA2-128f    verify 873.2 [862.3-883.6] run1 1286.6
+SLH-DSA-SHA2-128s    sign   306463.8 [300200.8-312494.6] run1 352449.8
+SLH-DSA-SHA2-128s    verify 288.1 [282.4-320.0] run1 360.8
+pathverify d=0 n=16: run medians min-max 217.3-246.8 ns
+pathverify d=5 n=16: run medians min-max 885.8-898.2 ns
+pathverify d=8 n=16: run medians min-max 1273.5-1300.8 ns
+pathverify d=16 n=16: run medians min-max 2334.1-2455.4 ns
+hmac_sha256_200B n=32: run medians min-max 296.1-303.1 ns
+th_200B n=16: run medians min-max 204.4-224.2 ns
+th_200B n=32: run medians min-max 205.5-225.1 ns
+
+=== DoS (dos.csv = run-2 costs; sim_costs_run1/dos.csv = run-1 costs), attack 10^4/s ===
+run2 naive            all_tenants  fetch/s=9636 verif/s=4630 cpu=0.4842
+run2 naive            top_tenant   fetch/s=79 verif/s=79 cpu=0.0248
+run2 naive            low_tenant   fetch/s=7680 verif/s=19 cpu=0.0187
+run2 coalesce+neg     all_tenants  fetch/s=9270 verif/s=4629 cpu=0.4840
+run2 coalesce+neg     top_tenant   fetch/s=65 verif/s=65 cpu=0.0233
+run2 coalesce+neg     low_tenant   fetch/s=65 verif/s=15 cpu=0.0183
+run2 staple_flood     all_tenants  fetch/s=0 verif/s=10000 cpu=1.0261
+run2 staple_flood     top_tenant   fetch/s=0 verif/s=10000 cpu=1.0261
+run2 staple_flood     low_tenant   fetch/s=0 verif/s=10000 cpu=1.0261
+run2 staple_flood+rl  all_tenants  fetch/s=0 verif/s=100 cpu=0.0269
+run2 staple_flood+rl  top_tenant   fetch/s=0 verif/s=100 cpu=0.0269
+run2 staple_flood+rl  low_tenant   fetch/s=0 verif/s=100 cpu=0.0269
+run1 naive            all_tenants  fetch/s=9636 verif/s=4630 cpu=0.5861
+run1 naive            top_tenant   fetch/s=79 verif/s=79 cpu=0.0297
+run1 naive            low_tenant   fetch/s=7680 verif/s=19 cpu=0.0223
+run1 coalesce+neg     all_tenants  fetch/s=9270 verif/s=4629 cpu=0.5859
+run1 coalesce+neg     top_tenant   fetch/s=65 verif/s=65 cpu=0.0280
+run1 coalesce+neg     low_tenant   fetch/s=65 verif/s=15 cpu=0.0219
+run1 staple_flood     all_tenants  fetch/s=0 verif/s=10000 cpu=1.2425
+run1 staple_flood     top_tenant   fetch/s=0 verif/s=10000 cpu=1.2425
+run1 staple_flood     low_tenant   fetch/s=0 verif/s=10000 cpu=1.2425
+run1 staple_flood+rl  all_tenants  fetch/s=0 verif/s=100 cpu=0.0322
+run1 staple_flood+rl  top_tenant   fetch/s=0 verif/s=100 cpu=0.0322
+run1 staple_flood+rl  low_tenant   fetch/s=0 verif/s=100 cpu=0.0322

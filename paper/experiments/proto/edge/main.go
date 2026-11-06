@@ -71,6 +71,9 @@ type server struct {
 	roots    map[rootKey]*rootEntry
 	vcacheMu sync.Mutex
 	vcache   map[[32]byte]int64
+	scacheMu sync.Mutex
+	scache   map[[16]byte]int64 // R1 B5s: H(ref|claims) -> expiry
+	sver     atomic.Int64
 	statsMu  sync.Mutex
 	stats    map[uint32]*kidStats
 	reqs     atomic.Int64
@@ -277,6 +280,43 @@ func (s *server) handle(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		}
+	case tokens.B5s:
+		// R1 M2: stapled per-token ML-DSA-44; signature arrives once per connection in X-Token-Sig
+		var enc string
+		var ref []byte
+		var key [16]byte
+		var err error
+		c, enc, ref, key, err = tokens.ParseStapled(tok)
+		if err != nil {
+			s.deny(w, "parse")
+			return
+		}
+		s.scacheMu.Lock()
+		exp, ok := s.scache[key]
+		s.scacheMu.Unlock()
+		if ok && exp >= now.Unix() {
+			event = "scache-hit"
+			break
+		}
+		st := r.Header.Get("X-Token-Sig")
+		if st == "" {
+			s.deny(w, "staple required")
+			return
+		}
+		t0 := time.Now()
+		s.sver.Add(1)
+		if !tokens.VerifyStapled(s.keys, ref, enc, st) {
+			s.deny(w, "staple sig")
+			return
+		}
+		wait = time.Since(t0)
+		event = "staple"
+		s.scacheMu.Lock()
+		if len(s.scache) > 1<<21 {
+			s.scache = map[[16]byte]int64{}
+		}
+		s.scache[key] = c.Expires
+		s.scacheMu.Unlock()
 	case tokens.B5v:
 		h := sha256.Sum256([]byte(tok))
 		s.vcacheMu.Lock()
@@ -367,7 +407,7 @@ func (s *server) admin(w http.ResponseWriter, r *http.Request) {
 func (s *server) statsH(w http.ResponseWriter, r *http.Request) {
 	s.statsMu.Lock()
 	out := map[string]interface{}{"requests": s.reqs.Load(), "rejects": s.rejects.Load(),
-		"vcache_hits": s.vhits.Load(), "vcache_miss": s.vmiss.Load()}
+		"vcache_hits": s.vhits.Load(), "vcache_miss": s.vmiss.Load(), "b5s_staple_verifs": s.sver.Load()}
 	kids := map[string]kidStats{}
 	for k, v := range s.stats {
 		kids[strconv.Itoa(int(k))] = kidStats{atomic.LoadInt64(&v.Fetches), atomic.LoadInt64(&v.FetchBytes),
@@ -390,7 +430,7 @@ func main() {
 	}
 	k := tokens.DeriveKeys(*seed)
 	s := &server{keys: k, ver: tokens.NewVerifier(k), roots: map[rootKey]*rootEntry{},
-		vcache: map[[32]byte]int64{}, stats: map[uint32]*kidStats{}, body: make([]byte, *bodyLen)}
+		vcache: map[[32]byte]int64{}, scache: map[[16]byte]int64{}, stats: map[uint32]*kidStats{}, body: make([]byte, *bodyLen)}
 	s.client = &http.Client{Timeout: 5 * time.Second, Transport: &http.Transport{
 		MaxIdleConns: 256, MaxIdleConnsPerHost: 256, IdleConnTimeout: 600 * time.Second,
 		DialContext: (&net.Dialer{Timeout: 3 * time.Second, KeepAlive: 30 * time.Second}).DialContext}}

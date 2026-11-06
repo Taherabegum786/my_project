@@ -290,8 +290,9 @@ def fig8():
         if not v.size:
             continue
         y = np.arange(1, v.size + 1) / v.size
+        # R1 (m13): the legend carries each series' mean added latency
         ax.plot(np.maximum(v, 1e-4), y, ls=LINES[k], color=SERIES[k], lw=1.2,
-                label=(s.replace("EMBER-O1", "EMBER") + ("" if m == "none" else " " + m)))
+                label=(s.replace("EMBER-O1", "EMBER") + ("" if m == "none" else " " + m)) + " (mean %.3g ms)" % v.mean())
     ax.set_xscale("log")
     ax.set_xlabel("added latency per request (ms)")
     ax.set_ylabel("CDF (simulated)")
@@ -394,8 +395,8 @@ def fig_proto_validate():
         xx = np.array([max(lo, 1e-4), hi])
         ax.plot(xx, xx, color=INK2, lw=0.8)
         ax.fill_between(xx, xx * 0.85, xx * 1.15, color="#e4e3df", lw=0, label="$\\pm$15%")
-        if met == "miss_per_token":
-            ax.set_xscale("log"); ax.set_yscale("log")
+        # R1 (m12): log axes on both panels so the stapled points (~0.08 ms) and pull points (~77 ms) separate
+        ax.set_xscale("log"); ax.set_yscale("log")
         ax.set_xlabel("prototype (measured) " + lab)
         ax.set_ylabel("fleet_mc (simulated) " + lab)
         ax.legend(fontsize=7)

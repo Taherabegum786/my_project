@@ -3,7 +3,8 @@ replays every *first* request and every *moved* request of each token against pe
 Requests that stay on the session's edge after the first one are cache hits by construction (sticky edge,
 root cached until V_max + P) and are accounted for in bulk.  Constant-memory statistics (log histograms).
 
-Modes: 0 pull, 1 push, 2 pull_staple, 3 pull_rollup, 4 push_rollup (push of period bundles, pull for open period).
+Modes: 0 pull, 1 push, 2 pull_staple, 3 pull_rollup, 4 push_rollup (push of period bundles, pull for open period),
+5 staple_always (R1: staple on every new edge contact, including re-routes).
 Policies: fixed Delta (aligned timer), work-conserving (wc), adaptive controller (ember.controller).
 """
 import math
@@ -14,6 +15,9 @@ from numba import njit
 
 MODES = ["pull", "push", "pull_staple", "pull_rollup", "push_rollup"]
 MODE_ID = {m: i for i, m in enumerate(MODES)}
+# R1: mode 5 "staple_always" = the client staples the signed root on EVERY new edge contact (first request and
+# re-routed requests), so re-routes never wait; it is not in MODES so that the v1 experiments are unchanged.
+MODE_ID["staple_always"] = 5
 
 # ------------------------------------------------------------------ histograms (seconds), log bins
 H_LO, H_HI, H_NB = 1e-7, 1e4, 1100
@@ -133,7 +137,7 @@ def kernel(mode, tok_ep, tok_issue, tok_edge, tok_d0, mv_tok, mv_off, mv_edge,
         h = _find(keys, ekey, mask)
         wait = 0.0
         kind = 0
-        if mode == 2 and first:
+        if (mode == 2 and first) or mode == 5:
             # stapled root on the first request: verify and install (or replace a pending fetch) at once
             if keys[h] == -1 or vals[h] > tr:
                 keys[h] = ekey

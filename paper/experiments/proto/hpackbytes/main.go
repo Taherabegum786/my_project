@@ -68,6 +68,7 @@ type tokCase struct {
 	token      string
 	placements []string
 	staple     string // b64url SR for the first request (EMBER only)
+	stapleHdr  string // header name for the staple (default x-ember-root; R1 b5s: x-token-sig)
 }
 
 // request returns the header list of request j.
@@ -87,7 +88,11 @@ func request(tc tokCase, placement string, j int, withStaple bool) [][2]string {
 		h = append(h, [2]string{"cookie", "Edge-Token-1=" + tc.token[:half]}, [2]string{"cookie", "Edge-Token-2=" + tc.token[half:]})
 	}
 	if withStaple && j == 0 && tc.staple != "" {
-		h = append(h, [2]string{"x-ember-root", tc.staple})
+		hn := "x-ember-root"
+		if tc.stapleHdr != "" {
+			hn = tc.stapleHdr
+		}
+		h = append(h, [2]string{hn, tc.staple})
 	}
 	return h
 }
@@ -221,7 +226,8 @@ func main() {
 		name  string
 		alg   uint8
 		log2N int
-	}{{"o1_N2^10", tokens.AlgMLDSA44, 10}, {"o1_N2^14", tokens.AlgMLDSA44, 14}, {"o1_N2^20", tokens.AlgMLDSA44, 20},
+	}{{"o1_N2^0", tokens.AlgMLDSA44, 0}, {"o1_N2^5", tokens.AlgMLDSA44, 5}, {"o1_N2^8", tokens.AlgMLDSA44, 8},
+		{"o1_N2^10", tokens.AlgMLDSA44, 10}, {"o1_N2^14", tokens.AlgMLDSA44, 14}, {"o1_N2^20", tokens.AlgMLDSA44, 20},
 		{"o2_N2^14", tokens.AlgMLDSA44 | tokens.AlgN32, 14}, {"o4_N2^14", tokens.AlgHybrid, 14}, {"o3_N2^14", tokens.AlgSLH128s, 14}} {
 		N := 1 << cfg.log2N
 		cs := make([]tokens.Claims, N)
@@ -247,6 +253,12 @@ func main() {
 		}
 		tc := tokCase{scheme: cfg.name, token: t, placements: all, staple: tokens.B64.EncodeToString(sr.Marshal())}
 		cases = append(cases, tc)
+	}
+	// R1 M2/B5s: stapled per-token ML-DSA-44 (short URL token; signature once per session in x-token-sig)
+	if t, st, err := tokens.SignStapled(k, claims, 1, tokens.RandFill); err == nil {
+		cases = append(cases, tokCase{scheme: tokens.B5s, token: t, placements: all, staple: st, stapleHdr: "x-token-sig"})
+	} else {
+		log.Fatal(err)
 	}
 	f, err := os.Create(*outCSV)
 	if err != nil {

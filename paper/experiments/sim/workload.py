@@ -74,8 +74,11 @@ def lognorm_mean_s(med_sigma):
     return m / 1000.0 * np.exp(s * s / 2)
 
 
-def tokens(rng, arr, cumw, p):
-    """Per-token random draws (common random numbers across policies)."""
+def tokens(rng, arr, cumw, p, cumw_mv=None):
+    """Per-token random draws (common random numbers across policies).
+    cumw_mv (R1): optional edge CDF for re-route targets (region pooling restricts first edges to a region but
+    lets re-routes go anywhere); default = cumw."""
+    cumw_mv = cumw if cumw_mv is None else cumw_mv
     n = arr.size
     edge = np.searchsorted(cumw, rng.uniform(0, 1, n), side="right").astype(np.int64)
     edge = np.minimum(edge, cumw.size - 1)
@@ -85,7 +88,7 @@ def tokens(rng, arr, cumw, p):
     m = int(nm.sum())
     mv_tok = np.repeat(np.arange(n, dtype=np.int64), nm)
     mv_off = (np.floor(rng.uniform(0, 1, m) * K[mv_tok]) + 1) * p["seg_interval_s"]
-    mv_edge = np.minimum(np.searchsorted(cumw, rng.uniform(0, 1, m), side="right"), cumw.size - 1).astype(np.int64)
+    mv_edge = np.minimum(np.searchsorted(cumw_mv, rng.uniform(0, 1, m), side="right"), cumw.size - 1).astype(np.int64)
     return edge, d0, K, mv_tok, mv_off, mv_edge
 
 

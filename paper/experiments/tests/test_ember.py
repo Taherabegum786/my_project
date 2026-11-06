@@ -416,3 +416,36 @@ def test_split_cookies():
 
 if __name__ == "__main__":
     sys.exit(pytest.main([os.path.abspath(__file__), "-q"]))
+
+
+# ---------------------------------------------------------------- revision R1: M2 / B5s stapled per-token ML-DSA
+def test_stapled_pertoken_m2():
+    from baselines.stapled import StapledPerTokenEdge, StapledPerTokenIssuer, decode
+    iss = StapledPerTokenIssuer()
+    c = Claims("/v/t7/seg/", 2_000_000_000, 7)
+    tok, sig = iss.issue(c)
+    edge = StapledPerTokenEdge(iss.signer, kid=1)
+    now = 1_999_999_000
+    # no staple, nothing cached -> staple required
+    assert edge.verify(tok, now, "/v/t7/seg/1.ts") == (False, "staple_required")
+    # tampered staple rejected
+    bad = bytearray(sig); bad[100] ^= 1
+    assert edge.verify(tok, now, "/v/t7/seg/1.ts", bytes(bad)) == (False, "sig")
+    assert edge.verify(tok, now, "/v/t7/seg/1.ts", sig) == (True, "ok")
+    assert edge.verify(tok, now, "/v/t7/seg/2.ts") == (True, "cache_hit")
+    # cached entry is bound to claims and reference
+    c2 = c.with_(expires=c.expires + 1)
+    tok2 = enc(c2).decode() + tok[tok.rindex(":S="):]
+    assert edge.verify(tok2, now, "/v/t7/seg/1.ts") == (False, "staple_required")
+    assert edge.verify(tok2, now, "/v/t7/seg/1.ts", sig) == (False, "sig")
+    # another token's signature does not verify this one
+    tok3, sig3 = iss.issue(c)
+    assert edge.verify(tok3, now, "/v/t7/seg/1.ts", sig) == (False, "sig")
+    # expiry, url and kid checks
+    assert edge.verify(tok, c.expires + 10, "/v/t7/seg/1.ts", sig)[1] == "expired"
+    assert edge.verify(tok, now, "/other/", sig)[1] == "url"
+    assert StapledPerTokenEdge(iss.signer, kid=2).verify(tok, now, "/v/t7/seg/1.ts", sig)[1] == "unknown_kid"
+    # optional pull of the per-token signature by reference
+    e2 = StapledPerTokenEdge(iss.signer, kid=1, fetch_fn=lambda ref: iss.store.get(ref))
+    assert e2.verify(tok3, now, "/v/t7/seg/1.ts") == (True, "ok") and e2.stats["fetches"] == 1
+    assert len(decode(tok)[2]) == 20
