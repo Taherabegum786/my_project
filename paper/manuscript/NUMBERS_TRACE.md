@@ -268,3 +268,32 @@ Inputs (native run 2): t_v = ML-DSA-44 verify median 100.939 µs (`native_sig_ag
 | rule 4: 51.4 vs 53.8 µs on the sampled trace | sampled tenant fixed:0.01 shared EMBER 51.37, M2 53.79 |
 | rule 3: 1.6–1.8× fleet edge crypto, 120–184 B, 5.4 ms | unchanged, oprg (§VI-C rows above) |
 | trace limitation 100–400× | derived above |
+
+### Prototype R2 (`RESULTS_R2_PROTO.md`; run 2026-11-06 17:22–18:09 UTC; mean [Student-t 95% CI] over 5 runs; `agg_r2.py`)
+| Claim | Location | Source |
+|---|---|---|
+| P1 R2: B1 25.90 [25.03, 26.76]; M2 25.35 [24.01, 26.70]; pooled EMBER 2^5 27.23 [26.50, 27.96]; B5 77.52 [73.79, 81.25] µs/req; tokens 100/83/202/3284 B | Abstract, Table P1, §VI-B | `proto_capacity_r2_agg.csv` edge_cpu_us_per_req_mean/ci, token_bytes (K = 150: `run_r2.sh` p1 `-K 150`, tree 32) |
+| M2 throughput ratio 1.02 [0.94, 1.10] | §VI-B | `proto_capacity_r2_agg.csv` b5s ratio_vs_b1 1.0212 [0.94268, 1.0998] |
+| pooled EMBER 5% more than HMAC | §VI-B | derived 27.23/25.897 = 1.051 |
+| link-bound 24.4–24.7k req/s; B5 edge-bound 12,226/s | §VI-B | `proto_capacity_tb_r2_agg.csv` req_per_s_mean b1 24,678, b5s 24,420, o1 24,600 (util 0.69–0.71); b5 12,226 (util 0.989) |
+| P2: M2/EMBER added p50 −0.11 … +0.01 ms, CIs include 0; B5 +0.81 [0.77, 0.84] and +1.55 [0.94, 2.16] ms | §VI-B | `proto_latency_r2_agg.csv` added_p50_ms_vs_hmac: b5s 0.006 [−0.045, 0.057] (0.5), −0.052 [−0.203, 0.099] (0.8); o1 −0.0044 [−0.026, 0.017], −0.106 [−0.258, 0.046]; b5 0.806 [0.769, 0.843], 1.548 [0.938, 2.157] |
+| P4 setup: 200 tokens/s per scheme, V = 10, p_move 0.01, 30-s window, event at 15 s, caps 64/256, 5 runs | §V, §IV-A | `experiments/proto/run_r2.sh` (P4_DUR 30s, P4_EVENT_AT 15, P4_PMOVE 0.01, `-p4pipes m2:200:11,ember:200:12 -V 10 -kmean 20`) |
+| ~20.6 requests per token (P4); "about 20" | §VII-B | `proto_recovery_r2_agg.csv` requests_per_token_mean 20.604 (m2), 20.483 (ember) |
+| flush: retry +35.8 ms mean, p99 62 ms | §IV-A, Abstract ("about one extra round trip"), §VII-A | `proto_recovery_r2_agg.csv` flush m2 retry_extra_mean_ms 35.78, p99 62.37 (ember 35.81 / 61.93) |
+| base RTT 20.3 ms | §IV-A | `proto_recovery_r2_agg.csv` cold req_lat_p50_ms 20.304 / 20.307 |
+| restart: reconnect 263 ms mean (p99 427), EMBER 258 ms; ~13 RTTs | §IV-A, Abstract, §VII-A, Conclusion | restart m2 reconnect_extra_mean_ms 262.9 [234.5, 291.3], p99 426.67; ember 257.67; derived 262.9/20.3 = 12.95 |
+| ~6 recoveries per 1,000 requests per flush/restart; no failures | §IV-A | recoveries_per_1k_req: flush m2 6.08, ember 4.40; restart m2 6.17, ember 6.38; fails_mean 0 in all rows |
+| cache 64: M2 retries on 55% of requests (551 [533, 570] per 1,000); EMBER 10% (100 [87, 113]); M2 median latency 41.7 ms ("doubled" vs 20.3–20.4) | Abstract, §IV-A, §VII-A | evict64 m2 retries_per_1k_req 551.22 [532.93, 569.51], affected_frac 0.551; ember 100.06, 0.100; req_lat_p50 41.709 vs ember 20.371; derived 41.7/20.3 = 2.05 |
+| ~6,000 tokens per run | §IV-A | tokens_mean 5,976.6 (m2), 6,012.8 (ember) |
+| cache 256: neither retried | §IV-A | evict256 m2 retries_per_1k 0.044 [−0.077, 0.165] (CI includes 0); ember 0 |
+
+### Changed or removed numbers (R2 writer)
+| Change | Location | Source |
+|---|---|---|
+| "Separate P1 campaigns differed by about 10%" → "up to 26% (B1: 20.54, 22.80, 25.90 µs), M2/HMAC ratio 0.98" | §VII-B | `proto_capacity_agg.csv` b1 20.54; `proto_capacity_r1_agg.csv` b1 22.796, b5s 22.328 (ratio 0.979); `proto_capacity_r2_agg.csv` b1 25.897, b5s 25.353 (ratio 0.979); derived 25.90/20.54 = 1.26 |
+| "recovery costs one RTT (20.98 ms)" replaced by the P4 measurements | §IV-A | superseded; the 20.98 ms (`proto_rtt.csv`) is no longer cited |
+| "We did not measure how often recovery occurs" removed; replaced by P4 per-event rates (production frequency still unknown) | §IV-A | as above |
+| Appendix P2 (R1): utilisation relabelling (0.35–0.40 / 0.57–0.64) and the 260–450 / 624 Mbit/s figures dropped for space; remaining values unchanged | App. A | `proto_latency_r1.csv` |
+| §VI-B "Its absolute values differ by about 10% for B1 (20.54 vs 22.80 µs)" removed (now in §VII-B) | §VI-B | — |
+| Pull misses when λΔw_v ≫ 1: M ≈ E/(λΔ) | §IV-C | analytic limit of Eq. (miss): 1 − e^{−x} → 1 |
+| Fig. 13 → `fig13` at 0.88 textwidth; fig14/fig12 resized (0.62/0.58 textwidth); fig12 moved earlier in the source | layout only | no data change |

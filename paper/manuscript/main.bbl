@@ -104,6 +104,23 @@ A.~Fregly, J.~Harvey, B.~S. Kaliski~Jr., and S.~Sheth, ``Merkle tree ladder
   practice,'' in \emph{Topics in Cryptology -- CT-RSA 2023}, ser. LNCS, vol.
   13871.\hskip 1em plus 0.5em minus 0.4em\relax Springer, 2023, pp. 415--441.
 
+\bibitem{berg2020cachelib}
+B.~Berg, D.~S. Berger, S.~McAllister, I.~Grosof, S.~Gunasekar, J.~Lu, M.~Uhlar,
+  J.~Carrig, N.~Beckmann, M.~Harchol-Balter, and G.~R. Ganger, ``The {CacheLib}
+  caching engine: Design and experiences at scale,'' in \emph{Proc. 14th USENIX
+  Symposium on Operating Systems Design and Implementation (OSDI)}.\hskip 1em
+  plus 0.5em minus 0.4em\relax USENIX Association, 2020, pp. 753--768.
+
+\bibitem{cachelib-traces}
+\BIBentryALTinterwordspacing
+{Meta Platforms}, ``Evaluating {SSD} hardware for {Facebook} workloads
+  ({CacheLib} documentation; anonymized production traces, {CDN} trace
+  \texttt{cdn/202303}),'' Product documentation and public S3 bucket
+  \texttt{cachelib-workload-sharing}, traces licensed as CacheLib (Apache-2.0).
+  Accessed 2026-11-06. [Online]. Available:
+  \url{https://github.com/facebook/CacheLib/blob/main/website/docs/Cache_Library_User_Guides/Cachebench_FB_HW_eval.md}
+\BIBentrySTDinterwordspacing
+
 \bibitem{rfc9110}
 \BIBentryALTinterwordspacing
 R.~T. Fielding, M.~Nottingham, and J.~Reschke, ``{HTTP} semantics,'' RFC 9110,

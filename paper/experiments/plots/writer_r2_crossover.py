@@ -55,13 +55,14 @@ def main():
 
     K = np.logspace(0, 3, 400)
     plt.rcParams.update({"font.size": 7.5, "axes.titlesize": 7.5, "legend.fontsize": 6.5})
-    fig, ax = plt.subplots(1, 2, figsize=(3.5, 1.75))
+    fig, ax = plt.subplots(1, 2, figsize=(3.5, 1.85))
     cols = {5: "#2a78d6", 12: "#e8663a", 16: "#1aab78"}
     for i in (0, 1):
         ax[i].axvspan(1.71, 2.36, color="0.85", lw=0)
         ax[i].axvline(150, color="0.4", ls=":", lw=0.8)
         ax[i].set_xscale("log")
-        ax[i].set_xlabel("requests per token per verifier, $K$")
+        ax[i].set_xticks([1, 10, 100, 1000])
+        ax[i].set_xticklabels(["1", "10", "100", "1000"])
         ax[i].grid(alpha=0.3, lw=0.4)
     ax[0].plot(K, tv / K + p0, color="#c2185b", lw=1.3, label="M2")
     ax[1].plot(K, m2_tok + m2_staple / K, color="#c2185b", lw=1.3, label="M2")
@@ -74,10 +75,14 @@ def main():
     ax[1].set_ylabel("token + staple, B/request")
     ax[0].set_title("(a) edge CPU")
     ax[1].set_title("(b) bytes")
-    ax[0].text(2.0, 0.3, "trace", ha="center", fontsize=6)
-    ax[0].text(150, 60, "synthetic", ha="right", fontsize=6, rotation=90)
+    ax[0].text(2.6, 0.3, "trace", ha="left", fontsize=6)
+    ax[0].text(140, 0.3, "synth.", ha="right", fontsize=6)
+    ax[1].set_yticks([200, 500, 1000, 2000])
+    ax[1].set_yticklabels(["200", "500", "1000", "2000"])
+    ax[1].minorticks_off()
+    fig.supxlabel("requests per token per verifier, $K$", fontsize=7.5, y=0.02)
     ax[0].legend(loc="upper right", frameon=False, handlelength=1.6)
-    fig.tight_layout(pad=0.3, w_pad=0.6)
+    fig.tight_layout(pad=0.3, w_pad=0.6, rect=(0, 0.05, 1, 1))
     for ext in ("pdf", "png"):
         fig.savefig(os.path.join(a.inp, "figures", "fig18_k_crossover." + ext), dpi=300)
 
