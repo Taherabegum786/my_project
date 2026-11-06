@@ -222,6 +222,7 @@ def main():
     ax.set_xticks(range(3), plab)
     ax.set_ylabel("% of tokens in single-token trees")
     ax.set_title("(a) tree sizes on the trace", fontsize=7)
+    ax.text(0.98, 0.45, "scaled bars: <0.03%", transform=ax.transAxes, ha="right", fontsize=6, color=INK2)
     ax.legend(fontsize=6)
     ax = axs[1]
     for k, pool in enumerate(pools):
@@ -241,7 +242,7 @@ def main():
         ax.bar(np.arange(3) + (k - 1) * 0.27, [x.cpu_em_us for x in v], 0.25, color=SERIES[k], label=lab)
     v = [g("all", "global", "fixed:0.01", "scaled", x) for x in vers]
     ax.bar(np.arange(3) + 0.27, [x.cpu_m2_us for x in v], 0.25, color=SERIES[4], label="M2")
-    ax.set_xticks(range(3), ["shared\nverifier", "1000 hosts\nkey-sharded", "1000 hosts\nrequest-spread"])
+    ax.set_xticks(range(3), ["shared", "1000 hosts,\nby key", "1000 hosts,\nper request"])
     ax.set_ylabel("edge crypto $\\mu$s per request")
     ax.set_title("(c) edge CPU with real K, $\\Delta$=10 ms", fontsize=7)
     ax.legend(fontsize=6)

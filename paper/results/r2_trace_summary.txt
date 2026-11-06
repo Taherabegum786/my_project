@@ -1,0 +1,116 @@
+=== REPLICATES (trace_replicates.csv): cluster-days of >= 20 h ===
+reag (eag): 3 days, sampling 0.0001; req/s sampled 71.3 [63.3, 79.4]; tokens/s sampled 30.3, scaled 302631 [296257, 309005]; K mean 2.36 [2.14, 2.57]; tokens with K=1 0.784; request-weighted median K 4; requests on tokens with K<97: 0.693
+rnha (nha): 3 days, sampling 0.0004; req/s sampled 154.4 [130.9, 177.9]; tokens/s sampled 90.5, scaled 226150 [223365, 228934]; K mean 1.71 [1.47, 1.95]; tokens with K=1 0.812; request-weighted median K 2; requests on tokens with K<97: 0.886
+rprn (prn): 3 days, sampling 0.0001; req/s sampled 132.3 [127.8, 136.8]; tokens/s sampled 76.8, scaled 768027 [727234, 808821]; K mean 1.72 [1.69, 1.76]; tokens with K=1 0.841; request-weighted median K 2; requests on tokens with K<97: 0.849
+
+=== POOL RATES, scaled to the full cluster (trace_rates.csv; mean over days) ===
+reag global  groups= 1 group rate p50 302631 max 302631 tok/s; minute-rate p10/p50/p90 250556/300000/361500; token share in groups >= 1000/s: 1.000
+reag service groups=11 group rate p50 1343 max 131765 tok/s; minute-rate p10/p50/p90 167/3722/126778; token share in groups >= 1000/s: 0.994
+reag tenant  groups=23 group rate p50 4535 max 52785 tok/s; minute-rate p10/p50/p90 389/11000/44500; token share in groups >= 1000/s: 0.997
+rnha global  groups= 1 group rate p50 226150 max 226150 tok/s; minute-rate p10/p50/p90 188750/221111/272569; token share in groups >= 1000/s: 1.000
+rnha service groups=10 group rate p50 2476 max 150331 tok/s; minute-rate p10/p50/p90 42/4042/125004; token share in groups >= 1000/s: 0.996
+rnha tenant  groups=23 group rate p50 3455 max 40125 tok/s; minute-rate p10/p50/p90 83/5889/35361; token share in groups >= 1000/s: 0.995
+rprn global  groups= 1 group rate p50 768027 max 768027 tok/s; minute-rate p10/p50/p90 633278/748889/946000; token share in groups >= 1000/s: 1.000
+rprn service groups=12 group rate p50 4915 max 471755 tok/s; minute-rate p10/p50/p90 500/4222/273267; token share in groups >= 1000/s: 0.998
+rprn tenant  groups=24 group rate p50 11480 max 139859 tok/s; minute-rate p10/p50/p90 722/17722/115778; token share in groups >= 1000/s: 0.999
+
+wrote trace_agg.csv (228 rows); CIs are Student-t 95% over cluster-days
+
+=== TREE SIZES / ISSUER (shared verifier rows; all clusters pooled, mean [95% CI] over cluster-days) ===
+sampled       tenant  fixed:0.01 N1=0.9153 [0.8869,0.9438] medianN=1 d50=0.0 tokB(req-w)=163 sig/s=62.5 tok/s=66 N/tree=1.0 issuer EMBER 0.0256 [0.0177,0.0335] cores vs M2 0.027 [0.018,0.036]
+sampled       tenant  fixed:1    N1=0.0538 [0.0236,0.0840] medianN=9 d50=3.3 tokB(req-w)=221 sig/s=11.8 tok/s=66 N/tree=5.4 issuer EMBER 0.0049 [0.0045,0.0053] cores vs M2 0.027 [0.018,0.036]
+sampled       tenant  wc         N1=0.9897 [0.9859,0.9935] medianN=1 d50=0.0 tokB(req-w)=161 sig/s=65.4 tok/s=66 N/tree=1.0 issuer EMBER 0.0268 [0.0183,0.0353] cores vs M2 0.027 [0.018,0.036]
+sampled       service fixed:0.01 N1=0.7414 [0.6521,0.8308] medianN=1 d50=0.0 tokB(req-w)=167 sig/s=55.1 tok/s=66 N/tree=1.2 issuer EMBER 0.0226 [0.0162,0.0289] cores vs M2 0.027 [0.018,0.036]
+sampled       service fixed:1    N1=0.0207 [0.0134,0.0280] medianN=35 d50=5.3 tokB(req-w)=262 sig/s=4.8 tok/s=66 N/tree=13.5 issuer EMBER 0.0020 [0.0018,0.0022] cores vs M2 0.027 [0.018,0.036]
+sampled       service wc         N1=0.9670 [0.9544,0.9797] medianN=1 d50=0.0 tokB(req-w)=162 sig/s=64.5 tok/s=66 N/tree=1.0 issuer EMBER 0.0264 [0.0181,0.0348] cores vs M2 0.027 [0.018,0.036]
+sampled       global  fixed:0.01 N1=0.5282 [0.4091,0.6473] medianN=2 d50=0.7 tokB(req-w)=175 sig/s=46.0 tok/s=66 N/tree=1.4 issuer EMBER 0.0188 [0.0141,0.0236] cores vs M2 0.027 [0.018,0.036]
+sampled       global  fixed:1    N1=0.0000 [-0.0000,0.0000] medianN=67 d50=6.3 tokB(req-w)=298 sig/s=1.0 tok/s=66 N/tree=65.9 issuer EMBER 0.0005 [0.0004,0.0005] cores vs M2 0.027 [0.018,0.036]
+sampled       global  wc         N1=0.9331 [0.9121,0.9542] medianN=1 d50=0.0 tokB(req-w)=163 sig/s=63.3 tok/s=66 N/tree=1.0 issuer EMBER 0.0259 [0.0178,0.0340] cores vs M2 0.027 [0.018,0.036]
+poisson_check tenant  fixed:0.01 N1=0.9250 [0.9012,0.9488] medianN=1 d50=0.0 tokB(req-w)=163 sig/s=62.9 tok/s=66 N/tree=1.0 issuer EMBER 0.0258 [0.0178,0.0338] cores vs M2 0.027 [0.018,0.036]
+poisson_check tenant  fixed:1    N1=0.0535 [0.0235,0.0835] medianN=9 d50=3.3 tokB(req-w)=221 sig/s=11.8 tok/s=66 N/tree=5.4 issuer EMBER 0.0049 [0.0045,0.0053] cores vs M2 0.027 [0.018,0.036]
+poisson_check service fixed:0.01 N1=0.7504 [0.6644,0.8365] medianN=1 d50=0.0 tokB(req-w)=167 sig/s=55.5 tok/s=66 N/tree=1.2 issuer EMBER 0.0227 [0.0163,0.0292] cores vs M2 0.027 [0.018,0.036]
+poisson_check service fixed:1    N1=0.0206 [0.0133,0.0279] medianN=35 d50=5.3 tokB(req-w)=262 sig/s=4.8 tok/s=66 N/tree=13.4 issuer EMBER 0.0020 [0.0019,0.0022] cores vs M2 0.027 [0.018,0.036]
+poisson_check global  fixed:0.01 N1=0.5319 [0.4131,0.6507] medianN=2 d50=0.7 tokB(req-w)=175 sig/s=46.2 tok/s=66 N/tree=1.4 issuer EMBER 0.0189 [0.0141,0.0238] cores vs M2 0.027 [0.018,0.036]
+poisson_check global  fixed:1    N1=0.0000 [-0.0000,0.0000] medianN=67 d50=6.3 tokB(req-w)=298 sig/s=1.0 tok/s=66 N/tree=65.8 issuer EMBER 0.0005 [0.0004,0.0005] cores vs M2 0.027 [0.018,0.036]
+scaled        tenant  fixed:0.01 N1=0.0002 [0.0001,0.0004] medianN=547 d50=9.3 tokB(req-w)=335 sig/s=1811.1 tok/s=432269 N/tree=234.6 issuer EMBER 1.0820 [0.9076,1.2565] cores vs M2 176.713 [96.859,256.567]
+scaled        tenant  fixed:1    N1=0.0000 [0.0000,0.0000] medianN=54780 d50=16.0 tokB(req-w)=477 sig/s=18.7 tok/s=432269 N/tree=22952.1 issuer EMBER 0.3493 [0.1948,0.5038] cores vs M2 176.713 [96.859,256.567]
+scaled        service fixed:0.01 N1=0.0002 [0.0001,0.0003] medianN=2164 d50=11.3 tokB(req-w)=390 sig/s=938.9 tok/s=432269 N/tree=432.7 issuer EMBER 0.7255 [0.5186,0.9323] cores vs M2 176.713 [96.859,256.567]
+scaled        service fixed:1    N1=0.0000 [0.0000,0.0000] medianN=216129 d50=18.0 tokB(req-w)=531 sig/s=9.9 tok/s=432269 N/tree=41431.1 issuer EMBER 0.3457 [0.1909,0.5005] cores vs M2 176.713 [96.859,256.567]
+scaled        global  fixed:0.01 N1=0.0000 [0.0000,0.0000] medianN=4369 d50=12.3 tokB(req-w)=425 sig/s=100.1 tok/s=432269 N/tree=4319.9 issuer EMBER 0.3826 [0.2282,0.5369] cores vs M2 176.713 [96.859,256.567]
+scaled        global  fixed:1    N1=0.0000 [0.0000,0.0000] medianN=437030 d50=19.0 tokB(req-w)=567 sig/s=1.0 tok/s=432269 N/tree=431969.3 issuer EMBER 0.3421 [0.1877,0.4964] cores vs M2 176.713 [96.859,256.567]
+
+=== EDGE CPU / BYTES / CONTACTS per request, M2 vs EMBER (all clusters; scaled and sampled) ===
+scaled  tenant  fixed:0.01 shared         CPU us/req M2 53.79 [47.44,60.13] EMBER 1.59 [1.48,1.71]; contacts/req M2 0.5308 EMBER 0.0028; bytes/req M2 1869 EMBER 345
+scaled  tenant  fixed:0.01 keyshard:1000  CPU us/req M2 53.79 [47.44,60.13] EMBER 43.83 [38.15,49.52]; contacts/req M2 0.5308 EMBER 0.4213; bytes/req M2 1869 EMBER 1724
+scaled  tenant  fixed:0.01 reqspread:1000 CPU us/req M2 87.30 [80.61,93.98] EMBER 61.79 [52.51,71.06]; contacts/req M2 0.8628 EMBER 0.5992; bytes/req M2 2945 EMBER 2311
+scaled  tenant  fixed:1    shared         CPU us/req M2 53.79 [47.44,60.13] EMBER 2.19 [2.09,2.28]; contacts/req M2 0.5308 EMBER 0.0000; bytes/req M2 1869 EMBER 477
+scaled  tenant  fixed:1    keyshard:1000  CPU us/req M2 53.79 [47.44,60.13] EMBER 4.59 [3.79,5.39]; contacts/req M2 0.5308 EMBER 0.0239; bytes/req M2 1869 EMBER 555
+scaled  tenant  fixed:1    reqspread:1000 CPU us/req M2 87.30 [80.61,93.98] EMBER 4.68 [3.84,5.53]; contacts/req M2 0.8628 EMBER 0.0247; bytes/req M2 2945 EMBER 558
+scaled  service fixed:0.01 shared         CPU us/req M2 53.79 [47.44,60.13] EMBER 1.78 [1.72,1.85]; contacts/req M2 0.5308 EMBER 0.0014; bytes/req M2 1869 EMBER 394
+scaled  service fixed:0.01 keyshard:1000  CPU us/req M2 53.79 [47.44,60.13] EMBER 29.15 [22.79,35.50]; contacts/req M2 0.5308 EMBER 0.2725; bytes/req M2 1869 EMBER 1288
+scaled  service fixed:0.01 reqspread:1000 CPU us/req M2 87.30 [80.61,93.98] EMBER 38.69 [28.07,49.30]; contacts/req M2 0.8628 EMBER 0.3670; bytes/req M2 2945 EMBER 1600
+scaled  service fixed:1    shared         CPU us/req M2 53.79 [47.44,60.13] EMBER 2.52 [2.44,2.61]; contacts/req M2 0.5308 EMBER 0.0000; bytes/req M2 1869 EMBER 531
+scaled  service fixed:1    keyshard:1000  CPU us/req M2 53.79 [47.44,60.13] EMBER 3.57 [3.36,3.77]; contacts/req M2 0.5308 EMBER 0.0103; bytes/req M2 1869 EMBER 565
+scaled  service fixed:1    reqspread:1000 CPU us/req M2 87.30 [80.61,93.98] EMBER 3.65 [3.41,3.90]; contacts/req M2 0.8628 EMBER 0.0112; bytes/req M2 2945 EMBER 568
+scaled  global  fixed:0.01 shared         CPU us/req M2 53.79 [47.44,60.13] EMBER 1.88 [1.80,1.96]; contacts/req M2 0.5308 EMBER 0.0002; bytes/req M2 1869 EMBER 426
+scaled  global  fixed:0.01 keyshard:1000  CPU us/req M2 53.79 [47.44,60.13] EMBER 16.67 [11.41,21.93]; contacts/req M2 0.5308 EMBER 0.1467; bytes/req M2 1869 EMBER 909
+scaled  global  fixed:0.01 reqspread:1000 CPU us/req M2 87.30 [80.61,93.98] EMBER 17.55 [11.61,23.49]; contacts/req M2 0.8628 EMBER 0.1554; bytes/req M2 2945 EMBER 938
+scaled  global  fixed:1    shared         CPU us/req M2 53.79 [47.44,60.13] EMBER 2.74 [2.66,2.82]; contacts/req M2 0.5308 EMBER 0.0000; bytes/req M2 1869 EMBER 567
+scaled  global  fixed:1    keyshard:1000  CPU us/req M2 53.79 [47.44,60.13] EMBER 2.90 [2.87,2.94]; contacts/req M2 0.5308 EMBER 0.0016; bytes/req M2 1869 EMBER 572
+scaled  global  fixed:1    reqspread:1000 CPU us/req M2 87.30 [80.61,93.98] EMBER 2.90 [2.87,2.94]; contacts/req M2 0.8628 EMBER 0.0016; bytes/req M2 2945 EMBER 572
+sampled tenant  fixed:0.01 shared         CPU us/req M2 53.79 [47.44,60.13] EMBER 51.37 [45.94,56.81]; contacts/req M2 0.5308 EMBER 0.5065; bytes/req M2 1869 EMBER 1833
+sampled tenant  fixed:0.01 keyshard:1000  CPU us/req M2 53.79 [47.44,60.13] EMBER 53.82 [47.48,60.16]; contacts/req M2 0.5308 EMBER 0.5308; bytes/req M2 1869 EMBER 1913
+sampled tenant  fixed:0.01 reqspread:1000 CPU us/req M2 87.30 [80.61,93.98] EMBER 87.32 [80.64,94.01]; contacts/req M2 0.8628 EMBER 0.8627; bytes/req M2 2945 EMBER 3008
+sampled tenant  fixed:1    shared         CPU us/req M2 53.79 [47.44,60.13] EMBER 11.33 [9.27,13.40]; contacts/req M2 0.5308 EMBER 0.1063; bytes/req M2 1869 EMBER 571
+sampled tenant  fixed:1    keyshard:1000  CPU us/req M2 53.79 [47.44,60.13] EMBER 53.95 [47.62,60.29]; contacts/req M2 0.5308 EMBER 0.5286; bytes/req M2 1869 EMBER 1964
+sampled tenant  fixed:1    reqspread:1000 CPU us/req M2 87.30 [80.61,93.98] EMBER 87.02 [80.48,93.55]; contacts/req M2 0.8628 EMBER 0.8561; bytes/req M2 2945 EMBER 3044
+sampled service fixed:0.01 shared         CPU us/req M2 53.79 [47.44,60.13] EMBER 45.94 [42.70,49.18]; contacts/req M2 0.5308 EMBER 0.4525; bytes/req M2 1869 EMBER 1659
+sampled service fixed:0.01 keyshard:1000  CPU us/req M2 53.79 [47.44,60.13] EMBER 53.84 [47.49,60.19]; contacts/req M2 0.5308 EMBER 0.5307; bytes/req M2 1869 EMBER 1917
+sampled service fixed:0.01 reqspread:1000 CPU us/req M2 87.30 [80.61,93.98] EMBER 87.33 [80.65,94.02]; contacts/req M2 0.8628 EMBER 0.8625; bytes/req M2 2945 EMBER 3012
+sampled service fixed:1    shared         CPU us/req M2 53.79 [47.44,60.13] EMBER 5.23 [4.34,6.12]; contacts/req M2 0.5308 EMBER 0.0433; bytes/req M2 1869 EMBER 405
+sampled service fixed:1    keyshard:1000  CPU us/req M2 53.79 [47.44,60.13] EMBER 53.56 [47.51,59.60]; contacts/req M2 0.5308 EMBER 0.5221; bytes/req M2 1869 EMBER 1984
+sampled service fixed:1    reqspread:1000 CPU us/req M2 87.30 [80.61,93.98] EMBER 85.99 [79.90,92.07]; contacts/req M2 0.8628 EMBER 0.8434; bytes/req M2 2945 EMBER 3044
+sampled global  fixed:0.01 shared         CPU us/req M2 53.79 [47.44,60.13] EMBER 38.95 [37.31,40.60]; contacts/req M2 0.5308 EMBER 0.3828; bytes/req M2 1869 EMBER 1438
+sampled global  fixed:0.01 keyshard:1000  CPU us/req M2 53.79 [47.44,60.13] EMBER 53.88 [47.52,60.24]; contacts/req M2 0.5308 EMBER 0.5306; bytes/req M2 1869 EMBER 1925
+sampled global  fixed:0.01 reqspread:1000 CPU us/req M2 87.30 [80.61,93.98] EMBER 87.35 [80.66,94.04]; contacts/req M2 0.8628 EMBER 0.8622; bytes/req M2 2945 EMBER 3019
+sampled global  fixed:1    shared         CPU us/req M2 53.79 [47.44,60.13] EMBER 2.02 [1.82,2.22]; contacts/req M2 0.5308 EMBER 0.0094; bytes/req M2 1869 EMBER 329
+sampled global  fixed:1    keyshard:1000  CPU us/req M2 53.79 [47.44,60.13] EMBER 52.81 [47.08,58.54]; contacts/req M2 0.5308 EMBER 0.5125; bytes/req M2 1869 EMBER 1989
+sampled global  fixed:1    reqspread:1000 CPU us/req M2 87.30 [80.61,93.98] EMBER 83.40 [78.21,88.58]; contacts/req M2 0.8628 EMBER 0.8155; bytes/req M2 2945 EMBER 2988
+
+=== POISSON-WITHIN-MINUTE CHECK (sampled exact vs poisson_check at the sampled rate; all cluster-days) ===
+tenant  fixed:0.01 N1 exact 0.9153 model 0.9250; sig/s exact 62.53 model 62.94 (rel 0.65%); EMBER CPU exact 51.374 model 51.663
+tenant  fixed:1    N1 exact 0.0538 model 0.0535; sig/s exact 11.77 model 11.78 (rel 0.07%); EMBER CPU exact 11.334 model 11.339
+service fixed:0.01 N1 exact 0.7414 model 0.7504; sig/s exact 55.11 model 55.49 (rel 0.69%); EMBER CPU exact 45.940 model 46.211
+service fixed:1    N1 exact 0.0207 model 0.0206; sig/s exact 4.76 model 4.79 (rel 0.56%); EMBER CPU exact 5.228 model 5.250
+global  fixed:0.01 N1 exact 0.5282 model 0.5319; sig/s exact 45.98 model 46.20 (rel 0.47%); EMBER CPU exact 38.954 model 39.111
+global  fixed:1    N1 exact 0.0000 model 0.0000; sig/s exact 1.00 model 1.00 (rel 0.07%); EMBER CPU exact 2.025 model 2.025
+
+=== RATE THRESHOLDS (analytic, native run-2: t_sign 408.8 us, t_tok 0.761 us) ===
+Delta=0.01 s: EMBER issuer >= 2x cheaper than M2 when pool rate >= 161 tokens/s
+Delta=0.01 s: EMBER issuer >= 10x cheaper than M2 when pool rate >= 1021 tokens/s
+Delta=0.01 s: EMBER issuer >= 100x cheaper than M2 when pool rate >= 1.234e+04 tokens/s
+Delta=1 s: EMBER issuer >= 2x cheaper than M2 when pool rate >= 1.608 tokens/s
+Delta=1 s: EMBER issuer >= 10x cheaper than M2 when pool rate >= 10.2 tokens/s
+Delta=1 s: EMBER issuer >= 100x cheaper than M2 when pool rate >= 123.2 tokens/s
+M2 issuer needs > 1 core above 2446 tokens/s
+
+=== V sensitivity: trace_oprg_V600.csv ===
+sampled tenant fixed:0.01: tok/s 97 N1 0.8680 medianN 1 issuer EMBER 0.0371 vs M2 0.040; CPU M2 63.94 EMBER 59.64 us/req
+scaled tenant fixed:0.01: tok/s 243190 N1 0.0004 medianN 312 issuer EMBER 0.9094 vs M2 99.417; CPU M2 63.94 EMBER 1.78 us/req
+sampled global fixed:0.01: tok/s 97 N1 0.3693 medianN 2 issuer EMBER 0.0252 vs M2 0.040; CPU M2 63.94 EMBER 40.56 us/req
+scaled global fixed:0.01: tok/s 243190 N1 0.0000 medianN 2420 issuer EMBER 0.2331 vs M2 99.417; CPU M2 63.94 EMBER 1.83 us/req
+
+=== V sensitivity: trace_oprg_V86400.csv ===
+sampled tenant fixed:0.01: tok/s 74 N1 0.8899 medianN 1 issuer EMBER 0.0286 vs M2 0.030; CPU M2 48.65 EMBER 45.94 us/req
+scaled tenant fixed:0.01: tok/s 184785 N1 0.0006 medianN 245 issuer EMBER 0.8449 vs M2 75.541; CPU M2 48.65 EMBER 1.73 us/req
+sampled global fixed:0.01: tok/s 74 N1 0.4643 medianN 2 issuer EMBER 0.0211 vs M2 0.030; CPU M2 48.65 EMBER 34.06 us/req
+scaled global fixed:0.01: tok/s 184785 N1 0.0000 medianN 1828 issuer EMBER 0.1870 vs M2 75.541; CPU M2 48.65 EMBER 1.75 us/req
+
+=== SYNTHETIC (r1_oprg_agg.csv) for comparison, pull_staple ===
+syn lam=2000 tenant fixed:0.01: N1=0.715 issuer 0.6744 cores; edge 1.01 us/req; req/sig-verify 141
+syn lam=2000 global fixed:0.01: N1=0.000 issuer 0.0425 cores; edge 1.51 us/req; req/sig-verify 158
+syn lam=2000 tenant pertoken: N1=1.000 issuer 0.8175 cores; edge 0.95 us/req; req/sig-verify 141
+syn lam=20000 tenant fixed:0.01: N1=0.410 issuer 4.4283 cores; edge 1.17 us/req; req/sig-verify 145
+syn lam=20000 global fixed:0.01: N1=0.000 issuer 0.0567 cores; edge 1.71 us/req; req/sig-verify 234
+syn lam=20000 tenant pertoken: N1=1.000 issuer 8.1754 cores; edge 0.95 us/req; req/sig-verify 141
+wrote tables/tab_r2_trace.tex
