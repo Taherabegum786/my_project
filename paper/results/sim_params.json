@@ -65,9 +65,20 @@
  "e2e": "lam_bar=2000, Delta=1 s, horizon 1800 s, 20000 samples per (scheme, mode, rep)",
  "e2e_wall_s": 35.4,
  "sens_horizon_s": 1800.0,
- "sens_wall_s": 352.6,
+ "sens_wall_s": 408.8,
  "dissem_costs_dir": "../results",
  "e2e_costs_dir": "../results",
- "sens_costs_dir": "../results/native_run1",
- "sweep_delta_costs_dir": "../results"
+ "sens_costs_dir": "../results",
+ "sweep_delta_costs_dir": "../results",
+ "oprg_horizon_s": {
+  "200": 3600.0,
+  "2000": 3600.0,
+  "20000": 1200.0
+ },
+ "oprg_note": "R1 operating-region sweep; pooling tenant/shard8/global/region10/region50",
+ "oprg_wall_s": 968.3,
+ "oprg_costs_dir": "../results",
+ "pmove_horizon_s": 1800.0,
+ "pmove_wall_s": 304.2,
+ "pmove_costs_dir": "../results"
 }

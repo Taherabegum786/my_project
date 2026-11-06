@@ -1,0 +1,5 @@
+scheme,median_us,ci_lo,ci_hi,n,impl
+M2 staple verify (miss),130.48649999999998,130.1594625,130.74457500000003,5000,python+pqcrypto-1.0.0
+M2 cache hit,4.701499999999999,4.689,4.712,5000,python+pqcrypto-1.0.0
+EMBER warm d=0,6.2475000000000005,6.233,6.262,5000,python+pqcrypto-1.0.0
+EMBER warm d=5,11.139,11.118,11.16,5000,python+pqcrypto-1.0.0

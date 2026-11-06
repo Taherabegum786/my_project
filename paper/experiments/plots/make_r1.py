@@ -201,7 +201,9 @@ def oprg_fig(a, fig, axs):
         if len(g):
             r = g.iloc[0]
             ax.plot(r.tok_bytes_p50, 1e3 * r.D_mean_s, MARKERS[k], color=SERIES[k], ms=5)
-            ax.annotate(lab, (r.tok_bytes_p50, 1e3 * r.D_mean_s), fontsize=5.5, xytext=(3, 2), textcoords="offset points")
+            if pol != "wc" or pool != "tenant":   # per-tenant WC coincides with M2; labelled jointly
+                ax.annotate(lab + (" = per-tenant WC" if pol == "pertoken" else ""), (r.tok_bytes_p50, 1e3 * r.D_mean_s),
+                            fontsize=5.5, xytext=(4, -6 if pol == "pertoken" else 3), textcoords="offset points")
     ax.set_yscale("symlog", linthresh=1)
     ax.set_xlabel("median token bytes (URL)")
     ax.set_ylabel("mean added delay D (ms), staple-all")
@@ -436,8 +438,8 @@ def b11(a_oprg):
     fig, ax = plt.subplots(figsize=(COL, 2.3))
     tb = np.logspace(np.log10(60), np.log10(30 * 86400), 200)
     for k, (V, lab) in enumerate(((3600.0, "$V_{max}$=1 h"), (600.0, "$V_{max}$=10 min"))):
-        Lmax = np.maximum(tb - V, np.nan)
-        Lmax[tb <= V] = np.nan
+        Lmax = tb - V
+        Lmax[Lmax <= 0] = np.nan
         ax.plot(tb / 3600, Lmax / 60, ls=LINES[k], color=SERIES[k], lw=1.3, label="longest safe $L$, " + lab)
         ax.axvline(V / 3600, color=SERIES[k], lw=0.7, ls=":")
     ax.set_xscale("log"); ax.set_yscale("log")
@@ -457,6 +459,68 @@ def b11(a_oprg):
     ax.text(0.3, 0.05, "left of dotted line: B11 unsafe for\nevery $L$; EMBER/M2 preferable", transform=ax.transAxes,
             fontsize=6, color=INK2)
     save(fig, os.path.join(IN, "figures"), "fig15_b11_tradeoff")
+
+
+def p1r1():
+    p = os.path.join(IN, "proto_capacity_r1.csv")
+    if not os.path.exists(p):
+        return
+    d = pd.read_csv(p)
+    d["edge_cpu_us_per_req"] = d.cpu_util_edge / d.req_per_s * 1e6
+    a = agg(d, ["scheme"], ["req_per_s", "edge_cpu_us_per_req", "p99_ms"])
+    for s_, g in d.groupby("scheme"):
+        a.loc[a.scheme == s_, "req_per_s_min"] = g.req_per_s.min()
+        a.loc[a.scheme == s_, "req_per_s_max"] = g.req_per_s.max()
+        a.loc[a.scheme == s_, "token_bytes"] = g.token_bytes.iloc[0]
+    a.to_csv(os.path.join(IN, "proto_capacity_r1_agg.csv"), index=False)
+    say("\n=== P1 R1 session (proto_capacity_r1.csv; Go edge 1 core, 64 conns, K=150, 5 runs; quiet machine) ===")
+    for x in a.itertuples():
+        say("%-4s token %d B: req/s %.0f [%.0f, %.0f] (min-max %.0f-%.0f); edge CPU %.2f [%.2f, %.2f] us/req; p99 %.2f ms" % (
+            x.scheme, x.token_bytes, x.req_per_s, x.req_per_s_lo, x.req_per_s_hi, x.req_per_s_min, x.req_per_s_max,
+            x.edge_cpu_us_per_req, x.edge_cpu_us_per_req_lo, x.edge_cpu_us_per_req_hi, x.p99_ms))
+
+
+def extras():
+    say("\n=== SENS (run-2 costs; sim_sens.csv, fixed:1, pull unless stated) ===")
+    s = rd("sim_sens.csv")
+    for (p_, v, m, met) in (("root_signer", "ML-DSA-44", "pull", "edge_cpu_us_per_req_mean"),
+                            ("root_signer", "Hybrid-Ed25519+ML-DSA-44", "pull", "edge_cpu_us_per_req_mean"),
+                            ("root_signer", "ML-DSA-44", "pull", "D_mean_s"), ("root_signer", "SLH-DSA-128s", "pull", "D_mean_s"),
+                            ("p_move", "0.0", "pull_staple", "miss_per_token"), ("p_move", "0.0005", "pull_staple", "miss_per_token"),
+                            ("p_move", "0.005", "pull_staple", "miss_per_token"), ("rtt_scale", "0.5", "pull_staple", "D_mean_s"),
+                            ("rtt_scale", "1.0", "pull_staple", "D_mean_s"), ("rtt_scale", "2.0", "pull_staple", "D_mean_s")):
+        r = s[(s.param == p_) & (s.value.astype(str) == v) & (s.policy == "fixed:1") & (s["mode"] == m) & (s.metric == met)]
+        if len(r):
+            say("%s=%s %s %s: %.5g [%.5g, %.5g]" % (p_, v, m, met, r["mean"].iloc[0], r.ci_lo.iloc[0], r.ci_hi.iloc[0]))
+    raw = rd("sim_sens_raw.csv")
+    say("\n=== E2E means (sim_e2e_latency.csv, run-2) ===")
+    e = rd("sim_e2e_latency.csv")
+    for (sc, m), g in e.groupby(["scheme", "mode"]):
+        v = g.sample_ms.values
+        say("%-22s %-12s mean %.4f ms p99 %.4f ms p99.9 %.3f ms >1ms %.3f%%" % (sc, m, v.mean(), np.percentile(v, 99),
+                                                                              np.percentile(v, 99.9), 100 * (v > 1).mean()))
+    say("\n=== DISSEM (sim_dissem.csv, run-2, delta=1) ===")
+    d = rd("sim_dissem.csv")
+    d = d[(d.delta_s.astype(float) == 1.0) | (d.scheme == "B11")]
+    for (sc, m, E_), g in d.groupby(["scheme", "mode", "E"]):
+        say("%s %s E=%d root_bw=%.4g B/s miss/Mreq=%s" % (sc, m, E_, g.root_bw_fleet_Bps.mean(),
+                                                         "%.1f" % pd.to_numeric(g.miss_per_mreq, errors="coerce").mean()))
+    say("\n=== Simulated root-verify amortisation (requests per signature verification), lam=2000 ===")
+    o = rd("r1_oprg_agg.csv")
+    for pool, pol in (("tenant", "fixed:0.01"), ("tenant", "pertoken"), ("global", "fixed:0.01"), ("global", "fixed:0.1")):
+        r = o[(o.lambda_bar == 2000) & (o.pooling == pool) & (o.policy == pol) & (o["mode"] == "pull")].iloc[0]
+        say("%s %s pull: %.1f requests per signature verification; edge CPU p99 %.3f us" % (pool, pol, r.req_per_sig_verify,
+                                                                                             r.edge_cpu_us_per_req_p99))
+    # padding worst case (analytic from measured native per-token components at N=2^14)
+    ia = rd("native_issuer_agg.csv")
+    r = ia[(ia.root_alg == "ML-DSA-44") & (ia.N == 16384) & (ia.n == 16)].iloc[0]
+    tl, tt, te = r.t_leaf_us / 16384, r.t_tree_us / 16384, r.t_encode_us / 16384
+    say("\n=== Padding (analytic from native_issuer_agg N=2^14 per-token components): leaf %.3f node %.3f encode %.3f us" % (tl, tt, te))
+    for k in (4, 8, 14):
+        N = 2 ** k + 1
+        base = N * (tl + te) + (N - 1) * tt + r.t_sign_us
+        pad = 2 ** (k + 1) * tl + (2 ** (k + 1) - 1) * tt + N * te + r.t_sign_us
+        say("N=2^%d+1: unpadded %.1f us, padded %.1f us, slowdown %.1f%%" % (k, base, pad, 100 * (pad / base - 1)))
 
 
 def main():
@@ -488,6 +552,10 @@ def main():
         if A is None and os.path.exists(os.path.join(IN, "r1_oprg_agg.csv")):
             A = rd("r1_oprg_agg.csv")
         b11(A)
+    if "all" in only or "p1" in only:
+        p1r1()
+    if "all" in only or "extras" in only:
+        extras()
     with open(os.path.join(IN, "r1_summary.txt"), "w") as f:
         f.write("\n".join(LOG) + "\n")
 
