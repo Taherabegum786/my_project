@@ -1,5 +1,2 @@
 scheme,run,req_per_s,cpu_util_edge,p50_ms,p99_ms,n_req,errors,token_bytes,net,impl,retries,tree
-b1,1,40453.3,0.974,1.471,4.468,809066,0,100,netns-loopback-edge,go-1.24.7+circl-1.6.1,0,32
-b5s,1,40627.9,0.977,1.478,4.500,812559,0,83,netns-loopback-edge,go-1.24.7+circl-1.6.1,0,32
-o1,1,36153.7,0.963,1.667,4.960,723076,0,202,netns-loopback-edge,go-1.24.7+circl-1.6.1,0,32
-b5,1,13010.4,0.989,4.861,11.348,260217,0,3284,netns-loopback-edge,go-1.24.7+circl-1.6.1,0,32
+b1,1,38094.7,0.984,1.609,4.378,761895,0,100,netns-loopback-edge,go-1.24.7+circl-1.6.1,0,32
