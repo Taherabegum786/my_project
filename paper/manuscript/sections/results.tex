@@ -27,7 +27,7 @@ Path $d{=}0$ / $d{=}16$ & -- & -- & -- & 0.24 / 2.34 \\
 \end{tabular}
 \end{table}
 
-\subsection{Stapling Fixes the Edge}
+\subsection{Stapling at the Edge with Session Tokens}
 \label{sec:res-edge}
 
 \begin{table}[t]
@@ -49,11 +49,11 @@ B5 ML-DSA-44 & \num{3284} & \num{13079} & 75.58 [72.12, 79.04] \\
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:p1} compares whole HTTP requests, including Go's request parsing, on one edge core. With stapling, per-token ML-DSA-44 (M2) costs 22.33\us{} of edge CPU per request, which is indistinguishable from HMAC (22.80\us). Part of this parity comes from M2's token being shorter than HMAC's: its 16-B nonce reference is shorter than the 32-B HMAC tag, although a truncated 16-B tag such as B10's would shrink HMAC tokens too. In one run, the edge's own counter recorded \num{7419} staple verifications in \num{1108422} requests. EMBER with a warm $2^{10}$ tree costs 26.16\us, 17\% more than M2, because it hashes a path on every request. B5v still parses and hashes its 3.3~KB token on every request and costs 42.53\us, and plain B5 costs 75.58\us. An earlier quiet campaign covering 12 schemes (Appendix~\ref{app:secondary}) puts per-token Ed25519, ECDSA and hybrid tokens above per-token ML-DSA-44 in Go. Its absolute values differ by about 10\% for B1 (20.54 vs.\ 22.80\us), which we attribute to host variability between runs.
+Table~\ref{tab:p1} compares whole HTTP requests, including Go's request parsing, on one edge core, for session tokens that carry $K=150$ requests each. With stapling, per-token ML-DSA-44 (M2) costs 22.33\us{} of edge CPU per request, which is indistinguishable from HMAC (22.80\us). Part of this parity comes from M2's token being shorter than HMAC's: its 16-B nonce reference is shorter than the 32-B HMAC tag, although a truncated 16-B tag such as B10's would shrink HMAC tokens too. In one run, the edge's own counter recorded \num{7419} staple verifications in \num{1108422} requests. EMBER with a warm $2^{10}$ tree costs 26.16\us, 17\% more than M2, because it hashes a path on every request. B5v still parses and hashes its 3.3~KB token on every request and costs 42.53\us, and plain B5 costs 75.58\us. An earlier quiet campaign covering 12 schemes (Appendix~\ref{app:secondary}) puts per-token Ed25519, ECDSA and hybrid tokens above per-token ML-DSA-44 in Go. Its absolute values differ by about 10\% for B1 (20.54 vs.\ 22.80\us), which we attribute to host variability between runs.
 
-Stapling also removes most of the byte cost. M2's URL token is 148~B in the encoder (claims plus a 16-B nonce reference), against \num{3350}~B for B5. M2 needs no batching wait, so its mean added delay with staple-all is 0.41~ms in simulation (Table~\ref{tab:oprg}). For EMBER the edge comparison is unfavorable. M2 pays one 100.9\us{} verification per (token, edge), amortized over $K$ requests. EMBER pays one root verification per (root, edge) plus, on every request, $\mathrm{path}(d)-\mathrm{path}(0)$. EMBER is cheaper at the edge only if $K<100.9/(\mathrm{path}(d)-\mathrm{path}(0))$, which gives $K<154$ for $d=5$ and $K<96$ for $d=8$. Our workload has a mean $K$ of 150. The simulator agrees: per-request edge crypto is 0.953\us{} for M2 against 1.509\us{} for pooled EMBER at $\bar\lambda=2000$/s. Both are microsecond-level.
+Stapling also removes most of the byte cost. M2's URL token is 148~B in the encoder (claims plus a 16-B nonce reference), against \num{3350}~B for B5. M2 needs no batching wait, so its mean added delay with staple-all is 0.41~ms in simulation (Table~\ref{tab:oprg}). For EMBER the edge comparison is unfavorable. M2 pays one 100.9\us{} verification per (token, edge), amortized over $K$ requests. EMBER pays one root verification per (root, edge) plus, on every request, $\mathrm{path}(d)-\mathrm{path}(0)$. Once the root is cached, EMBER is cheaper at the edge only if $K<K^*_{\text{cpu}}=100.9/(\mathrm{path}(d)-\mathrm{path}(0))$, which gives $K^*_{\text{cpu}}=154$ for $d=5$ and 96 for $d=8$. Our synthetic workload has a mean $K$ of 150, at or above this crossover. The simulator agrees: per-request edge crypto is 0.953\us{} for M2 against 1.509\us{} for pooled EMBER at $\bar\lambda=2000$/s. Both are microsecond-level. \emph{This edge result holds only for long-lived tokens}; Section~\ref{sec:res-trace} shows that it reverses when tokens carry few requests.
 
-\subsection{Batching Fixes the Issuer, Only When Pooled}
+\subsection{Batching Relieves the Issuer, Only When the Pool Is Busy}
 \label{sec:res-oprg}
 
 \begin{figure*}[t]
@@ -99,6 +99,58 @@ M2 per-token & 100 & 1 & 148 & 0.082 & 0.95 & 16.6 & 0.41 \\
 Fig.~\ref{fig:oprg} and Table~\ref{tab:oprg} answer where batching pays. Take the per-tenant, 10~ms configuration that our earlier version recommended, at $\bar\lambda=2000$/s. There, 71.5\% of tokens sit in single-token trees and trees hold 1.22 tokens on average. Even in the busiest tenant decile, which carries 69\% of the tokens, 59.4\% of tokens are alone in their tree. The issuer makes \num{1646} root signatures/s for \num{2000} tokens/s: 0.674 cores against 0.818 for per-token signing, a 1.2$\times$ saving. Work-conserving closing makes almost every tree a single token. Pooling all tenants of an issuer key into one tree per 10~ms changes this. Each tree then holds 20 tokens on average (200 at \num{20000}/s), and the issuer makes at most $1/\Delta=100$ signatures/s regardless of the rate. Issuer CPU falls to 0.0425 cores at $\bar\lambda=2000$/s, 19$\times$ less than M2, and to 0.057 cores at \num{20000}/s, 144$\times$ less. Root verifications at the busiest edge fall from \num{1658}/s to 151/s. The costs are a larger URL token (268 or 332~B instead of 148~B), $\Delta/2$ of issuance wait (5.4~ms mean), and 1.6--1.8$\times$ the fleet edge crypto CPU (0.456 vs.\ 0.288 cores at $\bar\lambda=2000$/s; 5.18 vs.\ 2.88 at \num{20000}/s). Regional pools reduce verifications at the hottest edges (89.5/s with 50 regions) but help the issuer little, because each region's rate is small. At $\bar\lambda=200$/s, pooling saves 0.046 cores, which does not justify the extra delay and bytes. All issuer cores here use OpenSSL's portable ML-DSA-44 signing (408.8\us). circl signs in 121.2\us{} (root) and 123.9\us{} (token) in our Go measurements. With circl, absolute issuer cores fall about 3.4-fold and the rate at which per-token signing needs 0.41 cores moves from about $10^3$ to about $3.4\times10^3$ tokens/s per key. The pooled-to-M2 ratios change much less, because both sides are dominated by signing.
 
 \emph{Microbenchmark capability.} The figures we previously advertised hold only at large $N$. A native issuer core produces \num{41774} tokens/s at $N=16$ (bootstrap 95\% CI \num{18248}--\num{50049}), \num{469254} at $N=2^8$ and \num{1275990} at $N=2^{14}$, against \num{2446} for per-token ML-DSA-44 signing. A token is 460~B at $N=2^{14}$. Reaching $N\ge2^{14}$ requires $\lambda\Delta\ge1.6\times10^4$, which no simulated configuration with $\Delta\le0.1$~s attains.
+
+\subsection{Real CDN Trace: Requests per Token Decide the Edge}
+\label{sec:res-trace}
+
+\begin{table}[t]
+\centering
+\caption{Replay of Meta's CDN traces (3 clusters $\times$ 3 days; mean [95\% $t$-CI] over the 9 cluster-days). \textbf{Assumption: one signed-URL token per object per hour.} Top: trace properties. Bottom: $\Delta=10$~ms, rates scaled to the full cluster (sampled replay in the last two rows). Edge: crypto \textmu s per request with a shared verifier / with each request at a random one of 1000 hosts. Bytes: URL token plus staples, per request, shared verifier.}
+\label{tab:trace}
+\footnotesize
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Cluster & tokens/s (scaled) & mean $K$ & $K{=}1$ & median $K$ (req.-w.) \\
+\midrule
+eag & \num{302631} & 2.36 [2.14, 2.57] & 78.4\% & 4 \\
+nha & \num{226150} & 1.71 [1.47, 1.95] & 81.2\% & 2 \\
+prn & \num{768027} & 1.72 [1.69, 1.76] & 84.1\% & 2 \\
+\bottomrule
+\end{tabular}
+
+\vspace{4pt}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+Scheme / pool & $N_e{=}1$ & med.\ & token & issuer & edge & bytes \\
+ & (\%) & $N_e$ & (B) & (cores) & (\textmu s/req) & (B/req) \\
+\midrule
+M2 per-token & 100 & 1 & 148 & 176.7 & 53.8 / 87.3 & \num{1869} \\
+EMBER per type & 0.02 & 547 & 335 & 1.08 & 1.6 / 61.8 & 345 \\
+EMBER per VIP & 0.02 & \num{2164} & 390 & 0.73 & 1.8 / 38.7 & 394 \\
+\textbf{EMBER cluster} & 0 & \num{4369} & 425 & \textbf{0.38} & \textbf{1.9} / 17.6 & \textbf{426} \\
+\midrule
+\multicolumn{7}{@{}l}{sampled trace as published (66 tokens/s)} \\
+EMBER per type & 91.5 & 1 & 163 & 0.0256 & 51.4 / 87.3 & \num{1833} \\
+M2 per-token & 100 & 1 & 148 & 0.0269 & 53.8 / 87.3 & \num{1869} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig18_k_crossover.pdf}
+\caption{Edge cost per request against requests per token per verifier ($K$), analytic from the native costs, with the root already held by the verifier. M2: one ML-DSA-44 verification and one 3,242-B staple per token. EMBER: one path per request. Gray band: mean $K$ on the trace (1.71--2.36). Dotted line: synthetic mean $K=150$.}
+\label{fig:kcross}
+\end{figure}
+
+The synthetic workload of Sections~\ref{sec:res-edge} and~\ref{sec:res-oprg} assumes long sessions ($K=150$) and a CDN-wide rate of 200--\num{20000} tokens/s. Table~\ref{tab:trace} replays real traffic instead. The edge-side result depends on the token-granularity assumption stated in Section~\ref{sec:method}: one signed-URL token per object per hour. Under it, a token carries only 1.7--2.4 requests on average, 78--84\% of tokens are used once, and the request-weighted median $K$ is 2--4. Scaled to the full cluster, the token rate is \num{2.3e5}--\num{7.7e5}/s per cluster. That is 100--400$\times$ the whole synthetic CDN at $\bar\lambda=2000$/s.
+
+\emph{Issuer.} At these rates batching works even without cross-tenant pooling. With one tree per content type per 10~ms, only 0.02\% of tokens are alone in their tree and the median tree holds 547 tokens. The issuer needs 1.08 cores [0.91, 1.26] against 176.7 [96.9, 256.6] for per-token signing, and 0.38 cores [0.23, 0.54] with one pool per cluster. Per-token leaf and encoding work (0.76\us{} per token, about 0.33 cores) dominates, not signatures. On the trace as published (66 tokens/s, a CDN thinned by the sampling rate), 91.5\% of per-type tokens sit in single-token trees and EMBER ties M2 (0.0256 vs.\ 0.0269 cores), which reproduces the degeneracy of Section~\ref{sec:res-oprg}. The pool's token rate, not the pooling structure, decides: from the measured costs, EMBER's issuer is at least 10$\times$ cheaper than per-token signing above \num{1021} tokens/s per pool at $\Delta=10$~ms, and 99.5--99.9\% of trace tokens are in content-type pools above $10^3$/s. Trees of $N\ge2^{14}$, where the large microbenchmark rates apply, appear only at $\Delta=1$~s (median 54,780 per type), at a request-weighted token size of 477~B. With $V=10$~min or 24~h instead of 1~h (nha), per-type trees still have medians of 312 and 245 tokens.
+
+\emph{Edge.} With $K\approx2$, M2 pays one ML-DSA-44 verification about every second request: 53.8\us{} [47.4, 60.1] of edge crypto per request with a shared verifier, against 1.88\us{} [1.80, 1.96] for the cluster-pooled EMBER, whose root a verifier meets once per epoch rather than once per token. M2 also sends a 3,242-B staple with almost every token, so it averages \num{1869}~B per request against 426~B. EMBER stays cheaper when verification is spread over 1000 hosts (16.7--17.6 vs.\ 53.8--87.3\us), and in every verifier model at the scaled rates. Verifier contacts, the requests that must carry a staple or would miss in pull mode, are 0.53--0.86 per request for M2 and 0.0002--0.16 for the cluster pool. These byte figures are lower bounds that assume a client staples exactly at verifier contacts.
+
+\emph{The crossover.} Fig.~\ref{fig:kcross} generalizes both results with the measured costs. Once a verifier holds the root, M2 costs $t_v/K+\mathrm{path}(0)$ per request and EMBER costs $\mathrm{path}(d)$. M2 is therefore cheaper in edge CPU only when $K>K^*_{\text{cpu}}=t_v/(\mathrm{path}(d)-\mathrm{path}(0))$: 154, 64 and 48 requests for $d=5$, 12 and 16. On bytes, M2 sends $148+3242/K$ and EMBER $S_{\text{tok}}(d)$ (Eq.~\eqref{eq:size}), so M2 is smaller only above $K^*_{\text{bytes}}=3242/(S_{\text{tok}}(d)-148)$: 27, 12 and 9 requests. The synthetic sessions ($K=150$) sit at or above both crossovers, and the trace's per-object tokens ($K\approx2$) far below them. Which design is cheaper at the edge is therefore a property of the token granularity, which the operator chooses and the trace cannot reveal. The trace contains no session or client identifier, so it cannot tell us how real deployments scope their tokens.
 
 \subsection{Bytes on the Wire and Real HPACK Encoders}
 \label{sec:res-wire}

@@ -208,3 +208,63 @@ All paths are relative to `paper/results/`. "Derived" means arithmetic on the li
 | 24 rows per metric = 12 configs × 2 modes; 12 independent comparisons | §VI-G, Intro | `proto_validate.csv` (12 configurations × {pull, pull_staple} per metric) |
 | H6 p99 ≤ 2.61 µs | App. B | single source: `sim_delta_sweep.csv` native, max edge_cpu_us_per_req_p99 = 2.613 (`r1_oprg_agg` max is 2.21; RESULTS_R1's 1.71/1.42 refer to subsets) |
 | Staple bytes units | §IV-C, §VI-D, §VI-E | raw signed root 2,461 B and HTTP/1.1 line 3,298 B (`token_sizes_r1.csv`); h2 session increments 2,968/2,921 B (`wire_bytes_r1.csv`); simulator raw bytes per session 2,501–6,254 B (`r1_pmove_agg.csv` staple_bytes_per_session) |
+
+## R2 experiments (trace replay and prototype R2), added by the R2 writer
+
+Trace sources: `RESULTS_R2_TRACE.md`, `r2_trace_summary.txt` (console output of `plots/make_trace.py`), `trace_agg.csv` (mean and Student-t 95% CI over 9 cluster-days, `cluster = all` rows unless a cluster is named), `trace_replicates.csv`, `trace_rates.csv`, `trace_oprg_V600.csv`, `trace_oprg_V86400.csv`, `tables/tab_r2_trace.tex`. "scaled" = rates × 1/SamplingRate (Poisson within minute); "sampled" = exact replay of the published trace. Assumption throughout: one signed-URL token per (object key, 1-h bucket).
+
+### Title, abstract, introduction, conclusion
+| Claim | Source |
+|---|---|
+| issuer 0.38–1.08 cores vs 177 (M2), full trace rates | `trace_agg.csv` scaled, verifier shared, fixed:0.01: global issuer_cores_ember 0.3826, tenant 1.0820; issuer_cores_m2 176.713 (r2_trace_summary "TREE SIZES / ISSUER") |
+| K = 1.7–2.4 (mean requests per token) | `trace_replicates.csv` via r2_trace_summary "REPLICATES": eag 2.36, nha 1.71, prn 1.72 |
+| 53.8 vs 1.9 µs/request; 1,869 vs 426 B/request | r2_trace_summary "EDGE CPU": scaled global fixed:0.01 shared: M2 53.79 [47.44, 60.13], EMBER 1.88 [1.80, 1.96]; bytes M2 1869, EMBER 426 |
+| 28× edge crypto; 4.4× bytes | derived 53.79/1.88 = 28.6 (RESULTS_R2_TRACE §7 "28×"); 1869/426 = 4.39 |
+| median 547 tokens per per-type tree; R1 degeneracy only at low rates | scaled tenant fixed:0.01 medianN 547, N1 0.0002; sampled tenant fixed:0.01 N1 0.9153 |
+| K*_cpu ≈ 48–154 (d = 16…5); K*_bytes ≈ 9–27 | `r2_k_crossover.csv` (from `experiments/plots/writer_r2_crossover.py`; see derivation below) |
+| 19–144× issuer (simulation) | unchanged, oprg (see Abstract rows above) |
+
+### Derivation of the requests-per-token crossover (Fig. 18, §VI-D, §VII-A)
+Inputs (native run 2): t_v = ML-DSA-44 verify median 100.939 µs (`native_sig_agg.csv`); path(d) = `native_pathverify_agg.csv` evp pathverify n=16 ns_median: path(0) 0.23501, path(5) 0.88931, path(8) 1.28394, path(12) 1.81025, path(16) 2.34120, path(24) 3.40698 µs; M2 token 148 B and staple line 3,242 B, EMBER S_tok(d) = 118 + 3 + ⌈4(30+16d)/3⌉ (`token_sizes_r1.csv`; the script asserts the formula reproduces 161/268/332/460 B at log2N 0/5/8/14).
+- Per request at one verifier, root already held: M2 = t_v/K + path(0); EMBER = path(d). Equal at K*_cpu = t_v / (path(d) − path(0)):
+  - d=5: 100.939/(0.88931−0.23501) = 154.3; d=8: 96.2; d=12: 100.939/1.57524 = 64.1; d=16: 100.939/2.10619 = 47.9; d=24: 31.8.
+  - Using the trace model's M2 hit cost th_200B = 0.20736 µs instead of path(0) gives 148.0 / 93.8 / 63.0 / 47.3 (≤ 4% lower); the paper uses path(0) as in §VI-B.
+- Bytes per request: M2 = 148 + 3242/K; EMBER = S_tok(d). Equal at K*_bytes = 3242/(S_tok(d) − 148):
+  - d=5: S 268 → 3242/120 = 27.0; d=12: S 417 → 3242/269 = 12.1; d=16: S 503 → 3242/355 = 9.1.
+- Check against the trace: with K ≈ 1.88 (1/0.5308 M2 contacts per request, shared verifier), M2 = 100.939 × 0.5308 + 0.207 = 53.78 µs, matching `trace_agg.csv` 53.79.
+- Synthetic K̄ = 150 ≥ K*_cpu for d ≥ 6 and ≈ K*_cpu (154) at d = 5; trace request-weighted median K = 2–4 < K*_bytes and K*_cpu at every d ≤ 24.
+
+### §V Methodology (trace paragraph)
+| Claim | Source |
+|---|---|
+| 3 clusters, first 3 full days, 15–18 Mar 2023, 9 replicates | `trace/README.md`; `trace_replicates.csv` |
+| sampling 1e-4 (eag, prn), 4e-4 (nha) | `r2_trace_summary.txt` REPLICATES |
+| 23–24 content types; 10–12 VIP types | `trace_rates.csv` groups (r2_trace_summary "POOL RATES") |
+| 71% of sampled requests on keys seen ≥ 2 times within 5 h | RESULTS_R2_TRACE §1 (sampling check) |
+| Poisson check: 0.07–0.69% sig/s; N1 within 0.010; edge CPU within 0.6% | r2_trace_summary "POISSON-WITHIN-MINUTE CHECK": rel 0.07–0.69%; N1 max |Δ| 0.0097 (tenant fixed:0.01, 0.9153 vs 0.9250); CPU 51.374 vs 51.663 = 0.56% |
+| ≈390–2,200 hosts per cluster | derived from the CacheLib doc's traffic factors (eag 1/13.4, nha 1/6.37, prn 1/4.58; doc read 2026-11-06) ÷ SamplingRate: (1/13.4)/1e-4 = 746; (1/6.37)/4e-4 = 392; (1/4.58)/1e-4 = 2,183 |
+
+### §VI-D Real CDN trace (Table trace, Fig. 18)
+| Claim | Source |
+|---|---|
+| per-cluster tokens/s scaled 302,631 / 226,150 / 768,027; K 2.36 [2.14, 2.57] / 1.71 [1.47, 1.95] / 1.72 [1.69, 1.76]; K=1 78.4 / 81.2 / 84.1%; req-weighted median K 4 / 2 / 2 | r2_trace_summary REPLICATES |
+| 2.3·10⁵–7.7·10⁵ tokens/s; 100–400× synthetic | derived 226,150/2,000 = 113; 768,027/2,000 = 384 |
+| table rows (scaled, Δ=10 ms): per type N1 0.02%, median 547, 335 B, 1.08 cores, 1.6 / 61.8 µs, 345 B; VIP 0.02%, 2,164, 390 B, 0.73, 1.8 / 38.7, 394 B; cluster 0, 4,369, 425 B, 0.38, 1.9 / 17.6, 426 B; M2 176.7 cores, 53.8 / 87.3 µs, 1,869 B | r2_trace_summary TREE SIZES and EDGE CPU (shared and reqspread:1000 rows); `tab_r2_trace.tex`. Cluster reqspread 17.55 printed 17.6 (the generated .tex rounds to 17.5) |
+| sampled rows: per type 91.5%, median 1, 163 B, 0.0256 cores, 51.4 / 87.3 µs, 1,833 B; M2 0.0269 cores | r2_trace_summary sampled tenant fixed:0.01; issuer_cores_m2 0.02692 (`tab_r2_trace.tex`) |
+| 66 tokens/s (sampled) | `tab_r2_trace.tex` tokens/s sampled |
+| 1.08 [0.91, 1.26] vs 176.7 [96.9, 256.6]; 0.38 [0.23, 0.54] | r2_trace_summary scaled tenant/global fixed:0.01 |
+| leaf/encode 0.76 µs/token ≈ 0.33 cores | r2_trace_summary RATE THRESHOLDS t_tok 0.761 µs; derived 0.761e-6 × 432,269 = 0.329 |
+| ≥ 10× above 1,021 tokens/s at Δ = 10 ms | r2_trace_summary RATE THRESHOLDS |
+| 99.5–99.9% of tokens in type pools ≥ 10³/s | r2_trace_summary POOL RATES tenant "token share in groups >= 1000/s" 0.997 / 0.995 / 0.999 |
+| Δ = 1 s: median 54,780 per type; 477 B | scaled tenant fixed:1 medianN 54780, tokB 477 |
+| V = 10 min / 24 h (nha): median 312 / 245 | `trace_oprg_V600.csv`, `trace_oprg_V86400.csv` (r2_trace_summary V sensitivity) |
+| 1,000 hosts: EMBER cluster 16.7–17.6 vs M2 53.8–87.3 µs | scaled global fixed:0.01 keyshard:1000 16.67, reqspread:1000 17.55; M2 53.79 / 87.30 |
+| contacts/request: M2 0.53–0.86; EMBER cluster 0.0002–0.16 | r2_trace_summary contacts/req (shared 0.5308 / 0.0002; reqspread 0.8628 / 0.1554) |
+
+### §VII Discussion and limitations
+| Claim | Source |
+|---|---|
+| rule 2/4 numbers (K*, 28×, 4.4×, 0.38 vs 177, 99.5–99.9%, ~10³/s) | as above |
+| rule 4: 51.4 vs 53.8 µs on the sampled trace | sampled tenant fixed:0.01 shared EMBER 51.37, M2 53.79 |
+| rule 3: 1.6–1.8× fleet edge crypto, 120–184 B, 5.4 ms | unchanged, oprg (§VI-C rows above) |
+| trace limitation 100–400× | derived above |

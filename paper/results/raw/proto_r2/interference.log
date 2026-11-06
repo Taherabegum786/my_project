@@ -41,3 +41,65 @@
  7.0   3 claude
 == 17:23:44 load=1.02 0.87 1.20 steal=5999
  7.0   3 claude
+== 17:23:59 load=1.16 0.91 1.21 steal=6055
+ 6.9   0 claude
+== 17:24:15 load=1.20 0.93 1.21 steal=6095
+ 6.9   3 claude
+== 17:24:30 load=1.16 0.94 1.21 steal=6137
+ 6.9   2 claude
+== 17:24:45 load=1.35 0.99 1.22 steal=6168
+ 6.9   3 claude
+== 17:25:00 load=1.34 1.01 1.22 steal=6217
+ 6.8   2 claude
+== 17:25:15 load=1.49 1.06 1.23 steal=6262
+ 6.8   0 claude
+== 17:25:30 load=1.82 1.15 1.26 steal=6303
+ 6.8   2 claude
+== 17:25:45 load=2.15 1.26 1.30 steal=6362
+ 6.8   0 claude
+== 17:26:00 load=2.11 1.29 1.31 steal=6418
+ 6.7   3 claude
+== 17:26:15 load=2.16 1.35 1.32 steal=6464
+ 6.7   0 claude
+== 17:26:30 load=1.98 1.35 1.32 steal=6508
+ 6.7   3 claude
+== 17:26:45 load=2.07 1.39 1.34 steal=6553
+ 6.6   0 claude
+== 17:27:00 load=2.04 1.42 1.35 steal=6600
+ 6.6   2 claude
+== 17:27:15 load=1.96 1.44 1.36 steal=6645
+ 6.6   0 claude
+== 17:27:30 load=2.36 1.55 1.40 steal=6694
+ 6.6   3 claude
+== 17:27:45 load=2.36 1.59 1.41 steal=6743
+ 6.5   0 claude
+== 17:28:00 load=2.26 1.61 1.42 steal=6781
+ 6.5   0 claude
+== 17:28:15 load=2.05 1.59 1.42 steal=6812
+ 6.5   2 claude
+== 17:28:30 load=2.11 1.63 1.44 steal=6847
+ 6.5   0 claude
+== 17:28:45 load=2.00 1.63 1.44 steal=6889
+ 6.5   3 claude
+== 17:29:00 load=2.14 1.68 1.46 steal=6945
+ 6.4   0 claude
+== 17:29:15 load=2.39 1.76 1.49 steal=6996
+ 6.4   0 claude
+== 17:29:30 load=2.30 1.77 1.50 steal=7044
+ 6.4   0 claude
+== 17:29:45 load=2.30 1.80 1.51 steal=7077
+ 6.4   0 claude
+== 17:30:00 load=2.09 1.78 1.51 steal=7125
+ 6.4   3 claude
+== 17:30:15 load=2.06 1.79 1.52 steal=7166
+ 6.3   2 claude
+== 17:30:30 load=1.98 1.78 1.52 steal=7208
+ 6.3   1 claude
+== 17:30:45 load=1.98 1.80 1.53 steal=7256
+ 6.3   0 claude
+== 17:31:00 load=2.28 1.87 1.56 steal=7296
+ 6.3   2 claude
+== 17:31:15 load=2.21 1.88 1.57 steal=7334
+ 6.3   0 claude
+== 17:31:30 load=2.24 1.90 1.58 steal=7373
+ 6.2   3 claude
