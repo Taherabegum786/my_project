@@ -298,3 +298,11 @@ Inputs (native run 2): t_v = ML-DSA-44 verify median 100.939 µs (`native_sig_ag
 | Pull misses when λΔw_v ≫ 1: M ≈ E/(λΔ) | §IV-C | analytic limit of Eq. (miss): 1 − e^{−x} → 1 |
 | Fig. 13 → `fig13` at 0.88 textwidth; fig14/fig12 resized (0.62/0.58 textwidth); fig12 moved earlier in the source | layout only | no data change |
 | "about 36 ms (1.8 round trips)" on a live connection; "258–263 ms reconnect" | Abstract, §IV-A, §VII-A, Conclusion | flush retry_extra_mean 35.78 (m2) / 35.81 (ember) ms; derived 35.8/20.3 = 1.76; restart reconnect_extra_mean 257.67 (ember) – 262.9 (m2) ms |
+
+### Final check R2 (corrections)
+| Change | Location | Source |
+|---|---|---|
+| "about 6 recoveries per 1,000 requests" → "4.4--6.4" (EMBER flush is 4.40) | §IV-A | `proto_recovery_r2_agg.csv` recoveries_per_1k_req: flush m2 6.08, ember 4.40; restart m2 6.17, ember 6.38 |
+| Retry hint "403 with X-Reject" → R2 uses 401 with a `Staple-Required` header (R1 used 403) | §IV-A | `experiments/proto/edge/r2.go` (`-staple-status` default 401; `stapleRequired` sets `Staple-Required`); `run_r2.sh` P4 `-ember-miss 401` |
+| P4 EMBER epoch Δ = 100 ms | §V | `run_r2.sh` P4 issuer `-kids 12:100` (kid:delta_ms) |
+| Abstract trimmed to 244 rendered words; R1 P1 pair (22.33 vs 22.80) dropped from the abstract, still in Table III | Abstract | unchanged sources |

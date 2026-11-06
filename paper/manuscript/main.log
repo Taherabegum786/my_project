@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.5)  6 NOV 2026 21:58
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.5)  6 NOV 2026 22:04
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -971,6 +971,10 @@ m/n/9 in path \T1/ptm/b/n/9 do $\OML/cmm/m/it/9 x \OMS/cmsy/m/n/9
  []
 
 
+Underfull \vbox (badness 1122) has occurred while \output is active []
+
+
+
 LaTeX Font Warning: Font shape `T1/ptm/m/scit' undefined
 (Font)              using `T1/ptm/m/sc' instead on input line 88.
 
@@ -992,13 +996,13 @@ LaTeX Font Warning: Font shape `TS1/ptm/m/sc' undefined
 (Font)              for symbol `textmu' on input line 11.
 
 [6]
-<figures/fig13_operating_region.pdf, id=338, 513.97974pt x 213.87779pt>
+<figures/fig13_operating_region.pdf, id=340, 513.97974pt x 213.87779pt>
 File: figures/fig13_operating_region.pdf Graphic file (type pdf)
 <use figures/fig13_operating_region.pdf>
 Package pdftex.def Info: figures/fig13_operating_region.pdf  used on input line
  64.
 (pdftex.def)             Requested size: 454.08252pt x 188.95384pt.
-<figures/fig18_k_crossover.pdf, id=341, 252.945pt x 133.6995pt>
+<figures/fig18_k_crossover.pdf, id=343, 252.945pt x 133.6995pt>
 File: figures/fig18_k_crossover.pdf Graphic file (type pdf)
 <use figures/fig18_k_crossover.pdf>
 Package pdftex.def Info: figures/fig18_k_crossover.pdf  used on input line 134.
@@ -1008,19 +1012,19 @@ Package pdftex.def Info: figures/fig18_k_crossover.pdf  used on input line 134.
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [8 <./figures/fig13_operating_region.pdf> <./figures/fig18_k_crossover.pdf>]
-<figures/fig12_proto_validation.pdf, id=469, 379.98717pt x 195.6516pt>
+<figures/fig12_proto_validation.pdf, id=471, 379.98717pt x 195.6516pt>
 File: figures/fig12_proto_validation.pdf Graphic file (type pdf)
 <use figures/fig12_proto_validation.pdf>
 Package pdftex.def Info: figures/fig12_proto_validation.pdf  used on input line
  180.
 (pdftex.def)             Requested size: 299.28094pt x 154.1033pt.
-<figures/fig14_pmove_sensitivity.pdf, id=470, 427.67905pt x 223.2188pt>
+<figures/fig14_pmove_sensitivity.pdf, id=472, 427.67905pt x 223.2188pt>
 File: figures/fig14_pmove_sensitivity.pdf Graphic file (type pdf)
 <use figures/fig14_pmove_sensitivity.pdf>
 Package pdftex.def Info: figures/fig14_pmove_sensitivity.pdf  used on input lin
 e 211.
 (pdftex.def)             Requested size: 319.91748pt x 166.98111pt.
-<figures/fig15_b11_tradeoff.pdf, id=474, 278.16893pt x 244.92476pt>
+<figures/fig15_b11_tradeoff.pdf, id=476, 278.16893pt x 244.92476pt>
 File: figures/fig15_b11_tradeoff.pdf Graphic file (type pdf)
 <use figures/fig15_b11_tradeoff.pdf>
 Package pdftex.def Info: figures/fig15_b11_tradeoff.pdf  used on input line 225
@@ -1121,7 +1125,7 @@ Here is how much of TeX's memory you used:
  48326 multiletter control sequences out of 15000+600000
  717437 words of font info for 197 fonts, out of 8000000 for 9000
  62 hyphenation exceptions out of 8191
- 84i,15n,87p,1996b,1045s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,15n,87p,2023b,1045s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texli
@@ -1149,10 +1153,10 @@ exmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts
 /type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/tim
 es/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
 
-Output written on main.pdf (13 pages, 542447 bytes).
+Output written on main.pdf (13 pages, 542140 bytes).
 PDF statistics:
- 803 PDF objects out of 1000 (max. 8388607)
- 598 compressed objects within 6 object streams
+ 804 PDF objects out of 1000 (max. 8388607)
+ 599 compressed objects within 6 object streams
  123 named destinations out of 1000 (max. 500000)
  278 words of extra memory for PDF output out of 10000 (max. 10000000)
 
