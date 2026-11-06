@@ -4,3 +4,4 @@ links up
 [17:31:48] P1 over tapbridge A (cli -> edge, 20 ms RTT), 512 conns, warm=3s dur=15s runs=5
 [17:38:39] P2 open loop over tapbridge at 50%/80% of the r2 P1 (loopback) capacity
 [17:52:22] P4 recovery: M2 vs EMBER staple-all (pooled, delta 100 ms), lambda 200 each, V=10, pmove=0.01, scenarios=cold evict64 evict256 flush restart
+[18:09:23] done: p1 p1tb p2 p4
