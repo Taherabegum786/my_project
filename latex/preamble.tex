@@ -1,0 +1,41 @@
+% Shared preamble for the UGC NET practice book (hand-maintained).
+% Subject files in subjects/ contain no preamble and rely on these macros.
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage[hidelinks]{hyperref}
+
+\setlength{\parindent}{0pt}
+\setcounter{secnumdepth}{1}
+\setcounter{tocdepth}{1}
+\raggedbottom
+
+% Priority tag: H / M / L
+\newcommand{\prio}[1]{{\footnotesize\sffamily\bfseries[#1]}}
+
+% Question numbering restarts in every section (= practice set).
+\newcounter{qno}[section]
+
+% \begin{question}{H} text \optsshort{..}{..}{..}{..} \end{question}
+% Each question is kept on one page.
+\newenvironment{question}[1]{%
+  \par\medskip\begin{minipage}{\linewidth}\raggedright
+  \refstepcounter{qno}\textbf{Q\theqno.}\ \prio{#1}\ \ignorespaces}%
+  {\end{minipage}\par}
+
+% Four options, one per line (long options) or in a 2 x 2 grid (short options).
+\newcommand{\optslong}[4]{\par\smallskip
+  \begin{tabular}{@{\quad}l@{\ }p{0.88\linewidth}@{}}
+  (1) & #1\\ (2) & #2\\ (3) & #3\\ (4) & #4
+  \end{tabular}}
+\newcommand{\optsshort}[4]{\par\smallskip
+  \begin{tabular}{@{\quad}l@{\ }p{0.4\linewidth}l@{\ }p{0.4\linewidth}@{}}
+  (1) & #1 & (2) & #2\\ (3) & #3 & (4) & #4
+  \end{tabular}}
+
+% Answer key with explanations, printed at the end of each set.
+\newenvironment{answers}{\subsection*{Answers and explanations}\small}{\par\normalsize}
+\newcommand{\ans}[3]{\par\smallskip\hangindent=2.6em\hangafter=1
+  \makebox[2.6em][l]{\textbf{#1.}}\textbf{(#2)}\quad #3\par}
