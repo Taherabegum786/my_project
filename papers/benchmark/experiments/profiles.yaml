@@ -1,0 +1,33 @@
+# Budget profiles. Every value cites a research/lit/notes key. TODO-RESULT = not in notes; excluded.
+# budget_bytes: max authentication bytes per message; frame_payload: bytes per physical frame/page.
+profiles:
+  cv2x:
+    source: twardokus2024when
+    budget_bytes: 437          # C-V2X max payload, 10 MHz channel (note: numbers)
+    frame_payload: 437
+    frag_hdr: TODO-RESULT      # not in note; accounting uses 0 (lower bound on frames)
+    note: budget is the whole payload, not auth-only; share is therefore a lower bound
+  remote_id:
+    source: wiethuechter2024drip
+    budget_bytes: 255          # Authentication Data/Signature field 0-255 octets
+    frame_payload: 23          # auth payload per page (25 B frame, note)
+    frag_hdr: 0                # 25-23 = 2 B per page is already excluded from the 23
+  osnma:
+    source: junquera2023assessment
+    budget_bytes: 208          # derived: 16 DSM blocks x 104 bit = 1664 bit (note); 1632 bit crypto material
+    frame_payload: 13          # 104-bit DSM block
+    frag_hdr: 0
+    note: 67/71-block reproduction flagged doubtful in gap.md section 4 -> that check is TODO-RESULT
+  sib1:
+    source: darzi2026a
+    budget_bytes: 372
+    frame_payload: 372
+    frag_hdr: TODO-RESULT
+  dns:
+    source: goertzen2022post
+    budget_bytes: 1232
+    frame_payload: 1232
+    frag_hdr: TODO-RESULT
+deadlines_ms:
+  strict: {value: 3,   source: hussain2026a}       # IEC 62351-6 3 ms (gap.md also cites nabasirye2026security [A])
+  relaxed: {value: 100, source: chen2026pseudonym}  # also mamun2026post
