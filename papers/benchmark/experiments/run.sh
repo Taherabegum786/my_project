@@ -7,15 +7,16 @@ ROOT="$(cd "$HERE/../../.." && pwd)"
 RAW="$HERE/../results/raw"; mkdir -p "$RAW"
 : "${MACHINE_NAME:?set MACHINE_NAME to the machine name, e.g. laptop-x86}"
 export MACHINE_NAME
-ITER="${ITER:-10000}"
-LIBOQS_TAG="${LIBOQS_TAG:-0.12.0}"
+ITER="${ITER:-10000}"; ITER_SLOW="${ITER_SLOW:-$((ITER/10 > 10 ? ITER/10 : 10))}"  # slow schemes
+LIBOQS_TAG="${LIBOQS_TAG:-0.16.0}"
 WORK="${WORK:-$HERE/build}"; PREFIX="$WORK/prefix"
 
-sudo apt-get update
-sudo apt-get install -y build-essential cmake ninja-build git libssl-dev python3 python3-venv python3-pip curl
-python3 -m venv "$ROOT/.venv-benchmark"
+SUDO=""; [ "$(id -u)" -ne 0 ] && SUDO=sudo
+$SUDO apt-get update
+$SUDO apt-get install -y build-essential cmake ninja-build git libssl-dev python3 python3-venv python3-pip curl
+mkdir -p "$WORK"; python3 -m venv "$WORK/venv"
 # shellcheck disable=SC1091
-. "$ROOT/.venv-benchmark/bin/activate"
+. "$WORK/venv/bin/activate"
 pip install numpy pandas pyyaml matplotlib tabulate cryptography
 
 if [ ! -f "$PREFIX/lib/liboqs.a" ] && [ ! -f "$PREFIX/lib64/liboqs.a" ] && [ ! -f "$PREFIX/lib/liboqs.so" ]; then
@@ -34,7 +35,10 @@ export LD_LIBRARY_PATH="$PREFIX/lib:$PREFIX/lib64:${LD_LIBRARY_PATH:-}"
 COMMIT="$(git -C "$ROOT" rev-parse --short HEAD)"; DATE="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 OUT="$RAW/oqs_timing_${MACHINE_NAME}.csv"
 "$WORK/oqs_bench" --header > "$OUT"
-"$WORK/oqs_bench" "$ITER" "$MACHINE_NAME" "$DATE" "$COMMIT" >> "$OUT"
+for A in $("$WORK/oqs_bench" --list); do
+  N="$ITER"; case "$A" in *SLH*|*SPHINCS*|*cross*|*MQOM*|*mqom*) N="$ITER_SLOW";; esac
+  "$WORK/oqs_bench" "$N" "$MACHINE_NAME" "$DATE" "$COMMIT" "$A" >> "$OUT"
+done
 CL="$RAW/classical_timing_${MACHINE_NAME}.csv"; rm -f "$CL"
 python3 "$ROOT/lib/pqsig/classical_bench.py" "$CL" "$ITER"
 
@@ -44,6 +48,6 @@ import sys, pandas as pd
 pd.concat([pd.read_csv(sys.argv[1]), pd.read_csv(sys.argv[2])]).to_csv(sys.argv[3], index=False)
 PY
 python3 "$HERE/score.py" "$RAW/sizes_all.csv" "$HERE/profiles.yaml" "$RAW/scoring.csv"
-python3 "$HERE/run_lossmodel.py" "$RAW/lossmodel.csv" 20 5000
+python3 "$HERE/run_lossmodel.py" "$RAW/lossmodel.csv" "$RAW/lossmodel_sweep.csv" "$RAW/sizes_all.csv" 20 5000
 python3 "$HERE/summarize.py"
 echo "done: $HERE/../results/summary.md"

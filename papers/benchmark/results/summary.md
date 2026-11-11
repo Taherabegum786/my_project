@@ -4,26 +4,122 @@ Run tags (from CSV rows):
 
 | machine     | date                 | git_commit   |
 |:------------|:---------------------|:-------------|
-| cloud-smoke | 2026-11-11T02:12:20Z | fdf2194      |
-| cloud-smoke | 2026-11-11T02:13:04Z | fdf2194      |
-| cloud-smoke | 2026-11-11T02:12:21Z | fdf2194      |
-| cloud-smoke | 2026-11-11T02:12:22Z | fdf2194      |
-| cloud-smoke | 2026-11-11T02:12:23Z | fdf2194      |
+| cloud-smoke | 2026-11-11T03:26:11Z | 3cf20df      |
+| cloud-smoke | 2026-11-11T02:57:42Z | 3cf20df      |
+| cloud-smoke | 2026-11-11T03:26:12Z | 3cf20df      |
+| cloud-smoke | 2026-11-11T03:26:13Z | 3cf20df      |
+| cloud-smoke | 2026-11-11T03:26:14Z | 3cf20df      |
+| cloud-smoke | 2026-11-11T03:26:15Z | 3cf20df      |
+| cloud-smoke | 2026-11-11T03:26:16Z | 3cf20df      |
+| cloud-smoke | 2026-11-11T03:26:17Z | 3cf20df      |
+| cloud-smoke | 2026-11-11T03:26:18Z | 3cf20df      |
+| cloud-smoke | 2026-11-11T03:26:19Z | 3cf20df      |
+| cloud-smoke | 2026-11-11T03:26:20Z | 3cf20df      |
+| cloud-smoke | 2026-11-11T03:26:21Z | 3cf20df      |
+| cloud-smoke | 2026-11-11T03:26:22Z | 3cf20df      |
+| cloud-smoke | 2026-11-11T03:26:23Z | 3cf20df      |
+| cloud-smoke | 2026-11-11T03:26:44Z | 3cf20df      |
+| cloud-smoke | 2026-11-11T03:26:45Z | 3cf20df      |
+| cloud-smoke | 2026-11-11T03:26:46Z | 3cf20df      |
+| cloud-smoke | 2026-11-11T03:26:47Z | 3cf20df      |
+| cloud-smoke | 2026-11-11T03:26:48Z | 3cf20df      |
+| cloud-smoke | 2026-11-11T03:26:49Z | 3cf20df      |
 
 **All runs are smoke tests (`machine: cloud-smoke`). No publication numbers.**
 
 ## Environment status
 
-**liboqs could not be built in the cloud session: github.com returned HTTP 403 via the proxy (host: github.com, path /open-quantum-safe/liboqs/archive/...). No PQ sizes or timings exist yet; Part A is classical-only here, Part B is scored for classical rows only, and every PQ cell is TODO-RESULT. No sizes were typed in from memory.**
+liboqs rows present in `raw/*timing*.csv` (tag and scheme list in `experiments/ENV.md` and the `backend` column).
 
 ## Part A: sign/verify/keygen timing and sizes
 
-Source: `results/raw/classical_timing.csv`
+Source: `results/raw/classical_timing_cloud-smoke.csv`, `results/raw/oqs_timing_cloud-smoke.csv`
 
-| scheme     | family    | backend             |   iterations |   pk_bytes |   sig_bytes_max |   sign_mean_us |   sign_median_us |   sign_p95_us |   sign_p99_us |   verify_mean_us |   verify_median_us |   verify_p95_us |   verify_p99_us |   keygen_mean_us |
-|:-----------|:----------|:--------------------|-------------:|-----------:|----------------:|---------------:|-----------------:|--------------:|--------------:|-----------------:|-------------------:|----------------:|----------------:|-----------------:|
-| Ed25519    | classical | python-cryptography |         2000 |         32 |              64 |          33.29 |            31.53 |         43.83 |         51.92 |           106.1  |             103.8  |          125.8  |           159.2 |            30.99 |
-| ECDSA-P256 | classical | python-cryptography |         2000 |         65 |              72 |          24.87 |            20.68 |         26.66 |         40.47 |            70.56 |              64.72 |           82.75 |           104.3 |            12.51 |
+All schemes except the 168 SLH-DSA parameter sets (identical columns for those are in the CSV; aggregated below). **Rows with iterations < 100 (slow schemes: CROSS, MQOM, SLH-DSA) have p95/p99 = near-maximum of very few samples; they are not tail estimates.**
+
+| scheme                   | family    | backend             |   iterations |   pk_bytes |   sig_bytes_max |   sign_mean_us |   sign_median_us |   sign_p95_us |   sign_p99_us |   verify_mean_us |   verify_median_us |   verify_p95_us |   verify_p99_us |   keygen_mean_us |
+|:-------------------------|:----------|:--------------------|-------------:|-----------:|----------------:|---------------:|-----------------:|--------------:|--------------:|-----------------:|-------------------:|----------------:|----------------:|-----------------:|
+| Ed25519                  | classical | python-cryptography |         1000 |         32 |              64 |     25.76      |       24.64      |    30.46      |    40.59      |       83.47      |         81.02      |      95.17      |     113.2       |       26.25      |
+| ECDSA-P256               | classical | python-cryptography |         1000 |         65 |              72 |     27.87      |       24.62      |    31.42      |    44.14      |       86.69      |         81.46      |      99.24      |     133.3       |       15.7       |
+| ML-DSA-44                | pq        | liboqs-0.16.0       |         1000 |       1312 |            2420 |     71.73      |       56.57      |   162         |   253.3       |       22.96      |         21.1       |      28.46      |      46.53      |       22.13      |
+| ML-DSA-65                | pq        | liboqs-0.16.0       |         1000 |       1952 |            3309 |    111.7       |       88.12      |   259.3       |   374.5       |       36.17      |         34.28      |      45.88      |      67.56      |       40.5       |
+| ML-DSA-87                | pq        | liboqs-0.16.0       |         1000 |       2592 |            4627 |    116.3       |       97.22      |   228.3       |   355.6       |       50.43      |         48.1       |      63.2       |      78.2       |       51.7       |
+| Falcon-512               | pq        | liboqs-0.16.0       |         1000 |        897 |             663 |    200.3       |      196.6       |   224.6       |   250.3       |       41.69      |         40.28      |      51.42      |      57.9       |     6312         |
+| Falcon-1024              | pq        | liboqs-0.16.0       |         1000 |       1793 |            1280 |    450.4       |      437.2       |   543.3       |   915.2       |       91.99      |         88.6       |     114.5       |     161.2       |        1.816e+04 |
+| Falcon-padded-512        | pq        | liboqs-0.16.0       |         1000 |        897 |             666 |    204.6       |      201.1       |   222.9       |   248.5       |       42.26      |         40.98      |      53.21      |      61.86      |     5708         |
+| Falcon-padded-1024       | pq        | liboqs-0.16.0       |         1000 |       1793 |            1280 |    324         |      317.5       |   349.7       |   377.9       |       65.97      |         62.83      |      75.61      |      86.56      |        1.791e+04 |
+| MAYO-1                   | pq        | liboqs-0.16.0       |         1000 |       1420 |             454 |    143.4       |      128.8       |   190.6       |   213.7       |       59.15      |         53.09      |      74.93      |      86.38      |       61.36      |
+| MAYO-2                   | pq        | liboqs-0.16.0       |         1000 |       4912 |             186 |     87.84      |       84.24      |   105.3       |   120.9       |       20.94      |         20.08      |      24.57      |      33.58      |       34.64      |
+| MAYO-3                   | pq        | liboqs-0.16.0       |         1000 |       2986 |             681 |    334.1       |      329.1       |   364.2       |   399.3       |      151.7       |        148.3       |     167.6       |     179.7       |      134.9       |
+| MAYO-5                   | pq        | liboqs-0.16.0       |         1000 |       5554 |             964 |    802.8       |      767.3       |   957.1       |  1365         |      369.7       |        354.3       |     419.6       |     590.7       |      321.8       |
+| cross-rsdp-128-balanced  | pq        | liboqs-0.16.0       |           20 |         77 |           13152 |    867.4       |      865.2       |   944.6       |   961.7       |      617.5       |        612.9       |     733.7       |     752.3       |      102.2       |
+| cross-rsdp-128-fast      | pq        | liboqs-0.16.0       |           20 |         77 |           18432 |    390         |      351.2       |   529.4       |   635.3       |      226.5       |        218.7       |     280.6       |     283.6       |       87.49      |
+| cross-rsdp-128-small     | pq        | liboqs-0.16.0       |           20 |         77 |           12432 |   1665         |     1646         |  1989         |  2080         |     1276         |       1159         |    1472         |    3191         |       83.6       |
+| cross-rsdp-192-balanced  | pq        | liboqs-0.16.0       |           20 |        115 |           29853 |   1636         |     1601         |  1815         |  2052         |     1215         |       1180         |    1438         |    1473         |      107         |
+| cross-rsdp-192-fast      | pq        | liboqs-0.16.0       |           20 |        115 |           41406 |   1070         |     1009         |  1308         |  1672         |      767.1       |        649.6       |     886.2       |    2784         |      135         |
+| cross-rsdp-192-small     | pq        | liboqs-0.16.0       |           20 |        115 |           28391 |   2517         |     2465         |  2891         |  2926         |     1824         |       1807         |    1943         |    1950         |      107.3       |
+| cross-rsdp-256-balanced  | pq        | liboqs-0.16.0       |           20 |        153 |           53527 |   3567         |     3543         |  3616         |  4074         |     2425         |       2426         |    2461         |    2470         |      172.9       |
+| cross-rsdp-256-fast      | pq        | liboqs-0.16.0       |           20 |        153 |           74590 |   1899         |     1870         |  2221         |  2239         |     1179         |       1170         |    1329         |    1365         |      132.9       |
+| cross-rsdp-256-small     | pq        | liboqs-0.16.0       |           20 |        153 |           50818 |   4470         |     4404         |  4756         |  5018         |     3225         |       3180         |    3435         |    3496         |      129.4       |
+| cross-rsdpg-128-balanced | pq        | liboqs-0.16.0       |           20 |         54 |            9120 |    682.4       |      406.2       |  2546         |  3679         |      485.6       |        297.5       |     843.1       |    3496         |       80.46      |
+| cross-rsdpg-128-fast     | pq        | liboqs-0.16.0       |           20 |         54 |           11980 |    229.7       |      220         |   276.1       |   303.1       |      146.4       |        144.1       |     156.4       |     157.5       |       76.58      |
+| cross-rsdpg-128-small    | pq        | liboqs-0.16.0       |           20 |         54 |            8960 |    898.5       |      880.4       |   959.6       |  1115         |      655.6       |        636.9       |     738.1       |     876.9       |       78.31      |
+| cross-rsdpg-192-balanced | pq        | liboqs-0.16.0       |           20 |         83 |           22464 |    634.2       |      629.3       |   665.5       |   750.8       |      467.8       |        465.5       |     493.3       |     519.2       |       85.44      |
+| cross-rsdpg-192-fast     | pq        | liboqs-0.16.0       |           20 |         83 |           26772 |    528.3       |      522.1       |   567.8       |   621.4       |      368.5       |        357         |     440.4       |     478.4       |       92.61      |
+| cross-rsdpg-192-small    | pq        | liboqs-0.16.0       |           20 |         83 |           20452 |   1280         |     1261         |  1419         |  1465         |      995.9       |        986.6       |    1031         |    1043         |      102.3       |
+| cross-rsdpg-256-balanced | pq        | liboqs-0.16.0       |           20 |        106 |           40100 |   1135         |     1107         |  1261         |  1290         |      822.2       |        822.7       |     908.2       |     952.8       |       93.66      |
+| cross-rsdpg-256-fast     | pq        | liboqs-0.16.0       |           20 |        106 |           48102 |    926.4       |      914.5       |  1049         |  1076         |      648.7       |        641.9       |     733         |     737.1       |       99.47      |
+| cross-rsdpg-256-small    | pq        | liboqs-0.16.0       |           20 |        106 |           36454 |   1508         |     1475         |  1787         |  1845         |     1147         |       1127         |    1340         |    1437         |       75.03      |
+| OV-Is                    | pq        | liboqs-0.16.0       |         1000 |     412160 |              96 |     31.08      |       27.06      |    55.35      |    85.22      |       19.53      |         17.98      |      23.84      |      57.64      |     1050         |
+| OV-Ip                    | pq        | liboqs-0.16.0       |         1000 |     278432 |             128 |     24.07      |       22.81      |    28.89      |    43.4       |       20.1       |         19.28      |      23.32      |      36.99      |      711.2       |
+| OV-III                   | pq        | liboqs-0.16.0       |         1000 |    1225440 |             200 |     82.59      |       78.21      |   111         |   135.2       |       85.77      |         79.91      |     116.6       |     147.4       |     3853         |
+| OV-V                     | pq        | liboqs-0.16.0       |         1000 |    2869440 |             260 |    161.7       |      145.3       |   216.7       |   269.9       |      132.4       |        116.2       |     188.4       |     214.8       |        1.01e+04  |
+| OV-Is-pkc                | pq        | liboqs-0.16.0       |         1000 |      66576 |              96 |     26.97      |       23.93      |    44.3       |    62.38      |       70.12      |         66.46      |      90.28      |     102         |      969         |
+| OV-Ip-pkc                | pq        | liboqs-0.16.0       |         1000 |      43576 |             128 |     23.22      |       21.71      |    30.06      |    46.4       |       54.77      |         52.4       |      65.31      |      76.61      |      684.9       |
+| OV-III-pkc               | pq        | liboqs-0.16.0       |         1000 |     189232 |             200 |     92.29      |       88.12      |   122.4       |   147.5       |      245.1       |        237.1       |     291.2       |     343.8       |     3906         |
+| OV-V-pkc                 | pq        | liboqs-0.16.0       |         1000 |     446992 |             260 |    194.2       |      178.6       |   251.7       |   360.6       |      589.5       |        569.3       |     663.2       |    1209         |        1.085e+04 |
+| OV-Is-pkc-skc            | pq        | liboqs-0.16.0       |         1000 |      66576 |              96 |    679.2       |      656.3       |   832.7       |   902.6       |       67.95      |         66.69      |      82.53      |      98         |      985.5       |
+| OV-Ip-pkc-skc            | pq        | liboqs-0.16.0       |         1000 |      43576 |             128 |    341.5       |      337.7       |   363.8       |   408.5       |       44.26      |         42.8       |      52.6       |      61.45      |      698.1       |
+| OV-III-pkc-skc           | pq        | liboqs-0.16.0       |         1000 |     189232 |             200 |   2489         |     2426         |  3286         |  4053         |      254.7       |        243.4       |     332.6       |     435.3       |     3580         |
+| OV-V-pkc-skc             | pq        | liboqs-0.16.0       |         1000 |     446992 |             260 |   5583         |     5460         |  6598         |     1.33e+04  |      598.3       |        582.3       |     712.8       |    1255         |     9761         |
+| SNOVA_24_5_4             | pq        | liboqs-0.16.0       |         1000 |       1016 |             248 |    423.2       |      403.8       |   720         |   984.2       |       76.92      |         73.79      |     111.2       |     147.6       |       86.94      |
+| SNOVA_24_5_4_SHAKE       | pq        | liboqs-0.16.0       |         1000 |       1016 |             248 |    460.1       |      431.5       |   743         |   806.3       |      103         |         98.47      |     124.9       |     142.3       |      104.2       |
+| SNOVA_24_5_4_esk         | pq        | liboqs-0.16.0       |         1000 |       1016 |             248 |    319.6       |      282.8       |   491         |   731.3       |       72.1       |         68.15      |      89.3       |     124.5       |       85.45      |
+| SNOVA_24_5_4_SHAKE_esk   | pq        | liboqs-0.16.0       |         1000 |       1016 |             248 |    342.2       |      328.9       |   524.8       |   803.5       |       98.57      |         96.21      |     142         |     174.7       |       86.39      |
+| SNOVA_37_17_2            | pq        | liboqs-0.16.0       |         1000 |       9842 |             124 |    384.6       |      366.4       |   518.1       |   593.5       |       55.44      |         53.45      |      68.48      |      76.8       |      330.2       |
+| SNOVA_25_8_3             | pq        | liboqs-0.16.0       |         1000 |       2320 |             165 |    336.8       |      300.3       |   521.5       |   668.4       |       62.48      |         58.99      |      78.65      |     120.2       |       99.7       |
+| SNOVA_56_25_2            | pq        | liboqs-0.16.0       |         1000 |      31266 |             178 |   1325         |     1257         |  1681         |  1947         |      208.3       |        194.7       |     266.6       |     320         |     1271         |
+| SNOVA_49_11_3            | pq        | liboqs-0.16.0       |         1000 |       6006 |             286 |   1086         |      997.9       |  1823         |  2760         |      225.4       |        204.6       |     392.8       |     634.9       |      475         |
+| SNOVA_37_8_4             | pq        | liboqs-0.16.0       |         1000 |       4112 |             376 |   1392         |     1238         |  2061         |  3238         |      256.8       |        238.6       |     380.9       |     434.6       |      443.4       |
+| SNOVA_24_5_5             | pq        | liboqs-0.16.0       |         1000 |       1579 |             379 |   1041         |      989.8       |  1737         |  2544         |      237.5       |        239.4       |     267.3       |     324.3       |      172.7       |
+| SNOVA_60_10_4            | pq        | liboqs-0.16.0       |         1000 |       8016 |             576 |   3456         |     3317         |  5311         |  7294         |      652.9       |        643.4       |     801         |    1120         |     1440         |
+| SNOVA_29_6_5             | pq        | liboqs-0.16.0       |         1000 |       2716 |             454 |   1479         |     1463         |  2152         |  2860         |      343.4       |        347.6       |     414         |     497.3       |      226.7       |
+| mqom2_cat1_gf16_fast_r3  | pq        | liboqs-0.16.0       |           20 |         60 |            3484 |    589.7       |      559.2       |   768.7       |   933.7       |      475.8       |        468.7       |     512.6       |     555.9       |      137.8       |
+| mqom2_cat1_gf16_fast_r5  | pq        | liboqs-0.16.0       |           20 |         60 |            3280 |    547.4       |      511         |   713         |   870.2       |      442.8       |        431.1       |     510.5       |     544.9       |      130.9       |
+| mqom2_cat1_gf16_short_r3 | pq        | liboqs-0.16.0       |           20 |         60 |            3060 |   1547         |     1510         |  1626         |  2385         |     1413         |       1392         |    1533         |    1539         |      140.7       |
+| mqom2_cat1_gf16_short_r5 | pq        | liboqs-0.16.0       |           20 |         60 |            2916 |   1387         |     1329         |  1459         |  2143         |     1267         |       1254         |    1373         |    1418         |      150.5       |
+| mqom2_cat3_gf16_fast_r3  | pq        | liboqs-0.16.0       |           20 |         90 |            8224 |   2348         |     2324         |  2427         |  2733         |     2342         |       2336         |    2434         |    2549         |      357.1       |
+| mqom2_cat3_gf16_fast_r5  | pq        | liboqs-0.16.0       |           20 |         90 |            7738 |   2774         |     2534         |  3453         |  6161         |     2420         |       2265         |    3034         |    3041         |      361.5       |
+| mqom2_cat3_gf16_short_r3 | pq        | liboqs-0.16.0       |           20 |         90 |            6820 |   8322         |     8192         |     1.184e+04 |     1.223e+04 |     7293         |       7451         |    8599         |    9535         |      465         |
+| mqom2_cat3_gf16_short_r5 | pq        | liboqs-0.16.0       |           20 |         90 |            6496 |   7605         |     7237         |  9064         |  9681         |     6756         |       6486         |    8214         |    8537         |      399.4       |
+| mqom2_cat5_gf16_fast_r3  | pq        | liboqs-0.16.0       |           20 |        122 |           14708 |   5165         |     4717         |  6174         |  6309         |     5412         |       5431         |    7420         |    7910         |      605.7       |
+| mqom2_cat5_gf16_fast_r5  | pq        | liboqs-0.16.0       |           20 |        122 |           13772 |   3712         |     3653         |  3839         |  4540         |     3687         |       3679         |    3746         |    3747         |      568.5       |
+| mqom2_cat5_gf16_short_r3 | pq        | liboqs-0.16.0       |           20 |        122 |           12664 |      1.103e+04 |        1.053e+04 |     1.469e+04 |     1.719e+04 |        1.002e+04 |          1.005e+04 |       1.034e+04 |       1.036e+04 |      974.7       |
+| mqom2_cat5_gf16_short_r5 | pq        | liboqs-0.16.0       |           20 |        122 |           12014 |   8293         |     7731         |     1.085e+04 |     1.53e+04  |     7775         |       7457         |    9173         |       1.025e+04 |      737.4       |
+
+Aggregate by family (all rows):
+
+| group         |   n_schemes |   sig_min |   sig_max |   sign_median_us_min |   sign_median_us_max |   verify_median_us_max |
+|:--------------|------------:|----------:|----------:|---------------------:|---------------------:|-----------------------:|
+| CROSS         |          18 |      8960 |     74590 |            220       |         4404         |           3180         |
+| Falcon/FN-DSA |           4 |       663 |      1280 |            196.6     |          437.2       |             88.6       |
+| MAYO          |           4 |       186 |       964 |             84.24    |          767.3       |            354.3       |
+| ML-DSA        |           3 |      2420 |      4627 |             56.57    |           97.22      |             48.1       |
+| MQOM          |          12 |      2916 |     14708 |            511       |            1.053e+04 |              1.005e+04 |
+| SLH-DSA       |         156 |      7856 |     49856 |              1.8e+04 |            1.282e+06 |           3155         |
+| SNOVA         |          12 |       124 |       576 |            282.8     |         3317         |            643.4       |
+| UOV           |          12 |        96 |       260 |             21.71    |         5460         |            582.3       |
+| classical     |           2 |        64 |        72 |             24.62    |           24.64      |             81.46      |
 
 Classical rows use python-cryptography (OpenSSL), so they include Python call overhead; not comparable to the C liboqs rows.
 
@@ -53,88 +149,128 @@ Modes (formulas, also printed in summary.md):
 share_of_budget = auth / budget. frames = ceil(auth / frame_payload).
 ```
 
-| scheme     | profile   | mode       |   auth_bytes |   anchor_bytes |   share_of_budget |   frames | fits   |
-|:-----------|:----------|:-----------|-------------:|---------------:|------------------:|---------:|:-------|
-| Ed25519    | cv2x      | full       |           64 |            nan |           0.1465  |        1 | True   |
-| Ed25519    | cv2x      | sig_cert   |          160 |            nan |           0.3661  |        1 | True   |
-| Ed25519    | cv2x      | fragmented |           64 |            nan |           0.1465  |        1 | True   |
-| Ed25519    | cv2x      | chain      |           32 |             84 |           0.07323 |        1 | True   |
-| Ed25519    | remote_id | full       |           64 |            nan |           0.251   |        3 | True   |
-| Ed25519    | remote_id | sig_cert   |          160 |            nan |           0.6275  |        7 | True   |
-| Ed25519    | remote_id | fragmented |           64 |            nan |           0.251   |        3 | True   |
-| Ed25519    | remote_id | chain      |           32 |             84 |           0.1255  |        4 | True   |
-| Ed25519    | osnma     | full       |           64 |            nan |           0.3077  |        5 | True   |
-| Ed25519    | osnma     | sig_cert   |          160 |            nan |           0.7692  |       13 | True   |
-| Ed25519    | osnma     | fragmented |           64 |            nan |           0.3077  |        5 | True   |
-| Ed25519    | osnma     | chain      |           32 |             84 |           0.1538  |        7 | True   |
-| Ed25519    | sib1      | full       |           64 |            nan |           0.172   |        1 | True   |
-| Ed25519    | sib1      | sig_cert   |          160 |            nan |           0.4301  |        1 | True   |
-| Ed25519    | sib1      | fragmented |           64 |            nan |           0.172   |        1 | True   |
-| Ed25519    | sib1      | chain      |           32 |             84 |           0.08602 |        1 | True   |
-| Ed25519    | dns       | full       |           64 |            nan |           0.05195 |        1 | True   |
-| Ed25519    | dns       | sig_cert   |          160 |            nan |           0.1299  |        1 | True   |
-| Ed25519    | dns       | fragmented |           64 |            nan |           0.05195 |        1 | True   |
-| Ed25519    | dns       | chain      |           32 |             84 |           0.02597 |        1 | True   |
-| ECDSA-P256 | cv2x      | full       |           72 |            nan |           0.1648  |        1 | True   |
-| ECDSA-P256 | cv2x      | sig_cert   |          209 |            nan |           0.4783  |        1 | True   |
-| ECDSA-P256 | cv2x      | fragmented |           72 |            nan |           0.1648  |        1 | True   |
-| ECDSA-P256 | cv2x      | chain      |           32 |             92 |           0.07323 |        1 | True   |
-| ECDSA-P256 | remote_id | full       |           72 |            nan |           0.2824  |        4 | True   |
-| ECDSA-P256 | remote_id | sig_cert   |          209 |            nan |           0.8196  |       10 | True   |
-| ECDSA-P256 | remote_id | fragmented |           72 |            nan |           0.2824  |        4 | True   |
-| ECDSA-P256 | remote_id | chain      |           32 |             92 |           0.1255  |        4 | True   |
-| ECDSA-P256 | osnma     | full       |           72 |            nan |           0.3462  |        6 | True   |
-| ECDSA-P256 | osnma     | sig_cert   |          209 |            nan |           1.005   |       17 | False  |
-| ECDSA-P256 | osnma     | fragmented |           72 |            nan |           0.3462  |        6 | True   |
-| ECDSA-P256 | osnma     | chain      |           32 |             92 |           0.1538  |        8 | True   |
-| ECDSA-P256 | sib1      | full       |           72 |            nan |           0.1935  |        1 | True   |
-| ECDSA-P256 | sib1      | sig_cert   |          209 |            nan |           0.5618  |        1 | True   |
-| ECDSA-P256 | sib1      | fragmented |           72 |            nan |           0.1935  |        1 | True   |
-| ECDSA-P256 | sib1      | chain      |           32 |             92 |           0.08602 |        1 | True   |
-| ECDSA-P256 | dns       | full       |           72 |            nan |           0.05844 |        1 | True   |
-| ECDSA-P256 | dns       | sig_cert   |          209 |            nan |           0.1696  |        1 | True   |
-| ECDSA-P256 | dns       | fragmented |           72 |            nan |           0.05844 |        1 | True   |
-| ECDSA-P256 | dns       | chain      |           32 |             92 |           0.02597 |        1 | True   |
+Full per-(scheme, mode, profile) table: `raw/scoring.csv` (not repeated here). Compact view over PQ schemes (all rows if no PQ present):
+
+Cells are fitting schemes / schemes in the family.
+
+| group         | mode       | cv2x   | dns   | osnma   | remote_id   | sib1   |
+|:--------------|:-----------|:-------|:------|:--------|:------------|:-------|
+| CROSS         | chain      | 0/18   | 0/18  | 0/18    | 0/18        | 0/18   |
+| CROSS         | fragmented | 0/18   | 0/18  | 0/18    | 0/18        | 0/18   |
+| CROSS         | full       | 0/18   | 0/18  | 0/18    | 0/18        | 0/18   |
+| CROSS         | hybrid     | 0/18   | 0/18  | 0/18    | 0/18        | 0/18   |
+| CROSS         | sig_cert   | 0/18   | 0/18  | 0/18    | 0/18        | 0/18   |
+| Falcon/FN-DSA | chain      | 0/4    | 2/4   | 0/4     | 0/4         | 0/4    |
+| Falcon/FN-DSA | fragmented | 0/4    | 2/4   | 0/4     | 0/4         | 0/4    |
+| Falcon/FN-DSA | full       | 0/4    | 2/4   | 0/4     | 0/4         | 0/4    |
+| Falcon/FN-DSA | hybrid     | 0/4    | 2/4   | 0/4     | 0/4         | 0/4    |
+| Falcon/FN-DSA | sig_cert   | 0/4    | 0/4   | 0/4     | 0/4         | 0/4    |
+| MAYO          | chain      | 1/4    | 4/4   | 1/4     | 1/4         | 1/4    |
+| MAYO          | fragmented | 1/4    | 4/4   | 1/4     | 1/4         | 1/4    |
+| MAYO          | full       | 1/4    | 4/4   | 1/4     | 1/4         | 1/4    |
+| MAYO          | hybrid     | 1/4    | 4/4   | 0/4     | 1/4         | 1/4    |
+| MAYO          | sig_cert   | 0/4    | 0/4   | 0/4     | 0/4         | 0/4    |
+| ML-DSA        | chain      | 0/3    | 0/3   | 0/3     | 0/3         | 0/3    |
+| ML-DSA        | fragmented | 0/3    | 0/3   | 0/3     | 0/3         | 0/3    |
+| ML-DSA        | full       | 0/3    | 0/3   | 0/3     | 0/3         | 0/3    |
+| ML-DSA        | hybrid     | 0/3    | 0/3   | 0/3     | 0/3         | 0/3    |
+| ML-DSA        | sig_cert   | 0/3    | 0/3   | 0/3     | 0/3         | 0/3    |
+| MQOM          | chain      | 0/12   | 0/12  | 0/12    | 0/12        | 0/12   |
+| MQOM          | fragmented | 0/12   | 0/12  | 0/12    | 0/12        | 0/12   |
+| MQOM          | full       | 0/12   | 0/12  | 0/12    | 0/12        | 0/12   |
+| MQOM          | hybrid     | 0/12   | 0/12  | 0/12    | 0/12        | 0/12   |
+| MQOM          | sig_cert   | 0/12   | 0/12  | 0/12    | 0/12        | 0/12   |
+| SLH-DSA       | chain      | 0/156  | 0/156 | 0/156   | 0/156       | 0/156  |
+| SLH-DSA       | fragmented | 0/156  | 0/156 | 0/156   | 0/156       | 0/156  |
+| SLH-DSA       | full       | 0/156  | 0/156 | 0/156   | 0/156       | 0/156  |
+| SLH-DSA       | hybrid     | 0/156  | 0/156 | 0/156   | 0/156       | 0/156  |
+| SLH-DSA       | sig_cert   | 0/156  | 0/156 | 0/156   | 0/156       | 0/156  |
+| SNOVA         | chain      | 10/12  | 12/12 | 3/12    | 3/12        | 8/12   |
+| SNOVA         | fragmented | 10/12  | 12/12 | 3/12    | 7/12        | 8/12   |
+| SNOVA         | full       | 10/12  | 12/12 | 3/12    | 7/12        | 8/12   |
+| SNOVA         | hybrid     | 8/12   | 12/12 | 1/12    | 3/12        | 8/12   |
+| SNOVA         | sig_cert   | 0/12   | 0/12  | 0/12    | 0/12        | 0/12   |
+| UOV           | chain      | 12/12  | 12/12 | 6/12    | 9/12        | 12/12  |
+| UOV           | fragmented | 12/12  | 12/12 | 9/12    | 9/12        | 12/12  |
+| UOV           | full       | 12/12  | 12/12 | 9/12    | 9/12        | 12/12  |
+| UOV           | hybrid     | 12/12  | 12/12 | 6/12    | 6/12        | 12/12  |
+| UOV           | sig_cert   | 0/12   | 0/12  | 0/12    | 0/12        | 0/12   |
+
+Schemes whose full signature fits each profile (`fits` in `raw/scoring.csv`):
+
+- cv2x (SLH-DSA: 0 parameter sets fit): MAYO-2, OV-Is, OV-Ip, OV-III, OV-V, OV-Is-pkc, OV-Ip-pkc, OV-III-pkc, OV-V-pkc, OV-Is-pkc-skc, OV-Ip-pkc-skc, OV-III-pkc-skc, OV-V-pkc-skc, SNOVA_24_5_4, SNOVA_24_5_4_SHAKE, SNOVA_24_5_4_esk, SNOVA_24_5_4_SHAKE_esk, SNOVA_37_17_2, SNOVA_25_8_3, SNOVA_56_25_2, SNOVA_49_11_3, SNOVA_37_8_4, SNOVA_24_5_5
+- dns (SLH-DSA: 0 parameter sets fit): Falcon-512, Falcon-padded-512, MAYO-1, MAYO-2, MAYO-3, MAYO-5, OV-Is, OV-Ip, OV-III, OV-V, OV-Is-pkc, OV-Ip-pkc, OV-III-pkc, OV-V-pkc, OV-Is-pkc-skc, OV-Ip-pkc-skc, OV-III-pkc-skc, OV-V-pkc-skc, SNOVA_24_5_4, SNOVA_24_5_4_SHAKE, SNOVA_24_5_4_esk, SNOVA_24_5_4_SHAKE_esk, SNOVA_37_17_2, SNOVA_25_8_3, SNOVA_56_25_2, SNOVA_49_11_3, SNOVA_37_8_4, SNOVA_24_5_5, SNOVA_60_10_4, SNOVA_29_6_5
+- osnma (SLH-DSA: 0 parameter sets fit): MAYO-2, OV-Is, OV-Ip, OV-III, OV-Is-pkc, OV-Ip-pkc, OV-III-pkc, OV-Is-pkc-skc, OV-Ip-pkc-skc, OV-III-pkc-skc, SNOVA_37_17_2, SNOVA_25_8_3, SNOVA_56_25_2
+- remote_id (SLH-DSA: 0 parameter sets fit): MAYO-2, OV-Is, OV-Ip, OV-III, OV-Is-pkc, OV-Ip-pkc, OV-III-pkc, OV-Is-pkc-skc, OV-Ip-pkc-skc, OV-III-pkc-skc, SNOVA_24_5_4, SNOVA_24_5_4_SHAKE, SNOVA_24_5_4_esk, SNOVA_24_5_4_SHAKE_esk, SNOVA_37_17_2, SNOVA_25_8_3, SNOVA_56_25_2
+- sib1 (SLH-DSA: 0 parameter sets fit): MAYO-2, OV-Is, OV-Ip, OV-III, OV-V, OV-Is-pkc, OV-Ip-pkc, OV-III-pkc, OV-V-pkc, OV-Is-pkc-skc, OV-Ip-pkc-skc, OV-III-pkc-skc, OV-V-pkc-skc, SNOVA_24_5_4, SNOVA_24_5_4_SHAKE, SNOVA_24_5_4_esk, SNOVA_24_5_4_SHAKE_esk, SNOVA_37_17_2, SNOVA_25_8_3, SNOVA_56_25_2, SNOVA_49_11_3
 
 Figure: `fig_q1_share.pdf` (source `raw/scoring.csv`).
 
-**Verdict Q1: inconclusive (pending). Only classical rows can be scored; the question concerns PQ schemes.**
+**Verdict Q1: answered by the tables (supported as a descriptive question). Full signature fits in 104/1105 (scheme, profile) pairs; the PQ-anchored chain fits in 97/1105; sig+cert fits in 0/1105. Fragmented 'fits' means total bytes only; see frames column for the multi-frame cost.**
 
 ## Q2: PQ-anchored chain vs fragmented signatures at 0-30% loss
 
 Source: `results/raw/lossmodel.csv`. Seeded i.i.d. loss; 20 seeds x 5000 messages per cell; mean and std across seeds.
-Cited parameters: k=13 (FN-DSA) / 34 (ML-DSA) fragments, 324 B anchor (darzi2026a); signature 666 B / 2420 B (junquera2023assessment, Falcon-512 / Dilithium2 as in that note; NOT liboqs-measured). Assumed, not cited: r=2 carousel cycles, key delay d=2 slots, epoch 20 slots, 2 anchors/epoch, 16 B disclosed key, slot 160 ms (SIB1 period), deadline = r*k slots. Model: see `lib/pqsig/lossmodel.py` docstring. Results are sensitive to these assumptions.
+Parameters: k=13 (FN-DSA) / 34 (ML-DSA) fragments, 324 B anchor (darzi2026a); signature 666 B / 2420 B (junquera2023assessment, Falcon-512 / Dilithium2 as in that note; cited; scenarios cited13/cited34; scenarios oqs13/oqs34 use the liboqs-measured sig_bytes_max of Falcon-512 / ML-DSA-44 and an anchor of measured MAYO-1 signature + 16 + 4 B, with k still taken from darzi2026a, not recomputed). Assumed, not cited: r=2 carousel cycles, key delay d=2 slots, epoch 20 slots, 2 anchors/epoch, 16 B disclosed key, slot 160 ms (SIB1 period), deadline = r*k slots. Model: see `lib/pqsig/lossmodel.py` docstring. Results are sensitive to these assumptions.
 
 | scenario   | scheme     |   loss |   share_verified_mean |   share_verified_std |   bytes_per_verified_mean |   bytes_per_verified_std |   p95_ms_mean |   p95_ms_std |
 |:-----------|:-----------|-------:|----------------------:|---------------------:|--------------------------:|-------------------------:|--------------:|-------------:|
-| frag13     | chain      |   0    |               1       |             0        |                64.4       |                   0      |   480         |         0    |
-| frag13     | chain      |   0.05 |               0.9485  |             0.004197 |                67.9       |                   0.2999 |   640         |         0    |
-| frag13     | chain      |   0.1  |               0.8935  |             0.006511 |                72.08      |                   0.5262 |   688         |        75.23 |
-| frag13     | chain      |   0.15 |               0.8313  |             0.005906 |                77.47      |                   0.5484 |   832         |        65.66 |
-| frag13     | chain      |   0.2  |               0.7705  |             0.01142  |                83.59      |                   1.25   |   984         |       119.2  |
-| frag13     | chain      |   0.25 |               0.7053  |             0.01209  |                91.33      |                   1.564  |  1087         |        81.83 |
-| frag13     | chain      |   0.3  |               0.637   |             0.01561  |               101.2       |                   2.487  |  1168         |        74.62 |
-| frag13     | fragmented |   0    |               1       |             0        |              1332         |                   0      |  2080         |         0    |
-| frag13     | fragmented |   0.05 |               0.9685  |             0.002748 |              1375         |                   3.908  |  4054         |        75.98 |
-| frag13     | fragmented |   0.1  |               0.878   |             0.004386 |              1517         |                   7.576  |  4160         |         0    |
-| frag13     | fragmented |   0.15 |               0.7447  |             0.006655 |              1789         |                  15.94   |  4160         |         0    |
-| frag13     | fragmented |   0.2  |               0.5866  |             0.006874 |              2271         |                  26.62   |  4160         |         0    |
-| frag13     | fragmented |   0.25 |               0.434   |             0.008301 |              3070         |                  60.13   |  4160         |         0    |
-| frag13     | fragmented |   0.3  |               0.2932  |             0.005529 |              4545         |                  86.13   |  4160         |         0    |
-| frag34     | chain      |   0    |               1       |             0        |                64.4       |                   0      |   480         |         0    |
-| frag34     | chain      |   0.05 |               0.9482  |             0.003634 |                67.92      |                   0.2609 |   640         |         0    |
-| frag34     | chain      |   0.1  |               0.8907  |             0.007933 |                72.31      |                   0.6477 |   656         |        49.25 |
-| frag34     | chain      |   0.15 |               0.8324  |             0.009625 |                77.38      |                   0.9004 |   832         |        65.66 |
-| frag34     | chain      |   0.2  |               0.7663  |             0.01145  |                84.05      |                   1.264  |   974         |       112.6  |
-| frag34     | chain      |   0.25 |               0.7037  |             0.01084  |                91.54      |                   1.404  |  1080         |        88.02 |
-| frag34     | chain      |   0.3  |               0.6344  |             0.01     |               101.5       |                   1.612  |  1171         |        74.43 |
-| frag34     | fragmented |   0    |               1       |             0        |              4840         |                   0      |  5440         |         0    |
-| frag34     | fragmented |   0.05 |               0.9198  |             0.00276  |              5262         |                  15.78   |     1.077e+04 |        74.77 |
-| frag34     | fragmented |   0.1  |               0.7117  |             0.005965 |              6801         |                  56.65   |     1.088e+04 |         0    |
-| frag34     | fragmented |   0.15 |               0.46    |             0.007244 |                 1.052e+04 |                 165.9    |     1.088e+04 |         0    |
-| frag34     | fragmented |   0.2  |               0.25    |             0.006403 |                 1.937e+04 |                 502.2    |     1.088e+04 |         0    |
-| frag34     | fragmented |   0.25 |               0.1135  |             0.005057 |                 4.271e+04 |                1976      |     1.088e+04 |         0    |
-| frag34     | fragmented |   0.3  |               0.04019 |             0.002513 |                 1.209e+05 |                7825      |     1.088e+04 |         0    |
+| cited13    | chain      |   0    |               1       |             0        |                64.4       |                   0      |   480         |         0    |
+| cited13    | chain      |   0.05 |               0.9485  |             0.004197 |                67.9       |                   0.2999 |   640         |         0    |
+| cited13    | chain      |   0.1  |               0.8935  |             0.006511 |                72.08      |                   0.5262 |   688         |        75.23 |
+| cited13    | chain      |   0.15 |               0.8313  |             0.005906 |                77.47      |                   0.5484 |   832         |        65.66 |
+| cited13    | chain      |   0.2  |               0.7705  |             0.01142  |                83.59      |                   1.25   |   984         |       119.2  |
+| cited13    | chain      |   0.25 |               0.7053  |             0.01209  |                91.33      |                   1.564  |  1087         |        81.83 |
+| cited13    | chain      |   0.3  |               0.637   |             0.01561  |               101.2       |                   2.487  |  1168         |        74.62 |
+| cited13    | fragmented |   0    |               1       |             0        |              1332         |                   0      |  2080         |         0    |
+| cited13    | fragmented |   0.05 |               0.9685  |             0.002748 |              1375         |                   3.908  |  4054         |        75.98 |
+| cited13    | fragmented |   0.1  |               0.878   |             0.004386 |              1517         |                   7.576  |  4160         |         0    |
+| cited13    | fragmented |   0.15 |               0.7447  |             0.006655 |              1789         |                  15.94   |  4160         |         0    |
+| cited13    | fragmented |   0.2  |               0.5866  |             0.006874 |              2271         |                  26.62   |  4160         |         0    |
+| cited13    | fragmented |   0.25 |               0.434   |             0.008301 |              3070         |                  60.13   |  4160         |         0    |
+| cited13    | fragmented |   0.3  |               0.2932  |             0.005529 |              4545         |                  86.13   |  4160         |         0    |
+| cited34    | chain      |   0    |               1       |             0        |                64.4       |                   0      |   480         |         0    |
+| cited34    | chain      |   0.05 |               0.9482  |             0.003634 |                67.92      |                   0.2609 |   640         |         0    |
+| cited34    | chain      |   0.1  |               0.8907  |             0.007933 |                72.31      |                   0.6477 |   656         |        49.25 |
+| cited34    | chain      |   0.15 |               0.8324  |             0.009625 |                77.38      |                   0.9004 |   832         |        65.66 |
+| cited34    | chain      |   0.2  |               0.7663  |             0.01145  |                84.05      |                   1.264  |   974         |       112.6  |
+| cited34    | chain      |   0.25 |               0.7037  |             0.01084  |                91.54      |                   1.404  |  1080         |        88.02 |
+| cited34    | chain      |   0.3  |               0.6344  |             0.01     |               101.5       |                   1.612  |  1171         |        74.43 |
+| cited34    | fragmented |   0    |               1       |             0        |              4840         |                   0      |  5440         |         0    |
+| cited34    | fragmented |   0.05 |               0.9198  |             0.00276  |              5262         |                  15.78   |     1.077e+04 |        74.77 |
+| cited34    | fragmented |   0.1  |               0.7117  |             0.005965 |              6801         |                  56.65   |     1.088e+04 |         0    |
+| cited34    | fragmented |   0.15 |               0.46    |             0.007244 |                 1.052e+04 |                 165.9    |     1.088e+04 |         0    |
+| cited34    | fragmented |   0.2  |               0.25    |             0.006403 |                 1.937e+04 |                 502.2    |     1.088e+04 |         0    |
+| cited34    | fragmented |   0.25 |               0.1135  |             0.005057 |                 4.271e+04 |                1976      |     1.088e+04 |         0    |
+| cited34    | fragmented |   0.3  |               0.04019 |             0.002513 |                 1.209e+05 |                7825      |     1.088e+04 |         0    |
+| oqs13      | chain      |   0    |               1       |             0        |                79.4       |                   0      |   480         |         0    |
+| oqs13      | chain      |   0.05 |               0.9485  |             0.004197 |                83.71      |                   0.3698 |   640         |         0    |
+| oqs13      | chain      |   0.1  |               0.8935  |             0.006511 |                88.86      |                   0.6488 |   688         |        75.23 |
+| oqs13      | chain      |   0.15 |               0.8313  |             0.005906 |                95.52      |                   0.6761 |   832         |        65.66 |
+| oqs13      | chain      |   0.2  |               0.7705  |             0.01142  |               103.1       |                   1.541  |   984         |       119.2  |
+| oqs13      | chain      |   0.25 |               0.7053  |             0.01209  |               112.6       |                   1.928  |  1087         |        81.83 |
+| oqs13      | chain      |   0.3  |               0.637   |             0.01561  |               124.7       |                   3.066  |  1168         |        74.62 |
+| oqs13      | fragmented |   0    |               1       |             0        |              1326         |                   0      |  2080         |         0    |
+| oqs13      | fragmented |   0.05 |               0.9685  |             0.002748 |              1369         |                   3.89   |  4054         |        75.98 |
+| oqs13      | fragmented |   0.1  |               0.878   |             0.004386 |              1510         |                   7.542  |  4160         |         0    |
+| oqs13      | fragmented |   0.15 |               0.7447  |             0.006655 |              1781         |                  15.86   |  4160         |         0    |
+| oqs13      | fragmented |   0.2  |               0.5866  |             0.006874 |              2261         |                  26.5    |  4160         |         0    |
+| oqs13      | fragmented |   0.25 |               0.434   |             0.008301 |              3057         |                  59.86   |  4160         |         0    |
+| oqs13      | fragmented |   0.3  |               0.2932  |             0.005529 |              4524         |                  85.74   |  4160         |         0    |
+| oqs34      | chain      |   0    |               1       |             0        |                79.4       |                   0      |   480         |         0    |
+| oqs34      | chain      |   0.05 |               0.9482  |             0.003634 |                83.74      |                   0.3217 |   640         |         0    |
+| oqs34      | chain      |   0.1  |               0.8907  |             0.007933 |                89.15      |                   0.7986 |   656         |        49.25 |
+| oqs34      | chain      |   0.15 |               0.8324  |             0.009625 |                95.4       |                   1.11   |   832         |        65.66 |
+| oqs34      | chain      |   0.2  |               0.7663  |             0.01145  |               103.6       |                   1.559  |   974         |       112.6  |
+| oqs34      | chain      |   0.25 |               0.7037  |             0.01084  |               112.9       |                   1.731  |  1080         |        88.02 |
+| oqs34      | chain      |   0.3  |               0.6344  |             0.01     |               125.2       |                   1.987  |  1171         |        74.43 |
+| oqs34      | fragmented |   0    |               1       |             0        |              4840         |                   0      |  5440         |         0    |
+| oqs34      | fragmented |   0.05 |               0.9198  |             0.00276  |              5262         |                  15.78   |     1.077e+04 |        74.77 |
+| oqs34      | fragmented |   0.1  |               0.7117  |             0.005965 |              6801         |                  56.65   |     1.088e+04 |         0    |
+| oqs34      | fragmented |   0.15 |               0.46    |             0.007244 |                 1.052e+04 |                 165.9    |     1.088e+04 |         0    |
+| oqs34      | fragmented |   0.2  |               0.25    |             0.006403 |                 1.937e+04 |                 502.2    |     1.088e+04 |         0    |
+| oqs34      | fragmented |   0.25 |               0.1135  |             0.005057 |                 4.271e+04 |                1976      |     1.088e+04 |         0    |
+| oqs34      | fragmented |   0.3  |               0.04019 |             0.002513 |                 1.209e+05 |                7825      |     1.088e+04 |         0    |
 
 Figure: `fig_q2_loss.pdf` (source `raw/lossmodel.csv`).
 
@@ -142,26 +278,61 @@ Cells where chain is better by more than 2 std (loss > 0, both scenarios):
 
 | metric             |   chain_better_cells |   cells |
 |:-------------------|---------------------:|--------:|
-| share_verified     |                   11 |      12 |
-| bytes_per_verified |                   12 |      12 |
-| p95_ms             |                   12 |      12 |
+| share_verified     |                   22 |      24 |
+| bytes_per_verified |                   24 |      24 |
+| p95_ms             |                   24 |      24 |
 
-**Verdict Q2: inconclusive (mixed) under these smoke assumptions (share_verified: 11/12; bytes_per_verified: 12/12; p95_ms: 12/12 cells where chain is better by >2 std); chain is not better on every metric at every loss level; PQ sizes are cited, not liboqs-measured.** p95 time is taken over verified messages only and is capped by the deadline, so a low verified share flatters the fragmented p95. The darzi2026a 10% point (~41 B vs ~1971 B retransmission overhead) uses a retransmission accounting that this carousel model does not reproduce; TODO-RESULT.
+**Verdict Q2: inconclusive (mixed) under these smoke assumptions (share_verified: 22/24; bytes_per_verified: 24/24; p95_ms: 24/24 cells where chain is better by >2 std); chain is not better on every metric at every loss level. Counts span cited and liboqs-size scenarios.** p95 time is taken over verified messages only and is capped by the deadline, so a low verified share flatters the fragmented p95. The darzi2026a 10% point (~41 B vs ~1971 B retransmission overhead) uses a retransmission accounting that this carousel model does not reproduce; TODO-RESULT.
+
+### Q2 parameter sweep
+
+Source: `results/raw/lossmodel_sweep.csv` (one-at-a-time r, d, E, a around the baseline; loss 5/10/30%; chain-vs-fragmented compared per scenario/sweep value/loss over seeds).
+
+| scenario   | sweep_var   |   chain_better_share_sum |   chain_better_share_count |   chain_better_bytes_sum |   chain_better_bytes_count |   chain_better_p95_sum |   chain_better_p95_count |
+|:-----------|:------------|-------------------------:|---------------------------:|-------------------------:|---------------------------:|-----------------------:|-------------------------:|
+| cited13    | E           |                        6 |                          9 |                        9 |                          9 |                      9 |                        9 |
+| cited13    | a           |                        5 |                          9 |                        9 |                          9 |                      9 |                        9 |
+| cited13    | d           |                        6 |                          9 |                        9 |                          9 |                      9 |                        9 |
+| cited13    | r           |                        5 |                          9 |                        9 |                          9 |                      9 |                        9 |
+| cited34    | E           |                        9 |                          9 |                        9 |                          9 |                      9 |                        9 |
+| cited34    | a           |                        8 |                          9 |                        9 |                          9 |                      9 |                        9 |
+| cited34    | d           |                        9 |                          9 |                        9 |                          9 |                      9 |                        9 |
+| cited34    | r           |                        7 |                          9 |                        8 |                          9 |                      8 |                        9 |
+| oqs13      | E           |                        6 |                          9 |                        9 |                          9 |                      9 |                        9 |
+| oqs13      | a           |                        5 |                          9 |                        9 |                          9 |                      9 |                        9 |
+| oqs13      | d           |                        6 |                          9 |                        9 |                          9 |                      9 |                        9 |
+| oqs13      | r           |                        5 |                          9 |                        9 |                          9 |                      9 |                        9 |
+| oqs34      | E           |                        9 |                          9 |                        9 |                          9 |                      9 |                        9 |
+| oqs34      | a           |                        8 |                          9 |                        9 |                          9 |                      9 |                        9 |
+| oqs34      | d           |                        9 |                          9 |                        9 |                          9 |                      9 |                        9 |
+| oqs34      | r           |                        7 |                          9 |                        8 |                          9 |                      8 |                        9 |
+
+Sweep cells: 144; chain better on share/bytes/p95 in 110, 142, 142 cells respectively.
 
 ## Q3: size or timing tail binding (deadline miss from sign/verify tails)
 
 Source: `results/raw/*timing*.csv` columns `*_frac_gt3ms`, `*_frac_gt100ms` (fraction of iterations over 3 ms / 100 ms), x86 only; MCU figures are cited from chhetri2026benchmarking, not measured.
 
-| scheme     | family    |   sign_p99_us |   verify_p99_us |   sign_frac_gt3ms |   verify_frac_gt3ms |   sign_frac_gt100ms |   verify_frac_gt100ms |
-|:-----------|:----------|--------------:|----------------:|------------------:|--------------------:|--------------------:|----------------------:|
-| Ed25519    | classical |         51.92 |           159.2 |            0      |              0      |                   0 |                     0 |
-| ECDSA-P256 | classical |         40.47 |           104.3 |            0.0005 |              0.0005 |                   0 |                     0 |
+Per family: fraction of (scheme, profile) pairs where the full signature does not fit, vs fraction of schemes whose sign or verify tail exceeds the deadline (x86 liboqs; p99 where n >= 1000, median otherwise). Per-iteration fractions over each deadline are the `*_frac_gt*` columns in the timing CSV.
 
-**Verdict Q3: inconclusive (pending). Needs PQ rows (liboqs); classical rows alone cannot answer it.**
+| group         |   schemes | tail_basis                         |   full_sig_misfit_frac |   over_3ms_frac |   over_100ms_frac |
+|:--------------|----------:|:-----------------------------------|-----------------------:|----------------:|------------------:|
+| CROSS         |        18 | median (n<100, tail not estimable) |                 1      |          0.1111 |            0      |
+| Falcon/FN-DSA |         4 | p99                                |                 0.9    |          0      |            0      |
+| MAYO          |         4 | p99                                |                 0.6    |          0      |            0      |
+| ML-DSA        |         3 | p99                                |                 1      |          0      |            0      |
+| MQOM          |        12 | median (n<100, tail not estimable) |                 1      |          0.5    |            0      |
+| SLH-DSA       |       156 | median (n<100, tail not estimable) |                 1      |          1      |            0.5577 |
+| SNOVA         |        12 | p99                                |                 0.3333 |          0.1667 |            0      |
+| UOV           |        12 | p99                                |                 0.1    |          0.1667 |            0      |
+
+Figure: `fig_q3_size_vs_tail.pdf` (source `raw/*timing*.csv`, `raw/scoring.csv`).
+
+**Verdict Q3: size binding (supported; no family is timing-bound, ties count as not distinguishing). Size is the larger bound in 6/8 families and timing in 0/8 (both deadlines). x86 only; MCU timing not measured, so this does not cover constrained devices. Tails are from <= 1000 iterations on a shared cloud VM.**
 
 ## Runs still needed (on the user's machines, `experiments/run.sh`)
 
-- Part A with liboqs at the pinned tag, all enabled signature schemes, 10000 iterations, on every target machine (set `MACHINE_NAME`).
-- Part B re-score on those sizes (`score.py` is run by `run.sh`); includes MAYO/UOV/SNOVA/CROSS if the liboqs build enables them (`-DOQS_ENABLE_SIG_STFL_*`/alg flags in `run.sh`).
-- Part C re-run with liboqs sizes substituted for the cited 666/2420 B, plus sensitivity sweep of r, d, E, a.
+- Part A on every target machine: `MACHINE_NAME=<name> ITER=10000 ITER_SLOW=200 ./run.sh` (cloud-smoke used 1000 iterations, and 20 for SLH-DSA/CROSS/MQOM, so their tails are not estimable). Stateful LMS/XMSS are not benchmarked (stateful API, not in oqs_bench.c).
+- Part B re-score on those sizes (`score.py` is run by `run.sh`); includes MAYO/UOV/SNOVA/CROSS if the liboqs build enables them (enabled by the cmake flags in `run.sh`; liboqs 0.16.0 builds all of them).
+- Part C (liboqs sizes and sweep done on cloud-smoke); re-run via run.sh on target machines. Still open: k recomputed from the actual fragment payload of each profile; correlated (burst) loss; darzi2026a retransmission accounting.
 - Baselines pending: darzi2026a 34/13 fragments and 324 B; junquera2023assessment 67/71 blocks (full text check); chen2025hybrid size tables vs liboqs; yoshizawa2026a (Bulletproofs); goertzen2022post.

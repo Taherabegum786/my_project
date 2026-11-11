@@ -70,6 +70,14 @@ static int bench(const char *alg, size_t n, const char *mach, const char *date, 
 }
 int main(int argc, char **argv) {
     if (argc >= 2 && !strcmp(argv[1], "--header")) { header(); return 0; }
+    if (argc >= 2 && !strcmp(argv[1], "--list")) {
+        OQS_init();
+        for (size_t i = 0; i < OQS_SIG_algs_length; i++) {
+            const char *a = OQS_SIG_alg_identifier(i);
+            if (OQS_SIG_alg_is_enabled(a)) printf("%s\n", a);
+        }
+        return 0;
+    }
     if (argc < 5) { fprintf(stderr, "usage: %s ITER MACHINE DATE COMMIT [alg...]\n", argv[0]); return 2; }
     size_t n = strtoul(argv[1], 0, 10);
     OQS_init();
