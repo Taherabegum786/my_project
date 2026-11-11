@@ -1,0 +1,8 @@
+# DRIP Entity Tag (DET) Authentication Formats and Protocols for Broadcast Remote Identification (RID) (IETF RFC 9575, 2024)
+url: https://www.rfc-editor.org/info/rfc9575 (doi 10.17487/RFC9575)
+read: full
+problem: ASTM F3411 Remote ID broadcasts leave authentication mostly unspecified; observers need to verify UA identity offline over tiny broadcast frames.
+method: Defines DRIP Authentication Messages carried in F3411 Authentication frames: UA self-endorsement (UA signature), Broadcast Endorsement (parent signs child DET/HI), Message Set Signature / wrapper, manifest hashes, and FEC for lossy links. Signature algorithm is set by the HHIT Suite ID of the DET; the ORCHID Generation Algorithm "5" is EdDSA/cSHAKE128, "2" is ECDSA/SHA-384 (hash example given).
+numbers: Bluetooth 4.x: 25 octets payload per frame. Authentication payload: 23 octets per page; Authentication header: 6 octets. Authentication Data/Signature field: 0 to 255 octets (ADL = min(361 - Auth Data length, 255)). SAM Authentication Data: 0 to 200 octets. Timestamps VNB/VNA: 4 octets each. DET: 16 octets. UA Signature: 64 octets. Evidence: 0 to 112 octets (111 usable for Frame Evidence Data). Broadcast Endorsement: HI of Child 32 octets, Signature by Parent 64 octets. Manifest hashes: 8 octets each. Hash: cSHAKE128 truncated to 64 bits (8 octets). Extended transports use Message Pack of 25-octet messages.
+limits: Classical signatures only (64-octet EdDSA fits; no post-quantum scheme specified); depends on Bluetooth 4 size limits, FEC and multi-page assembly; trust relies on registry/DRIP infrastructure.
+use-for: drones, framework
