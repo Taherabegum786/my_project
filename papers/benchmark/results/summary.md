@@ -35,7 +35,7 @@ liboqs rows present in `raw/*timing*.csv` (tag and scheme list in `experiments/E
 
 Source: `results/raw/classical_timing_cloud-smoke.csv`, `results/raw/oqs_timing_cloud-smoke.csv`
 
-All schemes except the 168 SLH-DSA parameter sets (identical columns for those are in the CSV; aggregated below). **Rows with iterations < 100 (slow schemes: CROSS, MQOM, SLH-DSA) have p95/p99 = near-maximum of very few samples; they are not tail estimates.**
+221 liboqs (PQ) parameter sets plus 2 classical rows. All rows except the 156 SLH-DSA parameter sets are listed below (the SLH-DSA rows are in the CSV and aggregated below). **Rows with iterations < 100 (slow schemes: CROSS, MQOM, SLH-DSA) have p95/p99 = near-maximum of very few samples; they are not tail estimates.**
 
 | scheme                   | family    | backend             |   iterations |   pk_bytes |   sig_bytes_max |   sign_mean_us |   sign_median_us |   sign_p95_us |   sign_p99_us |   verify_mean_us |   verify_median_us |   verify_p95_us |   verify_p99_us |   keygen_mean_us |
 |:-------------------------|:----------|:--------------------|-------------:|-----------:|----------------:|---------------:|-----------------:|--------------:|--------------:|-----------------:|-------------------:|----------------:|----------------:|-----------------:|
@@ -148,6 +148,10 @@ Modes (formulas, also printed in summary.md):
   hybrid       auth = sig_c + sig_pq  (concatenated, both verified)
 share_of_budget = auth / budget. frames = ceil(auth / frame_payload).
 ```
+
+Hybrid partner: Ed25519 (64 B signature, taken from the `Ed25519` row of the sizes CSV by `score.py`); hybrid auth = 64 B + PQ signature, no public key or certificate counted.
+Chain parameters in Q1 scoring (`lib/pqsig/accounting.py` CHAIN_DEFAULTS): tag 16 B (darzi2026a), disclosed key 16 B, commitment 16 B, timestamp 4 B (last three assumed, not cited). Steady-state auth = 32 B per message; anchor = PQ signature + 20 B, sent once per epoch and required to fit in one budget for `fits`.
+Counts: 221 PQ schemes x 5 profiles = 1105 (scheme, profile) pairs per mode; hybrid rows exist for 1105 pairs; the scoring CSV also holds 40 classical rows, which are excluded from the pair totals below.
 
 Full per-(scheme, mode, profile) table: `raw/scoring.csv` (not repeated here). Compact view over PQ schemes (all rows if no PQ present):
 

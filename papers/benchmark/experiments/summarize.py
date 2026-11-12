@@ -57,7 +57,8 @@ if timing is not None:
     cols = ["scheme", "family", "backend", "iterations", "pk_bytes", "sig_bytes_max",
             "sign_mean_us", "sign_median_us", "sign_p95_us", "sign_p99_us", "verify_mean_us", "verify_median_us",
             "verify_p95_us", "verify_p99_us", "keygen_mean_us"]
-    w("All schemes except the 168 SLH-DSA parameter sets (identical columns for those are in the CSV; aggregated below). "
+    n_slh = int((timing.group == "SLH-DSA").sum()); n_pq = int((timing.family == "pq").sum())
+    w(f"{n_pq} liboqs (PQ) parameter sets plus {int((timing.family == 'classical').sum())} classical rows. All rows except the {n_slh} SLH-DSA parameter sets are listed below (the SLH-DSA rows are in the CSV and aggregated below). "
       "**Rows with iterations < 100 (slow schemes: CROSS, MQOM, SLH-DSA) have p95/p99 = near-maximum of very few samples; they are not tail estimates.**")
     w()
     w(md(timing[timing.group != "SLH-DSA"][cols])); w()
@@ -80,6 +81,16 @@ w("Frame header for fragmentation is TODO-RESULT for cv2x, sib1, dns (frames use
 w()
 w("Byte-accounting formulas (from `lib/pqsig/accounting.py`):")
 w(); w("```"); w(acc.__doc__.strip()); w("```"); w()
+if score is not None:
+    hy = score[(score["mode"] == "hybrid")].iloc[0]
+    hyb_partner = hy.auth_bytes - hy.sig_bytes
+    cd = acc.CHAIN_DEFAULTS
+    w(f"Hybrid partner: Ed25519 ({int(hyb_partner)} B signature, taken from the `Ed25519` row of the sizes CSV by `score.py`); hybrid auth = {int(hyb_partner)} B + PQ signature, no public key or certificate counted.")
+    w(f"Chain parameters in Q1 scoring (`lib/pqsig/accounting.py` CHAIN_DEFAULTS): tag {cd['tag']} B (darzi2026a), disclosed key {cd['key']} B, commitment {cd['commit']} B, timestamp {cd['ts']} B (last three assumed, not cited). "
+      f"Steady-state auth = {cd['tag']+cd['key']} B per message; anchor = PQ signature + {cd['commit']+cd['ts']} B, sent once per epoch and required to fit in one budget for `fits`.")
+    pqs = score[score.family == "pq"]
+    w(f"Counts: {pqs.scheme.nunique()} PQ schemes x {score.profile.nunique()} profiles = {int((pqs['mode']=='full').sum())} (scheme, profile) pairs per mode; hybrid rows exist for {int((pqs['mode']=='hybrid').sum())} pairs; the scoring CSV also holds {int((score.family=='classical').sum())} classical rows, which are excluded from the pair totals below.")
+    w()
 if score is not None:
     w("Full per-(scheme, mode, profile) table: `raw/scoring.csv` (not repeated here). Compact view over PQ schemes (all rows if no PQ present):")
     w()
