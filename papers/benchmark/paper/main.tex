@@ -6,7 +6,7 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{xcolor}
-\usepackage{url}
+\usepackage[hyphens]{url}
 
 \graphicspath{{../results/}}
 
@@ -73,9 +73,11 @@ OSNMA spreads authentication data over navigation message blocks
 \QTwoSlot\,ms \cite{darzi2026a}. In each case the receiver is passive, there is
 no handshake, and the channel imposes a fixed byte budget per message.
 Today these channels rely on classical signatures or on symmetric
-schemes. Replacing them with standardized post-quantum signatures
-\todo{cite: FIPS 204 / FIPS 205 / FN-DSA draft} is hard because PQ
-signatures and public keys are often an order of magnitude larger.
+schemes. Replacing them with post-quantum signatures, whether standardized
+(ML-DSA \cite{nist2024fips204}, SLH-DSA \cite{nist2024fips205}) or selected
+for standardization (Falcon, as FN-DSA \todo{cite: FN-DSA standard, none
+published yet}), is hard because PQ signatures and public keys are often
+an order of magnitude larger.
 
 Prior work answers the fit question one domain at a time: for C-V2X
 \cite{twardokus2024when,abrar2026deployment,chen2025hybrid}, OSNMA
@@ -133,7 +135,7 @@ dual-core Xtensa hardware; we have read only the abstract and do not rely
 on its numbers.
 
 \textbf{PQ-anchored and symmetric broadcast authentication.} TESLA-style
-delayed key disclosure \todo{cite: TESLA, Perrig et al.} authenticates
+delayed key disclosure \cite{perrig2005tesla} authenticates
 broadcasts with short MACs and one-way key chains, at the cost of loose
 time synchronization. TBRD \cite{veara2025tbrd} applies it to Remote ID.
 Darzi et al.\ \cite{darzi2026a} anchor a TESLA-style HMAC chain with one
@@ -221,10 +223,14 @@ size, both measured. The authentication bytes per message are:
   $n = \lceil s/(F-h)\rceil$ frames and header $h$.
 \item \emph{chain}: per message, a MAC tag plus a disclosed key; once per
   epoch, an anchor of $s$ plus a commitment and timestamp. The mode fits
-  if both the steady-state cost and the anchor fit $B$. Q1 chain
-  parameters: \ChainDefaultsQOne.
+  if both the steady-state cost and the anchor fit $B$. In Q1 the tag is
+  \ChainTag\,B \cite{darzi2026a}; the disclosed key (\ChainKey\,B),
+  commitment (\ChainCommit\,B) and timestamp (\ChainTs\,B) are our
+  assumptions. This gives \ChainSteady\,B per message and an anchor of
+  $s + \ChainAnchorExtra$\,B.
 \item \emph{hybrid}: $a = s_c + s$, with classical partner
-  \HybridPartner{} (both verified).
+  \HybridPartner{} ($s_c = \HybridPartnerSig$\,B; both verified; no
+  public key or certificate counted).
 \end{itemize}
 A mode fits a profile if $a \le B$; we also report $a/B$ and the number of
 frames $\lceil a/F \rceil$. For \emph{fragmented}, ``fits'' counts total
@@ -235,7 +241,7 @@ intended mode set but is not yet evaluated.
 \subsection{Measurement}
 
 Sizes and sign/verify/keygen times come from liboqs~\LibOQSVersion{}
-\todo{cite: liboqs / Open Quantum Safe} for all signature families it
+\cite{oqs2026liboqs} for all signature families it
 builds (ML-DSA, Falcon, SLH-DSA, MAYO, UOV, SNOVA, CROSS, MQOM), and from
 OpenSSL via python-cryptography for Ed25519 and ECDSA-P256. Classical
 timings include Python call overhead and are not comparable with the C
@@ -460,8 +466,8 @@ ML-DSA only}, which could make timing binding; we did not measure this.
   budget is derived; the 67/71 DSM-block figures of
   \cite{junquera2023assessment} are not reproduced (\JunqueraBlocksRepro),
   and our block arithmetic does not match them without the full text.
-  The hybrid partner (\HybridPartner) and the Q1 chain parameters
-  (\ChainDefaultsQOne) are not yet recorded in the result summary.
+  Three of the four Q1 chain parameters (key, commitment, timestamp
+  sizes) are assumed, not cited.
 \item \textbf{Baselines not reproduced.} The 34/13 SIB1 fragments and
   324\,B overhead of \cite{darzi2026a} (\DarziFragRepro) and its 10\%-loss
   point (\DarziTenRepro); the ZK compression of \cite{yoshizawa2026a}
@@ -473,9 +479,6 @@ ML-DSA only}, which could make timing binding; we did not measure this.
   synchronization attacks on the chain) is not analysed.
 \item \textbf{Related work.} Several related papers, including the
   closest competitor \cite{hyoung2026post}, were read as abstracts only.
-\item \textbf{Bookkeeping.} The result summary reports \NumSLHSetsNote{}
-  SLH-DSA parameter sets in one place and \NumSLHSets{} in the family
-  table \todo{check SLH-DSA set count}.
 \end{itemize}
 
 % ======================================================================

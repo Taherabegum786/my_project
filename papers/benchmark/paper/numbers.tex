@@ -39,17 +39,22 @@
 \newcommand{\HdrCV}{\missing}
 \newcommand{\HdrSIB}{\missing}
 \newcommand{\HdrDNS}{\missing}
-% Classical partner in hybrid mode ("chosen by the caller"): not stated in summary.md
-\newcommand{\HybridPartner}{\missing}
-% Chain parameters used in Q1 scoring (CHAIN_DEFAULTS): not printed in summary.md
-\newcommand{\ChainDefaultsQOne}{\missing}
+% summary.md Q1 "Hybrid partner": Ed25519, 64 B signature, no pk/cert counted
+\newcommand{\HybridPartner}{Ed25519}
+\newcommand{\HybridPartnerSig}{\SigEd}
+% summary.md Q1 "Chain parameters in Q1 scoring" (CHAIN_DEFAULTS)
+\newcommand{\ChainTag}{16}       % cited, darzi2026a
+\newcommand{\ChainKey}{16}       % assumed
+\newcommand{\ChainCommit}{16}    % assumed
+\newcommand{\ChainTs}{4}         % assumed
+\newcommand{\ChainSteady}{32}    % steady-state auth per message
+\newcommand{\ChainAnchorExtra}{20} % anchor = PQ signature + 20 B
 
 % ---------------------------------------------------------------- Part A
 % summary.md Part A table (results/raw/oqs_timing_cloud-smoke.csv,
 % results/raw/classical_timing_cloud-smoke.csv); sizes are pk_bytes, sig_bytes_max
 \newcommand{\NumPQSets}{221}            % sum of n_schemes over PQ families, family aggregate table
-\newcommand{\NumSLHSets}{156}           % family aggregate table, SLH-DSA n_schemes
-\newcommand{\NumSLHSetsNote}{168}       % Part A prose ("168 SLH-DSA parameter sets"); conflicts with 156
+\newcommand{\NumSLHSets}{156}           % Part A prose and family aggregate table
 \newcommand{\SigMLDSAfff}{2420}         % ML-DSA-44
 \newcommand{\PkMLDSAfff}{1312}
 \newcommand{\SigMLDSAeis}{4627}         % ML-DSA-87
