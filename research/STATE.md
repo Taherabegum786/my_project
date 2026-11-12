@@ -4,7 +4,7 @@ Updated by the orchestrator after every stage. One line per paper.
 
 | paper | survey | design | verify | experiments | write | review |
 |---|---|---|---|---|---|---|
-| benchmark | done | n/a | n/a | todo (redo after review) | done (draft 1) | round 1: reject |
+| benchmark | done | n/a | n/a | running (redo after review) | done (draft 1) | round 1: reject |
 | v2x | todo | todo | todo | todo | todo | todo |
 | drones | todo | todo | todo | todo | todo | todo |
 | grid | todo | todo | todo | todo | todo | todo |
@@ -25,10 +25,3 @@ Values: todo / running / awaiting-approval / done.
   `papers/benchmark/results/raw/`.
 - benchmark: open TODO-RESULT items are listed at the end of `papers/benchmark/results/summary.md`
   (fragment-header sizes, OSNMA block count, darzi2026a reproduction, loss-model parameters).
-- benchmark draft: 7 `\todo` items and 9 TODO-RESULT macros remain (see `papers/benchmark/paper/numbers.tex`
-  and `python3 tools/check_paper.py benchmark`). Needed from you: uncited standards (FIPS 204/205,
-  TESLA, liboqs) added to refs.bib via a reader pass, the hybrid partner and chain defaults confirmed,
-  and the SLH-DSA count mismatch (168 vs 156) in summary.md resolved.
-- benchmark review round 1 (`papers/benchmark/review.md`): reject for IEEE CNS; 2 integrity, 12 major,
-  15 minor. Most majors are method problems, so the next step is to redo experiments, not to
-  rewrite text. Decide: accept the proposed fix list and re-run experiments, and choose the venue tier.
