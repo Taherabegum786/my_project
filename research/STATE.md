@@ -4,7 +4,7 @@ Updated by the orchestrator after every stage. One line per paper.
 
 | paper | survey | design | verify | experiments | write | review |
 |---|---|---|---|---|---|---|
-| benchmark | done | n/a | n/a | awaiting-approval | running | todo |
+| benchmark | done | n/a | n/a | awaiting-approval | done | todo |
 | v2x | todo | todo | todo | todo | todo | todo |
 | drones | todo | todo | todo | todo | todo | todo |
 | grid | todo | todo | todo | todo | todo | todo |
@@ -25,3 +25,7 @@ Values: todo / running / awaiting-approval / done.
   `papers/benchmark/results/raw/`.
 - benchmark: open TODO-RESULT items are listed at the end of `papers/benchmark/results/summary.md`
   (fragment-header sizes, OSNMA block count, darzi2026a reproduction, loss-model parameters).
+- benchmark draft: 7 `\todo` items and 9 TODO-RESULT macros remain (see `papers/benchmark/paper/numbers.tex`
+  and `python3 tools/check_paper.py benchmark`). Needed from you: uncited standards (FIPS 204/205,
+  TESLA, liboqs) added to refs.bib via a reader pass, the hybrid partner and chain defaults confirmed,
+  and the SLH-DSA count mismatch (168 vs 156) in summary.md resolved.
