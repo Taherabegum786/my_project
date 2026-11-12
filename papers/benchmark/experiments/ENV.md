@@ -13,3 +13,7 @@ MAYO/UOV/SNOVA/CROSS availability depends on the liboqs tag; run.sh passes the e
 liboqs 0.16.0 (git commit 5a1a854b0dc9f2141bdc771c555ee60c37950183), built Release with MAYO/UOV/SNOVA/CROSS enabled; 221 signature algorithms enabled (ML-DSA, Falcon/FN-DSA, SLH-DSA, MAYO, UOV, SNOVA, CROSS, MQOM).
 gcc 13, cmake 3.28.3, ninja 1.11.1. Iterations: 1000 (fast schemes), 20 (SLH-DSA, CROSS, MQOM).
 Stateful LMS/XMSS are not benchmarked. Newest liboqs release tag found: 0.16.0 (git ls-remote); it builds.
+
+## Redo after review (cloud-smoke)
+Timings reused from the first run (not re-run). New: `oqs_bench --list-sizes` (declared OQS_SIG sizes, rebuilt against the same liboqs 0.16.0 build), scoring on declared lengths, closed-form loss analysis with simulation cross-check.
+Python deps as above; matplotlib 3.11.2, pandas 3.0.5, tabulate. run.sh was not executed end to end after the redo; its post-benchmark steps (make_sizes, score, run_loss, summarize) were run by hand.

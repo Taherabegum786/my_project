@@ -42,12 +42,9 @@ done
 CL="$RAW/classical_timing_${MACHINE_NAME}.csv"; rm -f "$CL"
 python3 "$ROOT/lib/pqsig/classical_bench.py" "$CL" "$ITER"
 
-# Part B: merge sizes, score. Part C: loss model. Then summary.
-python3 - "$OUT" "$CL" "$RAW/sizes_all.csv" <<'PY'
-import sys, pandas as pd
-pd.concat([pd.read_csv(sys.argv[1]), pd.read_csv(sys.argv[2])]).to_csv(sys.argv[3], index=False)
-PY
-python3 "$HERE/score.py" "$RAW/sizes_all.csv" "$HERE/profiles.yaml" "$RAW/scoring.csv"
-python3 "$HERE/run_lossmodel.py" "$RAW/lossmodel.csv" "$RAW/lossmodel_sweep.csv" "$RAW/sizes_all.csv" 20 5000
+# Part B: declared sizes (OQS_SIG length_*) + observed, then scoring on the declared length. Part C: closed forms + simulation.
+python3 "$HERE/make_sizes.py" "$WORK/oqs_bench" "$OUT" "$CL" "$RAW/sizes_declared.csv"
+python3 "$HERE/score.py" "$RAW/sizes_declared.csv" "$HERE/profiles.yaml" "$RAW/scoring_all_levels.csv"
+python3 "$HERE/run_loss.py" "$RAW/sizes_declared.csv" "$HERE/profiles.yaml" "$RAW" 20 4000
 python3 "$HERE/summarize.py"
 echo "done: $HERE/../results/summary.md"

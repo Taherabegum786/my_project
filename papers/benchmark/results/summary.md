@@ -4,339 +4,431 @@ Run tags (from CSV rows):
 
 | machine     | date                 | git_commit   |
 |:------------|:---------------------|:-------------|
-| cloud-smoke | 2026-11-11T03:26:11Z | 3cf20df      |
+| cloud-smoke | 2026-11-12T21:18:00Z | 6ca9403      |
 | cloud-smoke | 2026-11-11T02:57:42Z | 3cf20df      |
-| cloud-smoke | 2026-11-11T03:26:12Z | 3cf20df      |
-| cloud-smoke | 2026-11-11T03:26:13Z | 3cf20df      |
-| cloud-smoke | 2026-11-11T03:26:14Z | 3cf20df      |
-| cloud-smoke | 2026-11-11T03:26:15Z | 3cf20df      |
-| cloud-smoke | 2026-11-11T03:26:16Z | 3cf20df      |
-| cloud-smoke | 2026-11-11T03:26:17Z | 3cf20df      |
-| cloud-smoke | 2026-11-11T03:26:18Z | 3cf20df      |
-| cloud-smoke | 2026-11-11T03:26:19Z | 3cf20df      |
-| cloud-smoke | 2026-11-11T03:26:20Z | 3cf20df      |
-| cloud-smoke | 2026-11-11T03:26:21Z | 3cf20df      |
-| cloud-smoke | 2026-11-11T03:26:22Z | 3cf20df      |
-| cloud-smoke | 2026-11-11T03:26:23Z | 3cf20df      |
-| cloud-smoke | 2026-11-11T03:26:44Z | 3cf20df      |
-| cloud-smoke | 2026-11-11T03:26:45Z | 3cf20df      |
-| cloud-smoke | 2026-11-11T03:26:46Z | 3cf20df      |
-| cloud-smoke | 2026-11-11T03:26:47Z | 3cf20df      |
-| cloud-smoke | 2026-11-11T03:26:48Z | 3cf20df      |
-| cloud-smoke | 2026-11-11T03:26:49Z | 3cf20df      |
+| cloud-smoke | 2026-11-12T21:21:18Z | 6ca9403      |
+| cloud-smoke | 2026-11-12T21:21:19Z | 6ca9403      |
+| cloud-smoke | 2026-11-12T21:21:20Z | 6ca9403      |
+| cloud-smoke | 2026-11-12T21:21:21Z | 6ca9403      |
+| cloud-smoke | 2026-11-12T21:23:41Z | 6ca9403      |
 
 **All runs are smoke tests (`machine: cloud-smoke`). No publication numbers.**
 
-## Environment status
+## Scheme set and counting
 
-liboqs rows present in `raw/*timing*.csv` (tag and scheme list in `experiments/ENV.md` and the `backend` column).
+liboqs 0.16.0: 221 signature parameter sets enabled (footnote figure; many are API variants). They collapse to **64 distinct (family, NIST level, public-key size, signature size) classes**; all counts below are class counts. The main tables use the lowest claimed NIST level available in each family (24 classes); the other levels are in `results/appendix_all_levels.csv`. Representative of a class = shortest scheme name. Falcon padded variants have their own (smaller) declared signature size and are separate classes.
 
-## Part A: sign/verify/keygen timing and sizes
+| family        |   param_sets |   classes_all_levels | levels   |   lowest_level |   classes_lowest_level |
+|:--------------|-------------:|---------------------:|:---------|---------------:|-----------------------:|
+| CROSS         |           18 |                   18 | 1,3,5    |              1 |                      6 |
+| Falcon/FN-DSA |            4 |                    4 | 1,5      |              1 |                      2 |
+| MAYO          |            4 |                    4 | 1,3,5    |              1 |                      2 |
+| ML-DSA        |            3 |                    3 | 2,3,5    |              2 |                      1 |
+| MQOM          |           12 |                   12 | 1,3,5    |              1 |                      4 |
+| SLH-DSA       |          156 |                    6 | 1,3,5    |              1 |                      2 |
+| SNOVA         |           12 |                    9 | 1,3,5    |              1 |                      3 |
+| UOV           |           12 |                    8 | 1,3,5    |              1 |                      4 |
 
-Source: `results/raw/classical_timing_cloud-smoke.csv`, `results/raw/oqs_timing_cloud-smoke.csv`
+LMS/XMSS: `research/lit/notes/lms2019rfc8554.md` and `xmss2018rfc8391.md` do not exist. Stateful LMS/XMSS are therefore **pending** (size-only rows would be added from those notes; no timings).
 
-221 liboqs (PQ) parameter sets plus 2 classical rows. All rows except the 156 SLH-DSA parameter sets are listed below (the SLH-DSA rows are in the CSV and aggregated below). **Rows with iterations < 100 (slow schemes: CROSS, MQOM, SLH-DSA) have p95/p99 = near-maximum of very few samples; they are not tail estimates.**
+## Part A: sizes and timings
 
-| scheme                   | family    | backend             |   iterations |   pk_bytes |   sig_bytes_max |   sign_mean_us |   sign_median_us |   sign_p95_us |   sign_p99_us |   verify_mean_us |   verify_median_us |   verify_p95_us |   verify_p99_us |   keygen_mean_us |
-|:-------------------------|:----------|:--------------------|-------------:|-----------:|----------------:|---------------:|-----------------:|--------------:|--------------:|-----------------:|-------------------:|----------------:|----------------:|-----------------:|
-| Ed25519                  | classical | python-cryptography |         1000 |         32 |              64 |     25.76      |       24.64      |    30.46      |    40.59      |       83.47      |         81.02      |      95.17      |     113.2       |       26.25      |
-| ECDSA-P256               | classical | python-cryptography |         1000 |         65 |              72 |     27.87      |       24.62      |    31.42      |    44.14      |       86.69      |         81.46      |      99.24      |     133.3       |       15.7       |
-| ML-DSA-44                | pq        | liboqs-0.16.0       |         1000 |       1312 |            2420 |     71.73      |       56.57      |   162         |   253.3       |       22.96      |         21.1       |      28.46      |      46.53      |       22.13      |
-| ML-DSA-65                | pq        | liboqs-0.16.0       |         1000 |       1952 |            3309 |    111.7       |       88.12      |   259.3       |   374.5       |       36.17      |         34.28      |      45.88      |      67.56      |       40.5       |
-| ML-DSA-87                | pq        | liboqs-0.16.0       |         1000 |       2592 |            4627 |    116.3       |       97.22      |   228.3       |   355.6       |       50.43      |         48.1       |      63.2       |      78.2       |       51.7       |
-| Falcon-512               | pq        | liboqs-0.16.0       |         1000 |        897 |             663 |    200.3       |      196.6       |   224.6       |   250.3       |       41.69      |         40.28      |      51.42      |      57.9       |     6312         |
-| Falcon-1024              | pq        | liboqs-0.16.0       |         1000 |       1793 |            1280 |    450.4       |      437.2       |   543.3       |   915.2       |       91.99      |         88.6       |     114.5       |     161.2       |        1.816e+04 |
-| Falcon-padded-512        | pq        | liboqs-0.16.0       |         1000 |        897 |             666 |    204.6       |      201.1       |   222.9       |   248.5       |       42.26      |         40.98      |      53.21      |      61.86      |     5708         |
-| Falcon-padded-1024       | pq        | liboqs-0.16.0       |         1000 |       1793 |            1280 |    324         |      317.5       |   349.7       |   377.9       |       65.97      |         62.83      |      75.61      |      86.56      |        1.791e+04 |
-| MAYO-1                   | pq        | liboqs-0.16.0       |         1000 |       1420 |             454 |    143.4       |      128.8       |   190.6       |   213.7       |       59.15      |         53.09      |      74.93      |      86.38      |       61.36      |
-| MAYO-2                   | pq        | liboqs-0.16.0       |         1000 |       4912 |             186 |     87.84      |       84.24      |   105.3       |   120.9       |       20.94      |         20.08      |      24.57      |      33.58      |       34.64      |
-| MAYO-3                   | pq        | liboqs-0.16.0       |         1000 |       2986 |             681 |    334.1       |      329.1       |   364.2       |   399.3       |      151.7       |        148.3       |     167.6       |     179.7       |      134.9       |
-| MAYO-5                   | pq        | liboqs-0.16.0       |         1000 |       5554 |             964 |    802.8       |      767.3       |   957.1       |  1365         |      369.7       |        354.3       |     419.6       |     590.7       |      321.8       |
-| cross-rsdp-128-balanced  | pq        | liboqs-0.16.0       |           20 |         77 |           13152 |    867.4       |      865.2       |   944.6       |   961.7       |      617.5       |        612.9       |     733.7       |     752.3       |      102.2       |
-| cross-rsdp-128-fast      | pq        | liboqs-0.16.0       |           20 |         77 |           18432 |    390         |      351.2       |   529.4       |   635.3       |      226.5       |        218.7       |     280.6       |     283.6       |       87.49      |
-| cross-rsdp-128-small     | pq        | liboqs-0.16.0       |           20 |         77 |           12432 |   1665         |     1646         |  1989         |  2080         |     1276         |       1159         |    1472         |    3191         |       83.6       |
-| cross-rsdp-192-balanced  | pq        | liboqs-0.16.0       |           20 |        115 |           29853 |   1636         |     1601         |  1815         |  2052         |     1215         |       1180         |    1438         |    1473         |      107         |
-| cross-rsdp-192-fast      | pq        | liboqs-0.16.0       |           20 |        115 |           41406 |   1070         |     1009         |  1308         |  1672         |      767.1       |        649.6       |     886.2       |    2784         |      135         |
-| cross-rsdp-192-small     | pq        | liboqs-0.16.0       |           20 |        115 |           28391 |   2517         |     2465         |  2891         |  2926         |     1824         |       1807         |    1943         |    1950         |      107.3       |
-| cross-rsdp-256-balanced  | pq        | liboqs-0.16.0       |           20 |        153 |           53527 |   3567         |     3543         |  3616         |  4074         |     2425         |       2426         |    2461         |    2470         |      172.9       |
-| cross-rsdp-256-fast      | pq        | liboqs-0.16.0       |           20 |        153 |           74590 |   1899         |     1870         |  2221         |  2239         |     1179         |       1170         |    1329         |    1365         |      132.9       |
-| cross-rsdp-256-small     | pq        | liboqs-0.16.0       |           20 |        153 |           50818 |   4470         |     4404         |  4756         |  5018         |     3225         |       3180         |    3435         |    3496         |      129.4       |
-| cross-rsdpg-128-balanced | pq        | liboqs-0.16.0       |           20 |         54 |            9120 |    682.4       |      406.2       |  2546         |  3679         |      485.6       |        297.5       |     843.1       |    3496         |       80.46      |
-| cross-rsdpg-128-fast     | pq        | liboqs-0.16.0       |           20 |         54 |           11980 |    229.7       |      220         |   276.1       |   303.1       |      146.4       |        144.1       |     156.4       |     157.5       |       76.58      |
-| cross-rsdpg-128-small    | pq        | liboqs-0.16.0       |           20 |         54 |            8960 |    898.5       |      880.4       |   959.6       |  1115         |      655.6       |        636.9       |     738.1       |     876.9       |       78.31      |
-| cross-rsdpg-192-balanced | pq        | liboqs-0.16.0       |           20 |         83 |           22464 |    634.2       |      629.3       |   665.5       |   750.8       |      467.8       |        465.5       |     493.3       |     519.2       |       85.44      |
-| cross-rsdpg-192-fast     | pq        | liboqs-0.16.0       |           20 |         83 |           26772 |    528.3       |      522.1       |   567.8       |   621.4       |      368.5       |        357         |     440.4       |     478.4       |       92.61      |
-| cross-rsdpg-192-small    | pq        | liboqs-0.16.0       |           20 |         83 |           20452 |   1280         |     1261         |  1419         |  1465         |      995.9       |        986.6       |    1031         |    1043         |      102.3       |
-| cross-rsdpg-256-balanced | pq        | liboqs-0.16.0       |           20 |        106 |           40100 |   1135         |     1107         |  1261         |  1290         |      822.2       |        822.7       |     908.2       |     952.8       |       93.66      |
-| cross-rsdpg-256-fast     | pq        | liboqs-0.16.0       |           20 |        106 |           48102 |    926.4       |      914.5       |  1049         |  1076         |      648.7       |        641.9       |     733         |     737.1       |       99.47      |
-| cross-rsdpg-256-small    | pq        | liboqs-0.16.0       |           20 |        106 |           36454 |   1508         |     1475         |  1787         |  1845         |     1147         |       1127         |    1340         |    1437         |       75.03      |
-| OV-Is                    | pq        | liboqs-0.16.0       |         1000 |     412160 |              96 |     31.08      |       27.06      |    55.35      |    85.22      |       19.53      |         17.98      |      23.84      |      57.64      |     1050         |
-| OV-Ip                    | pq        | liboqs-0.16.0       |         1000 |     278432 |             128 |     24.07      |       22.81      |    28.89      |    43.4       |       20.1       |         19.28      |      23.32      |      36.99      |      711.2       |
-| OV-III                   | pq        | liboqs-0.16.0       |         1000 |    1225440 |             200 |     82.59      |       78.21      |   111         |   135.2       |       85.77      |         79.91      |     116.6       |     147.4       |     3853         |
-| OV-V                     | pq        | liboqs-0.16.0       |         1000 |    2869440 |             260 |    161.7       |      145.3       |   216.7       |   269.9       |      132.4       |        116.2       |     188.4       |     214.8       |        1.01e+04  |
-| OV-Is-pkc                | pq        | liboqs-0.16.0       |         1000 |      66576 |              96 |     26.97      |       23.93      |    44.3       |    62.38      |       70.12      |         66.46      |      90.28      |     102         |      969         |
-| OV-Ip-pkc                | pq        | liboqs-0.16.0       |         1000 |      43576 |             128 |     23.22      |       21.71      |    30.06      |    46.4       |       54.77      |         52.4       |      65.31      |      76.61      |      684.9       |
-| OV-III-pkc               | pq        | liboqs-0.16.0       |         1000 |     189232 |             200 |     92.29      |       88.12      |   122.4       |   147.5       |      245.1       |        237.1       |     291.2       |     343.8       |     3906         |
-| OV-V-pkc                 | pq        | liboqs-0.16.0       |         1000 |     446992 |             260 |    194.2       |      178.6       |   251.7       |   360.6       |      589.5       |        569.3       |     663.2       |    1209         |        1.085e+04 |
-| OV-Is-pkc-skc            | pq        | liboqs-0.16.0       |         1000 |      66576 |              96 |    679.2       |      656.3       |   832.7       |   902.6       |       67.95      |         66.69      |      82.53      |      98         |      985.5       |
-| OV-Ip-pkc-skc            | pq        | liboqs-0.16.0       |         1000 |      43576 |             128 |    341.5       |      337.7       |   363.8       |   408.5       |       44.26      |         42.8       |      52.6       |      61.45      |      698.1       |
-| OV-III-pkc-skc           | pq        | liboqs-0.16.0       |         1000 |     189232 |             200 |   2489         |     2426         |  3286         |  4053         |      254.7       |        243.4       |     332.6       |     435.3       |     3580         |
-| OV-V-pkc-skc             | pq        | liboqs-0.16.0       |         1000 |     446992 |             260 |   5583         |     5460         |  6598         |     1.33e+04  |      598.3       |        582.3       |     712.8       |    1255         |     9761         |
-| SNOVA_24_5_4             | pq        | liboqs-0.16.0       |         1000 |       1016 |             248 |    423.2       |      403.8       |   720         |   984.2       |       76.92      |         73.79      |     111.2       |     147.6       |       86.94      |
-| SNOVA_24_5_4_SHAKE       | pq        | liboqs-0.16.0       |         1000 |       1016 |             248 |    460.1       |      431.5       |   743         |   806.3       |      103         |         98.47      |     124.9       |     142.3       |      104.2       |
-| SNOVA_24_5_4_esk         | pq        | liboqs-0.16.0       |         1000 |       1016 |             248 |    319.6       |      282.8       |   491         |   731.3       |       72.1       |         68.15      |      89.3       |     124.5       |       85.45      |
-| SNOVA_24_5_4_SHAKE_esk   | pq        | liboqs-0.16.0       |         1000 |       1016 |             248 |    342.2       |      328.9       |   524.8       |   803.5       |       98.57      |         96.21      |     142         |     174.7       |       86.39      |
-| SNOVA_37_17_2            | pq        | liboqs-0.16.0       |         1000 |       9842 |             124 |    384.6       |      366.4       |   518.1       |   593.5       |       55.44      |         53.45      |      68.48      |      76.8       |      330.2       |
-| SNOVA_25_8_3             | pq        | liboqs-0.16.0       |         1000 |       2320 |             165 |    336.8       |      300.3       |   521.5       |   668.4       |       62.48      |         58.99      |      78.65      |     120.2       |       99.7       |
-| SNOVA_56_25_2            | pq        | liboqs-0.16.0       |         1000 |      31266 |             178 |   1325         |     1257         |  1681         |  1947         |      208.3       |        194.7       |     266.6       |     320         |     1271         |
-| SNOVA_49_11_3            | pq        | liboqs-0.16.0       |         1000 |       6006 |             286 |   1086         |      997.9       |  1823         |  2760         |      225.4       |        204.6       |     392.8       |     634.9       |      475         |
-| SNOVA_37_8_4             | pq        | liboqs-0.16.0       |         1000 |       4112 |             376 |   1392         |     1238         |  2061         |  3238         |      256.8       |        238.6       |     380.9       |     434.6       |      443.4       |
-| SNOVA_24_5_5             | pq        | liboqs-0.16.0       |         1000 |       1579 |             379 |   1041         |      989.8       |  1737         |  2544         |      237.5       |        239.4       |     267.3       |     324.3       |      172.7       |
-| SNOVA_60_10_4            | pq        | liboqs-0.16.0       |         1000 |       8016 |             576 |   3456         |     3317         |  5311         |  7294         |      652.9       |        643.4       |     801         |    1120         |     1440         |
-| SNOVA_29_6_5             | pq        | liboqs-0.16.0       |         1000 |       2716 |             454 |   1479         |     1463         |  2152         |  2860         |      343.4       |        347.6       |     414         |     497.3       |      226.7       |
-| mqom2_cat1_gf16_fast_r3  | pq        | liboqs-0.16.0       |           20 |         60 |            3484 |    589.7       |      559.2       |   768.7       |   933.7       |      475.8       |        468.7       |     512.6       |     555.9       |      137.8       |
-| mqom2_cat1_gf16_fast_r5  | pq        | liboqs-0.16.0       |           20 |         60 |            3280 |    547.4       |      511         |   713         |   870.2       |      442.8       |        431.1       |     510.5       |     544.9       |      130.9       |
-| mqom2_cat1_gf16_short_r3 | pq        | liboqs-0.16.0       |           20 |         60 |            3060 |   1547         |     1510         |  1626         |  2385         |     1413         |       1392         |    1533         |    1539         |      140.7       |
-| mqom2_cat1_gf16_short_r5 | pq        | liboqs-0.16.0       |           20 |         60 |            2916 |   1387         |     1329         |  1459         |  2143         |     1267         |       1254         |    1373         |    1418         |      150.5       |
-| mqom2_cat3_gf16_fast_r3  | pq        | liboqs-0.16.0       |           20 |         90 |            8224 |   2348         |     2324         |  2427         |  2733         |     2342         |       2336         |    2434         |    2549         |      357.1       |
-| mqom2_cat3_gf16_fast_r5  | pq        | liboqs-0.16.0       |           20 |         90 |            7738 |   2774         |     2534         |  3453         |  6161         |     2420         |       2265         |    3034         |    3041         |      361.5       |
-| mqom2_cat3_gf16_short_r3 | pq        | liboqs-0.16.0       |           20 |         90 |            6820 |   8322         |     8192         |     1.184e+04 |     1.223e+04 |     7293         |       7451         |    8599         |    9535         |      465         |
-| mqom2_cat3_gf16_short_r5 | pq        | liboqs-0.16.0       |           20 |         90 |            6496 |   7605         |     7237         |  9064         |  9681         |     6756         |       6486         |    8214         |    8537         |      399.4       |
-| mqom2_cat5_gf16_fast_r3  | pq        | liboqs-0.16.0       |           20 |        122 |           14708 |   5165         |     4717         |  6174         |  6309         |     5412         |       5431         |    7420         |    7910         |      605.7       |
-| mqom2_cat5_gf16_fast_r5  | pq        | liboqs-0.16.0       |           20 |        122 |           13772 |   3712         |     3653         |  3839         |  4540         |     3687         |       3679         |    3746         |    3747         |      568.5       |
-| mqom2_cat5_gf16_short_r3 | pq        | liboqs-0.16.0       |           20 |        122 |           12664 |      1.103e+04 |        1.053e+04 |     1.469e+04 |     1.719e+04 |        1.002e+04 |          1.005e+04 |       1.034e+04 |       1.036e+04 |      974.7       |
-| mqom2_cat5_gf16_short_r5 | pq        | liboqs-0.16.0       |           20 |        122 |           12014 |   8293         |     7731         |     1.085e+04 |     1.53e+04  |     7775         |       7457         |    9173         |       1.025e+04 |      737.4       |
+Sources: `raw/sizes_declared.csv` (declared sizes from `oqs_bench --list-sizes` = OQS_SIG `length_*`; observed maximum from the timing run), `raw/oqs_timing_cloud-smoke.csv` (timing), `raw/classical_timing_cloud-smoke.csv` (classical sizes only; its Python timings are not used anywhere).
+Scoring uses the DECLARED signature length. Declared vs observed differ where signatures are variable-length:
 
-Aggregate by family (all rows):
+| scheme      |   claimed_nist_level |   sig_declared |   sig_observed_max |
+|:------------|---------------------:|---------------:|-------------------:|
+| Falcon-512  |                    1 |            752 |                663 |
+| Falcon-1024 |                    5 |           1462 |               1280 |
 
-| group         |   n_schemes |   sig_min |   sig_max |   sign_median_us_min |   sign_median_us_max |   verify_median_us_max |
-|:--------------|------------:|----------:|----------:|---------------------:|---------------------:|-----------------------:|
-| CROSS         |          18 |      8960 |     74590 |            220       |         4404         |           3180         |
-| Falcon/FN-DSA |           4 |       663 |      1280 |            196.6     |          437.2       |             88.6       |
-| MAYO          |           4 |       186 |       964 |             84.24    |          767.3       |            354.3       |
-| ML-DSA        |           3 |      2420 |      4627 |             56.57    |           97.22      |             48.1       |
-| MQOM          |          12 |      2916 |     14708 |            511       |            1.053e+04 |              1.005e+04 |
-| SLH-DSA       |         156 |      7856 |     49856 |              1.8e+04 |            1.282e+06 |           3155         |
-| SNOVA         |          12 |       124 |       576 |            282.8     |         3317         |            643.4       |
-| UOV           |          12 |        96 |       260 |             21.71    |         5460         |            582.3       |
-| classical     |           2 |        64 |        72 |             24.62    |           24.64      |             81.46      |
+Sizes and timings come from one 64 B message per run on one machine; per-message variance is not sampled.
 
-Classical rows use python-cryptography (OpenSSL), so they include Python call overhead; not comparable to the C liboqs rows.
+Timing of the lowest-level class representatives (all schemes: `raw/oqs_timing_cloud-smoke.csv`). **Rows with iterations < 100 have no usable p95/p99.**
+
+| scheme                   | family        |   claimed_nist_level |   iterations |   length_public_key |   sig_declared |   sign_median_us |   sign_p95_us |   sign_p99_us |   verify_median_us |   verify_p95_us |   verify_p99_us |   keygen_mean_us |
+|:-------------------------|:--------------|---------------------:|-------------:|--------------------:|---------------:|-----------------:|--------------:|--------------:|-------------------:|----------------:|----------------:|-----------------:|
+| ML-DSA-44                | ML-DSA        |                    2 |         1000 |                1312 |           2420 |       56.57      |   162         |   253.3       |              21.1  |           28.46 |           46.53 |       22.13      |
+| Falcon-512               | Falcon/FN-DSA |                    1 |         1000 |                 897 |            752 |      196.6       |   224.6       |   250.3       |              40.28 |           51.42 |           57.9  |     6312         |
+| Falcon-padded-512        | Falcon/FN-DSA |                    1 |         1000 |                 897 |            666 |      201.1       |   222.9       |   248.5       |              40.98 |           53.21 |           61.86 |     5708         |
+| MAYO-1                   | MAYO          |                    1 |         1000 |                1420 |            454 |      128.8       |   190.6       |   213.7       |              53.09 |           74.93 |           86.38 |       61.36      |
+| MAYO-2                   | MAYO          |                    1 |         1000 |                4912 |            186 |       84.24      |   105.3       |   120.9       |              20.08 |           24.57 |           33.58 |       34.64      |
+| cross-rsdp-128-balanced  | CROSS         |                    1 |           20 |                  77 |          13152 |      865.2       |   944.6       |   961.7       |             612.9  |          733.7  |          752.3  |      102.2       |
+| cross-rsdp-128-fast      | CROSS         |                    1 |           20 |                  77 |          18432 |      351.2       |   529.4       |   635.3       |             218.7  |          280.6  |          283.6  |       87.49      |
+| cross-rsdp-128-small     | CROSS         |                    1 |           20 |                  77 |          12432 |     1646         |  1989         |  2080         |            1159    |         1472    |         3191    |       83.6       |
+| cross-rsdpg-128-balanced | CROSS         |                    1 |           20 |                  54 |           9120 |      406.2       |  2546         |  3679         |             297.5  |          843.1  |         3496    |       80.46      |
+| cross-rsdpg-128-fast     | CROSS         |                    1 |           20 |                  54 |          11980 |      220         |   276.1       |   303.1       |             144.1  |          156.4  |          157.5  |       76.58      |
+| cross-rsdpg-128-small    | CROSS         |                    1 |           20 |                  54 |           8960 |      880.4       |   959.6       |  1115         |             636.9  |          738.1  |          876.9  |       78.31      |
+| OV-Is                    | UOV           |                    1 |         1000 |              412160 |             96 |       27.06      |    55.35      |    85.22      |              17.98 |           23.84 |           57.64 |     1050         |
+| OV-Ip                    | UOV           |                    1 |         1000 |              278432 |            128 |       22.81      |    28.89      |    43.4       |              19.28 |           23.32 |           36.99 |      711.2       |
+| OV-Is-pkc                | UOV           |                    1 |         1000 |               66576 |             96 |       23.93      |    44.3       |    62.38      |              66.46 |           90.28 |          102    |      969         |
+| OV-Ip-pkc                | UOV           |                    1 |         1000 |               43576 |            128 |       21.71      |    30.06      |    46.4       |              52.4  |           65.31 |           76.61 |      684.9       |
+| SNOVA_24_5_4             | SNOVA         |                    1 |         1000 |                1016 |            248 |      403.8       |   720         |   984.2       |              73.79 |          111.2  |          147.6  |       86.94      |
+| SNOVA_37_17_2            | SNOVA         |                    1 |         1000 |                9842 |            124 |      366.4       |   518.1       |   593.5       |              53.45 |           68.48 |           76.8  |      330.2       |
+| SNOVA_25_8_3             | SNOVA         |                    1 |         1000 |                2320 |            165 |      300.3       |   521.5       |   668.4       |              58.99 |           78.65 |          120.2  |       99.7       |
+| mqom2_cat1_gf16_fast_r3  | MQOM          |                    1 |           20 |                  60 |           3484 |      559.2       |   768.7       |   933.7       |             468.7  |          512.6  |          555.9  |      137.8       |
+| mqom2_cat1_gf16_fast_r5  | MQOM          |                    1 |           20 |                  60 |           3280 |      511         |   713         |   870.2       |             431.1  |          510.5  |          544.9  |      130.9       |
+| mqom2_cat1_gf16_short_r3 | MQOM          |                    1 |           20 |                  60 |           3060 |     1510         |  1626         |  2385         |            1392    |         1533    |         1539    |      140.7       |
+| mqom2_cat1_gf16_short_r5 | MQOM          |                    1 |           20 |                  60 |           2916 |     1329         |  1459         |  2143         |            1254    |         1373    |         1418    |      150.5       |
+| SLH_DSA_PURE_SHA2_128S   | SLH-DSA       |                    1 |           20 |                  32 |           7856 |        4.864e+05 |     5.282e+05 |     5.426e+05 |             483    |          531.6  |          541.6  |        6.371e+04 |
+| SLH_DSA_PURE_SHA2_128F   | SLH-DSA       |                    1 |           20 |                  32 |          17088 |        2.36e+04  |     2.655e+04 |     2.707e+04 |            1429    |         1582    |         2251    |      853.2       |
 
 ## Q1: which (scheme, mode) pairs fit each profile
 
-Source: `results/raw/scoring.csv` (from `raw/*timing*.csv` sizes and `experiments/profiles.yaml`).
+Sources: `raw/scoring_all_levels.csv` (every class, every level, appendix), `results/main_table_lowest_level.csv` (main), `experiments/profiles.yaml` (from `papers/benchmark/budget-evidence.md`).
 
-Profiles (`profiles.yaml`): cv2x: 437 B budget, 437 B frame (twardokus2024when); remote_id: 255 B budget, 23 B frame (wiethuechter2024drip); osnma: 208 B budget, 13 B frame (junquera2023assessment); sib1: 372 B budget, 372 B frame (darzi2026a); dns: 1232 B budget, 1232 B frame (goertzen2022post)
+| profile                    |   payload_ceiling_B | ceiling_derived   |   auth_budget_B | budget_derived   | basis         | frag_header_B   | message_period_s   | hybrid_partner   | cert_handling                                                                                                                                         |
+|:---------------------------|--------------------:|:------------------|----------------:|:-----------------|:--------------|:----------------|:-------------------|:-----------------|:------------------------------------------------------------------------------------------------------------------------------------------------------|
+| remote_id                  |                 255 | False             |             201 | False            | auth-budget   | TODO-RESULT     | 3                  | Ed25519          | digest (DET 16 B) per message; full public key via Broadcast Endorsement (cadence not stated)                                                         |
+| sib1                       |                 372 | False             |             293 | False            | auth-budget   | TODO-RESULT     | 0.16               | ECDSA-P256       | key provisioned out of band, nothing in the broadcast (EMULSION); darzi2026a's FN-DSA/ML-DSA baselines send a 2-level certificate chain               |
+| osnma_pkr204               |                 208 | True              |             204 | True             | auth-budget   | TODO-RESULT     | 480                | ECDSA-P256       | public key is delivered by a separate DSM-PKR; the signature (DSM-KROOT) is scored alone; pk size is reported against the same budget as key_delivery |
+| osnma_kroot158             |                 208 | True              |             158 | True             | auth-budget   | TODO-RESULT     | 480                | ECDSA-P256       | as osnma_pkr204                                                                                                                                       |
+| cv2x_437 (ceiling-based)   |                 437 | False             |             373 | True             | ceiling-based | TODO-RESULT     | 0.1                | ECDSA-P256       | 8 B certificate digest on 4 of 5 BSMs, full certificate on every 5th (cert metadata TODO-RESULT, not counted)                                         |
+| cv2x_j3161 (ceiling-based) |                2481 | False             |            2414 | True             | ceiling-based | TODO-RESULT     | 0.1                | ECDSA-P256       | as cv2x_437 (digest 8 B; full certificate every 5th BSM)                                                                                              |
+| dns (ceiling-based)        |                1232 | False             |            1232 | True             | ceiling-based | 15              | TODO-RESULT        | ECDSA-P256       | key cached after first response; first response carries signature + public key                                                                        |
 
-Frame header for fragmentation is TODO-RESULT for cv2x, sib1, dns (frames use 0 header: lower bound). OSNMA budget is derived (16 x 104 bit); the 67/71 DSM-block reproduction from gap.md section 4 is TODO-RESULT (needs PQ sizes and the full text).
+Quotes and sections for every ceiling/budget, the subtracted overheads and notes are in `profiles.yaml`. **cv2x_437, cv2x_j3161 and dns have no auth-only budget in their sources: their verdicts are ceiling-based (payload ceiling minus the overheads the source states; BSM/DNS header sizes are not stated so the budgets are upper bounds).** OSNMA is given as both variants (204 B = 1632 bit and about 158 B = 16 x 79 bit; both derived; the source's own block arithmetic is inconsistent). Fragment headers are TODO-RESULT except DNS (15 B); the code uses 0 for TODO-RESULT, which understates message counts (rows flagged `hdr_known`).
 
-Byte-accounting formulas (from `lib/pqsig/accounting.py`):
+Byte-accounting formulas (`lib/pqsig/accounting.py`):
 
 ```
-Byte accounting for authentication modes. All sizes in bytes.
+Byte and frame accounting for authentication modes (single-object fit; loss is in lossform.py).
 
-Inputs per scheme: pk, sig (sig_bytes_max from the benchmark CSV). Classical hybrid partner
-is chosen by the caller (sig_c). Chain parameters are explicit assumptions (CHAIN_DEFAULTS).
-
-Modes (formulas, also printed in summary.md):
-  full         auth = sig
-  sig_cert     auth = sig + cert, cert = pk + sig   (subject key + same-scheme issuer signature)
-  fragmented   auth = sig + hdr * frames, frames = ceil(sig / (frame - hdr)); sent over `frames` frames
-  chain        steady = tag + key (per message); anchor = sig + commit + ts (once per epoch);
-               fits iff steady <= budget and anchor <= budget; frames = 1 if so, else frames of anchor
-  hybrid       auth = sig_c + sig_pq  (concatenated, both verified)
-share_of_budget = auth / budget. frames = ceil(auth / frame_payload).
+Notation: S = declared signature bytes (liboqs OQS_SIG length_signature), P = public-key bytes,
+B = profile auth_budget (bytes per message), h = fragment header per message (TODO-RESULT -> 0, flagged),
+F1/Fn = payload of the first / later frames of a message, Tm = message period, Tf = frame period.
+ frames(x)   = 1 if x <= F1 else 1 + ceil((x - F1)/Fn)         frames needed for x bytes in ONE message
+ msgs(x)     = ceil(x / (B - h))                               messages needed when x bytes are spread over messages
+ ttfa(x)     = (msgs-1)*Tm + (frames_in_last_message - 1)*Tf   from first fragment to last, no loss, no join wait, no processing
+Modes (auth object x; `fits` means x <= B, i.e. msgs = 1):
+  full       x = S
+  full_cert  the certificate handling the profile's source uses:
+             steady x = S + digest bytes (profile cert_handling.steady_extra_bytes)
+             peak   x = S + P              (peak_extra = pk)       or S + P + f (pk+fixed: full certificate = subject key
+                        + f bytes of metadata and issuer signature; f = 105 B from abrar2026deployment, Falcon-512
+                        certificate 1,002 B minus 897 B key, derived, one data point applied to every scheme)
+             average = ((n-1)*steady + peak)/n, n = peak_every_n; fits needs steady and peak <= B; ttfa (cold start) uses peak
+  chain      steady x = tag + key (per message); anchor = S + commit + ts, spread over msgs(anchor) messages,
+             each counted; join time = ttfa(anchor) + d*Tm; fits = steady <= B (anchor is fragmented, cost reported)
+  hybrid     x = S_partner + S   (partner = the classical scheme the profile's source uses)
+A mode with x > B is not a single-message fit; its cost is the message count and ttfa columns.
+share_of_budget = x / B.
 ```
 
-Hybrid partner: Ed25519 (64 B signature, taken from the `Ed25519` row of the sizes CSV by `score.py`); hybrid auth = 64 B + PQ signature, no public key or certificate counted.
-Chain parameters in Q1 scoring (`lib/pqsig/accounting.py` CHAIN_DEFAULTS): tag 16 B (darzi2026a), disclosed key 16 B, commitment 16 B, timestamp 4 B (last three assumed, not cited). Steady-state auth = 32 B per message; anchor = PQ signature + 20 B, sent once per epoch and required to fit in one budget for `fits`.
-Counts: 221 PQ schemes x 5 profiles = 1105 (scheme, profile) pairs per mode; hybrid rows exist for 1105 pairs; the scoring CSV also holds 40 classical rows, which are excluded from the pair totals below.
+Hybrid partner per profile: remote_id: Ed25519 64 B raw (RFC 9575 (EdDSA, UA Signature 64 octets)); sib1: ECDSA-P256 64 B raw (assumed (not stated in darzi2026a)); osnma_pkr204: ECDSA-P256 64 B raw (junquera2023assessment (OSNMA ECDSA P-256 signature 512 bit)); osnma_kroot158: ECDSA-P256 64 B raw (junquera2023assessment); cv2x_437: ECDSA-P256 64 B raw (IEEE 1609.2 (ECDSA; twardokus2024when 'ECDSA certificate 162 B')); cv2x_j3161: ECDSA-P256 64 B raw (abrar2026deployment Table 2 (ECDSA 64 B)); dns: ECDSA-P256 64 B raw (goertzen2022post compares ECDSA P256). (DER-encoded ECDSA would be up to 72 B.) The sib1 partner is an assumption.
+Chain parameters: tag 16 B (darzi2026a), disclosed key 16 B, commitment 16 B, timestamp 4 B, key delay d=1 message (last four assumed). Steady auth 32 B/message; the anchor (signature + 20 B) is fragmented over as many messages as needed and that cost is reported (`anchor_msgs`, join time).
 
-Full per-(scheme, mode, profile) table: `raw/scoring.csv` (not repeated here). Compact view over PQ schemes (all rows if no PQ present):
+**Fit tables (distinct size classes, lowest level per family).** Cell = classes fitting a single message / classes in the family. `full_cert` fits only if both the digest message and the full-certificate message fit.
 
-Cells are fitting schemes / schemes in the family.
+| family        | mode      | remote_id   | sib1   | osnma_pkr204   | osnma_kroot158   | cv2x_437 (ceiling-based)   | cv2x_j3161 (ceiling-based)   | dns (ceiling-based)   |
+|:--------------|:----------|:------------|:-------|:---------------|:-----------------|:---------------------------|:-----------------------------|:----------------------|
+| CROSS         | chain     | 6/6         | 6/6    | 6/6            | 6/6              | 6/6                        | 6/6                          | 6/6                   |
+| CROSS         | full      | 0/6         | 0/6    | 0/6            | 0/6              | 0/6                        | 0/6                          | 0/6                   |
+| CROSS         | full_cert | 0/6         | 0/6    | 0/6            | 0/6              | 0/6                        | 0/6                          | 0/6                   |
+| CROSS         | hybrid    | 0/6         | 0/6    | 0/6            | 0/6              | 0/6                        | 0/6                          | 0/6                   |
+| Falcon/FN-DSA | chain     | 2/2         | 2/2    | 2/2            | 2/2              | 2/2                        | 2/2                          | 2/2                   |
+| Falcon/FN-DSA | full      | 0/2         | 0/2    | 0/2            | 0/2              | 0/2                        | 2/2                          | 2/2                   |
+| Falcon/FN-DSA | full_cert | 0/2         | 0/2    | 0/2            | 0/2              | 0/2                        | 2/2                          | 0/2                   |
+| Falcon/FN-DSA | hybrid    | 0/2         | 0/2    | 0/2            | 0/2              | 0/2                        | 2/2                          | 2/2                   |
+| MAYO          | chain     | 2/2         | 2/2    | 2/2            | 2/2              | 2/2                        | 2/2                          | 2/2                   |
+| MAYO          | full      | 1/2         | 1/2    | 1/2            | 0/2              | 1/2                        | 2/2                          | 2/2                   |
+| MAYO          | full_cert | 0/2         | 1/2    | 1/2            | 0/2              | 0/2                        | 1/2                          | 0/2                   |
+| MAYO          | hybrid    | 0/2         | 1/2    | 0/2            | 0/2              | 1/2                        | 2/2                          | 2/2                   |
+| ML-DSA        | chain     | 1/1         | 1/1    | 1/1            | 1/1              | 1/1                        | 1/1                          | 1/1                   |
+| ML-DSA        | full      | 0/1         | 0/1    | 0/1            | 0/1              | 0/1                        | 0/1                          | 0/1                   |
+| ML-DSA        | full_cert | 0/1         | 0/1    | 0/1            | 0/1              | 0/1                        | 0/1                          | 0/1                   |
+| ML-DSA        | hybrid    | 0/1         | 0/1    | 0/1            | 0/1              | 0/1                        | 0/1                          | 0/1                   |
+| MQOM          | chain     | 4/4         | 4/4    | 4/4            | 4/4              | 4/4                        | 4/4                          | 4/4                   |
+| MQOM          | full      | 0/4         | 0/4    | 0/4            | 0/4              | 0/4                        | 0/4                          | 0/4                   |
+| MQOM          | full_cert | 0/4         | 0/4    | 0/4            | 0/4              | 0/4                        | 0/4                          | 0/4                   |
+| MQOM          | hybrid    | 0/4         | 0/4    | 0/4            | 0/4              | 0/4                        | 0/4                          | 0/4                   |
+| SLH-DSA       | chain     | 2/2         | 2/2    | 2/2            | 2/2              | 2/2                        | 2/2                          | 2/2                   |
+| SLH-DSA       | full      | 0/2         | 0/2    | 0/2            | 0/2              | 0/2                        | 0/2                          | 0/2                   |
+| SLH-DSA       | full_cert | 0/2         | 0/2    | 0/2            | 0/2              | 0/2                        | 0/2                          | 0/2                   |
+| SLH-DSA       | hybrid    | 0/2         | 0/2    | 0/2            | 0/2              | 0/2                        | 0/2                          | 0/2                   |
+| SNOVA         | chain     | 3/3         | 3/3    | 3/3            | 3/3              | 3/3                        | 3/3                          | 3/3                   |
+| SNOVA         | full      | 2/3         | 3/3    | 2/3            | 1/3              | 3/3                        | 3/3                          | 3/3                   |
+| SNOVA         | full_cert | 0/3         | 3/3    | 2/3            | 1/3              | 0/3                        | 1/3                          | 0/3                   |
+| SNOVA         | hybrid    | 1/3         | 2/3    | 1/3            | 0/3              | 3/3                        | 3/3                          | 3/3                   |
+| UOV           | chain     | 4/4         | 4/4    | 4/4            | 4/4              | 4/4                        | 4/4                          | 4/4                   |
+| UOV           | full      | 4/4         | 4/4    | 4/4            | 4/4              | 4/4                        | 4/4                          | 4/4                   |
+| UOV           | full_cert | 0/4         | 4/4    | 4/4            | 4/4              | 0/4                        | 0/4                          | 0/4                   |
+| UOV           | hybrid    | 4/4         | 4/4    | 4/4            | 0/4              | 4/4                        | 4/4                          | 4/4                   |
 
-| group         | mode       | cv2x   | dns   | osnma   | remote_id   | sib1   |
-|:--------------|:-----------|:-------|:------|:--------|:------------|:-------|
-| CROSS         | chain      | 0/18   | 0/18  | 0/18    | 0/18        | 0/18   |
-| CROSS         | fragmented | 0/18   | 0/18  | 0/18    | 0/18        | 0/18   |
-| CROSS         | full       | 0/18   | 0/18  | 0/18    | 0/18        | 0/18   |
-| CROSS         | hybrid     | 0/18   | 0/18  | 0/18    | 0/18        | 0/18   |
-| CROSS         | sig_cert   | 0/18   | 0/18  | 0/18    | 0/18        | 0/18   |
-| Falcon/FN-DSA | chain      | 0/4    | 2/4   | 0/4     | 0/4         | 0/4    |
-| Falcon/FN-DSA | fragmented | 0/4    | 2/4   | 0/4     | 0/4         | 0/4    |
-| Falcon/FN-DSA | full       | 0/4    | 2/4   | 0/4     | 0/4         | 0/4    |
-| Falcon/FN-DSA | hybrid     | 0/4    | 2/4   | 0/4     | 0/4         | 0/4    |
-| Falcon/FN-DSA | sig_cert   | 0/4    | 0/4   | 0/4     | 0/4         | 0/4    |
-| MAYO          | chain      | 1/4    | 4/4   | 1/4     | 1/4         | 1/4    |
-| MAYO          | fragmented | 1/4    | 4/4   | 1/4     | 1/4         | 1/4    |
-| MAYO          | full       | 1/4    | 4/4   | 1/4     | 1/4         | 1/4    |
-| MAYO          | hybrid     | 1/4    | 4/4   | 0/4     | 1/4         | 1/4    |
-| MAYO          | sig_cert   | 0/4    | 0/4   | 0/4     | 0/4         | 0/4    |
-| ML-DSA        | chain      | 0/3    | 0/3   | 0/3     | 0/3         | 0/3    |
-| ML-DSA        | fragmented | 0/3    | 0/3   | 0/3     | 0/3         | 0/3    |
-| ML-DSA        | full       | 0/3    | 0/3   | 0/3     | 0/3         | 0/3    |
-| ML-DSA        | hybrid     | 0/3    | 0/3   | 0/3     | 0/3         | 0/3    |
-| ML-DSA        | sig_cert   | 0/3    | 0/3   | 0/3     | 0/3         | 0/3    |
-| MQOM          | chain      | 0/12   | 0/12  | 0/12    | 0/12        | 0/12   |
-| MQOM          | fragmented | 0/12   | 0/12  | 0/12    | 0/12        | 0/12   |
-| MQOM          | full       | 0/12   | 0/12  | 0/12    | 0/12        | 0/12   |
-| MQOM          | hybrid     | 0/12   | 0/12  | 0/12    | 0/12        | 0/12   |
-| MQOM          | sig_cert   | 0/12   | 0/12  | 0/12    | 0/12        | 0/12   |
-| SLH-DSA       | chain      | 0/156  | 0/156 | 0/156   | 0/156       | 0/156  |
-| SLH-DSA       | fragmented | 0/156  | 0/156 | 0/156   | 0/156       | 0/156  |
-| SLH-DSA       | full       | 0/156  | 0/156 | 0/156   | 0/156       | 0/156  |
-| SLH-DSA       | hybrid     | 0/156  | 0/156 | 0/156   | 0/156       | 0/156  |
-| SLH-DSA       | sig_cert   | 0/156  | 0/156 | 0/156   | 0/156       | 0/156  |
-| SNOVA         | chain      | 10/12  | 12/12 | 3/12    | 3/12        | 8/12   |
-| SNOVA         | fragmented | 10/12  | 12/12 | 3/12    | 7/12        | 8/12   |
-| SNOVA         | full       | 10/12  | 12/12 | 3/12    | 7/12        | 8/12   |
-| SNOVA         | hybrid     | 8/12   | 12/12 | 1/12    | 3/12        | 8/12   |
-| SNOVA         | sig_cert   | 0/12   | 0/12  | 0/12    | 0/12        | 0/12   |
-| UOV           | chain      | 12/12  | 12/12 | 6/12    | 9/12        | 12/12  |
-| UOV           | fragmented | 12/12  | 12/12 | 9/12    | 9/12        | 12/12  |
-| UOV           | full       | 12/12  | 12/12 | 9/12    | 9/12        | 12/12  |
-| UOV           | hybrid     | 12/12  | 12/12 | 6/12    | 6/12        | 12/12  |
-| UOV           | sig_cert   | 0/12   | 0/12  | 0/12    | 0/12        | 0/12   |
+Totals over all lowest-level classes:
 
-Schemes whose full signature fits each profile (`fits` in `raw/scoring.csv`):
+| mode      | remote_id   | sib1   | osnma_pkr204   | osnma_kroot158   | cv2x_437 (ceiling-based)   | cv2x_j3161 (ceiling-based)   | dns (ceiling-based)   |
+|:----------|:------------|:-------|:---------------|:-----------------|:---------------------------|:-----------------------------|:----------------------|
+| chain     | 24/24       | 24/24  | 24/24          | 24/24            | 24/24                      | 24/24                        | 24/24                 |
+| full      | 7/24        | 8/24   | 7/24           | 5/24             | 8/24                       | 11/24                        | 11/24                 |
+| full_cert | 0/24        | 8/24   | 7/24           | 5/24             | 0/24                       | 4/24                         | 0/24                  |
+| hybrid    | 5/24        | 7/24   | 5/24           | 0/24             | 8/24                       | 11/24                        | 11/24                 |
 
-- cv2x (SLH-DSA: 0 parameter sets fit): MAYO-2, OV-Is, OV-Ip, OV-III, OV-V, OV-Is-pkc, OV-Ip-pkc, OV-III-pkc, OV-V-pkc, OV-Is-pkc-skc, OV-Ip-pkc-skc, OV-III-pkc-skc, OV-V-pkc-skc, SNOVA_24_5_4, SNOVA_24_5_4_SHAKE, SNOVA_24_5_4_esk, SNOVA_24_5_4_SHAKE_esk, SNOVA_37_17_2, SNOVA_25_8_3, SNOVA_56_25_2, SNOVA_49_11_3, SNOVA_37_8_4, SNOVA_24_5_5
-- dns (SLH-DSA: 0 parameter sets fit): Falcon-512, Falcon-padded-512, MAYO-1, MAYO-2, MAYO-3, MAYO-5, OV-Is, OV-Ip, OV-III, OV-V, OV-Is-pkc, OV-Ip-pkc, OV-III-pkc, OV-V-pkc, OV-Is-pkc-skc, OV-Ip-pkc-skc, OV-III-pkc-skc, OV-V-pkc-skc, SNOVA_24_5_4, SNOVA_24_5_4_SHAKE, SNOVA_24_5_4_esk, SNOVA_24_5_4_SHAKE_esk, SNOVA_37_17_2, SNOVA_25_8_3, SNOVA_56_25_2, SNOVA_49_11_3, SNOVA_37_8_4, SNOVA_24_5_5, SNOVA_60_10_4, SNOVA_29_6_5
-- osnma (SLH-DSA: 0 parameter sets fit): MAYO-2, OV-Is, OV-Ip, OV-III, OV-Is-pkc, OV-Ip-pkc, OV-III-pkc, OV-Is-pkc-skc, OV-Ip-pkc-skc, OV-III-pkc-skc, SNOVA_37_17_2, SNOVA_25_8_3, SNOVA_56_25_2
-- remote_id (SLH-DSA: 0 parameter sets fit): MAYO-2, OV-Is, OV-Ip, OV-III, OV-Is-pkc, OV-Ip-pkc, OV-III-pkc, OV-Is-pkc-skc, OV-Ip-pkc-skc, OV-III-pkc-skc, SNOVA_24_5_4, SNOVA_24_5_4_SHAKE, SNOVA_24_5_4_esk, SNOVA_24_5_4_SHAKE_esk, SNOVA_37_17_2, SNOVA_25_8_3, SNOVA_56_25_2
-- sib1 (SLH-DSA: 0 parameter sets fit): MAYO-2, OV-Is, OV-Ip, OV-III, OV-V, OV-Is-pkc, OV-Ip-pkc, OV-III-pkc, OV-V-pkc, OV-Is-pkc-skc, OV-Ip-pkc-skc, OV-III-pkc-skc, OV-V-pkc-skc, SNOVA_24_5_4, SNOVA_24_5_4_SHAKE, SNOVA_24_5_4_esk, SNOVA_24_5_4_SHAKE_esk, SNOVA_37_17_2, SNOVA_25_8_3, SNOVA_56_25_2, SNOVA_49_11_3
+**Messages needed and time to first authentication (full signature, no loss).** m = messages (each carrying at most the auth budget), ttfa = time from first fragment to last at the profile's message rate (no join wait, no processing; dns has no stated rate). `frames` = frames in the first message.
 
-Figure: `fig_q1_share.pdf` (source `raw/scoring.csv`).
+| family        | scheme                   |   sig_declared |   pk_bytes | remote_id             | sib1                   | osnma_pkr204                | osnma_kroot158               | cv2x_437 (ceiling-based)   | cv2x_j3161 (ceiling-based)   | dns (ceiling-based)   |
+|:--------------|:-------------------------|---------------:|-----------:|:----------------------|:-----------------------|:----------------------------|:-----------------------------|:---------------------------|:-----------------------------|:----------------------|
+| CROSS         | cross-rsdp-128-balanced  |          13152 |         77 | 66 msg / 9 fr / 195 s | 45 msg / 1 fr / 7.04 s | 65 msg / 16 fr / 3.09e+04 s | 84 msg / 16 fr / 3.99e+04 s  | 36 msg / 1 fr / 3.5 s      | 6 msg / 1 fr / 0.5 s         | 11 msg / 1 fr / n/a   |
+| CROSS         | cross-rsdp-128-fast      |          18432 |         77 | 92 msg / 9 fr / 273 s | 63 msg / 1 fr / 9.92 s | 91 msg / 16 fr / 4.34e+04 s | 117 msg / 16 fr / 5.6e+04 s  | 50 msg / 1 fr / 4.9 s      | 8 msg / 1 fr / 0.7 s         | 16 msg / 1 fr / n/a   |
+| CROSS         | cross-rsdp-128-small     |          12432 |         77 | 62 msg / 9 fr / 183 s | 43 msg / 1 fr / 6.72 s | 61 msg / 16 fr / 2.92e+04 s | 79 msg / 16 fr / 3.77e+04 s  | 34 msg / 1 fr / 3.3 s      | 6 msg / 1 fr / 0.5 s         | 11 msg / 1 fr / n/a   |
+| CROSS         | cross-rsdpg-128-balanced |           9120 |         54 | 46 msg / 9 fr / 135 s | 32 msg / 1 fr / 4.96 s | 45 msg / 16 fr / 2.14e+04 s | 58 msg / 16 fr / 2.77e+04 s  | 25 msg / 1 fr / 2.4 s      | 4 msg / 1 fr / 0.3 s         | 8 msg / 1 fr / n/a    |
+| CROSS         | cross-rsdpg-128-fast     |          11980 |         54 | 60 msg / 9 fr / 177 s | 41 msg / 1 fr / 6.4 s  | 59 msg / 16 fr / 2.82e+04 s | 76 msg / 16 fr / 3.64e+04 s  | 33 msg / 1 fr / 3.2 s      | 5 msg / 1 fr / 0.4 s         | 10 msg / 1 fr / n/a   |
+| CROSS         | cross-rsdpg-128-small    |           8960 |         54 | 45 msg / 9 fr / 132 s | 31 msg / 1 fr / 4.8 s  | 44 msg / 16 fr / 2.11e+04 s | 57 msg / 16 fr / 2.72e+04 s  | 25 msg / 1 fr / 2.4 s      | 4 msg / 1 fr / 0.3 s         | 8 msg / 1 fr / n/a    |
+| Falcon/FN-DSA | Falcon-512               |            752 |        897 | 4 msg / 9 fr / 9 s    | 3 msg / 1 fr / 0.32 s  | 4 msg / 16 fr / 1.74e+03 s  | 5 msg / 16 fr / 2.28e+03 s   | 3 msg / 1 fr / 0.2 s       | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
+| Falcon/FN-DSA | Falcon-padded-512        |            666 |        897 | 4 msg / 9 fr / 9 s    | 3 msg / 1 fr / 0.32 s  | 4 msg / 16 fr / 1.56e+03 s  | 5 msg / 16 fr / 2.01e+03 s   | 2 msg / 1 fr / 0.1 s       | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
+| MAYO          | MAYO-1                   |            454 |       1420 | 3 msg / 9 fr / 6 s    | 2 msg / 1 fr / 0.16 s  | 3 msg / 16 fr / 1.05e+03 s  | 3 msg / 16 fr / 1.35e+03 s   | 2 msg / 1 fr / 0.1 s       | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
+| MAYO          | MAYO-2                   |            186 |       4912 | 1 msg / 9 fr / 0 s    | 1 msg / 1 fr / 0 s     | 1 msg / 15 fr / 420 s       | 2 msg / 16 fr / 540 s        | 1 msg / 1 fr / 0 s         | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
+| ML-DSA        | ML-DSA-44                |           2420 |       1312 | 13 msg / 9 fr / 36 s  | 9 msg / 1 fr / 1.28 s  | 12 msg / 16 fr / 5.67e+03 s | 16 msg / 16 fr / 7.35e+03 s  | 7 msg / 1 fr / 0.6 s       | 2 msg / 1 fr / 0.1 s         | 2 msg / 1 fr / n/a    |
+| MQOM          | mqom2_cat1_gf16_fast_r3  |           3484 |         60 | 18 msg / 9 fr / 51 s  | 12 msg / 1 fr / 1.76 s | 18 msg / 16 fr / 8.19e+03 s | 23 msg / 16 fr / 1.06e+04 s  | 10 msg / 1 fr / 0.9 s      | 2 msg / 1 fr / 0.1 s         | 3 msg / 1 fr / n/a    |
+| MQOM          | mqom2_cat1_gf16_fast_r5  |           3280 |         60 | 17 msg / 9 fr / 48 s  | 12 msg / 1 fr / 1.76 s | 17 msg / 16 fr / 7.71e+03 s | 21 msg / 16 fr / 9.96e+03 s  | 9 msg / 1 fr / 0.8 s       | 2 msg / 1 fr / 0.1 s         | 3 msg / 1 fr / n/a    |
+| MQOM          | mqom2_cat1_gf16_short_r3 |           3060 |         60 | 16 msg / 9 fr / 45 s  | 11 msg / 1 fr / 1.6 s  | 15 msg / 16 fr / 7.17e+03 s | 20 msg / 16 fr / 9.27e+03 s  | 9 msg / 1 fr / 0.8 s       | 2 msg / 1 fr / 0.1 s         | 3 msg / 1 fr / n/a    |
+| MQOM          | mqom2_cat1_gf16_short_r5 |           2916 |         60 | 15 msg / 9 fr / 42 s  | 10 msg / 1 fr / 1.44 s | 15 msg / 16 fr / 6.84e+03 s | 19 msg / 16 fr / 8.85e+03 s  | 8 msg / 1 fr / 0.7 s       | 2 msg / 1 fr / 0.1 s         | 3 msg / 1 fr / n/a    |
+| SLH-DSA       | SLH_DSA_PURE_SHA2_128F   |          17088 |         32 | 86 msg / 9 fr / 255 s | 59 msg / 1 fr / 9.28 s | 84 msg / 16 fr / 4.02e+04 s | 109 msg / 16 fr / 5.19e+04 s | 46 msg / 1 fr / 4.5 s      | 8 msg / 1 fr / 0.7 s         | 15 msg / 1 fr / n/a   |
+| SLH-DSA       | SLH_DSA_PURE_SHA2_128S   |           7856 |         32 | 40 msg / 9 fr / 117 s | 27 msg / 1 fr / 4.16 s | 39 msg / 16 fr / 1.85e+04 s | 50 msg / 16 fr / 2.38e+04 s  | 22 msg / 1 fr / 2.1 s      | 4 msg / 1 fr / 0.3 s         | 7 msg / 1 fr / n/a    |
+| SNOVA         | SNOVA_24_5_4             |            248 |       1016 | 2 msg / 9 fr / 3 s    | 1 msg / 1 fr / 0 s     | 2 msg / 16 fr / 570 s       | 2 msg / 16 fr / 750 s        | 1 msg / 1 fr / 0 s         | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
+| SNOVA         | SNOVA_25_8_3             |            165 |       2320 | 1 msg / 8 fr / 0 s    | 1 msg / 1 fr / 0 s     | 1 msg / 13 fr / 360 s       | 2 msg / 16 fr / 480 s        | 1 msg / 1 fr / 0 s         | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
+| SNOVA         | SNOVA_37_17_2            |            124 |       9842 | 1 msg / 6 fr / 0 s    | 1 msg / 1 fr / 0 s     | 1 msg / 10 fr / 270 s       | 1 msg / 13 fr / 360 s        | 1 msg / 1 fr / 0 s         | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
+| UOV           | OV-Ip                    |            128 |     278432 | 1 msg / 6 fr / 0 s    | 1 msg / 1 fr / 0 s     | 1 msg / 11 fr / 300 s       | 1 msg / 13 fr / 360 s        | 1 msg / 1 fr / 0 s         | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
+| UOV           | OV-Ip-pkc                |            128 |      43576 | 1 msg / 6 fr / 0 s    | 1 msg / 1 fr / 0 s     | 1 msg / 11 fr / 300 s       | 1 msg / 13 fr / 360 s        | 1 msg / 1 fr / 0 s         | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
+| UOV           | OV-Is                    |             96 |     412160 | 1 msg / 5 fr / 0 s    | 1 msg / 1 fr / 0 s     | 1 msg / 8 fr / 210 s        | 1 msg / 10 fr / 270 s        | 1 msg / 1 fr / 0 s         | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
+| UOV           | OV-Is-pkc                |             96 |      66576 | 1 msg / 5 fr / 0 s    | 1 msg / 1 fr / 0 s     | 1 msg / 8 fr / 210 s        | 1 msg / 10 fr / 270 s        | 1 msg / 1 fr / 0 s         | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
 
-**Verdict Q1: answered by the tables (supported as a descriptive question). Full signature fits in 104/1105 (scheme, profile) pairs; the PQ-anchored chain fits in 97/1105; sig+cert fits in 0/1105. Fragmented 'fits' means total bytes only; see frames column for the multi-frame cost.**
+Public keys are not in the signature column: modes that do not carry the key (all `full`/`chain`/`hybrid` rows, and `full_cert` where the source provisions keys out of band) assume it is provisioned. Key sizes of the lowest-level classes range from 32 B to 412160 B (CROSS: 54-77 B, Falcon/FN-DSA: 897-897 B, MAYO: 1420-4912 B, ML-DSA: 1312-1312 B, MQOM: 60-60 B, SLH-DSA: 32-32 B, SNOVA: 1016-9842 B, UOV: 43576-412160 B); the larger ones (UOV, MAYO-2, SNOVA) cannot be sent in any profile's single message and rely on that provisioning.
 
-## Q2: PQ-anchored chain vs fragmented signatures at 0-30% loss
+**Chain mode (steady 32 B per message; anchor fragmented).** anchor messages and join time = anchor ttfa + d x message period:
 
-Source: `results/raw/lossmodel.csv`. Seeded i.i.d. loss; 20 seeds x 5000 messages per cell; mean and std across seeds.
-Parameters: k=13 (FN-DSA) / 34 (ML-DSA) fragments, 324 B anchor (darzi2026a); signature 666 B / 2420 B (junquera2023assessment, Falcon-512 / Dilithium2 as in that note; cited; scenarios cited13/cited34; scenarios oqs13/oqs34 use the liboqs-measured sig_bytes_max of Falcon-512 / ML-DSA-44 and an anchor of measured MAYO-1 signature + 16 + 4 B, with k still taken from darzi2026a, not recomputed). Assumed, not cited: r=2 carousel cycles, key delay d=2 slots, epoch 20 slots, 2 anchors/epoch, 16 B disclosed key, slot 160 ms (SIB1 period), deadline = r*k slots. Model: see `lib/pqsig/lossmodel.py` docstring. Results are sensitive to these assumptions.
+| family        | scheme                   | remote_id      | sib1            | osnma_pkr204        | osnma_kroot158       | cv2x_437 (ceiling-based)   | cv2x_j3161 (ceiling-based)   | dns (ceiling-based)   |
+|:--------------|:-------------------------|:---------------|:----------------|:--------------------|:---------------------|:---------------------------|:-----------------------------|:----------------------|
+| CROSS         | cross-rsdp-128-balanced  | 66 msg / 198 s | 45 msg / 7.2 s  | 65 msg / 3.15e+04 s | 84 msg / 4.05e+04 s  | 36 msg / 3.6 s             | 6 msg / 0.6 s                | 11 msg / n/a          |
+| CROSS         | cross-rsdp-128-fast      | 92 msg / 276 s | 63 msg / 10.1 s | 91 msg / 4.39e+04 s | 117 msg / 5.65e+04 s | 50 msg / 5 s               | 8 msg / 0.8 s                | 16 msg / n/a          |
+| CROSS         | cross-rsdp-128-small     | 62 msg / 186 s | 43 msg / 6.88 s | 62 msg / 2.98e+04 s | 79 msg / 3.83e+04 s  | 34 msg / 3.4 s             | 6 msg / 0.6 s                | 11 msg / n/a          |
+| CROSS         | cross-rsdpg-128-balanced | 46 msg / 138 s | 32 msg / 5.12 s | 45 msg / 2.2e+04 s  | 58 msg / 2.82e+04 s  | 25 msg / 2.5 s             | 4 msg / 0.4 s                | 8 msg / n/a           |
+| CROSS         | cross-rsdpg-128-fast     | 60 msg / 180 s | 41 msg / 6.56 s | 59 msg / 2.87e+04 s | 76 msg / 3.69e+04 s  | 33 msg / 3.3 s             | 5 msg / 0.5 s                | 10 msg / n/a          |
+| CROSS         | cross-rsdpg-128-small    | 45 msg / 135 s | 31 msg / 4.96 s | 45 msg / 2.16e+04 s | 57 msg / 2.78e+04 s  | 25 msg / 2.5 s             | 4 msg / 0.4 s                | 8 msg / n/a           |
+| Falcon/FN-DSA | Falcon-512               | 4 msg / 12 s   | 3 msg / 0.48 s  | 4 msg / 2.28e+03 s  | 5 msg / 2.82e+03 s   | 3 msg / 0.3 s              | 1 msg / 0.1 s                | 1 msg / n/a           |
+| Falcon/FN-DSA | Falcon-padded-512        | 4 msg / 12 s   | 3 msg / 0.48 s  | 4 msg / 2.07e+03 s  | 5 msg / 2.55e+03 s   | 2 msg / 0.2 s              | 1 msg / 0.1 s                | 1 msg / n/a           |
+| MAYO          | MAYO-1                   | 3 msg / 9 s    | 2 msg / 0.32 s  | 3 msg / 1.59e+03 s  | 3 msg / 1.89e+03 s   | 2 msg / 0.2 s              | 1 msg / 0.1 s                | 1 msg / n/a           |
+| MAYO          | MAYO-2                   | 2 msg / 6 s    | 1 msg / 0.16 s  | 2 msg / 960 s       | 2 msg / 1.08e+03 s   | 1 msg / 0.1 s              | 1 msg / 0.1 s                | 1 msg / n/a           |
+| ML-DSA        | ML-DSA-44                | 13 msg / 39 s  | 9 msg / 1.44 s  | 12 msg / 6.21e+03 s | 16 msg / 7.89e+03 s  | 7 msg / 0.7 s              | 2 msg / 0.2 s                | 3 msg / n/a           |
+| MQOM          | mqom2_cat1_gf16_fast_r3  | 18 msg / 54 s  | 12 msg / 1.92 s | 18 msg / 8.7e+03 s  | 23 msg / 1.11e+04 s  | 10 msg / 1 s               | 2 msg / 0.2 s                | 3 msg / n/a           |
+| MQOM          | mqom2_cat1_gf16_fast_r5  | 17 msg / 51 s  | 12 msg / 1.92 s | 17 msg / 8.22e+03 s | 21 msg / 1.05e+04 s  | 9 msg / 0.9 s              | 2 msg / 0.2 s                | 3 msg / n/a           |
+| MQOM          | mqom2_cat1_gf16_short_r3 | 16 msg / 48 s  | 11 msg / 1.76 s | 16 msg / 7.71e+03 s | 20 msg / 9.81e+03 s  | 9 msg / 0.9 s              | 2 msg / 0.2 s                | 3 msg / n/a           |
+| MQOM          | mqom2_cat1_gf16_short_r5 | 15 msg / 45 s  | 11 msg / 1.76 s | 15 msg / 7.38e+03 s | 19 msg / 9.39e+03 s  | 8 msg / 0.8 s              | 2 msg / 0.2 s                | 3 msg / n/a           |
+| SLH-DSA       | SLH_DSA_PURE_SHA2_128F   | 86 msg / 258 s | 59 msg / 9.44 s | 84 msg / 4.07e+04 s | 109 msg / 5.24e+04 s | 46 msg / 4.6 s             | 8 msg / 0.8 s                | 15 msg / n/a          |
+| SLH-DSA       | SLH_DSA_PURE_SHA2_128S   | 40 msg / 120 s | 27 msg / 4.32 s | 39 msg / 1.9e+04 s  | 50 msg / 2.44e+04 s  | 22 msg / 2.2 s             | 4 msg / 0.4 s                | 7 msg / n/a           |
+| SNOVA         | SNOVA_24_5_4             | 2 msg / 6 s    | 1 msg / 0.16 s  | 2 msg / 1.11e+03 s  | 2 msg / 1.29e+03 s   | 1 msg / 0.1 s              | 1 msg / 0.1 s                | 1 msg / n/a           |
+| SNOVA         | SNOVA_25_8_3             | 1 msg / 3 s    | 1 msg / 0.16 s  | 1 msg / 900 s       | 2 msg / 1.02e+03 s   | 1 msg / 0.1 s              | 1 msg / 0.1 s                | 1 msg / n/a           |
+| SNOVA         | SNOVA_37_17_2            | 1 msg / 3 s    | 1 msg / 0.16 s  | 1 msg / 810 s       | 1 msg / 900 s        | 1 msg / 0.1 s              | 1 msg / 0.1 s                | 1 msg / n/a           |
+| UOV           | OV-Ip                    | 1 msg / 3 s    | 1 msg / 0.16 s  | 1 msg / 810 s       | 1 msg / 900 s        | 1 msg / 0.1 s              | 1 msg / 0.1 s                | 1 msg / n/a           |
+| UOV           | OV-Ip-pkc                | 1 msg / 3 s    | 1 msg / 0.16 s  | 1 msg / 810 s       | 1 msg / 900 s        | 1 msg / 0.1 s              | 1 msg / 0.1 s                | 1 msg / n/a           |
+| UOV           | OV-Is                    | 1 msg / 3 s    | 1 msg / 0.16 s  | 1 msg / 750 s       | 1 msg / 810 s        | 1 msg / 0.1 s              | 1 msg / 0.1 s                | 1 msg / n/a           |
+| UOV           | OV-Is-pkc                | 1 msg / 3 s    | 1 msg / 0.16 s  | 1 msg / 750 s       | 1 msg / 810 s        | 1 msg / 0.1 s              | 1 msg / 0.1 s                | 1 msg / n/a           |
 
-| scenario   | scheme     |   loss |   share_verified_mean |   share_verified_std |   bytes_per_verified_mean |   bytes_per_verified_std |   p95_ms_mean |   p95_ms_std |
-|:-----------|:-----------|-------:|----------------------:|---------------------:|--------------------------:|-------------------------:|--------------:|-------------:|
-| cited13    | chain      |   0    |               1       |             0        |                64.4       |                   0      |   480         |         0    |
-| cited13    | chain      |   0.05 |               0.9485  |             0.004197 |                67.9       |                   0.2999 |   640         |         0    |
-| cited13    | chain      |   0.1  |               0.8935  |             0.006511 |                72.08      |                   0.5262 |   688         |        75.23 |
-| cited13    | chain      |   0.15 |               0.8313  |             0.005906 |                77.47      |                   0.5484 |   832         |        65.66 |
-| cited13    | chain      |   0.2  |               0.7705  |             0.01142  |                83.59      |                   1.25   |   984         |       119.2  |
-| cited13    | chain      |   0.25 |               0.7053  |             0.01209  |                91.33      |                   1.564  |  1087         |        81.83 |
-| cited13    | chain      |   0.3  |               0.637   |             0.01561  |               101.2       |                   2.487  |  1168         |        74.62 |
-| cited13    | fragmented |   0    |               1       |             0        |              1332         |                   0      |  2080         |         0    |
-| cited13    | fragmented |   0.05 |               0.9685  |             0.002748 |              1375         |                   3.908  |  4054         |        75.98 |
-| cited13    | fragmented |   0.1  |               0.878   |             0.004386 |              1517         |                   7.576  |  4160         |         0    |
-| cited13    | fragmented |   0.15 |               0.7447  |             0.006655 |              1789         |                  15.94   |  4160         |         0    |
-| cited13    | fragmented |   0.2  |               0.5866  |             0.006874 |              2271         |                  26.62   |  4160         |         0    |
-| cited13    | fragmented |   0.25 |               0.434   |             0.008301 |              3070         |                  60.13   |  4160         |         0    |
-| cited13    | fragmented |   0.3  |               0.2932  |             0.005529 |              4545         |                  86.13   |  4160         |         0    |
-| cited34    | chain      |   0    |               1       |             0        |                64.4       |                   0      |   480         |         0    |
-| cited34    | chain      |   0.05 |               0.9482  |             0.003634 |                67.92      |                   0.2609 |   640         |         0    |
-| cited34    | chain      |   0.1  |               0.8907  |             0.007933 |                72.31      |                   0.6477 |   656         |        49.25 |
-| cited34    | chain      |   0.15 |               0.8324  |             0.009625 |                77.38      |                   0.9004 |   832         |        65.66 |
-| cited34    | chain      |   0.2  |               0.7663  |             0.01145  |                84.05      |                   1.264  |   974         |       112.6  |
-| cited34    | chain      |   0.25 |               0.7037  |             0.01084  |                91.54      |                   1.404  |  1080         |        88.02 |
-| cited34    | chain      |   0.3  |               0.6344  |             0.01     |               101.5       |                   1.612  |  1171         |        74.43 |
-| cited34    | fragmented |   0    |               1       |             0        |              4840         |                   0      |  5440         |         0    |
-| cited34    | fragmented |   0.05 |               0.9198  |             0.00276  |              5262         |                  15.78   |     1.077e+04 |        74.77 |
-| cited34    | fragmented |   0.1  |               0.7117  |             0.005965 |              6801         |                  56.65   |     1.088e+04 |         0    |
-| cited34    | fragmented |   0.15 |               0.46    |             0.007244 |                 1.052e+04 |                 165.9    |     1.088e+04 |         0    |
-| cited34    | fragmented |   0.2  |               0.25    |             0.006403 |                 1.937e+04 |                 502.2    |     1.088e+04 |         0    |
-| cited34    | fragmented |   0.25 |               0.1135  |             0.005057 |                 4.271e+04 |                1976      |     1.088e+04 |         0    |
-| cited34    | fragmented |   0.3  |               0.04019 |             0.002513 |                 1.209e+05 |                7825      |     1.088e+04 |         0    |
-| oqs13      | chain      |   0    |               1       |             0        |                79.4       |                   0      |   480         |         0    |
-| oqs13      | chain      |   0.05 |               0.9485  |             0.004197 |                83.71      |                   0.3698 |   640         |         0    |
-| oqs13      | chain      |   0.1  |               0.8935  |             0.006511 |                88.86      |                   0.6488 |   688         |        75.23 |
-| oqs13      | chain      |   0.15 |               0.8313  |             0.005906 |                95.52      |                   0.6761 |   832         |        65.66 |
-| oqs13      | chain      |   0.2  |               0.7705  |             0.01142  |               103.1       |                   1.541  |   984         |       119.2  |
-| oqs13      | chain      |   0.25 |               0.7053  |             0.01209  |               112.6       |                   1.928  |  1087         |        81.83 |
-| oqs13      | chain      |   0.3  |               0.637   |             0.01561  |               124.7       |                   3.066  |  1168         |        74.62 |
-| oqs13      | fragmented |   0    |               1       |             0        |              1326         |                   0      |  2080         |         0    |
-| oqs13      | fragmented |   0.05 |               0.9685  |             0.002748 |              1369         |                   3.89   |  4054         |        75.98 |
-| oqs13      | fragmented |   0.1  |               0.878   |             0.004386 |              1510         |                   7.542  |  4160         |         0    |
-| oqs13      | fragmented |   0.15 |               0.7447  |             0.006655 |              1781         |                  15.86   |  4160         |         0    |
-| oqs13      | fragmented |   0.2  |               0.5866  |             0.006874 |              2261         |                  26.5    |  4160         |         0    |
-| oqs13      | fragmented |   0.25 |               0.434   |             0.008301 |              3057         |                  59.86   |  4160         |         0    |
-| oqs13      | fragmented |   0.3  |               0.2932  |             0.005529 |              4524         |                  85.74   |  4160         |         0    |
-| oqs34      | chain      |   0    |               1       |             0        |                79.4       |                   0      |   480         |         0    |
-| oqs34      | chain      |   0.05 |               0.9482  |             0.003634 |                83.74      |                   0.3217 |   640         |         0    |
-| oqs34      | chain      |   0.1  |               0.8907  |             0.007933 |                89.15      |                   0.7986 |   656         |        49.25 |
-| oqs34      | chain      |   0.15 |               0.8324  |             0.009625 |                95.4       |                   1.11   |   832         |        65.66 |
-| oqs34      | chain      |   0.2  |               0.7663  |             0.01145  |               103.6       |                   1.559  |   974         |       112.6  |
-| oqs34      | chain      |   0.25 |               0.7037  |             0.01084  |               112.9       |                   1.731  |  1080         |        88.02 |
-| oqs34      | chain      |   0.3  |               0.6344  |             0.01     |               125.2       |                   1.987  |  1171         |        74.43 |
-| oqs34      | fragmented |   0    |               1       |             0        |              4840         |                   0      |  5440         |         0    |
-| oqs34      | fragmented |   0.05 |               0.9198  |             0.00276  |              5262         |                  15.78   |     1.077e+04 |        74.77 |
-| oqs34      | fragmented |   0.1  |               0.7117  |             0.005965 |              6801         |                  56.65   |     1.088e+04 |         0    |
-| oqs34      | fragmented |   0.15 |               0.46    |             0.007244 |                 1.052e+04 |                 165.9    |     1.088e+04 |         0    |
-| oqs34      | fragmented |   0.2  |               0.25    |             0.006403 |                 1.937e+04 |                 502.2    |     1.088e+04 |         0    |
-| oqs34      | fragmented |   0.25 |               0.1135  |             0.005057 |                 4.271e+04 |                1976      |     1.088e+04 |         0    |
-| oqs34      | fragmented |   0.3  |               0.04019 |             0.002513 |                 1.209e+05 |                7825      |     1.088e+04 |         0    |
+Figure: `fig_q1_share.pdf` (source `raw/scoring_all_levels.csv`, lowest-level classes, full mode).
 
-Figure: `fig_q2_loss.pdf` (source `raw/lossmodel.csv`).
+Per-class values for hybrid and full_cert (steady/peak/average bytes) are in `results/main_table_lowest_level.csv`.
 
-Cells where chain is better by more than 2 std (loss > 0, both scenarios):
+**C-V2X Falcon-512 conflict (shown, not hidden).** twardokus2024when's 437 B ceiling versus abrar2026deployment's SAE J3161 2,481 B transport-block ceiling:
 
-| metric             |   chain_better_cells |   cells |
-|:-------------------|---------------------:|--------:|
-| share_verified     |                   22 |      24 |
-| bytes_per_verified |                   24 |      24 |
-| p95_ms             |                   24 |      24 |
+| scheme            | profile    | mode      |   auth_bytes |   peak_bytes |   budget | fits   |   msgs_needed |
+|:------------------|:-----------|:----------|-------------:|-------------:|---------:|:-------|--------------:|
+| Falcon-512        | cv2x_437   | full      |          752 |          nan |      373 | False  |             3 |
+| Falcon-512        | cv2x_437   | full_cert |          760 |         1754 |      373 | False  |             5 |
+| Falcon-512        | cv2x_437   | hybrid    |          816 |          nan |      373 | False  |             3 |
+| Falcon-512        | cv2x_j3161 | full      |          752 |          nan |     2414 | True   |             1 |
+| Falcon-512        | cv2x_j3161 | full_cert |          760 |         1754 |     2414 | True   |             1 |
+| Falcon-512        | cv2x_j3161 | hybrid    |          816 |          nan |     2414 | True   |             1 |
+| Falcon-padded-512 | cv2x_437   | full      |          666 |          nan |      373 | False  |             2 |
+| Falcon-padded-512 | cv2x_437   | full_cert |          674 |         1668 |      373 | False  |             5 |
+| Falcon-padded-512 | cv2x_437   | hybrid    |          730 |          nan |      373 | False  |             2 |
+| Falcon-padded-512 | cv2x_j3161 | full      |          666 |          nan |     2414 | True   |             1 |
+| Falcon-padded-512 | cv2x_j3161 | full_cert |          674 |         1668 |     2414 | True   |             1 |
+| Falcon-padded-512 | cv2x_j3161 | hybrid    |          730 |          nan |     2414 | True   |             1 |
 
-**Verdict Q2: inconclusive (mixed) under these smoke assumptions (share_verified: 22/24; bytes_per_verified: 24/24; p95_ms: 24/24 cells where chain is better by >2 std); chain is not better on every metric at every loss level. Counts span cited and liboqs-size scenarios.** p95 time is taken over verified messages only and is capped by the deadline, so a low verified share flatters the fragmented p95. The darzi2026a 10% point (~41 B vs ~1971 B retransmission overhead) uses a retransmission accounting that this carousel model does not reproduce; TODO-RESULT.
+Both are consistent with the sources: Falcon-512 (declared 752 B, padded 666 B) exceeds the 437 B-based budget and fits the 2,481 B ceiling; 'feasible' in abrar2026deployment means fits a transport block (its own 90% PDR is met only at LOS level A).
 
-### Q2 parameter sweep
+**Baseline reproductions from stated numbers (not from liboqs):**
 
-Source: `results/raw/lossmodel_sweep.csv` (one-at-a-time r, d, E, a around the baseline; loss 5/10/30%; chain-vs-fragmented compared per scenario/sweep value/loss over seeds).
+| baseline                                                      |   computed |   reported |
+|:--------------------------------------------------------------|-----------:|-----------:|
+| darzi2026a FN-DSA 2-level chain, packets                      |         13 |         13 |
+| darzi2026a ML-DSA 2-level chain, packets                      |         34 |         34 |
+| junquera2023assessment Falcon signature, DSM blocks at 79 bit |         68 |         67 |
 
-| scenario   | sweep_var   |   chain_better_share_sum |   chain_better_share_count |   chain_better_bytes_sum |   chain_better_bytes_count |   chain_better_p95_sum |   chain_better_p95_count |
-|:-----------|:------------|-------------------------:|---------------------------:|-------------------------:|---------------------------:|-----------------------:|-------------------------:|
-| cited13    | E           |                        6 |                          9 |                        9 |                          9 |                      9 |                        9 |
-| cited13    | a           |                        5 |                          9 |                        9 |                          9 |                      9 |                        9 |
-| cited13    | d           |                        6 |                          9 |                        9 |                          9 |                      9 |                        9 |
-| cited13    | r           |                        5 |                          9 |                        9 |                          9 |                      9 |                        9 |
-| cited34    | E           |                        9 |                          9 |                        9 |                          9 |                      9 |                        9 |
-| cited34    | a           |                        8 |                          9 |                        9 |                          9 |                      9 |                        9 |
-| cited34    | d           |                        9 |                          9 |                        9 |                          9 |                      9 |                        9 |
-| cited34    | r           |                        7 |                          9 |                        8 |                          9 |                      8 |                        9 |
-| oqs13      | E           |                        6 |                          9 |                        9 |                          9 |                      9 |                        9 |
-| oqs13      | a           |                        5 |                          9 |                        9 |                          9 |                      9 |                        9 |
-| oqs13      | d           |                        6 |                          9 |                        9 |                          9 |                      9 |                        9 |
-| oqs13      | r           |                        5 |                          9 |                        9 |                          9 |                      9 |                        9 |
-| oqs34      | E           |                        9 |                          9 |                        9 |                          9 |                      9 |                        9 |
-| oqs34      | a           |                        8 |                          9 |                        9 |                          9 |                      9 |                        9 |
-| oqs34      | d           |                        9 |                          9 |                        9 |                          9 |                      9 |                        9 |
-| oqs34      | r           |                        7 |                          9 |                        8 |                          9 |                      8 |                        9 |
+The darzi2026a packet counts reproduce from crypto bytes / 293 B. The junquera2023assessment 67 does not (68 by the source's own 79 bit/block). The 324 B / 744 B OTA figures, the 71-block key figure and the 10% retransmission point are not reproduced (TODO-RESULT).
 
-Sweep cells: 144; chain better on share/bytes/p95 in 110, 142, 142 cells respectively.
+**Verdict Q1: answered descriptively (supported as a table, no statistical claim).** Full signatures fitting a single message, out of 24 lowest-level classes: remote_id 7; sib1 8; osnma_pkr204 7; osnma_kroot158 5; cv2x_437 (ceiling-based) 8; cv2x_j3161 (ceiling-based) 11; dns (ceiling-based) 11. Chain steady-state traffic (32 B) fits in 168/168 (class, profile) pairs; its cost is the fragmented anchor and the join time above. ceiling-based profiles (C-V2X, DNS) are upper bounds on fit.
 
-## Q3: size or timing tail binding (deadline miss from sign/verify tails)
+## Q2: PQ-anchored chain vs fragmentation (and amortized signing), equal channel budget
 
-Source: `results/raw/*timing*.csv` columns `*_frac_gt3ms`, `*_frac_gt100ms` (fraction of iterations over 3 ms / 100 ms), x86 only; MCU figures are cited from chhetri2026benchmarking, not measured.
+Sources: `raw/loss_closed.csv` (closed forms), `raw/loss_simcheck.csv` (i.i.d. simulation cross-check), `raw/loss_ge.csv` (Gilbert-Elliott simulation), `raw/loss_params.csv` (parameters). Channel: the SIB1 slot model (C = 293 B auth per slot, one slot per 160 ms, both stated by darzi2026a). **Equal budget: every scheme gets M slots per message (same slots/s, same bytes per slot), i.e. one message per M slots.** Because the channel use is identical, the comparison is share verified and time to authenticate, not bytes per verified message.
 
-Per family: fraction of (scheme, profile) pairs where the full signature does not fit, vs fraction of schemes whose sign or verify tail exceeds the deadline (x86 liboqs; p99 where n >= 1000, median otherwise). Per-iteration fractions over each deadline are the `*_frac_gt*` columns in the timing CSV.
+Derived closed forms (i.i.d. slot loss p, q = 1-p; docstring of `lib/pqsig/lossform.py`):
 
-| group         |   schemes | tail_basis                         |   full_sig_misfit_frac |   over_3ms_frac |   over_100ms_frac |
-|:--------------|----------:|:-----------------------------------|-----------------------:|----------------:|------------------:|
-| CROSS         |        18 | median (n<100, tail not estimable) |                 1      |          0.1111 |            0      |
-| Falcon/FN-DSA |         4 | p99                                |                 0.9    |          0      |            0      |
-| MAYO          |         4 | p99                                |                 0.6    |          0      |            0      |
-| ML-DSA        |         3 | p99                                |                 1      |          0      |            0      |
-| MQOM          |        12 | median (n<100, tail not estimable) |                 1      |          0.5    |            0      |
-| SLH-DSA       |       156 | median (n<100, tail not estimable) |                 1      |          1      |            0.5577 |
-| SNOVA         |        12 | p99                                |                 0.3333 |          0.1667 |            0      |
-| UOV           |        12 | p99                                |                 0.1    |          0.1667 |            0      |
+```
+Closed forms (i.i.d. slot loss p) and a slot-level simulator (i.i.d. or Gilbert-Elliott) for broadcast authentication
+under an EQUAL channel budget: every scheme gets M slots per message (same slots/s, same bytes/slot), message rate 1/M per slot.
 
-Figure: `fig_q3_size_vs_tail.pdf` (source `raw/*timing*.csv`, `raw/scoring.csv`).
+Notation: q = 1-p. S signature bytes, C auth bytes per slot, k = ceil(S/C) fragments, k_a = ceil((S+commit+ts)/C) anchor fragments,
+E messages per epoch, r_a anchor repetitions (derived, see chain), w key windows, n messages per Merkle batch.
 
-**Verdict Q3: size binding (supported; no family is timing-bound, ties count as not distinguishing). Size is the larger bound in 6/8 families and timing in 0/8 (both deadlines). x86 only; MCU timing not measured, so this does not cover constrained devices. Tails are from <= 1000 iterations on a shared cloud VM.**
+ frag_rep   r = floor(M/k) repetitions of all k fragments.        P = (1 - p^r)^k                      (needs M >= k)
+ frag_mds   M erasure-coded fragments, any k reconstruct.          P = P[Bin(M, q) >= k]                (needs M >= k)
+ chain      t = M - a_s tag-copy slots per message;  P = (1 - p^t) (1 - p^{t w}) (1 - p^{r_a})^{k_a}
+            (message copy received) x (some key-carrying copy in the next w windows) x (anchor fragments all covered)
+            a_s = ceil(2 k_a / E) slots per message are reserved for the anchor, so the epoch has E a_s anchor slots and
+            r_a = floor(E a_s / k_a) >= 2 repetitions (all reserved slots are used: equal channel use)
+ merkle_rep batch of n messages, t = M - ceil(2k/n) message copies; the n(M-t) spare slots carry the batch signature,
+            r_s = floor(n(M-t)/k) repetitions.                      P = (1 - p^t) (1 - p^{r_s})^k
+ merkle_mds same but erasure-coded:                                  P = (1 - p^t) P[Bin(n(M-t), q) >= k]
+Messages whose verification never completes count as missing the deadline (p95 is over ALL messages).
+TTA95 (slots, from the start of the message's window, worst message of a batch for merkle):
+ frag_rep  rho*k with rho = least rho<=r with (1-p^rho)^k >= .95        frag_mds  least s<=M with P[Bin(s,q)>=k] >= .95
+ chain     M + u*M/t with u least with (1-p^t)(1-p^u)(1-p^{r_a})^{k_a} >= .95 (u <= t w)
+ merkle    n M + rho*k*M/(M-t)  (rep)  or  n M + s*M/(M-t) (mds), with the (1-p^t) factor included
+ inf = the scheme cannot reach 95% at that loss.
+```
+
+The earlier Monte-Carlo result 'fragmentation wins at 5% loss with k=13' is explained by the formulas: it gave fragments r=2 repetitions and chain message frames none. Here both schemes spend the same M slots.
+
+Parameters (every assumed value is marked):
+
+| parameter                         | value                                                                                               | source                                                                                     |
+|:----------------------------------|:----------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------|
+| slot capacity C (auth bytes/slot) | 293                                                                                                 | darzi2026a via profiles.yaml sib1.auth_budget (293 B)                                      |
+| slot period                       | 0.16                                                                                                | darzi2026a (SIB1 every 160 ms), stated                                                     |
+| fragment header                   | 0                                                                                                   | TODO-RESULT in evidence; 0 used (lower bound on fragment count)                            |
+| slots per message window M        | 3,6,12,24,48                                                                                        | assumed grid (equal for every scheme)                                                      |
+| signature bytes S                 | declared liboqs length_signature                                                                    | sizes_declared.csv                                                                         |
+| anchor = S + commit + ts          | S+16+4                                                                                              | commit 16 B and ts 4 B assumed                                                             |
+| tag / disclosed key               | 16 / 16                                                                                             | tag 16 B darzi2026a; key 16 B assumed (does not enter the slot count: one slot carries it) |
+| epoch length E (messages)         | 20                                                                                                  | assumed                                                                                    |
+| minimum anchor repetitions        | 2                                                                                                   | assumed; actual r_a = floor(E*a_s/k_a) uses all reserved slots                             |
+| key windows w (d=1 message delay) | 2                                                                                                   | assumed                                                                                    |
+| Merkle batch n                    | 4,8,16 (8 main)                                                                                     | assumed                                                                                    |
+| merkle signature redundancy       | 2 repetitions' worth of slots                                                                       | assumed                                                                                    |
+| loss                              | i.i.d. p in 0..0.30; Gilbert-Elliott loss_G=0, loss_B=1, mean burst 2/5/10 slots, stationary loss p | task spec; burst lengths assumed                                                           |
+| seeds / messages                  | 20 / 4000                                                                                           | simulation only (cross-check and GE)                                                       |
+
+Simulation cross-check (240 cells, 20 seeds x 4000 messages): max |sim - closed| = 0.0121; cells with |diff| > 3 standard errors: 3. (Chain cells are correlated within an epoch, so their standard errors are optimistic.) The simulation is only a check on the formulas; no conclusion rests on it.
+
+Region summary at equal budget (loss 5-30%; Merkle uses the best batch size n in {4, 8, 16} for each cell, a generous competitor): fraction of loss levels where the chain's share verified is at least the best fragmentation scheme's (frag_rep/frag_mds), and at least every scheme's (incl. Merkle batches), with 0.005 tolerance. `feasible` = scheme can send its material within M slots. Falcon-padded-512 and MAYO-1 are in `loss_closed.csv`.
+
+| sig        |   k |   ka |   M | frag_feasible   | chain_feasible   | chain_ge_frag   | chain_ge_all   |
+|:-----------|----:|-----:|----:|:----------------|:-----------------|:----------------|:---------------|
+| Falcon-512 |   3 |    3 |   3 | True            | True             | 6/6             | 5/6            |
+| Falcon-512 |   3 |    3 |   6 | True            | True             | 6/6             | 6/6            |
+| Falcon-512 |   3 |    3 |  12 | True            | True             | 6/6             | 6/6            |
+| Falcon-512 |   3 |    3 |  24 | True            | True             | 6/6             | 6/6            |
+| Falcon-512 |   3 |    3 |  48 | True            | True             | 6/6             | 6/6            |
+| MAYO-2     |   1 |    1 |   3 | True            | True             | 1/6             | 1/6            |
+| MAYO-2     |   1 |    1 |   6 | True            | True             | 6/6             | 6/6            |
+| MAYO-2     |   1 |    1 |  12 | True            | True             | 6/6             | 6/6            |
+| MAYO-2     |   1 |    1 |  24 | True            | True             | 6/6             | 6/6            |
+| MAYO-2     |   1 |    1 |  48 | True            | True             | 6/6             | 6/6            |
+| ML-DSA-44  |   9 |    9 |   3 | False           | True             | 6/6             | 2/6            |
+| ML-DSA-44  |   9 |    9 |   6 | False           | True             | 6/6             | 0/6            |
+| ML-DSA-44  |   9 |    9 |  12 | True            | True             | 0/6             | 0/6            |
+| ML-DSA-44  |   9 |    9 |  24 | True            | True             | 0/6             | 0/6            |
+| ML-DSA-44  |   9 |    9 |  48 | True            | True             | 0/6             | 0/6            |
+
+Share verified / TTA95 in slots (x 0.16 s) at M = 12 slots per message (one message every 1.92 s). TTA95 is over all messages: `miss` = fewer than 95% ever verify; merkle TTA is the worst message of the best-n batch.
+
+| sig        |   k |   loss | chain        | frag_mds     | frag_rep     | merkle_mds   | merkle_rep   |
+|:-----------|----:|-------:|:-------------|:-------------|:-------------|:-------------|:-------------|
+| Falcon-512 |   3 |   0.05 | 1.000 / 14.2 | 1.000 / 4    | 1.000 / 6    | 1.000 / 240  | 1.000 / 264  |
+| Falcon-512 |   3 |   0.1  | 1.000 / 14.2 | 1.000 / 5    | 1.000 / 6    | 1.000 / 252  | 1.000 / 264  |
+| Falcon-512 |   3 |   0.2  | 1.000 / 14.2 | 1.000 / 6    | 0.995 / 9    | 1.000 / 264  | 0.999 / 300  |
+| Falcon-512 |   3 |   0.3  | 0.998 / 15.3 | 1.000 / 7    | 0.976 / 12   | 1.000 / 276  | 0.993 / 336  |
+| MAYO-2     |   1 |   0.05 | 1.000 / 14.2 | 1.000 / 1    | 1.000 / 1    | 1.000 / 216  | 1.000 / 216  |
+| MAYO-2     |   1 |   0.1  | 1.000 / 14.2 | 1.000 / 2    | 1.000 / 2    | 1.000 / 216  | 1.000 / 216  |
+| MAYO-2     |   1 |   0.2  | 1.000 / 14.2 | 1.000 / 2    | 1.000 / 2    | 1.000 / 216  | 1.000 / 216  |
+| MAYO-2     |   1 |   0.3  | 1.000 / 15.3 | 1.000 / 3    | 1.000 / 3    | 1.000 / 228  | 1.000 / 228  |
+| ML-DSA-44  |   9 |   0.05 | 0.978 / 14.2 | 0.998 / 11   | 0.630 / miss | 1.000 / 258  | 0.999 / 300  |
+| ML-DSA-44  |   9 |   0.1  | 0.914 / miss | 0.974 / 12   | 0.387 / miss | 1.000 / 264  | 0.991 / 354  |
+| ML-DSA-44  |   9 |   0.2  | 0.693 / miss | 0.795 / miss | 0.134 / miss | 1.000 / 276  | 0.930 / miss |
+| ML-DSA-44  |   9 |   0.3  | 0.428 / miss | 0.493 / miss | 0.040 / miss | 1.000 / 294  | 0.782 / miss |
+
+Minimum M for which each scheme can operate at all (feasibility at the message rate 1/M):
+
+| sig               |   k |   chain |   frag_mds |   frag_rep |   merkle_mds |   merkle_rep |
+|:------------------|----:|--------:|-----------:|-----------:|-------------:|-------------:|
+| Falcon-512        |   3 |       3 |          3 |          3 |            3 |            3 |
+| Falcon-padded-512 |   3 |       3 |          3 |          3 |            3 |            3 |
+| MAYO-1            |   2 |       3 |          3 |          3 |            3 |            3 |
+| MAYO-2            |   1 |       3 |          3 |          3 |            3 |            3 |
+| ML-DSA-44         |   9 |       3 |         12 |         12 |            3 |            3 |
+
+Gilbert-Elliott burst loss (loss 0 in Good, 1 in Bad, same stationary loss p, mean burst 2/5/10 slots), share verified, simulated, M=12; compare with the i.i.d. closed form:
+
+|   loss |   burst_len | chain             | frag_mds          | frag_rep          | merkle_mds        | merkle_rep        |
+|-------:|------------:|:------------------|:------------------|:------------------|:------------------|:------------------|
+|    0.1 |           2 | 1.000 (iid 1.000) | 0.999 (iid 1.000) | 0.998 (iid 1.000) | 1.000 (iid 1.000) | 0.967 (iid 0.970) |
+|    0.1 |           5 | 0.988 (iid 1.000) | 0.979 (iid 1.000) | 0.979 (iid 1.000) | 0.989 (iid 1.000) | 0.961 (iid 0.970) |
+|    0.1 |          10 | 0.958 (iid 1.000) | 0.953 (iid 1.000) | 0.952 (iid 1.000) | 0.965 (iid 1.000) | 0.940 (iid 0.970) |
+|    0.3 |           2 | 0.997 (iid 0.998) | 0.995 (iid 1.000) | 0.974 (iid 0.976) | 0.987 (iid 0.989) | 0.754 (iid 0.754) |
+|    0.3 |           5 | 0.964 (iid 0.998) | 0.929 (iid 1.000) | 0.920 (iid 0.976) | 0.958 (iid 0.989) | 0.744 (iid 0.754) |
+|    0.3 |          10 | 0.874 (iid 0.998) | 0.853 (iid 1.000) | 0.851 (iid 0.976) | 0.882 (iid 0.989) | 0.714 (iid 0.754) |
+
+Other signatures and M=24 are in `raw/loss_ge.csv`.
+
+Figures: `fig_q2_closed.pdf` (source `raw/loss_closed.csv`), `fig_q2_ge.pdf` (source `raw/loss_ge.csv`).
+
+Per signature (cells where fragmentation is feasible):
+
+| sig        |   cells |   chain_ge_frag |   chain_ge_all |
+|:-----------|--------:|----------------:|---------------:|
+| Falcon-512 |      30 |              30 |             29 |
+| MAYO-2     |      30 |              25 |             25 |
+| ML-DSA-44  |      18 |               0 |              0 |
+
+**Verdict Q2: conditional (neither supported nor refuted in general).** At equal channel budget and where fragmentation is feasible at all, the chain's share verified is at least the best fragmentation scheme's in 55/78 (signature, M, loss) cells and at least every scheme's (including Merkle amortization) in 54/78; over all cells including those where fragmentation cannot run it is 56/90. The cells where fragmentation cannot operate at the message rate (2 (signature, M) combinations among the three signatures shown) are where the chain wins outright, because its steady traffic needs one slot and its anchor is amortized over E messages. Burst loss (mean over the Gilbert-Elliott cells in `loss_ge.csv`) changes the share verified (iid closed form minus Gilbert-Elliott; positive = bursts hurt, negative = bursts help) by, per scheme: chain 0.013, frag_mds 0.025, frag_rep -0.051, merkle_mds 0.018, merkle_rep -0.014. The earlier Monte-Carlo 'inconclusive' label came from unequal redundancy; the closed forms and the region table replace it.
+
+## Q3: size or timing tail binding
+
+Sources: `raw/oqs_timing_cloud-smoke.csv`, `raw/scoring_all_levels.csv`. x86 cloud VM only; MCU figures are not measured.
+
+**Method.** Pairs = (lowest-level size class, profile), excluding dns (no stated message rate) and counting both OSNMA variants. Size-bound pair: the full signature (declared length) exceeds the profile's auth budget. Deadline of a profile = its packet period (frame period if > 0, else message period): cv2x 0.1 s, sib1 0.16 s, remote_id 3 s, osnma 30 s per block. Timing-bound pair: max(p99 sign, p99 verify) of the worst member of the class exceeds the deadline; only classes with >= 100 iterations in every member have a usable p99. For classes run with fewer iterations (20), a tail is NOT extrapolated: the cell is a timing miss only if the median alone exceeds the deadline, otherwise `insufficient data`. Each pair is classified: size-only, timing-only, both, neither, insufficient (no size misfit, timing undecidable). A family is size-bound if size-only pairs exceed timing-only pairs, timing-bound if timing-only exceeds size-only, otherwise not distinguishing. Keygen, receiver throughput and the Python-measured classical timings are out of scope. The 3 ms IEC 62351-6 deadline (quoted in hussain2026a) is not tied to any of these profiles and is reported separately.
+
+| family        |   size-only |   timing-only |   both |   neither |   insufficient |   pairs | family_binding     |
+|:--------------|------------:|--------------:|-------:|----------:|---------------:|--------:|:-------------------|
+| CROSS         |          36 |             0 |      0 |         0 |              0 |      36 | size               |
+| Falcon/FN-DSA |          10 |             0 |      0 |         2 |              0 |      12 | size               |
+| MAYO          |           6 |             0 |      0 |         6 |              0 |      12 | size               |
+| ML-DSA        |           6 |             0 |      0 |         0 |              0 |       6 | size               |
+| MQOM          |          24 |             0 |      0 |         0 |              0 |      24 | size               |
+| SLH-DSA       |           9 |             0 |      3 |         0 |              0 |      12 | size               |
+| SNOVA         |           4 |             0 |      0 |        14 |              0 |      18 | size               |
+| UOV           |           0 |             0 |      0 |        24 |              0 |      24 | not distinguishing |
+
+Figure: `fig_q3_size_vs_tail.pdf` (source `raw/oqs_timing_cloud-smoke.csv`, `raw/scoring_all_levels.csv`).
+
+**Classes with insufficient timing data** (iterations < 100, tail not estimable): CROSS: 6/6, Falcon/FN-DSA: 0/2, MAYO: 0/2, ML-DSA: 0/1, MQOM: 4/4, SLH-DSA: 2/2, SNOVA: 0/3, UOV: 0/4 (classes without usable p99 / classes).
+
+UOV against the 3 ms reference deadline (all UOV variants at all levels, not just class representatives):
+
+| scheme         |   claimed_nist_level |   iterations |   sign_median_us |   sign_p99_us |   verify_median_us |   verify_p99_us |   sign_frac_gt3ms |   verify_frac_gt3ms | over_3ms_by_p99   |
+|:---------------|---------------------:|-------------:|-----------------:|--------------:|-------------------:|----------------:|------------------:|--------------------:|:------------------|
+| OV-Ip          |                    1 |         1000 |            22.81 |     43.4      |              19.28 |           36.99 |              0    |               0     | False             |
+| OV-Ip-pkc      |                    1 |         1000 |            21.71 |     46.4      |              52.4  |           76.61 |              0    |               0     | False             |
+| OV-Ip-pkc-skc  |                    1 |         1000 |           337.7  |    408.5      |              42.8  |           61.45 |              0    |               0     | False             |
+| OV-Is          |                    1 |         1000 |            27.06 |     85.22     |              17.98 |           57.64 |              0    |               0     | False             |
+| OV-Is-pkc      |                    1 |         1000 |            23.93 |     62.38     |              66.46 |          102    |              0    |               0     | False             |
+| OV-Is-pkc-skc  |                    1 |         1000 |           656.3  |    902.6      |              66.69 |           98    |              0    |               0     | False             |
+| OV-III         |                    3 |         1000 |            78.21 |    135.2      |              79.91 |          147.4  |              0    |               0     | False             |
+| OV-III-pkc     |                    3 |         1000 |            88.12 |    147.5      |             237.1  |          343.8  |              0    |               0     | False             |
+| OV-III-pkc-skc |                    3 |         1000 |          2426    |   4053        |             243.4  |          435.3  |              0.06 |               0     | True              |
+| OV-V           |                    5 |         1000 |           145.3  |    269.9      |             116.2  |          214.8  |              0    |               0     | False             |
+| OV-V-pkc       |                    5 |         1000 |           178.6  |    360.6      |             569.3  |         1209    |              0    |               0     | False             |
+| OV-V-pkc-skc   |                    5 |         1000 |          5460    |      1.33e+04 |             582.3  |         1255    |              1    |               0.001 | True              |
+
+UOV 3 ms result: 0 of 6 lowest-level variants and 2 of 12 variants over all levels have a p99 (sign or verify) above 3 ms (OV-III-pkc-skc, OV-V-pkc-skc). The deadline is a grid reference not tied to any profile here, and the variants named (if any) are the compressed-key/secret-key ones, so another variant can be chosen; no general statement about UOV follows.
+
+**Verdict Q3: size is the binding constraint in 7 of 8 families, timing in 0, not distinguishing in 1 (rule above).** Many CPU-heavy families (SLH-DSA, CROSS, MQOM) have too few iterations for tails, so their classification rests on medians; the deadlines are packet periods that are mostly long compared with x86 operation times, so this x86 result says nothing about MCUs. Verdict class: supported for x86 under this rule, inconclusive for constrained devices.
 
 ## Runs still needed (on the user's machines, `experiments/run.sh`)
 
-- Part A on every target machine: `MACHINE_NAME=<name> ITER=10000 ITER_SLOW=200 ./run.sh` (cloud-smoke used 1000 iterations, and 20 for SLH-DSA/CROSS/MQOM, so their tails are not estimable). Stateful LMS/XMSS are not benchmarked (stateful API, not in oqs_bench.c).
-- Part B re-score on those sizes (`score.py` is run by `run.sh`); includes MAYO/UOV/SNOVA/CROSS if the liboqs build enables them (enabled by the cmake flags in `run.sh`; liboqs 0.16.0 builds all of them).
-- Part C (liboqs sizes and sweep done on cloud-smoke); re-run via run.sh on target machines. Still open: k recomputed from the actual fragment payload of each profile; correlated (burst) loss; darzi2026a retransmission accounting.
-- Baselines pending: darzi2026a 34/13 fragments and 324 B; junquera2023assessment 67/71 blocks (full text check); chen2025hybrid size tables vs liboqs; yoshizawa2026a (Bulletproofs); goertzen2022post.
+- Part A on every target machine: `MACHINE_NAME=<name> ITER=10000 ITER_SLOW=200 ./run.sh`. cloud-smoke used 1000 iterations (20 for SLH-DSA/CROSS/MQOM, whose tails are therefore not estimable). Not re-run in this redo: timings are the original cloud-smoke timings; only the declared-size listing, scoring and loss analysis are new.
+- MCU timings (Cortex-M) for the non-standardized families; classical baselines measured in C (the Python classical timings are not used).
+- LMS/XMSS size-only rows once `lms2019rfc8554.md` / `xmss2018rfc8391.md` notes exist; fragment-header sizes (TODO-RESULT) for remote_id, sib1, osnma, cv2x; BSM size and DNS header sizes for tighter ceiling-based budgets; sib1 hybrid partner.
+- Reproduce darzi2026a overheads (324 B, 744 B OTA, 10% retransmission), junquera2023assessment 71-block key figure, chen2025hybrid tables vs liboqs, yoshizawa2026a, goertzen2022post transfer bytes.
+- Loss analysis extensions: measured loss traces for each channel, chain continuity across epochs and cold-start join, security analysis of the modes (no non-repudiation for the chain, time-sync attacks, hybrid stripping).

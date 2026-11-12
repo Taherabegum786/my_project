@@ -70,6 +70,21 @@ static int bench(const char *alg, size_t n, const char *mach, const char *date, 
 }
 int main(int argc, char **argv) {
     if (argc >= 2 && !strcmp(argv[1], "--header")) { header(); return 0; }
+    if (argc >= 2 && !strcmp(argv[1], "--list-sizes")) {
+        /* declared (library-level) sizes: OQS_SIG length_* fields, no timing */
+        OQS_init();
+        printf("scheme,claimed_nist_level,euf_cma,length_public_key,length_secret_key,length_signature_declared,liboqs_version\n");
+        for (size_t i = 0; i < OQS_SIG_algs_length; i++) {
+            const char *a = OQS_SIG_alg_identifier(i);
+            if (!OQS_SIG_alg_is_enabled(a)) continue;
+            OQS_SIG *sg = OQS_SIG_new(a);
+            if (!sg) continue;
+            printf("%s,%d,%d,%zu,%zu,%zu,%s\n", a, (int)sg->claimed_nist_level, (int)sg->euf_cma,
+                   sg->length_public_key, sg->length_secret_key, sg->length_signature, OQS_version());
+            OQS_SIG_free(sg);
+        }
+        return 0;
+    }
     if (argc >= 2 && !strcmp(argv[1], "--list")) {
         OQS_init();
         for (size_t i = 0; i < OQS_SIG_algs_length; i++) {

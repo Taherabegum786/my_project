@@ -1,33 +1,216 @@
-# Budget profiles. Every value cites a research/lit/notes key. TODO-RESULT = not in notes; excluded.
-# budget_bytes: max authentication bytes per message; frame_payload: bytes per physical frame/page.
+# Budget profiles rewritten from papers/benchmark/budget-evidence.md (full-text re-read of each source).
+# payload_ceiling: largest unit the source states for the channel.   auth_budget: bytes usable for authentication per message.
+# derived: true  = my arithmetic from stated numbers (not a source statement).
+# basis: auth-budget  = source states (or directly implies) an authentication-only budget.
+#        ceiling-based = no auth-only budget in the source; auth_budget = payload ceiling minus the overheads listed in `subtractions`
+#                        (BSM size / other headers not stated -> not subtracted -> the budget is an UPPER bound).
+# TODO-RESULT = not in the evidence; the code uses 0 for that field (lower bound on cost) and flags the row (hdr_known=false).
+# Timing: message_period_s = interval between messages that carry successive fragments of one auth object;
+#         frame_period_s = spacing of frames inside one message (0 = burst). ttfa = (m-1)*message_period + (f_last-1)*frame_period.
+# hybrid_partner / cert_handling: what the source actually uses (see per-profile text).
+common:
+  chain: {tag: 16, key: 16, commit: 16, ts: 4}      # tag 16 B: darzi2026a; key/commit/ts assumed
+  chain_key_delay_messages: 1                       # assumed (d)
 profiles:
-  cv2x:
-    source: twardokus2024when
-    budget_bytes: 437          # C-V2X max payload, 10 MHz channel (note: numbers)
-    frame_payload: 437
-    frag_hdr: TODO-RESULT      # not in note; accounting uses 0 (lower bound on frames)
-    note: budget is the whole payload, not auth-only; share is therefore a lower bound
   remote_id:
     source: wiethuechter2024drip
-    budget_bytes: 255          # Authentication Data/Signature field 0-255 octets
-    frame_payload: 23          # auth payload per page (25 B frame, note)
-    frag_hdr: 0                # 25-23 = 2 B per page is already excluded from the 23
-  osnma:
-    source: junquera2023assessment
-    budget_bytes: 208          # derived: 16 DSM blocks x 104 bit = 1664 bit (note); 1632 bit crypto material
-    frame_payload: 13          # 104-bit DSM block
-    frag_hdr: 0
-    note: 67/71-block reproduction flagged doubtful in gap.md section 4 -> that check is TODO-RESULT
+    basis: auth-budget
+    payload_ceiling:
+      bytes: 255
+      derived: false
+      source: "RFC 9575 Sec. 3.2.1-3.2.2 (ASTM F3411 field)"
+      quote: "Authentication Data / Signature: (0 to 255 octets)"
+    auth_budget:
+      bytes: 201
+      derived: false
+      source: "RFC 9575 Sec. 3.2.4.2"
+      quote: "The Length field ... MUST NOT exceed the value of 201."
+    frames:                      # Bluetooth 4.x: 25 B per frame, 23 B auth payload per page
+      first_payload_bytes: 17    # page 0: 23 B minus 6 B authentication header (Appendix B: (201-17)/23 == 8)
+      next_payload_bytes: 23
+      source: "RFC 9575 Sec. 3.2.2, Appendix B"
+    fragment_header_bytes: TODO-RESULT   # per-message header for spreading one object over several messages
+    message_period_s: 3          # static Authentication Messages "at least every 3 seconds" (dynamic wrapper: 1 s)
+    frame_period_s: 0
+    timing_source: "RFC 9575 Sec. 3.2.4.2"
+    hybrid_partner: {name: Ed25519, sig_bytes: 64, source: "RFC 9575 (EdDSA, UA Signature 64 octets)"}
+    cert_handling:
+      steady_extra_bytes: 16     # DET (16 octets) identifies the key; digest-style
+      peak_extra: pk             # Broadcast Endorsement carries the Child HI (public key) plus a parent signature
+      peak_every_n: TODO-RESULT
+      description: "digest (DET 16 B) per message; full public key via Broadcast Endorsement (cadence not stated)"
+      source: "RFC 9575 (DET 16 octets, HI of Child 32 octets)"
   sib1:
     source: darzi2026a
-    budget_bytes: 372
-    frame_payload: 372
-    frag_hdr: TODO-RESULT
+    basis: auth-budget
+    payload_ceiling:
+      bytes: 372
+      derived: false
+      source: "darzi2026a Sec. II"
+      quote: "a maximum size of 372 bytes per [SIB1 transport block]"
+    auth_budget:
+      bytes: 293
+      derived: false
+      source: "darzi2026a Sec. VI"
+      quote: "srsRAN gNB utilizes 79 bytes out of the allowed 372 bytes ... with 293 bytes available per packet for authentication material"
+    frames: {first_payload_bytes: 293, next_payload_bytes: 293, source: "same"}
+    fragment_header_bytes: TODO-RESULT
+    message_period_s: 0.16       # "SIB1 every 160 ms" (configurable 20-160 ms)
+    frame_period_s: 0
+    timing_source: "darzi2026a (SIB1 period 160 ms; delay = (packets-1) x 160 ms)"
+    hybrid_partner: {name: ECDSA-P256, sig_bytes: 64, source: "assumed (not stated in darzi2026a)"}
+    cert_handling:
+      steady_extra_bytes: 0      # EMULSION provisions the long-lived PQ public key in the USIM/eSIM
+      peak_extra: none
+      peak_every_n: none
+      description: "key provisioned out of band, nothing in the broadcast (EMULSION); darzi2026a's FN-DSA/ML-DSA baselines send a 2-level certificate chain"
+      source: "darzi2026a"
+  osnma_pkr204:
+    source: junquera2023assessment
+    basis: auth-budget
+    payload_ceiling:
+      bytes: 208
+      derived: true
+      source: "junquera2023assessment Sec. 3 (16 DSM blocks x 104 bit = 1664 bit)"
+      quote: "each one is 104 bits long, we have 1664 bits available for these two use cases"
+    auth_budget:
+      bytes: 204
+      derived: true              # 1632 bit / 8; source states 1632 bit "available for cryptographic material" (DSM-PKR use case)
+      source: "junquera2023assessment Sec. 3, use case 1"
+      quote: "Discarding the 16 bits of metadata, there are available 1632 bits for cryptographic material"
+    frames: {first_payload_bytes: 12.75, next_payload_bytes: 12.75, source: "derived 1632 bit / 16 blocks = 102 bit"}
+    fragment_header_bytes: TODO-RESULT
+    message_period_s: 480        # derived: one DSM = up to 16 blocks, one block per 30 s subframe
+    frame_period_s: 30
+    timing_source: "junquera2023assessment (HKROOT message per subframe, subframe every 30 s)"
+    hybrid_partner: {name: ECDSA-P256, sig_bytes: 64, source: "junquera2023assessment (OSNMA ECDSA P-256 signature 512 bit)"}
+    cert_handling:
+      steady_extra_bytes: 0
+      peak_extra: none
+      peak_every_n: none
+      description: "public key is delivered by a separate DSM-PKR; the signature (DSM-KROOT) is scored alone; pk size is reported against the same budget as key_delivery"
+      source: "junquera2023assessment"
+    note: "Falcon needing 67/71 blocks is not reproducible; by the source's own 79 bit/block it is 68 (derived)."
+  osnma_kroot158:
+    source: junquera2023assessment
+    basis: auth-budget
+    payload_ceiling:
+      bytes: 208
+      derived: true
+      source: "junquera2023assessment Sec. 3"
+      quote: "each one is 104 bits long, we have 1664 bits available"
+    auth_budget:
+      bytes: 158
+      derived: true              # 16 blocks x 79 bit = 1264 bit; the source's own 1727-bit total is inconsistent with this
+      source: "junquera2023assessment Sec. 3, use case 2"
+      quote: "the maximum space available for the DS field ... would be 1727 bits, 79 bits per DSM Block"
+    frames: {first_payload_bytes: 9.875, next_payload_bytes: 9.875, source: "derived 79 bit per block"}
+    fragment_header_bytes: TODO-RESULT
+    message_period_s: 480
+    frame_period_s: 30
+    timing_source: "junquera2023assessment"
+    hybrid_partner: {name: ECDSA-P256, sig_bytes: 64, source: "junquera2023assessment"}
+    cert_handling: {steady_extra_bytes: 0, peak_extra: none, peak_every_n: none, description: "as osnma_pkr204", source: "junquera2023assessment"}
+  cv2x_437:
+    source: twardokus2024when
+    basis: ceiling-based
+    payload_ceiling:
+      bytes: 437
+      derived: false
+      source: "twardokus2024when Sec. IV (C-V2X vs DSRC)"
+      quote: "the maximum payload size (considering only practical data rates) in a standard 10 MHz channel is a mere 437 bytes"
+    auth_budget:
+      bytes: 373                 # 437 - 40 - 24
+      derived: true
+      source: "ceiling minus stated overheads"
+      quote: "|F| = 40+|SPDU|; |SPDU| = 24 + |BSM| + |certificate| + |sigBSM|"
+      subtractions:
+        - {name: frame overhead, bytes: 40, source: "twardokus2024when Sec. V (|F| = 40 + |SPDU|); unclear whether 437 B includes it"}
+        - {name: SPDU fixed overhead, bytes: 24, source: "twardokus2024when Sec. V"}
+        - {name: BSM, bytes: TODO-RESULT, source: "not stated in the source; not subtracted -> budget is an upper bound"}
+    frames: {first_payload_bytes: 373, next_payload_bytes: 373, source: "single frame"}
+    fragment_header_bytes: TODO-RESULT
+    message_period_s: 0.1        # "BSM every 100 ms"
+    frame_period_s: 0
+    timing_source: "twardokus2024when"
+    hybrid_partner: {name: ECDSA-P256, sig_bytes: 64, source: "IEEE 1609.2 (ECDSA; twardokus2024when 'ECDSA certificate 162 B')"}
+    cert_handling:
+      steady_extra_bytes: 8      # HashedId8 digest (abrar2026deployment, Table 2 digest mode); same practice in 1609.2
+      peak_extra: pk+fixed       # full certificate = subject pk + 105 B (metadata + issuer signature)
+      peak_fixed_bytes: 105      # derived: abrar2026deployment Falcon-512 certificate 1,002 B minus 897 B public key
+      peak_every_n: 5            # twardokus2024when: certificate cycle 500 ms at 10 Hz BSM; abrar2026deployment: every 5th BSM
+      description: "8 B certificate digest on 4 of 5 BSMs, full certificate on every 5th (cert metadata TODO-RESULT, not counted)"
+      source: "twardokus2024when (certificate cycle 500 ms); abrar2026deployment (digest mode 8 B, J2945/1)"
+  cv2x_j3161:
+    source: abrar2026deployment
+    basis: ceiling-based
+    payload_ceiling:
+      bytes: 2481
+      derived: false
+      source: "abrar2026deployment (SAE J3161 profile, 20 MHz, MCS 11, 10 subchannels)"
+      quote: "MCS 11 with a maximum allocation of 10 subchannels yields a TBS ceiling of 2,481 bytes"
+    auth_budget:
+      bytes: 2414                # 2481 - 28 - 39
+      derived: true
+      source: "ceiling minus stated SPDU fixed fields (abrar2026deployment Eq. 1)"
+      quote: "SPDU = 28 B header + 39 B BSM core + signature + certificate"
+      subtractions:
+        - {name: SPDU header, bytes: 28, source: "abrar2026deployment Eq. 1"}
+        - {name: BSM core, bytes: 39, source: "abrar2026deployment Eq. 1"}
+    frames: {first_payload_bytes: 2414, next_payload_bytes: 2414, source: "single transport block"}
+    fragment_header_bytes: TODO-RESULT
+    message_period_s: 0.1
+    frame_period_s: 0
+    timing_source: "abrar2026deployment (BSM 10 Hz)"
+    hybrid_partner: {name: ECDSA-P256, sig_bytes: 64, source: "abrar2026deployment Table 2 (ECDSA 64 B)"}
+    cert_handling:
+      steady_extra_bytes: 8
+      peak_extra: pk+fixed
+      peak_fixed_bytes: 105
+      peak_every_n: 5
+      description: "as cv2x_437 (digest 8 B; full certificate every 5th BSM)"
+      source: "abrar2026deployment"
+    note: "Conflict with cv2x_437: Falcon-512 does not fit 437 B but fits this 2,481 B ceiling. 'Feasible' in abrar2026deployment means fits a transport block; 90% PDR only at LOS level A."
   dns:
     source: goertzen2022post
-    budget_bytes: 1232
-    frame_payload: 1232
-    frag_hdr: TODO-RESULT
-deadlines_ms:
-  strict: {value: 3,   source: hussain2026a}       # IEC 62351-6 3 ms (gap.md also cites nabasirye2026security [A])
-  relaxed: {value: 100, source: chen2026pseudonym}  # also mamun2026post
+    basis: ceiling-based
+    payload_ceiling:
+      bytes: 1232
+      derived: false
+      source: "goertzen2022post Sec. 1/2 (a recommendation, not a hard limit)"
+      quote: "the recommended maximum DNS response size, including any signatures and public keys, should not exceed 1232 bytes"
+    auth_budget:
+      bytes: 1232                # no auth-only budget; stated header figures are the 15 B RRFRAG (counted as fragment header)
+      derived: true
+      source: "ceiling; the source gives no DNS header/question/other-RR sizes to subtract"
+      quote: "RRFRAGs in requests are 15 bytes in size"
+      subtractions:
+        - {name: DNS message header/question/other RRs, bytes: TODO-RESULT, source: "not stated; not subtracted -> upper bound"}
+    frames: {first_payload_bytes: 1232, next_payload_bytes: 1232, source: "one DNS response"}
+    fragment_header_bytes: 15
+    message_period_s: TODO-RESULT   # request-response; no broadcast rate
+    frame_period_s: 0
+    timing_source: "goertzen2022post (10 ms latency scenario 61.96-82.11 ms for Falcon-512, lossless only)"
+    hybrid_partner: {name: ECDSA-P256, sig_bytes: 64, source: "goertzen2022post compares ECDSA P256"}
+    cert_handling:
+      steady_extra_bytes: 0
+      peak_extra: pk             # DNSKEY returned in the response ("including any signatures and public keys")
+      peak_every_n: TODO-RESULT
+      description: "key cached after first response; first response carries signature + public key"
+      source: "goertzen2022post"
+    note: "request-response, not handshake-free broadcast; kept as a ceiling-based reference."
+deadlines_ms:     # Q3: tied to the profile's message period, plus one reference deadline not tied to any profile
+  grid_reference: {value: 3, source: "IEC 62351-6 text as quoted in hussain2026a (not an IEC 61869-9 requirement); no grid profile in this set"}
+  per_profile: "message_period_s above (cv2x 100 ms BSM, sib1 160 ms, remote_id 3 s, osnma 30 s per block)"
+baselines:        # constants from budget-evidence.md used for the reproduction checks in summary.md
+  darzi2026a_table3:
+    fn_dsa_2level_crypto_bytes: 3792
+    ml_dsa_2level_crypto_bytes: 9884
+    reported_packets: {fn_dsa: 13, ml_dsa: 34}
+    auth_bytes_per_packet: 293
+    source: "darzi2026a Table III / Sec. VI (budget-evidence.md)"
+  junquera2023_falcon:
+    falcon_sig_bits: 5328
+    reported_blocks: 67
+    bits_per_block_for_ds: 79
+    source: "junquera2023assessment Sec. 3 (budget-evidence.md)"
