@@ -5,11 +5,12 @@ Run tags (from CSV rows):
 | machine     | date                 | git_commit   |
 |:------------|:---------------------|:-------------|
 | cloud-smoke | 2026-11-12T21:18:00Z | 6ca9403      |
+| vm          | 2026-11-12T21:42:22Z | 408d1b4      |
 | cloud-smoke | 2026-11-11T02:57:42Z | 3cf20df      |
-| cloud-smoke | 2026-11-12T21:21:18Z | 6ca9403      |
-| cloud-smoke | 2026-11-12T21:21:19Z | 6ca9403      |
-| cloud-smoke | 2026-11-12T21:21:20Z | 6ca9403      |
-| cloud-smoke | 2026-11-12T21:21:21Z | 6ca9403      |
+| vm          | 2026-11-12T21:42:23Z | 408d1b4      |
+| vm          | 2026-11-12T21:42:24Z | 408d1b4      |
+| vm          | 2026-11-12T21:42:25Z | 408d1b4      |
+| vm          | 2026-11-12T21:42:26Z | 408d1b4      |
 | cloud-smoke | 2026-11-12T21:23:41Z | 6ca9403      |
 
 **All runs are smoke tests (`machine: cloud-smoke`). No publication numbers.**
@@ -18,18 +19,26 @@ Run tags (from CSV rows):
 
 liboqs 0.16.0: 221 signature parameter sets enabled (footnote figure; many are API variants). They collapse to **64 distinct (family, NIST level, public-key size, signature size) classes**; all counts below are class counts. The main tables use the lowest claimed NIST level available in each family (24 classes); the other levels are in `results/appendix_all_levels.csv`. Representative of a class = shortest scheme name. Falcon padded variants have their own (smaller) declared signature size and are separate classes.
 
-| family        |   param_sets |   classes_all_levels | levels   |   lowest_level |   classes_lowest_level |
-|:--------------|-------------:|---------------------:|:---------|---------------:|-----------------------:|
-| CROSS         |           18 |                   18 | 1,3,5    |              1 |                      6 |
-| Falcon/FN-DSA |            4 |                    4 | 1,5      |              1 |                      2 |
-| MAYO          |            4 |                    4 | 1,3,5    |              1 |                      2 |
-| ML-DSA        |            3 |                    3 | 2,3,5    |              2 |                      1 |
-| MQOM          |           12 |                   12 | 1,3,5    |              1 |                      4 |
-| SLH-DSA       |          156 |                    6 | 1,3,5    |              1 |                      2 |
-| SNOVA         |           12 |                    9 | 1,3,5    |              1 |                      3 |
-| UOV           |           12 |                    8 | 1,3,5    |              1 |                      4 |
+| family        |   param_sets |   classes_all_levels | levels      |   lowest_level |   classes_lowest_level |
+|:--------------|-------------:|---------------------:|:------------|---------------:|-----------------------:|
+| CROSS         |           18 |                   18 | 1.0,3.0,5.0 |              1 |                      6 |
+| Falcon/FN-DSA |            4 |                    4 | 1.0,5.0     |              1 |                      2 |
+| MAYO          |            4 |                    4 | 1.0,3.0,5.0 |              1 |                      2 |
+| ML-DSA        |            3 |                    3 | 2.0,3.0,5.0 |              2 |                      1 |
+| MQOM          |           12 |                   12 | 1.0,3.0,5.0 |              1 |                      4 |
+| SLH-DSA       |          156 |                    6 | 1.0,3.0,5.0 |              1 |                      2 |
+| SNOVA         |           12 |                    9 | 1.0,3.0,5.0 |              1 |                      3 |
+| UOV           |           12 |                    8 | 1.0,3.0,5.0 |              1 |                      4 |
 
-LMS/XMSS: `research/lit/notes/lms2019rfc8554.md` and `xmss2018rfc8391.md` do not exist. Stateful LMS/XMSS are therefore **pending** (size-only rows would be added from those notes; no timings).
+**LMS/XMSS (stateful, literature, size-only): 5 rows, outside the 64-class liboqs count.** Source: `raw/sizes_declared.csv` rows with `family_kind: stateful`, `source: literature`, `timing: none` (from `research/lit/notes/lms2019rfc8554.md`, `xmss2018rfc8391.md`; not liboqs, no timings, no Q3 classification). These are stateful hash-based schemes with a bounded number of signatures per key (2^h, column `max_signatures`); reusing state breaks security, and they are not comparable to the stateless schemes on re-signing capacity. Each size carries the note's flag: `tabulated` (in the RFC table) or `derived` (the note author's arithmetic from stated field lengths); `not stated` values are left empty and the `full_cert` mode is omitted for those rows. The claimed NIST level is not stated in the notes and is left empty.
+
+| scheme                     | family   |   sig_declared | sig_size_flag   |   length_public_key | pk_size_flag   |   max_signatures | timing   | source     | source_note        |
+|:---------------------------|:---------|---------------:|:----------------|--------------------:|:---------------|-----------------:|:---------|:-----------|:-------------------|
+| LMS_SHA256_M32_H5_LMOTS_W8 | LMS      |           1292 | derived         |                  56 | derived        |       32         | none     | literature | lms2019rfc8554.md  |
+| XMSS-SHA2_10_256           | XMSS     |           2500 | tabulated       |                  68 | derived        |     1024         | none     | literature | xmss2018rfc8391.md |
+| XMSS-SHA2_16_256           | XMSS     |           2692 | tabulated       |                 nan | not stated     |        6.554e+04 | none     | literature | xmss2018rfc8391.md |
+| XMSS-SHA2_20_256           | XMSS     |           2820 | tabulated       |                 nan | not stated     |        1.049e+06 | none     | literature | xmss2018rfc8391.md |
+| XMSS-SHA2_10_512           | XMSS     |           9092 | tabulated       |                 nan | not stated     |     1024         | none     | literature | xmss2018rfc8391.md |
 
 ## Part A: sizes and timings
 
@@ -47,30 +56,30 @@ Timing of the lowest-level class representatives (all schemes: `raw/oqs_timing_c
 
 | scheme                   | family        |   claimed_nist_level |   iterations |   length_public_key |   sig_declared |   sign_median_us |   sign_p95_us |   sign_p99_us |   verify_median_us |   verify_p95_us |   verify_p99_us |   keygen_mean_us |
 |:-------------------------|:--------------|---------------------:|-------------:|--------------------:|---------------:|-----------------:|--------------:|--------------:|-------------------:|----------------:|----------------:|-----------------:|
-| ML-DSA-44                | ML-DSA        |                    2 |         1000 |                1312 |           2420 |       56.57      |   162         |   253.3       |              21.1  |           28.46 |           46.53 |       22.13      |
-| Falcon-512               | Falcon/FN-DSA |                    1 |         1000 |                 897 |            752 |      196.6       |   224.6       |   250.3       |              40.28 |           51.42 |           57.9  |     6312         |
-| Falcon-padded-512        | Falcon/FN-DSA |                    1 |         1000 |                 897 |            666 |      201.1       |   222.9       |   248.5       |              40.98 |           53.21 |           61.86 |     5708         |
-| MAYO-1                   | MAYO          |                    1 |         1000 |                1420 |            454 |      128.8       |   190.6       |   213.7       |              53.09 |           74.93 |           86.38 |       61.36      |
-| MAYO-2                   | MAYO          |                    1 |         1000 |                4912 |            186 |       84.24      |   105.3       |   120.9       |              20.08 |           24.57 |           33.58 |       34.64      |
-| cross-rsdp-128-balanced  | CROSS         |                    1 |           20 |                  77 |          13152 |      865.2       |   944.6       |   961.7       |             612.9  |          733.7  |          752.3  |      102.2       |
-| cross-rsdp-128-fast      | CROSS         |                    1 |           20 |                  77 |          18432 |      351.2       |   529.4       |   635.3       |             218.7  |          280.6  |          283.6  |       87.49      |
-| cross-rsdp-128-small     | CROSS         |                    1 |           20 |                  77 |          12432 |     1646         |  1989         |  2080         |            1159    |         1472    |         3191    |       83.6       |
-| cross-rsdpg-128-balanced | CROSS         |                    1 |           20 |                  54 |           9120 |      406.2       |  2546         |  3679         |             297.5  |          843.1  |         3496    |       80.46      |
-| cross-rsdpg-128-fast     | CROSS         |                    1 |           20 |                  54 |          11980 |      220         |   276.1       |   303.1       |             144.1  |          156.4  |          157.5  |       76.58      |
-| cross-rsdpg-128-small    | CROSS         |                    1 |           20 |                  54 |           8960 |      880.4       |   959.6       |  1115         |             636.9  |          738.1  |          876.9  |       78.31      |
-| OV-Is                    | UOV           |                    1 |         1000 |              412160 |             96 |       27.06      |    55.35      |    85.22      |              17.98 |           23.84 |           57.64 |     1050         |
-| OV-Ip                    | UOV           |                    1 |         1000 |              278432 |            128 |       22.81      |    28.89      |    43.4       |              19.28 |           23.32 |           36.99 |      711.2       |
-| OV-Is-pkc                | UOV           |                    1 |         1000 |               66576 |             96 |       23.93      |    44.3       |    62.38      |              66.46 |           90.28 |          102    |      969         |
-| OV-Ip-pkc                | UOV           |                    1 |         1000 |               43576 |            128 |       21.71      |    30.06      |    46.4       |              52.4  |           65.31 |           76.61 |      684.9       |
-| SNOVA_24_5_4             | SNOVA         |                    1 |         1000 |                1016 |            248 |      403.8       |   720         |   984.2       |              73.79 |          111.2  |          147.6  |       86.94      |
-| SNOVA_37_17_2            | SNOVA         |                    1 |         1000 |                9842 |            124 |      366.4       |   518.1       |   593.5       |              53.45 |           68.48 |           76.8  |      330.2       |
-| SNOVA_25_8_3             | SNOVA         |                    1 |         1000 |                2320 |            165 |      300.3       |   521.5       |   668.4       |              58.99 |           78.65 |          120.2  |       99.7       |
-| mqom2_cat1_gf16_fast_r3  | MQOM          |                    1 |           20 |                  60 |           3484 |      559.2       |   768.7       |   933.7       |             468.7  |          512.6  |          555.9  |      137.8       |
-| mqom2_cat1_gf16_fast_r5  | MQOM          |                    1 |           20 |                  60 |           3280 |      511         |   713         |   870.2       |             431.1  |          510.5  |          544.9  |      130.9       |
-| mqom2_cat1_gf16_short_r3 | MQOM          |                    1 |           20 |                  60 |           3060 |     1510         |  1626         |  2385         |            1392    |         1533    |         1539    |      140.7       |
-| mqom2_cat1_gf16_short_r5 | MQOM          |                    1 |           20 |                  60 |           2916 |     1329         |  1459         |  2143         |            1254    |         1373    |         1418    |      150.5       |
-| SLH_DSA_PURE_SHA2_128S   | SLH-DSA       |                    1 |           20 |                  32 |           7856 |        4.864e+05 |     5.282e+05 |     5.426e+05 |             483    |          531.6  |          541.6  |        6.371e+04 |
-| SLH_DSA_PURE_SHA2_128F   | SLH-DSA       |                    1 |           20 |                  32 |          17088 |        2.36e+04  |     2.655e+04 |     2.707e+04 |            1429    |         1582    |         2251    |      853.2       |
+| ML-DSA-44                | ML-DSA        |                    2 |         1000 |        1312         |           2420 |       56.57      |   162         |   253.3       |              21.1  |           28.46 |           46.53 |       22.13      |
+| Falcon-512               | Falcon/FN-DSA |                    1 |         1000 |         897         |            752 |      196.6       |   224.6       |   250.3       |              40.28 |           51.42 |           57.9  |     6312         |
+| Falcon-padded-512        | Falcon/FN-DSA |                    1 |         1000 |         897         |            666 |      201.1       |   222.9       |   248.5       |              40.98 |           53.21 |           61.86 |     5708         |
+| MAYO-1                   | MAYO          |                    1 |         1000 |        1420         |            454 |      128.8       |   190.6       |   213.7       |              53.09 |           74.93 |           86.38 |       61.36      |
+| MAYO-2                   | MAYO          |                    1 |         1000 |        4912         |            186 |       84.24      |   105.3       |   120.9       |              20.08 |           24.57 |           33.58 |       34.64      |
+| cross-rsdp-128-balanced  | CROSS         |                    1 |           20 |          77         |          13152 |      865.2       |   944.6       |   961.7       |             612.9  |          733.7  |          752.3  |      102.2       |
+| cross-rsdp-128-fast      | CROSS         |                    1 |           20 |          77         |          18432 |      351.2       |   529.4       |   635.3       |             218.7  |          280.6  |          283.6  |       87.49      |
+| cross-rsdp-128-small     | CROSS         |                    1 |           20 |          77         |          12432 |     1646         |  1989         |  2080         |            1159    |         1472    |         3191    |       83.6       |
+| cross-rsdpg-128-balanced | CROSS         |                    1 |           20 |          54         |           9120 |      406.2       |  2546         |  3679         |             297.5  |          843.1  |         3496    |       80.46      |
+| cross-rsdpg-128-fast     | CROSS         |                    1 |           20 |          54         |          11980 |      220         |   276.1       |   303.1       |             144.1  |          156.4  |          157.5  |       76.58      |
+| cross-rsdpg-128-small    | CROSS         |                    1 |           20 |          54         |           8960 |      880.4       |   959.6       |  1115         |             636.9  |          738.1  |          876.9  |       78.31      |
+| OV-Is                    | UOV           |                    1 |         1000 |           4.122e+05 |             96 |       27.06      |    55.35      |    85.22      |              17.98 |           23.84 |           57.64 |     1050         |
+| OV-Ip                    | UOV           |                    1 |         1000 |           2.784e+05 |            128 |       22.81      |    28.89      |    43.4       |              19.28 |           23.32 |           36.99 |      711.2       |
+| OV-Is-pkc                | UOV           |                    1 |         1000 |           6.658e+04 |             96 |       23.93      |    44.3       |    62.38      |              66.46 |           90.28 |          102    |      969         |
+| OV-Ip-pkc                | UOV           |                    1 |         1000 |           4.358e+04 |            128 |       21.71      |    30.06      |    46.4       |              52.4  |           65.31 |           76.61 |      684.9       |
+| SNOVA_24_5_4             | SNOVA         |                    1 |         1000 |        1016         |            248 |      403.8       |   720         |   984.2       |              73.79 |          111.2  |          147.6  |       86.94      |
+| SNOVA_37_17_2            | SNOVA         |                    1 |         1000 |        9842         |            124 |      366.4       |   518.1       |   593.5       |              53.45 |           68.48 |           76.8  |      330.2       |
+| SNOVA_25_8_3             | SNOVA         |                    1 |         1000 |        2320         |            165 |      300.3       |   521.5       |   668.4       |              58.99 |           78.65 |          120.2  |       99.7       |
+| mqom2_cat1_gf16_fast_r3  | MQOM          |                    1 |           20 |          60         |           3484 |      559.2       |   768.7       |   933.7       |             468.7  |          512.6  |          555.9  |      137.8       |
+| mqom2_cat1_gf16_fast_r5  | MQOM          |                    1 |           20 |          60         |           3280 |      511         |   713         |   870.2       |             431.1  |          510.5  |          544.9  |      130.9       |
+| mqom2_cat1_gf16_short_r3 | MQOM          |                    1 |           20 |          60         |           3060 |     1510         |  1626         |  2385         |            1392    |         1533    |         1539    |      140.7       |
+| mqom2_cat1_gf16_short_r5 | MQOM          |                    1 |           20 |          60         |           2916 |     1329         |  1459         |  2143         |            1254    |         1373    |         1418    |      150.5       |
+| SLH_DSA_PURE_SHA2_128S   | SLH-DSA       |                    1 |           20 |          32         |           7856 |        4.864e+05 |     5.282e+05 |     5.426e+05 |             483    |          531.6  |          541.6  |        6.371e+04 |
+| SLH_DSA_PURE_SHA2_128F   | SLH-DSA       |                    1 |           20 |          32         |          17088 |        2.36e+04  |     2.655e+04 |     2.707e+04 |            1429    |         1582    |         2251    |      853.2       |
 
 ## Q1: which (scheme, mode) pairs fit each profile
 
@@ -117,7 +126,7 @@ share_of_budget = x / B.
 Hybrid partner per profile: remote_id: Ed25519 64 B raw (RFC 9575 (EdDSA, UA Signature 64 octets)); sib1: ECDSA-P256 64 B raw (assumed (not stated in darzi2026a)); osnma_pkr204: ECDSA-P256 64 B raw (junquera2023assessment (OSNMA ECDSA P-256 signature 512 bit)); osnma_kroot158: ECDSA-P256 64 B raw (junquera2023assessment); cv2x_437: ECDSA-P256 64 B raw (IEEE 1609.2 (ECDSA; twardokus2024when 'ECDSA certificate 162 B')); cv2x_j3161: ECDSA-P256 64 B raw (abrar2026deployment Table 2 (ECDSA 64 B)); dns: ECDSA-P256 64 B raw (goertzen2022post compares ECDSA P256). (DER-encoded ECDSA would be up to 72 B.) The sib1 partner is an assumption.
 Chain parameters: tag 16 B (darzi2026a), disclosed key 16 B, commitment 16 B, timestamp 4 B, key delay d=1 message (last four assumed). Steady auth 32 B/message; the anchor (signature + 20 B) is fragmented over as many messages as needed and that cost is reported (`anchor_msgs`, join time).
 
-**Fit tables (distinct size classes, lowest level per family).** Cell = classes fitting a single message / classes in the family. `full_cert` fits only if both the digest message and the full-certificate message fit.
+**Fit tables (distinct size classes, lowest level per family; LMS and XMSS rows are literature size-only rows, all listed, with the stateful caveat above).** Cell = classes fitting a single message / classes in the family. `full_cert` fits only if both the digest message and the full-certificate message fit.
 
 | family        | mode      | remote_id   | sib1   | osnma_pkr204   | osnma_kroot158   | cv2x_437 (ceiling-based)   | cv2x_j3161 (ceiling-based)   | dns (ceiling-based)   |
 |:--------------|:----------|:------------|:-------|:---------------|:-----------------|:---------------------------|:-----------------------------|:----------------------|
@@ -129,6 +138,10 @@ Chain parameters: tag 16 B (darzi2026a), disclosed key 16 B, commitment 16 B, ti
 | Falcon/FN-DSA | full      | 0/2         | 0/2    | 0/2            | 0/2              | 0/2                        | 2/2                          | 2/2                   |
 | Falcon/FN-DSA | full_cert | 0/2         | 0/2    | 0/2            | 0/2              | 0/2                        | 2/2                          | 0/2                   |
 | Falcon/FN-DSA | hybrid    | 0/2         | 0/2    | 0/2            | 0/2              | 0/2                        | 2/2                          | 2/2                   |
+| LMS           | chain     | 1/1         | 1/1    | 1/1            | 1/1              | 1/1                        | 1/1                          | 1/1                   |
+| LMS           | full      | 0/1         | 0/1    | 0/1            | 0/1              | 0/1                        | 1/1                          | 0/1                   |
+| LMS           | full_cert | 0/1         | 0/1    | 0/1            | 0/1              | 0/1                        | 1/1                          | 0/1                   |
+| LMS           | hybrid    | 0/1         | 0/1    | 0/1            | 0/1              | 0/1                        | 1/1                          | 0/1                   |
 | MAYO          | chain     | 2/2         | 2/2    | 2/2            | 2/2              | 2/2                        | 2/2                          | 2/2                   |
 | MAYO          | full      | 1/2         | 1/2    | 1/2            | 0/2              | 1/2                        | 2/2                          | 2/2                   |
 | MAYO          | full_cert | 0/2         | 1/2    | 1/2            | 0/2              | 0/2                        | 1/2                          | 0/2                   |
@@ -153,8 +166,12 @@ Chain parameters: tag 16 B (darzi2026a), disclosed key 16 B, commitment 16 B, ti
 | UOV           | full      | 4/4         | 4/4    | 4/4            | 4/4              | 4/4                        | 4/4                          | 4/4                   |
 | UOV           | full_cert | 0/4         | 4/4    | 4/4            | 4/4              | 0/4                        | 0/4                          | 0/4                   |
 | UOV           | hybrid    | 4/4         | 4/4    | 4/4            | 0/4              | 4/4                        | 4/4                          | 4/4                   |
+| XMSS          | chain     | 4/4         | 4/4    | 4/4            | 4/4              | 4/4                        | 4/4                          | 4/4                   |
+| XMSS          | full      | 0/4         | 0/4    | 0/4            | 0/4              | 0/4                        | 0/4                          | 0/4                   |
+| XMSS          | full_cert | 0/1         | 0/1    | 0/1            | 0/1              | 0/1                        | 0/1                          | 0/1                   |
+| XMSS          | hybrid    | 0/4         | 0/4    | 0/4            | 0/4              | 0/4                        | 0/4                          | 0/4                   |
 
-Totals over all lowest-level classes:
+Totals over all lowest-level liboqs classes (stateful rows excluded):
 
 | mode      | remote_id   | sib1   | osnma_pkr204   | osnma_kroot158   | cv2x_437 (ceiling-based)   | cv2x_j3161 (ceiling-based)   | dns (ceiling-based)   |
 |:----------|:------------|:-------|:---------------|:-----------------|:---------------------------|:-----------------------------|:----------------------|
@@ -165,32 +182,32 @@ Totals over all lowest-level classes:
 
 **Messages needed and time to first authentication (full signature, no loss).** m = messages (each carrying at most the auth budget), ttfa = time from first fragment to last at the profile's message rate (no join wait, no processing; dns has no stated rate). `frames` = frames in the first message.
 
-| family        | scheme                   |   sig_declared |   pk_bytes | remote_id             | sib1                   | osnma_pkr204                | osnma_kroot158               | cv2x_437 (ceiling-based)   | cv2x_j3161 (ceiling-based)   | dns (ceiling-based)   |
-|:--------------|:-------------------------|---------------:|-----------:|:----------------------|:-----------------------|:----------------------------|:-----------------------------|:---------------------------|:-----------------------------|:----------------------|
-| CROSS         | cross-rsdp-128-balanced  |          13152 |         77 | 66 msg / 9 fr / 195 s | 45 msg / 1 fr / 7.04 s | 65 msg / 16 fr / 3.09e+04 s | 84 msg / 16 fr / 3.99e+04 s  | 36 msg / 1 fr / 3.5 s      | 6 msg / 1 fr / 0.5 s         | 11 msg / 1 fr / n/a   |
-| CROSS         | cross-rsdp-128-fast      |          18432 |         77 | 92 msg / 9 fr / 273 s | 63 msg / 1 fr / 9.92 s | 91 msg / 16 fr / 4.34e+04 s | 117 msg / 16 fr / 5.6e+04 s  | 50 msg / 1 fr / 4.9 s      | 8 msg / 1 fr / 0.7 s         | 16 msg / 1 fr / n/a   |
-| CROSS         | cross-rsdp-128-small     |          12432 |         77 | 62 msg / 9 fr / 183 s | 43 msg / 1 fr / 6.72 s | 61 msg / 16 fr / 2.92e+04 s | 79 msg / 16 fr / 3.77e+04 s  | 34 msg / 1 fr / 3.3 s      | 6 msg / 1 fr / 0.5 s         | 11 msg / 1 fr / n/a   |
-| CROSS         | cross-rsdpg-128-balanced |           9120 |         54 | 46 msg / 9 fr / 135 s | 32 msg / 1 fr / 4.96 s | 45 msg / 16 fr / 2.14e+04 s | 58 msg / 16 fr / 2.77e+04 s  | 25 msg / 1 fr / 2.4 s      | 4 msg / 1 fr / 0.3 s         | 8 msg / 1 fr / n/a    |
-| CROSS         | cross-rsdpg-128-fast     |          11980 |         54 | 60 msg / 9 fr / 177 s | 41 msg / 1 fr / 6.4 s  | 59 msg / 16 fr / 2.82e+04 s | 76 msg / 16 fr / 3.64e+04 s  | 33 msg / 1 fr / 3.2 s      | 5 msg / 1 fr / 0.4 s         | 10 msg / 1 fr / n/a   |
-| CROSS         | cross-rsdpg-128-small    |           8960 |         54 | 45 msg / 9 fr / 132 s | 31 msg / 1 fr / 4.8 s  | 44 msg / 16 fr / 2.11e+04 s | 57 msg / 16 fr / 2.72e+04 s  | 25 msg / 1 fr / 2.4 s      | 4 msg / 1 fr / 0.3 s         | 8 msg / 1 fr / n/a    |
-| Falcon/FN-DSA | Falcon-512               |            752 |        897 | 4 msg / 9 fr / 9 s    | 3 msg / 1 fr / 0.32 s  | 4 msg / 16 fr / 1.74e+03 s  | 5 msg / 16 fr / 2.28e+03 s   | 3 msg / 1 fr / 0.2 s       | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
-| Falcon/FN-DSA | Falcon-padded-512        |            666 |        897 | 4 msg / 9 fr / 9 s    | 3 msg / 1 fr / 0.32 s  | 4 msg / 16 fr / 1.56e+03 s  | 5 msg / 16 fr / 2.01e+03 s   | 2 msg / 1 fr / 0.1 s       | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
-| MAYO          | MAYO-1                   |            454 |       1420 | 3 msg / 9 fr / 6 s    | 2 msg / 1 fr / 0.16 s  | 3 msg / 16 fr / 1.05e+03 s  | 3 msg / 16 fr / 1.35e+03 s   | 2 msg / 1 fr / 0.1 s       | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
-| MAYO          | MAYO-2                   |            186 |       4912 | 1 msg / 9 fr / 0 s    | 1 msg / 1 fr / 0 s     | 1 msg / 15 fr / 420 s       | 2 msg / 16 fr / 540 s        | 1 msg / 1 fr / 0 s         | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
-| ML-DSA        | ML-DSA-44                |           2420 |       1312 | 13 msg / 9 fr / 36 s  | 9 msg / 1 fr / 1.28 s  | 12 msg / 16 fr / 5.67e+03 s | 16 msg / 16 fr / 7.35e+03 s  | 7 msg / 1 fr / 0.6 s       | 2 msg / 1 fr / 0.1 s         | 2 msg / 1 fr / n/a    |
-| MQOM          | mqom2_cat1_gf16_fast_r3  |           3484 |         60 | 18 msg / 9 fr / 51 s  | 12 msg / 1 fr / 1.76 s | 18 msg / 16 fr / 8.19e+03 s | 23 msg / 16 fr / 1.06e+04 s  | 10 msg / 1 fr / 0.9 s      | 2 msg / 1 fr / 0.1 s         | 3 msg / 1 fr / n/a    |
-| MQOM          | mqom2_cat1_gf16_fast_r5  |           3280 |         60 | 17 msg / 9 fr / 48 s  | 12 msg / 1 fr / 1.76 s | 17 msg / 16 fr / 7.71e+03 s | 21 msg / 16 fr / 9.96e+03 s  | 9 msg / 1 fr / 0.8 s       | 2 msg / 1 fr / 0.1 s         | 3 msg / 1 fr / n/a    |
-| MQOM          | mqom2_cat1_gf16_short_r3 |           3060 |         60 | 16 msg / 9 fr / 45 s  | 11 msg / 1 fr / 1.6 s  | 15 msg / 16 fr / 7.17e+03 s | 20 msg / 16 fr / 9.27e+03 s  | 9 msg / 1 fr / 0.8 s       | 2 msg / 1 fr / 0.1 s         | 3 msg / 1 fr / n/a    |
-| MQOM          | mqom2_cat1_gf16_short_r5 |           2916 |         60 | 15 msg / 9 fr / 42 s  | 10 msg / 1 fr / 1.44 s | 15 msg / 16 fr / 6.84e+03 s | 19 msg / 16 fr / 8.85e+03 s  | 8 msg / 1 fr / 0.7 s       | 2 msg / 1 fr / 0.1 s         | 3 msg / 1 fr / n/a    |
-| SLH-DSA       | SLH_DSA_PURE_SHA2_128F   |          17088 |         32 | 86 msg / 9 fr / 255 s | 59 msg / 1 fr / 9.28 s | 84 msg / 16 fr / 4.02e+04 s | 109 msg / 16 fr / 5.19e+04 s | 46 msg / 1 fr / 4.5 s      | 8 msg / 1 fr / 0.7 s         | 15 msg / 1 fr / n/a   |
-| SLH-DSA       | SLH_DSA_PURE_SHA2_128S   |           7856 |         32 | 40 msg / 9 fr / 117 s | 27 msg / 1 fr / 4.16 s | 39 msg / 16 fr / 1.85e+04 s | 50 msg / 16 fr / 2.38e+04 s  | 22 msg / 1 fr / 2.1 s      | 4 msg / 1 fr / 0.3 s         | 7 msg / 1 fr / n/a    |
-| SNOVA         | SNOVA_24_5_4             |            248 |       1016 | 2 msg / 9 fr / 3 s    | 1 msg / 1 fr / 0 s     | 2 msg / 16 fr / 570 s       | 2 msg / 16 fr / 750 s        | 1 msg / 1 fr / 0 s         | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
-| SNOVA         | SNOVA_25_8_3             |            165 |       2320 | 1 msg / 8 fr / 0 s    | 1 msg / 1 fr / 0 s     | 1 msg / 13 fr / 360 s       | 2 msg / 16 fr / 480 s        | 1 msg / 1 fr / 0 s         | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
-| SNOVA         | SNOVA_37_17_2            |            124 |       9842 | 1 msg / 6 fr / 0 s    | 1 msg / 1 fr / 0 s     | 1 msg / 10 fr / 270 s       | 1 msg / 13 fr / 360 s        | 1 msg / 1 fr / 0 s         | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
-| UOV           | OV-Ip                    |            128 |     278432 | 1 msg / 6 fr / 0 s    | 1 msg / 1 fr / 0 s     | 1 msg / 11 fr / 300 s       | 1 msg / 13 fr / 360 s        | 1 msg / 1 fr / 0 s         | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
-| UOV           | OV-Ip-pkc                |            128 |      43576 | 1 msg / 6 fr / 0 s    | 1 msg / 1 fr / 0 s     | 1 msg / 11 fr / 300 s       | 1 msg / 13 fr / 360 s        | 1 msg / 1 fr / 0 s         | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
-| UOV           | OV-Is                    |             96 |     412160 | 1 msg / 5 fr / 0 s    | 1 msg / 1 fr / 0 s     | 1 msg / 8 fr / 210 s        | 1 msg / 10 fr / 270 s        | 1 msg / 1 fr / 0 s         | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
-| UOV           | OV-Is-pkc                |             96 |      66576 | 1 msg / 5 fr / 0 s    | 1 msg / 1 fr / 0 s     | 1 msg / 8 fr / 210 s        | 1 msg / 10 fr / 270 s        | 1 msg / 1 fr / 0 s         | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
+| family        | scheme                   |   sig_declared |     pk_bytes | remote_id             | sib1                   | osnma_pkr204                | osnma_kroot158               | cv2x_437 (ceiling-based)   | cv2x_j3161 (ceiling-based)   | dns (ceiling-based)   |
+|:--------------|:-------------------------|---------------:|-------------:|:----------------------|:-----------------------|:----------------------------|:-----------------------------|:---------------------------|:-----------------------------|:----------------------|
+| CROSS         | cross-rsdp-128-balanced  |          13152 |   77         | 66 msg / 9 fr / 195 s | 45 msg / 1 fr / 7.04 s | 65 msg / 16 fr / 3.09e+04 s | 84 msg / 16 fr / 3.99e+04 s  | 36 msg / 1 fr / 3.5 s      | 6 msg / 1 fr / 0.5 s         | 11 msg / 1 fr / n/a   |
+| CROSS         | cross-rsdp-128-fast      |          18432 |   77         | 92 msg / 9 fr / 273 s | 63 msg / 1 fr / 9.92 s | 91 msg / 16 fr / 4.34e+04 s | 117 msg / 16 fr / 5.6e+04 s  | 50 msg / 1 fr / 4.9 s      | 8 msg / 1 fr / 0.7 s         | 16 msg / 1 fr / n/a   |
+| CROSS         | cross-rsdp-128-small     |          12432 |   77         | 62 msg / 9 fr / 183 s | 43 msg / 1 fr / 6.72 s | 61 msg / 16 fr / 2.92e+04 s | 79 msg / 16 fr / 3.77e+04 s  | 34 msg / 1 fr / 3.3 s      | 6 msg / 1 fr / 0.5 s         | 11 msg / 1 fr / n/a   |
+| CROSS         | cross-rsdpg-128-balanced |           9120 |   54         | 46 msg / 9 fr / 135 s | 32 msg / 1 fr / 4.96 s | 45 msg / 16 fr / 2.14e+04 s | 58 msg / 16 fr / 2.77e+04 s  | 25 msg / 1 fr / 2.4 s      | 4 msg / 1 fr / 0.3 s         | 8 msg / 1 fr / n/a    |
+| CROSS         | cross-rsdpg-128-fast     |          11980 |   54         | 60 msg / 9 fr / 177 s | 41 msg / 1 fr / 6.4 s  | 59 msg / 16 fr / 2.82e+04 s | 76 msg / 16 fr / 3.64e+04 s  | 33 msg / 1 fr / 3.2 s      | 5 msg / 1 fr / 0.4 s         | 10 msg / 1 fr / n/a   |
+| CROSS         | cross-rsdpg-128-small    |           8960 |   54         | 45 msg / 9 fr / 132 s | 31 msg / 1 fr / 4.8 s  | 44 msg / 16 fr / 2.11e+04 s | 57 msg / 16 fr / 2.72e+04 s  | 25 msg / 1 fr / 2.4 s      | 4 msg / 1 fr / 0.3 s         | 8 msg / 1 fr / n/a    |
+| Falcon/FN-DSA | Falcon-512               |            752 |  897         | 4 msg / 9 fr / 9 s    | 3 msg / 1 fr / 0.32 s  | 4 msg / 16 fr / 1.74e+03 s  | 5 msg / 16 fr / 2.28e+03 s   | 3 msg / 1 fr / 0.2 s       | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
+| Falcon/FN-DSA | Falcon-padded-512        |            666 |  897         | 4 msg / 9 fr / 9 s    | 3 msg / 1 fr / 0.32 s  | 4 msg / 16 fr / 1.56e+03 s  | 5 msg / 16 fr / 2.01e+03 s   | 2 msg / 1 fr / 0.1 s       | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
+| MAYO          | MAYO-1                   |            454 | 1420         | 3 msg / 9 fr / 6 s    | 2 msg / 1 fr / 0.16 s  | 3 msg / 16 fr / 1.05e+03 s  | 3 msg / 16 fr / 1.35e+03 s   | 2 msg / 1 fr / 0.1 s       | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
+| MAYO          | MAYO-2                   |            186 | 4912         | 1 msg / 9 fr / 0 s    | 1 msg / 1 fr / 0 s     | 1 msg / 15 fr / 420 s       | 2 msg / 16 fr / 540 s        | 1 msg / 1 fr / 0 s         | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
+| ML-DSA        | ML-DSA-44                |           2420 | 1312         | 13 msg / 9 fr / 36 s  | 9 msg / 1 fr / 1.28 s  | 12 msg / 16 fr / 5.67e+03 s | 16 msg / 16 fr / 7.35e+03 s  | 7 msg / 1 fr / 0.6 s       | 2 msg / 1 fr / 0.1 s         | 2 msg / 1 fr / n/a    |
+| MQOM          | mqom2_cat1_gf16_fast_r3  |           3484 |   60         | 18 msg / 9 fr / 51 s  | 12 msg / 1 fr / 1.76 s | 18 msg / 16 fr / 8.19e+03 s | 23 msg / 16 fr / 1.06e+04 s  | 10 msg / 1 fr / 0.9 s      | 2 msg / 1 fr / 0.1 s         | 3 msg / 1 fr / n/a    |
+| MQOM          | mqom2_cat1_gf16_fast_r5  |           3280 |   60         | 17 msg / 9 fr / 48 s  | 12 msg / 1 fr / 1.76 s | 17 msg / 16 fr / 7.71e+03 s | 21 msg / 16 fr / 9.96e+03 s  | 9 msg / 1 fr / 0.8 s       | 2 msg / 1 fr / 0.1 s         | 3 msg / 1 fr / n/a    |
+| MQOM          | mqom2_cat1_gf16_short_r3 |           3060 |   60         | 16 msg / 9 fr / 45 s  | 11 msg / 1 fr / 1.6 s  | 15 msg / 16 fr / 7.17e+03 s | 20 msg / 16 fr / 9.27e+03 s  | 9 msg / 1 fr / 0.8 s       | 2 msg / 1 fr / 0.1 s         | 3 msg / 1 fr / n/a    |
+| MQOM          | mqom2_cat1_gf16_short_r5 |           2916 |   60         | 15 msg / 9 fr / 42 s  | 10 msg / 1 fr / 1.44 s | 15 msg / 16 fr / 6.84e+03 s | 19 msg / 16 fr / 8.85e+03 s  | 8 msg / 1 fr / 0.7 s       | 2 msg / 1 fr / 0.1 s         | 3 msg / 1 fr / n/a    |
+| SLH-DSA       | SLH_DSA_PURE_SHA2_128F   |          17088 |   32         | 86 msg / 9 fr / 255 s | 59 msg / 1 fr / 9.28 s | 84 msg / 16 fr / 4.02e+04 s | 109 msg / 16 fr / 5.19e+04 s | 46 msg / 1 fr / 4.5 s      | 8 msg / 1 fr / 0.7 s         | 15 msg / 1 fr / n/a   |
+| SLH-DSA       | SLH_DSA_PURE_SHA2_128S   |           7856 |   32         | 40 msg / 9 fr / 117 s | 27 msg / 1 fr / 4.16 s | 39 msg / 16 fr / 1.85e+04 s | 50 msg / 16 fr / 2.38e+04 s  | 22 msg / 1 fr / 2.1 s      | 4 msg / 1 fr / 0.3 s         | 7 msg / 1 fr / n/a    |
+| SNOVA         | SNOVA_24_5_4             |            248 | 1016         | 2 msg / 9 fr / 3 s    | 1 msg / 1 fr / 0 s     | 2 msg / 16 fr / 570 s       | 2 msg / 16 fr / 750 s        | 1 msg / 1 fr / 0 s         | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
+| SNOVA         | SNOVA_25_8_3             |            165 | 2320         | 1 msg / 8 fr / 0 s    | 1 msg / 1 fr / 0 s     | 1 msg / 13 fr / 360 s       | 2 msg / 16 fr / 480 s        | 1 msg / 1 fr / 0 s         | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
+| SNOVA         | SNOVA_37_17_2            |            124 | 9842         | 1 msg / 6 fr / 0 s    | 1 msg / 1 fr / 0 s     | 1 msg / 10 fr / 270 s       | 1 msg / 13 fr / 360 s        | 1 msg / 1 fr / 0 s         | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
+| UOV           | OV-Ip                    |            128 |    2.784e+05 | 1 msg / 6 fr / 0 s    | 1 msg / 1 fr / 0 s     | 1 msg / 11 fr / 300 s       | 1 msg / 13 fr / 360 s        | 1 msg / 1 fr / 0 s         | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
+| UOV           | OV-Ip-pkc                |            128 |    4.358e+04 | 1 msg / 6 fr / 0 s    | 1 msg / 1 fr / 0 s     | 1 msg / 11 fr / 300 s       | 1 msg / 13 fr / 360 s        | 1 msg / 1 fr / 0 s         | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
+| UOV           | OV-Is                    |             96 |    4.122e+05 | 1 msg / 5 fr / 0 s    | 1 msg / 1 fr / 0 s     | 1 msg / 8 fr / 210 s        | 1 msg / 10 fr / 270 s        | 1 msg / 1 fr / 0 s         | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
+| UOV           | OV-Is-pkc                |             96 |    6.658e+04 | 1 msg / 5 fr / 0 s    | 1 msg / 1 fr / 0 s     | 1 msg / 8 fr / 210 s        | 1 msg / 10 fr / 270 s        | 1 msg / 1 fr / 0 s         | 1 msg / 1 fr / 0 s           | 1 msg / 1 fr / n/a    |
 
 Public keys are not in the signature column: modes that do not carry the key (all `full`/`chain`/`hybrid` rows, and `full_cert` where the source provisions keys out of band) assume it is provisioned. Key sizes of the lowest-level classes range from 32 B to 412160 B (CROSS: 54-77 B, Falcon/FN-DSA: 897-897 B, MAYO: 1420-4912 B, ML-DSA: 1312-1312 B, MQOM: 60-60 B, SLH-DSA: 32-32 B, SNOVA: 1016-9842 B, UOV: 43576-412160 B); the larger ones (UOV, MAYO-2, SNOVA) cannot be sent in any profile's single message and rely on that provisioning.
 
@@ -222,6 +239,26 @@ Public keys are not in the signature column: modes that do not carry the key (al
 | UOV           | OV-Ip-pkc                | 1 msg / 3 s    | 1 msg / 0.16 s  | 1 msg / 810 s       | 1 msg / 900 s        | 1 msg / 0.1 s              | 1 msg / 0.1 s                | 1 msg / n/a           |
 | UOV           | OV-Is                    | 1 msg / 3 s    | 1 msg / 0.16 s  | 1 msg / 750 s       | 1 msg / 810 s        | 1 msg / 0.1 s              | 1 msg / 0.1 s                | 1 msg / n/a           |
 | UOV           | OV-Is-pkc                | 1 msg / 3 s    | 1 msg / 0.16 s  | 1 msg / 750 s       | 1 msg / 810 s        | 1 msg / 0.1 s              | 1 msg / 0.1 s                | 1 msg / n/a           |
+
+**LMS/XMSS size-only rows (stateful, literature; `timing: none`).** Same accounting as above on the stated sizes; 2^h = maximum signatures per key. Source `raw/scoring_all_levels.csv` rows with `family_kind: stateful`.
+
+| scheme                     |   sig_declared | sig_size_flag   |   max_signatures | remote_id      | sib1            | osnma_pkr204        | osnma_kroot158      | cv2x_437 (ceiling-based)   | cv2x_j3161 (ceiling-based)   | dns (ceiling-based)   |
+|:---------------------------|---------------:|:----------------|-----------------:|:---------------|:----------------|:--------------------|:--------------------|:---------------------------|:-----------------------------|:----------------------|
+| LMS_SHA256_M32_H5_LMOTS_W8 |           1292 | derived         |       32         | 7 msg / 18 s   | 5 msg / 0.64 s  | 7 msg / 3.03e+03 s  | 9 msg / 3.9e+03 s   | 4 msg / 0.3 s              | 1 msg / 0 s                  | 2 msg / n/a           |
+| XMSS-SHA2_10_256           |           2500 | tabulated       |     1024         | 13 msg / 36 s  | 9 msg / 1.28 s  | 13 msg / 5.88e+03 s | 16 msg / 7.59e+03 s | 7 msg / 0.6 s              | 2 msg / 0.1 s                | 3 msg / n/a           |
+| XMSS-SHA2_10_512           |           9092 | tabulated       |     1024         | 46 msg / 135 s | 32 msg / 4.96 s | 45 msg / 2.14e+04 s | 58 msg / 2.76e+04 s | 25 msg / 2.4 s             | 4 msg / 0.3 s                | 8 msg / n/a           |
+| XMSS-SHA2_16_256           |           2692 | tabulated       |        6.554e+04 | 14 msg / 39 s  | 10 msg / 1.44 s | 14 msg / 6.33e+03 s | 18 msg / 8.16e+03 s | 8 msg / 0.7 s              | 2 msg / 0.1 s                | 3 msg / n/a           |
+| XMSS-SHA2_20_256           |           2820 | tabulated       |        1.049e+06 | 15 msg / 42 s  | 10 msg / 1.44 s | 14 msg / 6.63e+03 s | 18 msg / 8.55e+03 s | 8 msg / 0.7 s              | 2 msg / 0.1 s                | 3 msg / n/a           |
+
+Profiles in which the object fits a single message, by mode:
+
+| scheme                     | chain                                                                    | full       | full_cert   | hybrid     |
+|:---------------------------|:-------------------------------------------------------------------------|:-----------|:------------|:-----------|
+| LMS_SHA256_M32_H5_LMOTS_W8 | remote_id, sib1, osnma_pkr204, osnma_kroot158, cv2x_437, cv2x_j3161, dns | cv2x_j3161 | cv2x_j3161  | cv2x_j3161 |
+| XMSS-SHA2_10_256           | remote_id, sib1, osnma_pkr204, osnma_kroot158, cv2x_437, cv2x_j3161, dns | none       | none        | none       |
+| XMSS-SHA2_10_512           | remote_id, sib1, osnma_pkr204, osnma_kroot158, cv2x_437, cv2x_j3161, dns | none       | nan         | none       |
+| XMSS-SHA2_16_256           | remote_id, sib1, osnma_pkr204, osnma_kroot158, cv2x_437, cv2x_j3161, dns | none       | nan         | none       |
+| XMSS-SHA2_20_256           | remote_id, sib1, osnma_pkr204, osnma_kroot158, cv2x_437, cv2x_j3161, dns | none       | nan         | none       |
 
 Figure: `fig_q1_share.pdf` (source `raw/scoring_all_levels.csv`, lowest-level classes, full mode).
 
@@ -429,6 +466,6 @@ UOV 3 ms result: 0 of 6 lowest-level variants and 2 of 12 variants over all leve
 
 - Part A on every target machine: `MACHINE_NAME=<name> ITER=10000 ITER_SLOW=200 ./run.sh`. cloud-smoke used 1000 iterations (20 for SLH-DSA/CROSS/MQOM, whose tails are therefore not estimable). Not re-run in this redo: timings are the original cloud-smoke timings; only the declared-size listing, scoring and loss analysis are new.
 - MCU timings (Cortex-M) for the non-standardized families; classical baselines measured in C (the Python classical timings are not used).
-- LMS/XMSS size-only rows once `lms2019rfc8554.md` / `xmss2018rfc8391.md` notes exist; fragment-header sizes (TODO-RESULT) for remote_id, sib1, osnma, cv2x; BSM size and DNS header sizes for tighter ceiling-based budgets; sib1 hybrid partner.
+- LMS/XMSS: timings (none exist; size-only), sizes marked `derived`/`not stated` to be checked against RFC 8554/8391 and the missing public-key sizes added; fragment-header sizes (TODO-RESULT) for remote_id, sib1, osnma, cv2x; BSM size and DNS header sizes for tighter ceiling-based budgets; sib1 hybrid partner.
 - Reproduce darzi2026a overheads (324 B, 744 B OTA, 10% retransmission), junquera2023assessment 71-block key figure, chen2025hybrid tables vs liboqs, yoshizawa2026a, goertzen2022post transfer bytes.
 - Loss analysis extensions: measured loss traces for each channel, chain continuity across epochs and cold-start join, security analysis of the modes (no non-repudiation for the chain, time-sync attacks, hybrid stripping).

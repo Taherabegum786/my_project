@@ -44,6 +44,7 @@ python3 "$ROOT/lib/pqsig/classical_bench.py" "$CL" "$ITER"
 
 # Part B: declared sizes (OQS_SIG length_*) + observed, then scoring on the declared length. Part C: closed forms + simulation.
 python3 "$HERE/make_sizes.py" "$WORK/oqs_bench" "$OUT" "$CL" "$RAW/sizes_declared.csv"
+python3 "$HERE/add_stateful.py" "$RAW/sizes_declared.csv"   # size-only LMS/XMSS rows from literature notes
 python3 "$HERE/score.py" "$RAW/sizes_declared.csv" "$HERE/profiles.yaml" "$RAW/scoring_all_levels.csv"
 python3 "$HERE/run_loss.py" "$RAW/sizes_declared.csv" "$HERE/profiles.yaml" "$RAW" 20 4000
 python3 "$HERE/summarize.py"

@@ -10,19 +10,25 @@ from pqsig.common import tag
 MODES = ["full", "full_cert", "chain", "hybrid"]
 sizes, prof, out = sys.argv[1:4]
 d = pd.read_csv(sizes)
-d = d[(d.family_kind == "pq") & d.is_rep]
+d = d[d.family_kind.isin(["pq", "stateful"]) & d.is_rep]
+if "sig_size_flag" not in d: d = d.assign(sig_size_flag="", pk_size_flag="", max_signatures=float("nan"), timing="", source="")
+d = d.fillna({"sig_size_flag": "", "pk_size_flag": "", "timing": "", "source": ""})
 Y = yaml.safe_load(open(prof)); P = Y["profiles"]
 rows = []
 for _, s in d.iterrows():
+    nopk = pd.isna(s.length_public_key)
     for pn, p in P.items():
         for m in MODES:
-            r = score(m, int(s.sig_declared), int(s.length_public_key), p, Y["common"])
+            if m == "full_cert" and nopk:
+                continue  # needs the public key size, not stated in the literature note: row omitted, not guessed
+            r = score(m, int(s.sig_declared), 0 if nopk else int(s.length_public_key), p, Y["common"])
             kd = None
             if pn.startswith("osnma"):
-                kd = int(s.length_public_key) <= p["auth_budget"]["bytes"] if m == "full" else None
-            rows.append({**tag(), "scheme": s.scheme, "family": s.family, "level": int(s.claimed_nist_level), "class_id": int(s.class_id),
+                kd = (int(s.length_public_key) <= p["auth_budget"]["bytes"] if m == "full" and not nopk else None)
+            rows.append({**tag(), "scheme": s.scheme, "family": s.family, "level": None if pd.isna(s.claimed_nist_level) else int(s.claimed_nist_level), "family_kind": s.family_kind,
+                         "sig_size_flag": s.sig_size_flag, "pk_size_flag": s.pk_size_flag, "max_signatures": s.max_signatures, "timing": s.timing or "measured", "source": s.source or "liboqs", "class_id": int(s.class_id),
                          "class_members": int(s.class_members), "variant_note": s.variant_note, "sig_declared": int(s.sig_declared),
-                         "sig_observed_max": int(s.sig_observed_max), "pk_bytes": int(s.length_public_key),
+                         "sig_observed_max": None if pd.isna(s.sig_observed_max) else int(s.sig_observed_max), "pk_bytes": None if nopk else int(s.length_public_key),
                          "profile": pn, "basis": p["basis"], "budget": p["auth_budget"]["bytes"], "budget_derived": p["auth_budget"]["derived"],
                          "mode": m, "auth_bytes": r["auth_bytes"], "peak_bytes": r["peak_bytes"], "avg_bytes": r.get("avg_bytes"),
                          "anchor_bytes": r["anchor_bytes"], "anchor_msgs": r["anchor_msgs"], "share_of_budget": r["share"],
