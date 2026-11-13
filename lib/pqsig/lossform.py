@@ -1,100 +1,108 @@
-"""Closed forms (i.i.d. slot loss p) and a slot-level simulator (i.i.d. or Gilbert-Elliott) for broadcast authentication
-under an EQUAL channel budget: every scheme gets M slots per message (same slots/s, same bytes/slot), message rate 1/M per slot.
+"""Closed forms for i.i.d. slot loss p, matching EXACTLY the packing of lib/pqsig/proto/modes.py (symmetric model):
+every mode gets M slots per application message; u = usable slots per window (cap >= frame length, see modes.py ALLOCATION RULE);
+the heavy blob (signature / batch signature / anchor) is split into k source symbols and sent as erasure-coded (MDS, any k of n_sym
+distinct symbols) or repeated symbols round robin over the usable slots of its span. q = 1 - p.
 
-Notation: q = 1-p. S signature bytes, C auth bytes per slot, k = ceil(S/C) fragments, k_a = ceil((S+commit+ts)/C) anchor fragments,
-E messages per epoch, r_a anchor repetitions (derived, see chain), w key windows, n messages per Merkle batch.
-
- frag_rep   r = floor(M/k) repetitions of all k fragments.        P = (1 - p^r)^k                      (needs M >= k)
- frag_mds   M erasure-coded fragments, any k reconstruct.          P = P[Bin(M, q) >= k]                (needs M >= k)
- chain      t = M - a_s tag-copy slots per message;  P = (1 - p^t) (1 - p^{t w}) (1 - p^{r_a})^{k_a}
-            (message copy received) x (some key-carrying copy in the next w windows) x (anchor fragments all covered)
-            a_s = ceil(2 k_a / E) slots per message are reserved for the anchor, so the epoch has E a_s anchor slots and
-            r_a = floor(E a_s / k_a) >= 2 repetitions (all reserved slots are used: equal channel use)
- merkle_rep batch of n messages, t = M - ceil(2k/n) message copies; the n(M-t) spare slots carry the batch signature,
-            r_s = floor(n(M-t)/k) repetitions.                      P = (1 - p^t) (1 - p^{r_s})^k
- merkle_mds same but erasure-coded:                                  P = (1 - p^t) P[Bin(n(M-t), q) >= k]
-Messages whose verification never completes count as missing the deadline (p95 is over ALL messages).
-TTA95 (slots, from the start of the message's window, worst message of a batch for merkle):
- frag_rep  rho*k with rho = least rho<=r with (1-p^rho)^k >= .95        frag_mds  least s<=M with P[Bin(s,q)>=k] >= .95
- chain     M + u*M/t with u least with (1-p^t)(1-p^u)(1-p^{r_a})^{k_a} >= .95 (u <= t w)
- merkle    n M + rho*k*M/(M-t)  (rep)  or  n M + s*M/(M-t) (mds), with the (1-p^t) factor included
- inf = the scheme cannot reach 95% at that loss.
+  frag_rep / hyb_rep   r_j = u//k + [j < u mod k] copies of fragment j        P = prod_j (1 - p^r_j)                 (u >= k)
+  frag_mds / hyb_mds   P = P[Bin(u, q) >= k]
+  merkle (batch n)     message copy in own window (all M slots carry the app message): 1 - p^M; leaf path in window j of the
+                       NEXT batch (X ~ Bin(u,q) received there, X >= 1) and k of the n*u signature symbols (the same slots):
+                       P = (1 - p^M) * sum_{x>=1} b(u,x) P[Bin((n-1)u, q) >= k - x]                 (valid if n*u <= 255)
+  chain  (lead 0)      message at position i of an epoch of E windows needs: tag copy in own window (x1 >= 1 of u slots),
+                       a key in windows i+1..E or in the first window of the next epoch (x2 >= 1 of u(E-i) slots, else one of the
+                       u slots of the next window), and the epoch's anchor: x1 + x2 + Y >= k_a, Y ~ Bin(u(i-1), q)
+                       (all of them use slots of the same epoch -> correlated; summed exactly).  Averaged over i = 1..E.
+  chain_lead (lead 1)  the anchor of epoch e is sent during epoch e-1 (prelude for e = 0): independent of the message's own slots:
+                       P = mean_i (1 - p^u)(1 - p^{u(E-i+1)}) P[Bin(E u, q) >= k_a]
+  chain_lead_cont      no closed form (continuity couples consecutive epochs)
+Modes whose symbol span exceeds 255 distinct symbols use cyclic duplicates: no closed form (returns None).
+Gilbert-Elliott loss has no closed form here; it is measured only.
 """
 import math
+
 import numpy as np
-from math import comb
 
 
-def binom_sf(n, k, q):
-    """P[Bin(n,q) >= k]"""
+def _pmf(n, q):
+    if n == 0:
+        return np.array([1.0])
+    k = np.arange(n + 1)
+    lg = np.array([math.lgamma(n + 1) - math.lgamma(x + 1) - math.lgamma(n - x + 1) for x in k])
+    with np.errstate(divide="ignore", invalid="ignore"):
+        lp = lg + k * (math.log(q) if q > 0 else -np.inf) + (n - k) * (math.log(1 - q) if q < 1 else -np.inf)
+    out = np.exp(lp)
+    if q >= 1:
+        out = np.zeros(n + 1); out[n] = 1.0
+    if q <= 0:
+        out = np.zeros(n + 1); out[0] = 1.0
+    return out
+
+
+def sf_arr(n, q):
+    """arr[r] = P[Bin(n,q) >= r] for r = 0..n+1 (arr[n+1] = 0); r < 0 handled by caller."""
+    pm = _pmf(n, q)
+    s = np.concatenate([np.cumsum(pm[::-1])[::-1], [0.0]])
+    return s
+
+
+def sf(n, k, q):
     if k <= 0:
         return 1.0
-    if n < k:
+    if k > n:
         return 0.0
-    return float(sum(comb(n, j) * q ** j * (1 - q) ** (n - j) for j in range(k, n + 1)))
+    return float(sf_arr(n, q)[k])
 
 
-def params(S, C, M, commit=16, ts=4, E=20, r_a_min=2, w=2, n=8):
-    k = math.ceil(S / C); ka = math.ceil((S + commit + ts) / C)
-    a_s = math.ceil(ka * r_a_min / E)            # slots per message reserved for the anchor (>= r_a_min repetitions per epoch)
-    return dict(S=S, C=C, M=M, k=k, ka=ka, E=E, r_a=(E * a_s) // ka, a_s=a_s, w=w, n=n,
-                t_chain=M - a_s, t_mer=M - math.ceil(2 * k / n))
-
-
-def P_closed(scheme, p, a):
-    q = 1 - p; M, k = a["M"], a["k"]
-    if scheme == "frag_rep":
-        r = M // k
-        return 0.0 if r < 1 else (1 - p ** r) ** k
-    if scheme == "frag_mds":
-        return 0.0 if M < k else binom_sf(M, k, q)
-    if scheme == "chain":
-        t = a["t_chain"]
-        return 0.0 if t < 1 else (1 - p ** t) * (1 - p ** (t * a["w"])) * (1 - p ** a["r_a"]) ** a["ka"]
-    t = a["t_mer"]; n = a["n"]
-    if t < 1 or n * (M - t) < k:
+def share(mode, p, a):
+    """a: dict with u, M, k, n_sym, E, n (batch), span (usable symbols in span). Returns expected share or None."""
+    q = 1 - p; u, M, k, E = a["u"], a["M"], a["k"], a["E"]
+    if u == 0 or not a["feasible"]:
         return 0.0
-    if scheme == "merkle_rep":
-        return (1 - p ** t) * (1 - p ** (n * (M - t) // k)) ** k
-    if scheme == "merkle_mds":
-        return (1 - p ** t) * binom_sf(n * (M - t), k, q)
-    raise ValueError(scheme)
+    if mode in ("frag_rep", "hyb_rep"):
+        if u < k:
+            return 0.0
+        base, rem = divmod(u, k)
+        return float(np.prod([1 - p ** (base + (1 if j < rem else 0)) for j in range(k)]))
+    if mode in ("frag_mds", "hyb_mds"):
+        return sf(u, k, q)
+    if mode.startswith("merkle"):
+        n = a["n"]
+        if n * u > 255:
+            return None
+        pm = _pmf(u, q); s = sf_arr((n - 1) * u, q)
+        tot = 0.0
+        for x in range(1, u + 1):
+            r = k - x
+            tot += pm[x] * (1.0 if r <= 0 else (s[r] if r <= (n - 1) * u else 0.0))
+        return (1 - p ** M) * float(tot)
+    if mode.startswith("chain"):
+        if E * u > 255 or mode == "chain_lead_cont":
+            return None
+        ka = k
+        if mode == "chain_lead":
+            pa = sf(E * u, ka, q)
+            return float(np.mean([(1 - p ** u) * (1 - p ** (u * (E - i + 1))) * pa for i in range(1, E + 1)]))
+        pm1 = _pmf(u, q); res = []
+        for i in range(1, E + 1):
+            pm2 = _pmf(u * (E - i), q); s4 = sf_arr(u * (i - 1), q); n4 = u * (i - 1)
+            w2 = np.ones(len(pm2)); w2[0] = 1 - p ** u
+            tot = 0.0
+            for x1 in range(1, u + 1):
+                x2 = np.arange(len(pm2)); r = ka - x1 - x2
+                tail = np.where(r <= 0, 1.0, np.where(r > n4, 0.0, s4[np.clip(r, 0, n4 + 1)]))
+                tot += pm1[x1] * float(np.sum(pm2 * w2 * tail))
+            res.append(tot)
+        return float(np.mean(res))
+    raise ValueError(mode)
 
 
-def tta95(scheme, p, a, target=0.95):
-    q = 1 - p; M, k = a["M"], a["k"]
-    if P_closed(scheme, p, a) < target:
-        return math.inf
-    if scheme == "frag_rep":
-        for rho in range(1, M // k + 1):
-            if (1 - p ** rho) ** k >= target: return rho * k
-    if scheme == "frag_mds":
-        for s in range(k, M + 1):
-            if binom_sf(s, k, q) >= target: return s
-    if scheme == "chain":
-        t = a["t_chain"]
-        for u in range(1, t * a["w"] + 1):
-            if (1 - p ** t) * (1 - p ** u) * (1 - p ** a["r_a"]) ** a["ka"] >= target: return M + u * M / t
-    t = a["t_mer"]; n = a["n"]
-    if scheme == "merkle_rep":
-        for rho in range(1, n * (M - t) // k + 1):
-            if (1 - p ** t) * (1 - p ** rho) ** k >= target: return n * M + rho * k * M / (M - t)
-    if scheme == "merkle_mds":
-        for s in range(k, n * (M - t) + 1):
-            if (1 - p ** t) * binom_sf(s, k, q) >= target: return n * M + s * M / (M - t)
-    return math.inf
-
-
-SCHEMES = ("frag_rep", "frag_mds", "chain", "merkle_rep", "merkle_mds")
-
-
-# ---------------- simulation (cross-check and Gilbert-Elliott) ----------------
 def loss_sequence(rng, N, p, burst_len=None):
     """Boolean array, True = slot lost. burst_len None -> i.i.d.; else Gilbert-Elliott with loss 1 in Bad, 0 in Good,
     mean Bad sojourn = burst_len slots, stationary P(Bad) = p."""
     if burst_len is None:
         return rng.random(N) < p
-    if p <= 0: return np.zeros(N, bool)
+    if p <= 0:
+        return np.zeros(N, bool)
     pbg = 1.0 / burst_len; pgb = pbg * p / (1 - p)
     out = []; tot = 0; bad = rng.random() < p
     while tot < N:
@@ -103,51 +111,12 @@ def loss_sequence(rng, N, p, burst_len=None):
         for i in range(m):
             L = int(b[i] if bad else g[i])
             out.append((bad, L)); tot += L; bad = not bad
-            if tot >= N: break
+            if tot >= N:
+                break
     return np.repeat(np.array([o[0] for o in out]), [o[1] for o in out])[:N]
 
 
-def sim(scheme, p, a, n_msgs, rng, burst_len=None):
-    """Share of messages verified. n_msgs must be a multiple of E and n."""
-    M, k = a["M"], a["k"]
-    if scheme in ("frag_rep", "frag_mds"):
-        if M < k: return 0.0
-        rec = ~loss_sequence(rng, n_msgs * M, p, burst_len).reshape(n_msgs, M)
-        if scheme == "frag_mds":
-            return float((rec.sum(1) >= k).mean())
-        r = M // k
-        cov = np.zeros((n_msgs, k), bool)
-        for j in range(r * k):
-            cov[:, j % k] |= rec[:, j]
-        return float(cov.all(1).mean())
-    if scheme == "chain":
-        t, E, ka, ra, w = a["t_chain"], a["E"], a["ka"], a["r_a"], a["w"]
-        if t < 1: return 0.0
-        nm = (n_msgs // E) * E
-        rec = ~loss_sequence(rng, nm * M, p, burst_len).reshape(nm, M)
-        tag = rec[:, :t].any(1)
-        res = rec[:, t:].reshape(nm // E, -1)             # reserved slots of each epoch, in order
-        need = ka * ra
-        cov = np.zeros((nm // E, ka), bool)
-        for j in range(need):
-            cov[:, j % ka] |= res[:, j]
-        anc = np.repeat(cov.all(1), E)
-        key_any = rec[:, :t].any(1)                       # window carries key copies in its t tag slots
-        keyw = np.zeros(nm, bool)
-        for off in range(1, w + 1):
-            keyw[:nm - off] |= key_any[off:]
-        return float((tag & keyw & anc).mean())
-    t, n = a["t_mer"], a["n"]
-    if t < 1 or n * (M - t) < k: return 0.0
-    nm = (n_msgs // n) * n
-    rec = ~loss_sequence(rng, nm * M, p, burst_len).reshape(nm // n, n, M)
-    tag = rec[:, :, :t].any(2)
-    spare = rec[:, :, t:].reshape(nm // n, -1)
-    if scheme == "merkle_mds":
-        sig = spare.sum(1) >= k
-    else:
-        cov = np.zeros((nm // n, k), bool)
-        for j in range((spare.shape[1] // k) * k):
-            cov[:, j % k] |= spare[:, j]
-        sig = cov.all(1)
-    return float((tag & sig[:, None]).mean())
+def make_mask(G, seed, p, burst_len=None):
+    """Deterministic loss mask for a slot stream of length G: same (seed, p, burst) -> same mask in every process/machine."""
+    rng = np.random.default_rng(np.random.SeedSequence([int(seed), int(round(p * 1000)), int(burst_len or 0)]))
+    return loss_sequence(rng, G, p, burst_len)

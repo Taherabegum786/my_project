@@ -5,16 +5,27 @@ import socket
 import subprocess
 
 
-def tag():
+def _git(root, *args):
+    return subprocess.check_output(["git", "-C", root, *args], text=True, stderr=subprocess.DEVNULL).strip()
+
+
+def code_state():
+    """(full commit id, dirty flag). Dirty = tracked or untracked changes under lib/ or papers/*/experiments/ (build/, results/ and __pycache__ excluded)."""
     root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     try:
-        commit = subprocess.check_output(["git", "-C", root, "rev-parse", "--short", "HEAD"],
-                                         text=True, stderr=subprocess.DEVNULL).strip()
+        commit = _git(root, "rev-parse", "HEAD")
+        dirty = bool(_git(root, "status", "--porcelain", "--", "lib", "papers/benchmark/experiments",
+                          ":(exclude)papers/benchmark/experiments/build", ":(exclude,glob)**/__pycache__/**"))
     except Exception:
-        commit = "unknown"
+        commit, dirty = "unknown", True
+    return commit, dirty
+
+
+def tag():
+    commit, dirty = code_state()
     return {"machine": os.environ.get("MACHINE_NAME") or socket.gethostname(),
             "date": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "git_commit": commit}
+            "git_commit": commit, "git_dirty": int(dirty)}
 
 
 def stats(samples_us):

@@ -8,9 +8,22 @@
 # Timing: message_period_s = interval between messages that carry successive fragments of one auth object;
 #         frame_period_s = spacing of frames inside one message (0 = burst). ttfa = (m-1)*message_period + (f_last-1)*frame_period.
 # hybrid_partner / cert_handling: what the source actually uses (see per-profile text).
+# Pass-3 changes (review-round2): OSNMA PKR is a KEY space (not a signature budget); certificates model an explicit issuer
+# (PQ issuer = same scheme as the subject; the source's classical-issuer case is a separate row); both C-V2X ceilings use ONE
+# subtraction rule: budget = ceiling - SPDU fixed header - BSM core (the 40 B frame overhead of twardokus2024when is subtracted
+# from neither: the source does not say whether 437 B includes it; sensitivity = budget - 40 B, reported in summary.md).
 common:
   chain: {tag: 16, key: 16, commit: 16, ts: 4}      # tag 16 B: darzi2026a; key/commit/ts assumed
   chain_key_delay_messages: 1                       # assumed (d)
+  cert:
+    metadata_bytes: TODO-RESULT        # not stated in budget-evidence.md; derivations conflict (1002-897-64 = 41 B vs 170-64-33 = 73 B); code uses 0
+    metadata_sensitivity_bytes: [41, 73]   # derived, see summary.md; reported as separate fit columns, never as the main number
+    classical_issuer_fixed_bytes: 105  # abrar2026deployment Falcon-512 certificate 1,002 B - 897 B pk = metadata + issuer signature (classical issuer case)
+  protocol:                            # parameters of the real-protocol experiments (all assumed unless a source is given)
+    epoch_windows_E: 20                # assumed: windows (= application messages) per chain epoch
+    key_delay_windows_d: 1             # assumed (same as chain_key_delay_messages)
+    data_windows_N: 80                 # assumed: application messages per run (4 epochs; divisible by Merkle n = 4, 8, 16)
+    window_slots_M: [10, 40]           # assumed: slots per application message, identical for every mode; multiple of the certificate cadence
 profiles:
   remote_id:
     source: wiethuechter2024drip
@@ -55,6 +68,7 @@ profiles:
       quote: "srsRAN gNB utilizes 79 bytes out of the allowed 372 bytes ... with 293 bytes available per packet for authentication material"
     frames: {first_payload_bytes: 293, next_payload_bytes: 293, source: "same"}
     fragment_header_bytes: TODO-RESULT
+    proto: {slot_period_s: 0.16, app_bytes: 79, digest_bytes: 0, cert_every: 0, app_source: "darzi2026a Sec. VI (79 B SIB1 content)"}
     message_period_s: 0.16       # "SIB1 every 160 ms" (configurable 20-160 ms)
     frame_period_s: 0
     timing_source: "darzi2026a (SIB1 period 160 ms; delay = (packets-1) x 160 ms)"
@@ -65,8 +79,9 @@ profiles:
       peak_every_n: none
       description: "key provisioned out of band, nothing in the broadcast (EMULSION); darzi2026a's FN-DSA/ML-DSA baselines send a 2-level certificate chain"
       source: "darzi2026a"
-  osnma_pkr204:
+  osnma_pkr_keys:
     source: junquera2023assessment
+    role: public-key-space        # scored ONLY for public-key delivery (DSM-PKR); never as a signature budget
     basis: auth-budget
     payload_ceiling:
       bytes: 208
@@ -74,25 +89,20 @@ profiles:
       source: "junquera2023assessment Sec. 3 (16 DSM blocks x 104 bit = 1664 bit)"
       quote: "each one is 104 bits long, we have 1664 bits available for these two use cases"
     auth_budget:
-      bytes: 204
-      derived: true              # 1632 bit / 8; source states 1632 bit "available for cryptographic material" (DSM-PKR use case)
-      source: "junquera2023assessment Sec. 3, use case 1"
-      quote: "Discarding the 16 bits of metadata, there are available 1632 bits for cryptographic material"
+      bytes: 76
+      derived: true              # (1632 - 1024) bit / 8 = 608 bit = 76 B: DSM-PKR cryptographic material minus the 1024-bit Merkle proof (review-round2 integrity 2)
+      source: "junquera2023assessment Sec. 3 use case 1 + budget-evidence.md OSNMA (b)"
+      quote: "1632 bits for cryptographic material ... shared with a 1024-bit Merkle signature and public key"
     frames: {first_payload_bytes: 12.75, next_payload_bytes: 12.75, source: "derived 1632 bit / 16 blocks = 102 bit"}
     fragment_header_bytes: TODO-RESULT
-    message_period_s: 480        # derived: one DSM = up to 16 blocks, one block per 30 s subframe
+    message_period_s: 480
     frame_period_s: 30
-    timing_source: "junquera2023assessment (HKROOT message per subframe, subframe every 30 s)"
-    hybrid_partner: {name: ECDSA-P256, sig_bytes: 64, source: "junquera2023assessment (OSNMA ECDSA P-256 signature 512 bit)"}
-    cert_handling:
-      steady_extra_bytes: 0
-      peak_extra: none
-      peak_every_n: none
-      description: "public key is delivered by a separate DSM-PKR; the signature (DSM-KROOT) is scored alone; pk size is reported against the same budget as key_delivery"
-      source: "junquera2023assessment"
-    note: "Falcon needing 67/71 blocks is not reproducible; by the source's own 79 bit/block it is 68 (derived)."
+    timing_source: "junquera2023assessment"
+    hybrid_partner: {name: ECDSA-P256, sig_bytes: 64, source: "junquera2023assessment"}
+    cert_handling: {steady_extra_bytes: 0, peak_extra: none, peak_every_n: none, description: "n/a (key space)", source: "junquera2023assessment"}
   osnma_kroot158:
     source: junquera2023assessment
+    role: signature               # DSM-KROOT digital-signature field
     basis: auth-budget
     payload_ceiling:
       bytes: 208
@@ -120,24 +130,26 @@ profiles:
       source: "twardokus2024when Sec. IV (C-V2X vs DSRC)"
       quote: "the maximum payload size (considering only practical data rates) in a standard 10 MHz channel is a mere 437 bytes"
     auth_budget:
-      bytes: 373                 # 437 - 40 - 24
+      bytes: 374                 # 437 - 24 - 39  (same rule as cv2x_j3161)
       derived: true
-      source: "ceiling minus stated overheads"
+      source: "ceiling minus SPDU fixed header minus BSM core"
       quote: "|F| = 40+|SPDU|; |SPDU| = 24 + |BSM| + |certificate| + |sigBSM|"
       subtractions:
-        - {name: frame overhead, bytes: 40, source: "twardokus2024when Sec. V (|F| = 40 + |SPDU|); unclear whether 437 B includes it"}
-        - {name: SPDU fixed overhead, bytes: 24, source: "twardokus2024when Sec. V"}
-        - {name: BSM, bytes: TODO-RESULT, source: "not stated in the source; not subtracted -> budget is an upper bound"}
-    frames: {first_payload_bytes: 373, next_payload_bytes: 373, source: "single frame"}
+        - {name: SPDU fixed overhead, bytes: 24, source: "twardokus2024when Sec. V (|SPDU| = 24 + ...)"}
+        - {name: BSM core, bytes: 39, source: "abrar2026deployment Eq. 1 (39 B BSM core); twardokus2024when gives no BSM size, so the value is borrowed (assumption)"}
+        - {name: frame overhead, bytes: 0, source: "twardokus2024when |F| = 40 + |SPDU|: NOT subtracted, the source does not say whether 437 B includes it; if it does, budget = 334 B (sensitivity in summary.md)"}
+      sensitivity_bytes: 334
+    frames: {first_payload_bytes: 374, next_payload_bytes: 374, source: "single frame"}
     fragment_header_bytes: TODO-RESULT
     message_period_s: 0.1        # "BSM every 100 ms"
     frame_period_s: 0
     timing_source: "twardokus2024when"
     hybrid_partner: {name: ECDSA-P256, sig_bytes: 64, source: "IEEE 1609.2 (ECDSA; twardokus2024when 'ECDSA certificate 162 B')"}
+    proto: {slot_period_s: 0.1, app_bytes: 39, digest_bytes: 8, cert_every: 5, app_source: "abrar2026deployment Eq. 1 BSM core 39 B"}
     cert_handling:
       steady_extra_bytes: 8      # HashedId8 digest (abrar2026deployment, Table 2 digest mode); same practice in 1609.2
-      peak_extra: pk+fixed       # full certificate = subject pk + 105 B (metadata + issuer signature)
-      peak_fixed_bytes: 105      # derived: abrar2026deployment Falcon-512 certificate 1,002 B minus 897 B public key
+      peak_extra: pk+fixed       # certificate = subject pk + metadata + issuer signature (PQ issuer: same scheme; classical issuer: fixed 105 B)
+      peak_fixed_bytes: 105      # derived: abrar2026deployment Falcon-512 certificate 1,002 B minus 897 B public key (classical-issuer case)
       peak_every_n: 5            # twardokus2024when: certificate cycle 500 ms at 10 Hz BSM; abrar2026deployment: every 5th BSM
       description: "8 B certificate digest on 4 of 5 BSMs, full certificate on every 5th (cert metadata TODO-RESULT, not counted)"
       source: "twardokus2024when (certificate cycle 500 ms); abrar2026deployment (digest mode 8 B, J2945/1)"
@@ -163,6 +175,7 @@ profiles:
     frame_period_s: 0
     timing_source: "abrar2026deployment (BSM 10 Hz)"
     hybrid_partner: {name: ECDSA-P256, sig_bytes: 64, source: "abrar2026deployment Table 2 (ECDSA 64 B)"}
+    proto: {slot_period_s: 0.1, app_bytes: 39, digest_bytes: 8, cert_every: 5, app_source: "abrar2026deployment Eq. 1 BSM core 39 B"}
     cert_handling:
       steady_extra_bytes: 8
       peak_extra: pk+fixed
@@ -199,6 +212,14 @@ profiles:
       description: "key cached after first response; first response carries signature + public key"
       source: "goertzen2022post"
     note: "request-response, not handshake-free broadcast; kept as a ceiling-based reference."
+join_deadline_s:      # ASSUMED (no source states one): maximum acceptable wait from tuning in until the first authenticated message; used only to judge the chain's join time
+  remote_id: 30
+  sib1: 10
+  osnma_pkr_keys: null   # key space, no signature joined
+  osnma_kroot158: 720    # one full OSNMA frame (24 subframes x 30 s, junquera2023assessment)
+  cv2x_437: 10
+  cv2x_j3161: 10
+  dns: 1
 deadlines_ms:     # Q3: tied to the profile's message period, plus one reference deadline not tied to any profile
   grid_reference: {value: 3, source: "IEC 62351-6 text as quoted in hussain2026a (not an IEC 61869-9 requirement); no grid profile in this set"}
   per_profile: "message_period_s above (cv2x 100 ms BSM, sib1 160 ms, remote_id 3 s, osnma 30 s per block)"
