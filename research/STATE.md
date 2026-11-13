@@ -4,7 +4,7 @@ Updated by the orchestrator after every stage. One line per paper.
 
 | paper | survey | design | verify | experiments | write | review |
 |---|---|---|---|---|---|---|
-| benchmark | done | n/a | n/a | awaiting-approval (pass 3 run on cloud-vm-4core) | running (draft 3) | round 2: major revision |
+| benchmark | done | n/a | n/a | awaiting-approval (pass 3 run on cloud-vm-4core) | done (draft 3) | round 3 running |
 | v2x | todo | todo | todo | todo | todo | todo |
 | drones | todo | todo | todo | todo | todo | todo |
 | grid | todo | todo | todo | todo | todo | todo |

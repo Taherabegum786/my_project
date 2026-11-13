@@ -12,13 +12,14 @@
 
 % Open items. \todo{...} marks a missing source or check; TODO-RESULT marks a missing number.
 \newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+\newcommand{\mode}[1]{\textsf{#1}}
 
 \input{numbers}
 
 \begin{document}
 
-\title{Post-Quantum Signatures in Broadcast Budgets:\\
-A Cross-Domain Accounting Study}
+\title{Post-Quantum Broadcast Authentication in Per-Message Byte Budgets:\\
+Fit and Measured Behaviour of Ten Modes Across Channels}
 
 \author{\IEEEauthorblockN{Author Name}
 \IEEEauthorblockA{Affiliation}}
@@ -26,82 +27,80 @@ A Cross-Domain Accounting Study}
 \maketitle
 
 \noindent\fbox{\parbox{\dimexpr\columnwidth-2\fboxsep-2\fboxrule}{%
-\centering\textbf{\textcolor{red}{DRAFT -- PROVISIONAL SMOKE-TEST NUMBERS}}\\[2pt]
+\centering\textbf{\textcolor{red}{DRAFT}}\\[2pt]
 \footnotesize\raggedright
-Timings come from smoke runs on a shared cloud VM (\texttt{\RunMachine},
-\RunDate, commit \texttt{\RunCommit}; \IterFast{} iterations, \IterSlow{}
-for slow schemes). Sizes, scoring and the loss analysis were redone on
-\RunDateRedo{} (commits \texttt{\RunCommitsRedo}). None are publication
-numbers. Every value is defined in \texttt{numbers.tex} and traced to
+Timing numbers are from a single cloud VM (\texttt{\RunMachine}, \RunDate,
+commit \texttt{\RunCommit}, clean tree) pending runs on the authors'
+machines. Every value is defined in \texttt{numbers.tex} and traced to
 \texttt{results/summary.md}; open items are marked
 \textcolor{red}{TODO-RESULT} or \textcolor{red}{[TODO]}.}}
 
 \begin{abstract}
-Handshake-free broadcast channels in cyber-physical systems (drone Remote
-ID, 5G SIB1, Galileo OSNMA, C-V2X) give each message a fixed number of
-bytes for authentication. We gather the budgets of these channels from
-their sources, separating the authentication budget from the payload
-ceiling. We then account the cost of four authentication modes against
-them: full signature, signature with certificate handling, a PQ-anchored
-TESLA-style key chain, and a classical/PQ hybrid. The accounting covers
-\NumClasses{} distinct signature size classes from liboqs, plus
-literature sizes for LMS and XMSS. At the lowest security level of each
-family, between \FullFitMin{} and \FullFitMax{} of \NumClassesLow{}
-classes fit a single message with a full signature, depending on the
-profile. All of them are UOV, SNOVA or MAYO, or Falcon under the larger
-ceilings. On a SIB1 slot model at equal channel use, closed forms show
-that the chain does not dominate. It verifies at least as many messages
-as the best fragmentation scheme in \RegGeFrag{} of \RegCells{} cells,
-never for ML-DSA-44, while erasure-coded batch signing verifies more but
-takes much longer. On x86, size rather than timing binds for
-\QThreeSize{} of \QThreeFams{} families. All numbers are provisional,
-x86-only and without security analysis.
+Handshake-free broadcast channels (drone Remote ID, 5G SIB1, Galileo OSNMA,
+C-V2X) give each message a fixed number of bytes for authentication. We
+derive these budgets from their sources, separating the payload ceiling
+from the authentication budget, and score \NumClassesLow{} lowest-level
+liboqs size classes (\NumClasses{} overall) by declared size: a full
+post-quantum (PQ) signature fits one message for \FullFitMin{} to
+\FullFitMax{} of \NumClassesLow{} classes, depending on the profile. We then
+implement \NumModes{} authentication modes with liboqs (fragmented and
+erasure-coded signatures, hybrids, Merkle-batch signing, and three variants
+of a PQ-anchored TESLA-style chain), check them with \NegRuns{} negative
+tests, and compare them at an equal channel budget on SIB1 and two C-V2X
+profiles under synthetic i.i.d.\ and burst loss. Against erasure-coded
+per-message signatures, the chain authenticates a larger share of messages
+(supported: \HaW{} wins, \HaL{} losses, \HaT{} ties; \HaInfeas{} of the wins
+are cells where fragmentation cannot run). It is refuted on bytes on air per
+authenticated message (\HbW/\HbL/\HbT), authentication delay
+(\HcW/\HcL/\HcT) and late-joiner time (\HdW/\HdL/\HdT). The chain also gives
+up non-repudiation. All timings come from one x86 cloud VM.
 \end{abstract}
 
 \begin{IEEEkeywords}
-post-quantum signatures, broadcast authentication, V2X, Remote ID, GNSS, 5G
+post-quantum signatures, broadcast authentication, TESLA, V2X, Remote ID,
+GNSS, 5G
 \end{IEEEkeywords}
 
 % ======================================================================
 \section{Introduction}
 
-Several cyber-physical broadcast channels authenticate messages that a
-passive receiver must verify without a handshake: drone Remote ID over
+Several cyber-physical broadcast channels carry messages that a passive
+receiver must authenticate without a handshake: drone Remote ID over
 Bluetooth pages \cite{wiethuechter2024drip}, 5G SIB1 \cite{darzi2026a},
 Galileo OSNMA \cite{junquera2023assessment} and C-V2X basic safety
-messages \cite{twardokus2024when,abrar2026deployment}. Each has a hard
-byte limit per message. Moving them to post-quantum (PQ) signatures, whether
-standardized (ML-DSA \cite{nist2024fips204}, SLH-DSA \cite{nist2024fips205},
-LMS/XMSS \cite{nist2020sp800208}) or selected for standardization (Falcon,
-as FN-DSA \todo{cite: FN-DSA standard, none published yet}), is hard
-because PQ signatures and keys are larger than the classical ones they
-replace.
+messages (BSMs) \cite{twardokus2024when,abrar2026deployment}. Each has a
+hard byte limit per message. PQ signatures, whether standardized (ML-DSA
+\cite{nist2024fips204}, SLH-DSA \cite{nist2024fips205}, LMS/XMSS
+\cite{nist2020sp800208}) or selected (Falcon as FN-DSA \todo{cite: FN-DSA
+standard, none published yet}), are larger than the classical signatures
+they replace.
 
-Prior work answers this per domain
-\cite{twardokus2024when,abrar2026deployment,junquera2023assessment,darzi2026a,goertzen2022post},
-and within one domain across many algorithms
-\cite{yoshizawa2026a,mamun2026post}. Studies of different channels use
-different budget definitions, so their conclusions conflict. For example,
+Prior work answers the fit question per domain
+\cite{twardokus2024when,abrar2026deployment,junquera2023assessment,darzi2026a,goertzen2022post}
+or across algorithms within one domain \cite{yoshizawa2026a,mamun2026post}.
+Budget definitions differ between these studies, and so do the conclusions:
 Falcon-512 is ``insufficient'' for C-V2X in \cite{twardokus2024when} and
-``feasible'' in \cite{abrar2026deployment}. This short paper is a
-measurement and accounting study. It proposes no new mechanism, analyses
-no security properties, and measures no constrained hardware.
+``feasible'' in \cite{abrar2026deployment}. Amortizing modes, such as a
+TESLA-style chain anchored by one PQ signature per epoch \cite{darzi2026a},
+have so far been evaluated within one domain. This paper
+measures fit and loss behaviour on common terms. It proposes no new
+mechanism and gives no security proof.
 
 \textbf{Contributions.}
 \begin{itemize}
-\item Budget profiles for five channels (seven variants) taken from
-  the sources, each separating the payload ceiling from the
-  authentication budget and marking derived values. The Falcon-512 C-V2X
-  conflict reduces to two different ceilings (Sec.~\ref{sec:q1}).
-\item Mode-level accounting (full, certificate handling, PQ-anchored chain
-  with fragmented anchor, hybrid) for \NumClasses{} distinct liboqs size
-  classes and \NumStateful{} LMS/XMSS literature rows. It reports single-message
-  fit, messages needed and time to first authentication.
-\item A closed-form loss comparison at equal channel use on the SIB1 slot
-  model. It covers the chain, repeated and erasure-coded fragmentation, and
-  Merkle-batch amortized signing, checked under Gilbert--Elliott bursts.
-\item An x86-only classification of whether size or timing binds, per
-  family, against each profile's packet period.
+\item \emph{Budget profiles} for five channels, taken from their sources,
+  that separate the payload ceiling from the authentication budget and mark
+  every derived value (Table~\ref{tab:profiles}).
+\item \emph{Fit} of \NumClassesLow{} lowest-level size classes
+  (\NumClasses{} overall) by declared signature size, with PQ-issuer
+  certificates, key delivery, and a two-ceiling explanation of the
+  Falcon-512 C-V2X conflict (Sec.~\ref{sec:q1}).
+\item \emph{Real implementations} of \NumModes{} authentication modes on
+  liboqs, verified by \NegRuns{} negative tests, and compared at an equal
+  channel budget on three profiles (Sec.~\ref{sec:q2}).
+\item \emph{The measured finding}: the chain authenticates a larger share
+  under loss, but is refuted on bytes per authenticated message,
+  authentication delay and late-joiner time (Table~\ref{tab:verdicts}).
 \end{itemize}
 
 % ======================================================================
@@ -109,177 +108,185 @@ no security properties, and measures no constrained hardware.
 \label{sec:related}
 
 \textbf{Per-domain fit.} Twardokus et al.\ \cite{twardokus2024when} argue
-that the 437\,B C-V2X payload cannot carry a PQ signature and propose a
-partially hybrid V2V protocol. Abrar et al.\ \cite{abrar2026deployment}
-find Falcon-512 feasible within an SAE J3161 transport block. Chen et al.\
-\cite{chen2025hybrid,chen2026pseudonym} study hybrid PQ/ECC certificates for the V2X
-credential system \cite{brecht2018security}. Eaton et al.\
-\cite{eaton2024provably} give PQ butterfly key expansion for pseudonym
-certificates (we read only the abstract). Junquera-S\'anchez et al.\
-\cite{junquera2023assessment} assess PQ options, including stateful
-schemes, for OSNMA. Darzi et al.\ \cite{darzi2026a} anchor a TESLA-style
-HMAC chain with one MAYO signature per epoch to fit 5G SIB1. Goertzen and
-Stebila \cite{goertzen2022post} fragment PQ DNSSEC responses; DNS is
+that the C-V2X payload cannot carry a PQ signature and propose a partially
+hybrid V2V protocol; Abrar et al.\ \cite{abrar2026deployment} find
+Falcon-512 feasible within an SAE J3161 transport block. Chen et al.\
+\cite{chen2025hybrid,chen2026pseudonym} study hybrid PQ/ECC certificates for
+the V2X credential system \cite{brecht2018security}; Eaton et al.\
+\cite{eaton2024provably} give PQ butterfly key expansion (abstract only).
+Junquera-S\'anchez et al.\ \cite{junquera2023assessment} assess PQ options
+for OSNMA. Darzi et al.\ \cite{darzi2026a} anchor an HMAC chain with one PQ
+signature per epoch to fit 5G SIB1. Goertzen and Stebila
+\cite{goertzen2022post} fragment PQ DNSSEC responses; DNS is
 request--response, so we keep it only as a ceiling reference. TBRD
 \cite{veara2025tbrd} uses TESLA for Remote ID, and Hussain et al.\
-\cite{hussain2026a} use a fast MAC for grid sampled values.
+\cite{hussain2026a} a fast MAC for grid sampled values.
 
-\textbf{Multi-algorithm, one domain.} Yoshizawa et al.\ \cite{yoshizawa2026a}
-compare NIST and additional-round signatures for V2X and compress them with
-zero-knowledge proofs. Mamun et al.\ \cite{mamun2026post} review PQ
-cryptography for ITS. Nabasirye et al.\ \cite{nabasirye2026security}
-describe a benchmarking framework on Xtensa hardware (abstract only).
+\textbf{Multi-algorithm, one domain.} Yoshizawa et al.\
+\cite{yoshizawa2026a} compare NIST and additional-round signatures for V2X
+and compress them with zero-knowledge proofs; Mamun et al.\
+\cite{mamun2026post} review PQ cryptography for ITS; Nabasirye et al.\
+\cite{nabasirye2026security} describe a benchmarking framework on Xtensa
+hardware (abstract only).
 
-\textbf{Broadcast authentication and amortization.} Classical work
-amortizes one signature over many packets. It includes signing multicast
-streams over lossy channels \cite{perrig2000efficient}, signature
-amortization for multicast \cite{park2002efficient}, tree-based signatures
-for flows and multicasts \cite{wong1998digital}, and short one-time
-signatures \cite{reyzin2002better}; we read only titles or abstracts of
-these. TESLA \cite{perrig2005tesla} authenticates with delayed key
-disclosure, assuming loose time synchronization and without
-non-repudiation. Stateful hash-based signatures LMS
-\cite{lms2019rfc8554} and XMSS \cite{xmss2018rfc8391} bound the number of
-signatures per key; few-time schemes
-\cite{sedghighadikolaei2024fast,sedghighadikolaei2024signer} trade capacity
-for speed.
+\textbf{Broadcast authentication and amortization.} Classical work signs
+multicast streams over lossy channels \cite{perrig2000efficient}, amortizes
+signatures over packets \cite{park2002efficient}, signs flows and multicasts
+\cite{wong1998digital}, and builds short one-time signatures
+\cite{reyzin2002better}; we read only titles or abstracts of these, so we do
+not claim how closely our Merkle and erasure-coded modes match their
+constructions \todo{check full text: wong1998digital, park2002efficient}.
+TESLA \cite{perrig2005tesla} authenticates by delayed key disclosure under
+loose time synchronization, without non-repudiation. LMS
+\cite{lms2019rfc8554} and XMSS \cite{xmss2018rfc8391} bound signatures per
+key; few-time schemes \cite{sedghighadikolaei2024fast,sedghighadikolaei2024signer}
+trade capacity for speed.
 
-\textbf{Hybrids, MCUs, envelopes.} RFC~9955 \cite{bindel2026hybrid}
-defines hybrid signature properties. Fall \cite{fall2025sok} surveys hybrid
-deployment and Devevey et al.\ \cite{devevey2025compact} build compact
-non-separable hybrids (both abstract only). Cortex-M results exist for
-ML-DSA \cite{chhetri2026benchmarking}, MAYO
-\cite{gringiani2023mayo,bauer2026mayo}, SQIsign \cite{aardal2024optimized}
-and Falcon \cite{pornin2025falcon,halmans2026flying}, and pqm4 covers more
-schemes \cite{nist2024pqm4}; all except \cite{chhetri2026benchmarking} were
-read as abstracts. Hyoung et al.\ \cite{hyoung2026post} build a
-size--latency envelope for a ROS2/DDS handshake (abstract only), and
-Sikeridis et al.\ \cite{sikeridis2020post} study PQ signatures in TLS~1.3.
-Because these were read as abstracts, we cannot exclude an existing
-broadcast-focused systematization
-\todo{check full text of hyoung2026post and fall2025sok}.
-
-\textbf{Maturity.} Of the families that fit our budgets, UOV, MAYO and
-SNOVA, like CROSS and MQOM, are candidates in NIST's additional-signature
-process, not standards \todo{cite: NIST additional signatures round
-status}. Falcon is selected but has no published standard.
+\textbf{Hybrids, MCUs, envelopes.} RFC~9955 \cite{bindel2026hybrid} defines
+hybrid signature properties; Fall \cite{fall2025sok} surveys hybrid
+deployment and Devevey et al.\ \cite{devevey2025compact} build non-separable
+hybrids (both abstract only). Cortex-M results exist for ML-DSA
+\cite{chhetri2026benchmarking}, MAYO \cite{gringiani2023mayo,bauer2026mayo},
+SQIsign \cite{aardal2024optimized} and Falcon
+\cite{pornin2025falcon,halmans2026flying}, and pqm4 covers more
+\cite{nist2024pqm4}; all but \cite{chhetri2026benchmarking} were read as
+abstracts. Hyoung et al.\ \cite{hyoung2026post} build a size--latency
+envelope for a ROS2/DDS handshake (abstract only), and Sikeridis et al.\
+\cite{sikeridis2020post} study PQ signatures in TLS~1.3. We cannot exclude
+an existing broadcast-focused systematization \todo{check full text of
+hyoung2026post and fall2025sok}. UOV, MAYO, SNOVA, CROSS and MQOM are
+candidates in NIST's additional-signature process, not standards
+\todo{cite: NIST additional signatures round status}.
 
 % ======================================================================
 \section{Method}
 \label{sec:method}
 
-\subsection{Scheme set}
-
-liboqs~\LibOQSVersion{} \cite{oqs2026liboqs} enables \NumParamSets{}
-signature parameter sets, many of which are API variants (e.g.\
-\NumSLHSets{} SLH-DSA sets with \NumSLHClasses{} distinct sizes). We
-collapse them to \NumClasses{} classes of distinct (family, NIST level,
-public key size, signature size). Main tables use the lowest claimed level
-in each family (\NumClassesLow{} classes). This is level~1 except ML-DSA,
-whose lowest is level~2. The signature size $S$ is the \emph{declared}
-maximum (\texttt{length\_signature}), not an observed one: Falcon-512
-declares \SigFalconDecl\,B, while our runs observed at most
-\SigFalconObs\,B. LMS and XMSS enter as \NumStateful{} size-only rows from
-their RFCs \cite{lms2019rfc8554,xmss2018rfc8391}, with no timings.
-
 \subsection{Budget profiles}
-
-Table~\ref{tab:profiles} lists each profile's payload ceiling, the bytes
-available for authentication, and the message period. Remote ID allows
-\BudRID\,B of authentication data (RFC~9575 caps the \CeilRID\,B field)
-\cite{wiethuechter2024drip}. SIB1 has \BudSIB\,B after the \SIBUsed\,B
-of SIB1 content in the testbed of \cite{darzi2026a}. For OSNMA the source's
-block arithmetic is internally inconsistent \cite{junquera2023assessment},
-so we keep two derived variants: \BudPKR\,B (1632\,bit of DSM-PKR
-crypto material) and \BudKROOT\,B (about 79\,bit per block in DSM-KROOT).
-C-V2X and DNS sources state no authentication-only budget. For these we
-subtract the overheads the sources state from the ceiling, so their
-verdicts are upper bounds on fit (``ceiling-based''). Fragment headers are
-unknown except for DNS (\HdrDNS\,B) and are set to 0, so the message
-counts below are lower bounds.
 
 \begin{table}[t]
 \centering
 \caption{Budget profiles (bytes). $^*$Derived from stated numbers.
-$^\ddagger$Assumed partner. Ceiling-based budgets are upper bounds.}
+$^\dagger$Ceiling-based: no authentication-only budget in the source.
+Join deadlines are our assumptions.}
 \label{tab:profiles}
-\setlength{\tabcolsep}{2.5pt}
+\setlength{\tabcolsep}{3pt}
 \footnotesize
-\begin{tabular}{@{}lrrllll@{}}
+\begin{tabular}{@{}lrrlll@{}}
 \toprule
-Profile & Ceil. & Auth & Basis & Period & Hybrid & Src. \\
+Profile & Ceiling & Auth & Period & Join dl. & Src. \\
 \midrule
 \TabProfileRows
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsection{Modes}
+Table~\ref{tab:profiles} lists each profile. Remote ID allows \BudRID\,B of
+authentication data (RFC~9575 caps the \CeilRID\,B field)
+\cite{wiethuechter2024drip}; we use its \PerRID{} static-message period,
+and its \RIDDynPer{} dynamic period would shrink every message-wait term
+proportionally. SIB1 has \BudSIB\,B after the \SIBUsed\,B of SIB1 content in
+\cite{darzi2026a}. OSNMA's block arithmetic is internally inconsistent in
+the source \cite{junquera2023assessment}; we score signatures only against
+the DSM-KROOT signature space (\BudKROOT\,B, from \OSKROOTbits\,bit per
+block) and public keys only against the DSM-PKR key space (\BudPKR\,B left
+after the Merkle proof). Frame counts use the bit capacity. C-V2X and DNS
+state no authentication-only budget, so we subtract stated overheads from
+the ceiling with one rule for both C-V2X ceilings: SPDU header
+(\HdrSPDUCV\,B \cite{twardokus2024when}, \HdrJ\,B \cite{abrar2026deployment})
+and the \BSMCore\,B BSM core of \cite{abrar2026deployment}, borrowed for the
+\CeilCV\,B case (\BSMSizeCV). If the \FrameCV\,B frame overhead lies inside
+\CeilCV\,B, the budget drops to \BudCVSens\,B; the fit count is
+\FitCVSens{} at both values. Verdicts on these profiles are conditional on
+the derivation.
 
-Let $P$ be the public key size and $B$ the budget. A mode \emph{fits} if
-its per-message object $x \le B$. Otherwise its cost is
-$m=\lceil x/B\rceil$ messages and the time to first authentication (TTFA)
-from the first fragment to the last at the profile's message rate, with no
-loss. Fragmentation is therefore not a separate mode but the cost of any
-object that exceeds $B$.
-\begin{itemize}
-\item \emph{full}: $x=S$; the key is provisioned out of band.
-\item \emph{full\_cert}: the certificate handling of the profile's source.
-  C-V2X sends an \CertDigestCV\,B digest on four of five messages and the
-  full certificate on every \CertEveryCV th. Remote ID sends a
-  \DigestRID\,B DET and the key via a separate endorsement. SIB1 and
-  OSNMA deliver the key outside the scored message. DNS sends signature
-  plus key in the first response. A full certificate is
-  $S+P+f$ with $f=\CertFixed$\,B of metadata and issuer signature, taken
-  from one Falcon-512 data point in \cite{abrar2026deployment} and applied
-  to every scheme. The mode fits only if both the digest message and the
-  certificate message fit.
-\item \emph{chain}: per message a \ChainTag\,B tag \cite{darzi2026a} and a
-  \ChainKey\,B disclosed key (\ChainSteady\,B). Once per epoch an anchor of
-  $S+\ChainAnchorExtra$\,B (\ChainCommit\,B commitment, \ChainTs\,B
-  timestamp) is fragmented over as many messages as needed. Key, commitment
-  and timestamp sizes are our assumptions. The join time is the anchor's
-  TTFA plus one message period of key delay.
-\item \emph{hybrid}: $x=S+\PartnerSig$\,B, with the classical scheme the
-  profile's source uses. This is Ed25519 for Remote ID and ECDSA-P256
-  (raw encoding; DER takes up to \PartnerDER\,B) elsewhere. The SIB1
-  partner is assumed.
-\end{itemize}
+\subsection{Scheme set and fit accounting (Q1)}
 
-\subsection{Loss model (Q2)}
+liboqs~\LibOQSVersion{} \cite{oqs2026liboqs} enables \NumParamSets{}
+signature parameter sets, which collapse to \NumClasses{} classes of
+distinct (family, level, key size, signature size); main tables use the
+\NumClassesLow{} lowest-level classes. $S$ is the \emph{declared} maximum
+signature size (Falcon-512: \SigFalcon\,B). \NumStateful{} LMS/XMSS rows
+enter as literature sizes. A mode fits if its per-message object $x\le B$;
+otherwise it needs $\lceil x/B\rceil$ messages. Modes: \mode{full} ($x=S$);
+\mode{hybrid} ($S$ plus the source's classical signature); a certificate
+with an explicit \emph{PQ issuer} of the same scheme (peak $x=2S+P+$
+metadata) where the source sends certificates (C-V2X); the source's
+\emph{classical-issuer} certificate ($P+\CertClFixed$\,B, derived from
+\cite{abrar2026deployment}) shown separately; signature plus bare key
+where the source sends one (Remote ID, DNS); and key delivery ($x=P$,
+OSNMA-PKR). Certificate metadata is unknown (\CertMeta); we use \CertMetaUsed\,B as a
+lower bound and report \CertMetaLo{} and \CertMetaHi\,B as sensitivity
+values. The chain always fits per message, so it is judged by its join
+time against the deadlines of Table~\ref{tab:profiles}.
 
-We use only the SIB1 slot model: $C=\QTwoC$\,B of authentication per slot
-and one slot per \QTwoSlot\,ms \cite{darzi2026a}. Every scheme gets the
-same $M$ slots per message, so channel use is equal. A signature needs
-$k=\lceil S/C\rceil$ fragments. Let $p$ be the i.i.d.\ slot loss and $q=1-p$.
-\emph{frag\_rep} repeats all $k$ fragments $r=\lfloor M/k\rfloor$ times, so
-the verified share is $(1-p^r)^k$. \emph{frag\_mds} erasure-codes $M$
-fragments, so the share is $\Pr[\mathrm{Bin}(M,q)\ge k]$. \emph{chain} sends
-$t$ copies of the tag message and reserves the rest of the window for the
-anchor, so the share is $(1-p^t)(1-p^{tw})(1-p^{r_a})^{k_a}$, where $k_a$ and
-$r_a$ are the anchor's fragments and repetitions over an epoch of $E$
-messages. \emph{merkle\_rep/mds} sign a batch of $n$ messages once and
-spend the spare slots on the batch signature. Messages that never verify
-count as missing; TTA95 is the 95th-percentile time to authenticate over
-all messages. Assumed parameters are $M\in\{\QTwoMgrid\}$, $E=\QTwoE$, at
-least \QTwoRaMin{} anchor repetitions, $w=\QTwoW$ key windows and
-$n\in\{\QTwoN\}$. A slot-level simulation (\QTwoSeeds{} seeds $\times$
-\QTwoMsgs{} messages) agrees with the closed forms within \SimMaxDiff{}
-(\SimOut{} of \SimCells{} cells beyond 3 standard errors). We use it only
-as a check and for Gilbert--Elliott bursts (mean burst \QTwoBurst{}
-slots, same stationary loss).
+\subsection{Protocol implementations (Q2)}
 
-\subsection{Size versus timing (Q3)}
+Sender and receiver run real cryptography and byte framing: liboqs through
+a C shim, HMAC-SHA-256 and a SHA-256 chain truncated to \TagB\,B, and
+systematic Reed--Solomon codes (zfec \ZfecVersion). A message counts as
+authenticated only if the receiver verified the received bytes. The
+\NumModes{} modes are:
+\mode{frag\_rep}/\mode{frag\_mds}, the signature fragmented and repeated or
+MDS-coded within the message's window; \mode{hyb\_rep}/\mode{hyb\_mds}, the
+same with Ed25519 plus the PQ signature, both verified;
+\mode{merkle4/8/16}, one signature per batch of $n$ messages with a
+$\log_2 n\times\PathHashB$\,B path per message, the signature MDS-coded over
+the next batch's windows; \mode{chain}, a \TagB\,B HMAC tag per message,
+the key disclosed one window later, and an anchor (\TagB\,B commitment,
+\TsB\,B timestamp, PQ signature) MDS-coded across the epoch's slots, with
+the wait for the anchor counted in the delay; \mode{chain\_lead}, which
+sends epoch $e$'s anchor during epoch $e-1$; and \mode{chain\_lead\_cont},
+which also carries the next commitment inside the MAC input so that an
+authenticated epoch needs no new anchor. Receivers enforce the TESLA
+time-safety check \cite{perrig2005tesla} with an exactly known schedule.
+Public keys are pre-provisioned.
 
-For each (lowest-level class, profile) pair, excluding DNS (no message
-rate), the pair is \emph{size-bound} if $S>B$. It is \emph{timing-bound} if
-the larger of the p99 sign and verify times exceeds the profile's packet
-period: \PerCV{} for C-V2X, \PerSIB{} for SIB1, \PerRID{} for Remote ID
-and \BlockOS{} per OSNMA block. For classes with only \IterSlow{}
-iterations no tail is estimated; they count as timing misses only if the
-median already exceeds the period. A family is size-bound if size-only
-pairs outnumber timing-only pairs. Keygen and receiver verification
-throughput are out of scope.
+\textbf{Equal channel budget.} One allocation rule applies to all modes.
+Every application message gets $M$ slots ($M\in\{\Mmain,\Mbig\}$) of the
+same capacity (\SlotSIB\,B on SIB1, \SlotCV\,B and \SlotJ\,B on the two
+C-V2X profiles after the \CertDigest\,B digest). Every usable slot carries
+one frame of header, mode control field and one symbol of the mode's heavy
+object (signature, batch signature or anchor). On C-V2X the slot carrying
+the full certificate (every \CertEvery th) usually has no room left and
+carries no authentication data. A mode is infeasible if its span has fewer
+usable slots than the object has source symbols. Our frames carry their own
+explicit headers (\HdrProtoLo--\HdrProtoHi\,B plus control fields); the
+sources' fragment headers are unknown (\HdrSrc).
+
+\textbf{Channel and metrics.} Each run sends \NMsgs{} messages; epochs are
+\EpochE{} windows. Loss is synthetic and per slot: i.i.d.\ at
+$p\in\{\LossGrid\}$ and Gilbert--Elliott with mean bursts of \GEBursts{}
+slots at stationary loss \GEStat. We use \Seeds{} seeds with the same loss
+mask for every mode (\NumProtoRows{} rows over \NumProtoPQ{} PQ schemes).
+Metrics are the share of messages authenticated, bytes on air per
+authenticated message, median authentication delay, and the late joiner's
+time to first authentication (joining at a random slot of the first epoch).
+
+\textbf{Hypotheses and decision rule (fixed before the data).} The chain
+should beat \mode{frag\_mds} on share (H2a), bytes per authenticated message
+(H2b), delay (H2c) and join time (H2d). Per cell (profile, scheme, $M$, loss
+condition) we take the paired per-seed difference. The cell is a win if the
+mean is favourable, exceeds \RuleSE{} standard errors and a minimum effect
+(share \RuleMinShare, otherwise \RuleMinRel), a loss if the same holds in
+the other direction, and a tie otherwise. An infeasible mode has share \InfeasShare;
+the other metrics are compared only where both modes authenticate in every
+seed. A hypothesis is supported if wins $\ge\RuleFactor\times$ losses
+(and wins $>0$), refuted if losses $\ge\RuleFactor\times$ wins (and losses
+$>0$), and inconclusive otherwise.
+
+\textbf{Implementation checks.} \NegPassed{} of \NegRuns{} negative tests
+pass over \NumProtoPQ{} PQ schemes and all modes: tampered payload, tags,
+paths, signature symbols and disclosed keys; wrong signer; forgery with a
+disclosed key; replayed frames; corrupted anchors; forged next-epoch
+commitments; and hybrids with an invalid Ed25519 half. A receiver without
+the time-safety check accepts \NegCtrl{} of \NegCtrl{} late-key forgeries,
+which shows that the check is what stops them. Closed forms agree with the
+measured share in all \XCells{} comparable i.i.d.\ cells (\XOut{} beyond
+\RuleSE{} standard errors, maximum difference \XMaxDiff). Since the formulas share
+the model's assumptions, this is a code check, not a validation. Sender and
+receiver as separate processes over UDP loopback reproduce the in-process
+outcome in \UDPSame{} of \UDPRuns{} runs.
 
 % ======================================================================
 \section{Results}
@@ -287,226 +294,254 @@ throughput are out of scope.
 \subsection{Q1: what fits a single message}
 \label{sec:q1}
 
-\begin{figure*}[t]
-\centering
-\includegraphics[width=\textwidth]{fig_q1_share.pdf}
-\caption{Full signature (declared size) divided by authentication budget,
-one dot per lowest-level size class; crosses are LMS/XMSS literature sizes.
-Below the dashed line fits one message. Provisional.}
-\label{fig:q1}
-\end{figure*}
-
 \begin{table}[t]
 \centering
-\caption{Lowest-level liboqs classes fitting one message (of
-\NumClassesLow). $^\S$Chain counts the \ChainSteady\,B steady-state
-traffic only; the anchor is fragmented and costed separately.}
+\caption{Lowest-level classes fitting one message (of \NumClassesLow).
+$^a$Certificate metadata \CertMetaUsed/\CertMetaLo/\CertMetaHi\,B. Last row: chain join
+time (no loss) within the deadline of Table~\ref{tab:profiles}.
+$^\dagger$Ceiling-based.}
 \label{tab:q1}
-\setlength{\tabcolsep}{3pt}
+\setlength{\tabcolsep}{2.4pt}
 \footnotesize
-\begin{tabular}{@{}lrrrrrrr@{}}
+\begin{tabular}{@{}lrrrrrr@{}}
 \toprule
-Mode & RID & SIB1 & PKR & KROOT & CV437 & J3161 & DNS \\
+Mode & RID & SIB1 & KROOT & CV437$^\dagger$ & J3161$^\dagger$ & DNS$^\dagger$ \\
 \midrule
 \TabQOneRows
 \bottomrule
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:q1} and Fig.~\ref{fig:q1} give the fits. A full signature
-fits one message in \FullFitMin{} to \FullFitMax{} of \NumClassesLow{}
-classes, depending on the profile. Under the authentication budgets
-(Remote ID, SIB1, OSNMA) every fitting class is UOV, SNOVA or MAYO-2;
-Falcon fits only under the C-V2X J3161 and DNS ceilings. ML-DSA-44
-(\SigMLDSA\,B) fits no profile, not even the \BudJ\,B J3161 budget. CROSS,
-MQOM and SLH-DSA fit none. Among the stateful rows, only LMS
-(\SigLMS\,B, derived, \MaxSigLMS{} signatures per key) fits, and only
-J3161.
-
-\textbf{Cost when it does not fit.} ML-DSA-44 needs \MLDSAsibMsgs{} SIB1
-messages (TTFA \MLDSAsibTime), \MLDSAcvMsgs{} C-V2X messages
-(\MLDSAcvTime) and \MLDSAridMsgs{} Remote ID messages (\MLDSAridTime).
-On OSNMA, one block per 30\,s makes any multi-message object slow:
-Falcon-512 takes \FalconPKRMsgs{} messages and \FalconPKRTime{} on the PKR
-variant.
-
-\textbf{Certificates.} Certificate handling fits only where the key
-travels outside the scored message (SIB1, OSNMA) or under the J3161 ceiling
-(4 classes). Remote ID, the C-V2X 437\,B profile and DNS fit no class,
-because keys of the small-signature families are large: \PkUOVmin{} to
-\PkMax\,B for UOV and \PkMAYOtwo\,B for MAYO-2. All \emph{full} rows
-assume the key is pre-provisioned.
-
-\textbf{Chain and hybrid.} The chain's \ChainSteady\,B per message fits
-all \ChainPairs{} (class, profile) pairs; its cost moves to the anchor
-and the join time. For ML-DSA-44 the join takes \MLDSAsibJoin{} on SIB1,
-but on OSNMA-PKR it takes \MLDSAPKRJoin{} (\MAYOtwoPKRJoin{} for MAYO-2).
-The \PartnerSig\,B hybrid partner removes fits wherever the PQ signature
-is near the budget, and all of them on OSNMA-KROOT.
-
-\textbf{The C-V2X Falcon-512 conflict.} Twardokus et al.\ use the 437\,B
-maximum payload of a 10\,MHz channel \cite{twardokus2024when}. Abrar
-et al.\ assume a J3161 20\,MHz profile at MCS~11 with 10 subchannels, giving
-a 2,481\,B transport block \cite{abrar2026deployment}. With the stated
-overheads subtracted (budgets \BudCV\,B and \BudJ\,B), Falcon-512
-(\SigFalconDecl\,B declared) needs \FalconCVMsgs{} messages under the first
-ceiling and fits one under the second, even with a full certificate
-(\FalconCertPeak\,B peak). Both papers are thus consistent with their own
-ceilings. ``Feasible'' in \cite{abrar2026deployment} means fitting a
-transport block; their own 90\% delivery target is met only in the
-lightest line-of-sight scenario.
-
-\textbf{Baselines.} From stated crypto sizes and the \BudSIB\,B budget we
-reproduce the \DarziFnPkts{} and \DarziMlPkts{} SIB1 packets of
-\cite{darzi2026a}. For OSNMA we compute \JunqComputed{} DSM blocks at the
-source's 79\,bit per block, where it reports \JunqReported{}
-\cite{junquera2023assessment}. The remaining baselines are not reproduced
-(Sec.~\ref{sec:limits}).
-
-\subsection{Q2: chain vs.\ fragmentation vs.\ batching at equal channel use}
-
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\textwidth]{fig_q2_closed.pdf}
-\caption{Share of messages verified (closed form, i.i.d.\ slot loss) at
-equal channel use, $M=12$ (top) and $M=48$ (bottom) slots per message, SIB1
-slot model. Assumed chain and batch parameters (Sec.~\ref{sec:method}).
-Provisional.}
-\label{fig:q2}
+\includegraphics[width=0.8\textwidth]{fig_q1_share.pdf}
+\caption{Declared full-signature size over authentication budget, one dot
+per lowest-level liboqs class; below the dashed line fits one message.}
+\label{fig:q1}
 \end{figure*}
+
+A full signature fits one message for \FullFitMin{} to \FullFitMax{} of
+\NumClassesLow{} classes (Table~\ref{tab:q1}, Fig.~\ref{fig:q1}). Under the
+authentication budgets (Remote ID, SIB1, OSNMA) every fitting class is UOV,
+SNOVA or MAYO; Falcon fits only the J3161 and DNS ceilings. ML-DSA-44
+(\SigMLDSA\,B) fits nothing; its J3161 margin is \MarMLDSAJ\,B, so that
+verdict rests on the derivation. CROSS, MQOM and SLH-DSA fit no profile.
+When the signature does not fit, ML-DSA-44 needs \MsgMLDSAsib{} SIB1
+messages (\TimeMLDSAsib{} without loss) and \MsgMLDSArid{} Remote ID
+messages (\TimeMLDSArid); on OSNMA, Falcon-512 needs \MsgFalconKR{}
+messages (\TimeFalconKR). A signature plus bare key fits no class on
+Remote ID or DNS. On the OSNMA key space, \KeyFitPKR{} of \NumClassesLow{}
+public keys fit, all SLH-DSA, CROSS or MQOM, the families whose signatures
+fit nowhere. The chain's join time meets its deadline for all classes on
+both C-V2X profiles, for \JoinRIDmet{} on Remote ID (up to \JoinRIDmax), and
+for none on OSNMA (\JoinOSmin{} to \JoinOSmax). Among stateful rows only
+LMS with \LMSSigsPerKey{} signatures per key (\LMSBSMTime{} of \BSMHz\,Hz BSMs)
+fits J3161, which is operationally empty; larger trees are \LMSHigh.
+
+\textbf{Certificates.} With a PQ issuer, \CertPQJ{} classes fit J3161 at
+zero metadata and \CertPQJmeta{} at \CertMetaLo{} or \CertMetaHi\,B; none
+fits C-V2X\,437. The source's classical-issuer certificate also gives
+\CertClJ{} on J3161, but it is not a PQ chain.
+
+\textbf{The Falcon-512 C-V2X conflict.} Twardokus et al.\ use the
+\CeilCV\,B maximum payload of a \TwMHz\,MHz channel \cite{twardokus2024when};
+Abrar et al.\ assume a J3161 \AbMHz\,MHz profile at MCS~\AbMCS{} with
+\AbSubch{} subchannels, a \CeilJ\,B transport block
+\cite{abrar2026deployment}. Under our single subtraction rule, Falcon-512
+(\SigFalcon\,B declared) needs \MsgFalconCV{} messages under the first
+ceiling (margin \MarFalconCV\,B) and fits the second with \MarFalconJ\,B to
+spare. With a Falcon-512 issuer the certificate message fits by only
+\MarFalconJpq\,B at zero metadata, so it stops fitting at \CertMetaLo\,B;
+with the source's classical issuer the margin is \MarFalconJcl\,B. Both
+papers are consistent with their own ceilings. ``Feasible'' in
+\cite{abrar2026deployment} means fitting a transport block; their own
+\AbPDR{} delivery target holds only in the lightest line-of-sight scenario.
+
+\textbf{Consistency checks.} Dividing the sources' own crypto-byte totals
+by \BudSIB\,B gives the \DarziFnPkts{} and \DarziMlPkts{} SIB1 packets of
+\cite{darzi2026a}; the source's \OSKROOTbits\,bit per block gives
+\JunqComputed{} OSNMA blocks where \cite{junquera2023assessment} reports
+\JunqReported. These check arithmetic and are not reproductions.
+
+\subsection{Q2: measured comparison at equal channel budget}
+\label{sec:q2}
 
 \begin{table}[t]
 \centering
-\caption{Share verified / TTA95 in slots (\QTwoSlot\,ms each) at $M=\QTwoMmain$.
-``miss'': fewer than 95\% ever verify. $k$ at $C=\QTwoC$\,B: Falcon-512
-\KFalcon, MAYO-2 \KMAYO, ML-DSA-44 \KMLDSA.}
-\label{tab:q2}
-\setlength{\tabcolsep}{1.6pt}
-\scriptsize
-\begin{tabular}{@{}llccccc@{}}
+\caption{Chain variants vs.\ \mode{frag\_mds}: cells won/lost/tied over all
+profiles, schemes, $M$ and loss conditions (rule in Sec.~\ref{sec:method}).
+Verdict is the same for all three variants.}
+\label{tab:verdicts}
+\setlength{\tabcolsep}{2.2pt}
+\footnotesize
+\begin{tabular}{@{}lrlllr@{}}
 \toprule
-Sig. & $p$ & chain & frag\_mds & frag\_rep & merkle\_mds & merkle\_rep \\
+Hypothesis & cells & chain & lead & lead+cont & verdict \\
+\midrule
+\TabVerdictRows
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\centering
+\caption{SIB1, i.i.d.\ loss \LossTen, $M=\Mmain$ (\AllocSIB\,B allocated
+per message): share authenticated, median delay and join time (ms), bytes
+on air per authenticated message. Means over \Seeds{} seeds.}
+\label{tab:q2}
+\setlength{\tabcolsep}{2.5pt}
+\footnotesize
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+PQ & mode & share & delay & join & B/auth \\
 \midrule
 \TabQTwoRows
 \bottomrule
 \end{tabular}
 \end{table}
 
-With channel use equal, no scheme dominates (Fig.~\ref{fig:q2},
-Table~\ref{tab:q2}). Where fragmentation can run at the message rate, the
-chain verifies at least as many messages as the best fragmentation scheme
-in \RegGeFrag{} of \RegCells{} (signature, $M$, loss) cells, and at least
-as many as every scheme in \RegGeAll. Per signature, the counts are
-Falcon-512 \RegFalcon, MAYO-2 \RegMAYO{} and ML-DSA-44 \RegMLDSA. The
-chain beats fragmentation outright only where fragmentation cannot run at
-the message rate (ML-DSA-44 at $M<k$). Even there, batch signing verifies
-more messages in most cells. Erasure-coded batch signing verifies the most
-messages (1.000 for ML-DSA-44 at 30\% loss), but its TTA95 in
-Table~\ref{tab:q2} is 216--294 slots. The chain needs about 14--15 slots and
-fragmentation 2--12. Erasure-coded
-fragmentation is the fastest whenever the signature fits a few slots. The
-earlier simulation in which fragmentation beat the chain at low loss gave
-fragments two repetitions and chain messages none; at equal channel use
-that effect disappears.
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_proto_delay_vs_share.pdf}
+\caption{Share authenticated against median authentication delay
+(log scale) at i.i.d.\ loss \LossTen, $M=\Mmain$, one point per PQ scheme.
+\mode{chain} points lie under \mode{chain\_lead\_cont} (equal delay and share).}
+\label{fig:q2}
+\end{figure*}
 
-Burst loss lowers the share verified for the chain and the erasure-coded
-schemes. At 30\% stationary loss with mean bursts of 10 slots, the chain
-drops from \GEChainIID{} to \GEChain, frag\_mds from \GEFragMDSIID{} to
-\GEFragMDS{}, and merkle\_mds from \GEMerkleMDSIID{} to \GEMerkleMDS{}.
-Averaged over the burst cells, the drop is \GEdChain{} for the chain and
-\GEdFragMDS{} for frag\_mds. Repetition schemes change by
-\GEdFragRep{} and \GEdMerkleRep{}; a negative value means bursts helped.
+Table~\ref{tab:verdicts} gives the four verdicts and
+Table~\ref{tab:q2} sample cells.
+
+\textbf{H2a, share: supported, with limits.} The chain wins \HaW{} of
+\CellsShare{} cells, loses \HaL{} (all \HaLossScheme{} on J3161) and ties
+\HaT. Of the wins, \HaInfeas{} are cells where \mode{frag\_mds} cannot run
+at all (SLH-DSA-128s at $M=\Mmain$ on SIB1 and C-V2X\,437) and \HaRuns{}
+are cells where it runs and loses. The largest gaps are for signatures
+that need many slots, e.g.\ ML-DSA-44 on SIB1 at $p=\LossTen$
+(\ShMLsibFragTen{} vs.\ \ShChainOne) and on C-V2X\,437 at $p=\LossThirty$
+(\ShMLcvFragThirty{} vs.\ \ShChainOne). Under heavy bursts (stationary
+loss \GELossMax, mean burst \GEBurstMax{} slots, SIB1) the gap is smaller
+for Falcon-512 (\ShFalsibFragGE{} vs.\ \ShChainsibGE), and OV-Is, whose
+signature fits one slot, reaches \ShOVsibFragGE. On J3161, where every signature but
+SLH-DSA fits one or two slots, the chain wins only \HaWj{} cells. The chain
+reaches share $\ge\TgtShare$ at $M=\Mmain$ for all \TgtPairs{}
+(profile, scheme) pairs; \mode{frag\_mds} does so for \TgtFragMDS{} and
+needs $M=\Mbig$ for the other \TgtFragMDSbig.
+
+\textbf{H2b, bytes per authenticated message: refuted} (\HbW/\HbL/\HbT).
+Because every usable slot carries a full frame in every mode, bytes on air
+per message are nearly equal across modes, and the metric mostly reflects
+the share in its denominator. At $p=\LossTen$, $M=\Mmain$ the chain sends a
+median \ByteRatioMed{} times the bytes of \mode{frag\_mds} per
+authenticated message (range \ByteRatioLo--\ByteRatioHi{} over
+\BytePairs{} pairs). The chain's small per-message tag therefore does not
+translate into fewer bytes under an equal allocation; whether a smaller
+allocation would suffice is answered only indirectly by the target-share
+counts above.
+
+\textbf{H2c, delay: refuted in every cell} (\HcW/\HcL/\HcT). The chain must
+wait one window for key disclosure (\WinSIB\,ms on SIB1, \WinCV\,ms on
+C-V2X at $M=\Mmain$) and for the anchor; a signature that fits a few slots
+authenticates within its own window (Fig.~\ref{fig:q2}).
+Merkle batching is slower still and grows with $n$: for Falcon-512 on SIB1
+the median delay is \MerkFourDelay\,ms at $n=\MerkFourN$ and
+\MerkSixteenDelay\,ms at $n=\MerkSixteenN$, both at full share, so we report all $n\in\{\MerkleN\}$ rather than
+one.
+
+\textbf{H2d, late-joiner time: refuted} (\HdW/\HdL/\HdT). A joiner must
+collect an anchor before it can authenticate anything. The chain wins
+some cells where fragmentation itself joins slowly, e.g.\ ML-DSA-44 on
+SIB1 (Table~\ref{tab:q2}). Sending the anchor one epoch ahead
+(\mode{chain\_lead}, \mode{chain\_lead\_cont}) removes the steady-state
+anchor wait, but the one-window disclosure delay remains (H2c unchanged),
+and join time is lost in all but one cell.
+
+\textbf{Bursts.} At stationary loss \GELossMax{} with mean bursts of
+\GEBurstMax{} slots, the share changes relative to i.i.d.\ loss by
+\BurstChain{} for the chain, \BurstFragMDS{} for \mode{frag\_mds} and
+\BurstMerkleEight{} for \mode{merkle8} (means over profiles and schemes);
+the effect is not uniform: ML-DSA-44 \mode{frag\_mds} on SIB1 rises from
+\ShMLsibFragThirty{} to \ShMLsibFragGE{}.
+
+\textbf{SLH-DSA-128s.} Per-message signing is infeasible in \SLHInfeas{}
+of \SLHConfigs{} (profile, $M$, fragment/hybrid mode) configurations, and
+its signing time (median \SignMedSLHs\,ms) exceeds one slot in
+\SLHSignOverSlot{} of \SLHConfigs. Across all \RTCheckN{} feasible
+(profile, scheme, mode) configurations at $M=\Mmain$, \RTCheckSlow{}
+senders are slower than their message rate. SLH-DSA is usable only where a batch or anchor amortizes it or the
+budget is large (J3161).
 
 \subsection{Q3: size or timing}
 
-\begin{table}[t]
-\centering
-\caption{(Class, profile) pairs by binding constraint, x86 only. No pair was
-undecidable. $^\dagger$Timing from \IterSlow{} samples (medians).
-n.d.: not distinguishing.}
-\label{tab:q3}
-\setlength{\tabcolsep}{3pt}
-\footnotesize
-\begin{tabular}{@{}lrrrrl@{}}
-\toprule
-Family & size-only & timing-only & both & neither & binds \\
-\midrule
-\TabQThreeRows
-\bottomrule
-\end{tabular}
-\end{table}
-
-Size binds in \QThreeSize{} of \QThreeFams{} families and timing in
-\QThreeTime{} (Table~\ref{tab:q3}); UOV fits everywhere and meets every
-period. The ``both'' pairs are SLH-DSA, whose 128s set has a median sign
-time of \SignMedSLHs\,ms. This result is close to tautological. The packet
-periods (0.1\,s to 30\,s) are long compared with x86 operation times, such
-as a p99 sign time of \SignPMLDSA\,$\mu$s for ML-DSA-44 and
-\SignPFalcon\,$\mu$s for Falcon-512. It says nothing about
-microcontrollers. Against the \DeadShort\,ms grid deadline quoted from the
-IEC~62351-6 text in \cite{hussain2026a}, which belongs to none of our
-profiles, \UOVLowOver{} of \UOVLowN{} lowest-level UOV variants miss. So do
-\UOVAllOver{} of \UOVAllN{} UOV variants over all levels, both
-compressed-key/secret-key variants with alternatives at the same level.
+With timing-bound meaning that the p99 sign or verify time exceeds the
+packet period, size binds in \QThreeSize{} of \QThreeFams{} families and
+timing in \QThreeTime{} (UOV not distinguishing). This is close to
+tautological: packet periods are long against x86 operation times (median
+sign \SignMedFalcon\,$\mu$s for Falcon-512, \SignMedMLDSA\,$\mu$s for
+ML-DSA-44), and it says nothing about microcontrollers.
 
 % ======================================================================
-\section{Limitations}
+\section{Security Properties and Limitations}
 \label{sec:limits}
 
+\textbf{Properties (stated, not proved).} The chain gives no
+non-repudiation: any receiver holding a disclosed key can compute valid
+tags. It cannot replace signed messages where misbehaviour reporting or
+revocation needs attributable messages, as for V2X BSMs
+\cite{brecht2018security}; only the per-message and Merkle-batch modes give
+transferable evidence. The chain needs loose time synchronization; our runs
+assume zero clock error, and a manipulable receiver clock is an attack
+surface. Chain continuity (\mode{chain\_lead\_cont}) survives a lost anchor
+but makes later epochs depend on earlier MACs. Hybrids require both
+signatures to verify; downgrade resistance beyond that is not analysed
+\cite{bindel2026hybrid}. The negative tests check the implementation, not
+the protocols' security.
+
+\textbf{Limitations.}
 \begin{itemize}
-\item \textbf{Provisional numbers.} The timings come from one smoke run on a
-  shared cloud VM (CPU: \RunCPU) with \IterFast{} iterations
-  (\IterSlow{} for CROSS, MQOM and SLH-DSA, whose tails are not estimable).
-  Sizes and timings use one 64\,B message, so per-message variance is not
-  sampled. Publication runs (\IterFastPlanned/\IterSlowPlanned{}
-  iterations) are pending.
-\item \textbf{x86 only.} No MCU timings were measured
-  \todo{cite or measure: Cortex-M sign/verify for UOV, SNOVA, MAYO}; Q3
-  does not cover constrained devices.
-\item \textbf{No security analysis.} The modes differ in trust model. The
-  chain gives no non-repudiation and needs loose time synchronization
-  \cite{perrig2005tesla,darzi2026a}. Hybrids differ in how separable their components are
-  \cite{bindel2026hybrid}. We compare bytes, not security, and do not model
-  chain continuity across epochs.
-\item \textbf{Keys pre-provisioned.} \emph{full}, \emph{chain} and
-  \emph{hybrid} assume the public key is already at the receiver. The
-  larger keys (UOV, MAYO-2, SNOVA) cannot be sent in any single message.
-\item \textbf{Certificate overhead.} The $f=\CertFixed$\,B certificate
-  overhead is a single Falcon-512 data point applied to all schemes.
-  C-V2X certificate metadata (\CertMetaCV) is not counted, and mixed
-  PQ-CA/classical-subscriber chains are not modelled.
-\item \textbf{Budgets.} The C-V2X and DNS budgets are ceiling-based upper
-  bounds. The OSNMA budgets are derived from inconsistent source
-  arithmetic. Fragment headers for Remote ID, SIB1, OSNMA and C-V2X
-  (\HdrRID, \HdrSIB, \HdrOS, \HdrCV) are unknown and set to 0. DNS has no
-  message rate (\PerDNS) and is not a broadcast channel.
-\item \textbf{Loss model scope.} Q2 uses only the SIB1 slot model, three
-  signatures (Falcon-512 and MAYO-2 at level~1, ML-DSA-44 at level~2),
-  assumed chain and batch parameters, and synthetic loss. There are no
-  measured traces and no cold-start or join analysis.
-\item \textbf{Baselines not reproduced.} These are the 324/744\,B
-  OTA overhead (\DarziOTARepro) and 10\%-loss point (\DarziTenRepro) of
-  \cite{darzi2026a}; the 71-block key figure (\JunqueraKeyRepro) and 67
-  blocks (we get \JunqComputed) of \cite{junquera2023assessment}; the ZK compression of
-  \cite{yoshizawa2026a} (\YoshizawaRepro); the DNS transfer sizes of
-  \cite{goertzen2022post} (\GoertzenRepro); and the tables of
+\item \emph{One machine.} All results come from one \RunCores-core cloud VM
+  (\texttt{\RunMachine}, CPU \RunCPU, commit \texttt{\RunCommit}). No MCU
+  timings were measured \todo{cite or measure: Cortex-M sign/verify for
+  UOV, SNOVA, MAYO}; Q3 is x86 only.
+\item \emph{Synthetic channel.} Loss is i.i.d.\ or Gilbert--Elliott per
+  slot. Slots are collision-free: there is no radio scheduling (e.g.\ C-V2X
+  semi-persistent scheduling), no congestion and no measured traces, so the
+  C-V2X results are not packet-delivery predictions. The UDP mode was run
+  on loopback only, not across two machines.
+\item \emph{Assumed parameters.} Tag, key, commitment and timestamp sizes,
+  disclosure delay, epoch length, $M$ and join deadlines are assumptions.
+  Q2 covers SIB1 and the two C-V2X profiles, not Remote ID, OSNMA or DNS.
+\item \emph{Budgets and certificates.} C-V2X and DNS budgets are
+  ceiling-based and some verdicts sit within a few bytes of them; OSNMA
+  budgets come from inconsistent source arithmetic; DNS has no message
+  rate (\PerDNS). Certificate metadata is unknown (\CertMetaUsed\,B used as lower
+  bound); intermediate CAs and mixed PQ-CA/classical-subscriber chains
+  \cite{chen2026pseudonym} are not modelled. Public keys are
+  pre-provisioned except in the key-delivery and certificate rows.
+\item \emph{No reproductions.} Not reproduced: the OTA overhead
+  (\DarziOTARepro) and \DarziLossPct-loss point (\DarziTenRepro) of
+  \cite{darzi2026a}, the key-block figure (\JunqueraKeyRepro) of
+  \cite{junquera2023assessment}, the transfer sizes of
+  \cite{goertzen2022post} (\GoertzenRepro), the ZK compression of
+  \cite{yoshizawa2026a} (\YoshizawaRepro) and the tables of
   \cite{chen2025hybrid} (\ChenRepro).
-\item \textbf{Stateful schemes.} LMS/XMSS sizes are from RFC tables or
-  derived from field lengths, without timings or levels.
 \end{itemize}
 
 % ======================================================================
 \section{Conclusion}
 
-Under budgets taken from each channel's sources, only UOV, SNOVA and
-MAYO-2 carry a full PQ signature in one Remote ID, SIB1 or OSNMA message.
-Falcon needs the larger C-V2X J3161 or DNS ceilings, and certificates fit
-only where keys travel out of band. A PQ-anchored chain makes every
-scheme's per-message cost fit, but it moves the cost into anchor and join
-time. At equal channel use, it neither dominates fragmentation nor batch
-signing, and it loses for ML-DSA-44. These are provisional x86 accounting
-results without security analysis. The next steps are publication runs,
-MCU timings, measured loss traces, and a per-mode security comparison.
+Under budgets taken from each channel's sources, only UOV, SNOVA and MAYO
+carry a full PQ signature in one Remote ID, SIB1 or OSNMA message, and
+Falcon-512 fits C-V2X only under the larger J3161 ceiling, where a
+PQ-issued certificate leaves almost no margin. Measured with real
+implementations at an equal channel budget, a PQ-anchored chain
+authenticates a larger share of messages than erasure-coded per-message
+signatures, mainly where the signature needs many slots; bursts hurt it
+more than them on average. It does
+not use fewer bytes per authenticated message, it authenticates later in
+every cell, it is slower for late joiners, and it gives up
+non-repudiation. Next steps are runs on the authors' machines, MCU
+timings, measured loss traces and a scheduled C-V2X channel.
 
 \section*{Artifact}
 Scripts that regenerate every number from raw CSVs: \todo{artifact URL}.

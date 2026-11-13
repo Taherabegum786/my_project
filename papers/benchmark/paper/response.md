@@ -1,33 +1,41 @@
-# Response to review (round 1), papers/benchmark
+# Response to review round 2, papers/benchmark (draft 3)
 
-Venue changed to IEEE VNC short paper (IEEEtran conference, 4-6 pages + references). One line per review comment.
+Draft 3 is rewritten against the regenerated `results/summary.md` (pass 3: real protocol implementations, machine `cloud-vm-4core`, commit `694ba76`, clean tree). Target changed from IEEE VNC to a cross-domain short paper (IEEEtran conference, 6 pages including references, judged against ACM WiSec short-paper standards), which is the alternative the review's verdict offers. All numbers are macros in `numbers.tex`.
 
-- Integrity 1.1 (Falcon "at most 663 B", observed max as s): fixed. S is now the declared liboqs `length_signature` (Falcon-512 752 B, Falcon-1024 1462 B); the observed 663 B is mentioned only as the contrast; the scoring and Q2 use the declared sizes.
-- Integrity 1.2 (C-V2X 437 B is a payload ceiling): fixed. Table I separates ceiling and auth budget; C-V2X and DNS are labelled ceiling-based upper bounds (373 B and 2414 B after stated overheads), with derivations from budget-evidence.md.
-- Major 1 (fragmented mode collapses into full; inconsistent definitions): fixed. Fragmentation is no longer a mode but the cost (messages m, TTFA) of any object over B; the chain anchor is fragmented the same way; Q2 uses k = ceil(S/C) with the same C = 293 B as the SIB1 budget.
-- Major 2 (Q2 is closed form; unequal redundancy; >2 std test): fixed. Closed forms are given; the comparison is at equal channel use; results are reported as regions over (signature, M, loss); the wrong causal explanation and the std test are removed.
-- Major 3 (no equal channel use; strawman baseline): fixed. Every scheme gets M slots per message; erasure-coded fragmentation and Merkle-batch amortized signing (repeated and erasure-coded) are added as baselines.
-- Major 4 (oqs anchor 474 B does not fit SIB1; k reused; anchor occupies no slot): fixed. Anchor is S + 20 B fragmented into k_a slots reserved within the window; k recomputed from C = 293 B; the darzi2026a k values are no longer reused.
-- Major 5 (chain model directions; no security analysis): limitation stated. Join time is now reported, but chain continuity across epochs and a security analysis (non-repudiation, time sync, hybrid separability) are not done; stated in Limitations.
-- Major 6 (counts inflated by API variants): fixed. Counts are over 64 distinct size classes, 24 at the lowest level per family; Fig. 1 plots one dot per class.
-- Major 7 (security level not controlled): fixed. Main tables use the lowest level per family (level 1, ML-DSA level 2), stated in Method; Q2 signatures' levels stated in Limitations; other levels are in the appendix CSV, not in the paper.
-- Major 8 (budgets questionable; contradicting work): fixed. Remote ID 201 B, SIB1 293 B, OSNMA 204/158 B variants (derived), C-V2X 437 and J3161 ceilings, DNS kept only as a ceiling reference and stated to be request-response; Falcon-512 conflict with abrar2026deployment explained via the two ceilings.
-- Major 9 (sig_cert strawman): fixed in part. full_cert now follows each source's certificate handling (digest plus periodic certificate for C-V2X, DET for Remote ID, out-of-band keys for SIB1/OSNMA); the single-data-point 105 B overhead and the unmodelled mixed PQ-CA/classical chains are stated as limitations.
-- Major 10 (Q3 method): fixed. Same denominator ((class, profile) pairs), deadlines tied to each profile's packet period, 3 ms reported separately with its correct attribution, UOV claim narrowed; keygen/throughput out of scope and the near-tautology on x86 are stated.
-- Major 11 (missing related work, LMS/XMSS, maturity): fixed. Added perrig2000efficient, park2002efficient, wong1998digital, reyzin2002better, perrig2005tesla (cited for title-level contributions only), lms2019rfc8554, xmss2018rfc8391, nist2020sp800208, eaton2024provably; LMS/XMSS size-only rows scored; maturity paragraph added (NIST status citation still a \todo).
-- Major 12 (contribution insufficient for CNS): limitation stated. Repositioned as a short measurement/accounting paper for IEEE VNC; the paper states it has no new mechanism, no security analysis and no MCU data. Baselines: darzi2026a 13/34 packets now reproduced; the others remain TODO-RESULT.
-- Minor 1 (hybrid totals not reported): fixed (Table II hybrid row).
-- Minor 2 (\HdrCV used for all three profiles): fixed (separate \HdrRID, \HdrSIB, \HdrOS, \HdrCV; DNS 15 B).
-- Minor 3 (OSNMA 204 B): fixed (204 B PKR and 158 B KROOT variants, both marked derived).
-- Minor 4 (hybrid partner per profile, raw vs DER): fixed (Ed25519 for Remote ID, ECDSA-P256 raw 64 B elsewhere, DER up to 72 B noted; SIB1 partner marked assumed).
-- Minor 5 (Python classical timings): fixed (classical timings no longer used).
-- Minor 6 (p95 over verified messages only): fixed (TTA95 over all messages; non-verifying messages count as missing).
-- Minor 7 (summary.md mislabels 160 ms slot): fixed in the regenerated summary.md (slot period marked stated, darzi2026a).
-- Minor 8 (3 ms attribution): fixed ("IEC 62351-6 text quoted in hussain2026a"; not tied to any profile).
-- Minor 9 (chain deadline inherited from fragmented competitor): fixed (no shared deadline; TTA95 reported for every scheme at the same M).
-- Minor 10 (one-at-a-time sweep, i.i.d. only): fixed (grid over M and loss for three signatures with different k; Gilbert-Elliott bursts added).
-- Minor 11 (Remote ID header): fixed (budget is the RFC 9575 201 B cap; fragment headers stated unknown and set to 0, message counts are lower bounds).
-- Minor 12 (one 64 B message, one machine): limitation stated.
-- Minor 13 (title too long): fixed (one subtitle).
-- Minor 14 (abstract presents smoke numbers as results): limitation stated (abstract says numbers are provisional and x86-only; must be updated after publication runs).
-- Minor 15 (Fig. 1 dominated by SLH-DSA variants): fixed (one dot per lowest-level size class).
+Status key: **resolved** = resolved by the new evidence (where it is in summary.md and in the paper); **limitation** = not resolved, stated as a limitation in the paper; **open** = neither.
+
+| Issue | Status | Where / how |
+|---|---|---|
+| Integrity 1: certificate overhead f = 105 B cannot hold a PQ issuer signature | resolved | summary.md Q1 `full_cert_pq` (cert = P + metadata + S_issuer, issuer = subject scheme) and the separate `full_cert_cl` classical-issuer case. Paper Sec. III-B, Table II (PQ issuer 4/3/3 on J3161 at metadata 0/41/73 B; classical issuer 4, labelled "not a PQ chain"), Sec. IV-A Falcon paragraph (PQ-issuer margin 13 B). Metadata size itself stays TODO-RESULT (limitation). |
+| Integrity 2: OSNMA-PKR used as a signature budget | resolved | summary.md profile table: `osnma_kroot158` (signature space) and `osnma_pkr_keys` (76 B key space). Paper Table I (KROOT sig. / PKR key), Sec. III-A, Sec. IV-A (9/24 public keys fit the key space). PKR signature results removed. |
+| Integrity 3: banner commits do not contain the producing code | resolved | Every CSV row is tagged with one commit (694ba76..., git_dirty 0), summary.md header. Banner and limitations use `\RunCommit` from numbers.tex; no other commit appears. |
+| Major 1: chain anchor repetition-coded vs MDS competitors; slot split ignores M | resolved | Anchor now MDS-coded across the epoch's slots (summary.md Q2 "Implemented modes"); one allocation rule R1-R5 for all modes, every usable slot carries one symbol of the heavy object, so no tag-only slots. Paper Sec. III-C "Equal channel budget". The "chain loses for ML-DSA-44" claim is gone; H2a is supported (Table III). |
+| Major 2: chain TTA omits the anchor wait | resolved | Delays include key-disclosure and anchor wait; `chain_lead` sends the anchor one epoch ahead (summary.md Q2 delay tables). Paper Sec. III-C, H2c (refuted in 440/440 cells for all three variants). |
+| Major 3: Merkle latency reported at the share-maximising n | resolved | summary.md "Merkle batch size: share / delay / bytes trade-off" reports every n. Paper Table IV (merkle4 and merkle16 rows) and H2c paragraph (6560 vs 25760 ms at full share; all n reported). Per-message path cost stated (Sec. III-C). |
+| Major 4: certificate accounting needs PQ issuer; model mixed PQ-CA/classical-subscriber chain | resolved (PQ issuer); mixed chain is a limitation | PQ issuer modelled and Falcon story redone (Sec. IV-A). Mixed PQ-CA/classical-subscriber chains (chen2026pseudonym) and intermediate CAs are not modelled: Sec. V Limitations, "Budgets and certificates". |
+| Major 5: OSNMA mapping must separate key delivery from signature | resolved | As integrity 2; Table I rows "OSNMA KROOT (sig.)" and "OSNMA PKR (key)". |
+| Major 6: no V2X channel-level evaluation; thin for VNC | limitation | Partly addressed by new evidence: Q2 now runs on both C-V2X profiles (100 ms period, 8 B digest, certificate every 5th slot) as well as SIB1 (summary.md Q2; paper Sec. III-C, IV-B). Venue retargeted to a cross-domain short paper, per the review's alternative. Not done: PC5 Mode 4 / semi-persistent scheduling, congestion, PDR, abrar2026deployment loss levels; stated in Sec. V "Synthetic channel" ("C-V2X results are not packet-delivery predictions"). |
+| Major 7: inconsistent C-V2X subtraction; razor-thin margins | resolved | summary.md "C-V2X budget rule": one rule for both ceilings (header + 39 B BSM core, frame overhead subtracted from neither), 437 -> 374 B; sensitivity 334 B with unchanged fit count (8/24). Margins reported (summary.md margins table). Paper Sec. III-A; Sec. IV-A (ML-DSA-44 J3161 margin -6 B, Falcon PQ-cert margin 13 B, "verdict rests on the derivation"); Sec. V. BSM size for 437 B remains TODO-RESULT. |
+| Major 8: chain row of the fit table carries no information | resolved | Chain removed from fit counts; judged by join time vs an assumed per-profile deadline (summary.md chain join table). Paper Table II last row, Sec. IV-A; measured join time is H2d. |
+| Major 9: no security analysis; chain is not a drop-in for signed BSMs | limitation | Sec. V "Properties (stated, not proved)": no non-repudiation, not a replacement for attributable V2X BSMs, loose time sync as attack surface, continuity risk, hybrid downgrade not analysed. New evidence covers the implementation only: 427/427 negative tests and the T4 control showing the time-safety check stops late-key forgeries (Sec. III-C). No security proof; stated. |
+| Minor 1: SE floor in the simulation check; call it a code check | resolved | summary.md "Closed forms as a cross-check": disclosed SE rule (binomial term, no hidden floor), 0 of 1716 cells beyond 3 SE. Paper Sec. III-C calls it "a code check, not a validation". |
+| Minor 2: GE figures must name signature and n | resolved | Paper H2a names Falcon-512 / OV-Is on SIB1 at stationary loss 0.3, mean burst 10; the burst paragraph states the deltas are means over profiles and schemes. |
+| Minor 3: burst effect not uniform | resolved | Paper "Bursts" paragraph: "the effect is not uniform: ML-DSA-44 frag_mds on SIB1 rises from 0.142 to 0.539". |
+| Minor 4: four of six Fig. 2 panels flat | resolved | Old fig_q2 figure no longer exists; new Fig. 2 (fig_proto_delay_vs_share.pdf) shows the delay/share trade-off, which is the finding. |
+| Minor 5: Table II headers lack the ceiling marker | resolved | Table II headers CV437, J3161, DNS carry the dagger "ceiling-based". |
+| Minor 6: docstring "all reserved slots used" inaccurate | resolved | Old model replaced by allocation rule R1-R5 (summary.md); paper states that the C-V2X certificate slot carries no authentication data. |
+| Minor 7: Merkle path not mentioned | resolved | Sec. III-C: log2 n x 32 B path per message. |
+| Minor 8: LMS H=5 operationally empty | limitation | Sec. IV-A states "operationally empty" (32 signatures per key = 3.2 s of 10 Hz BSMs); H = 15/20 rows are TODO-RESULT (`\LMSHigh`). |
+| Minor 9: darzi2026a "reproduction" is a consistency check | resolved | Sec. IV-A "Consistency checks ... not reproductions"; reproductions listed as not done in Sec. V. |
+| Minor 10: summary headline says smoke but tags say vm | resolved | Single machine tag `cloud-vm-4core` in all CSVs (summary.md header). |
+| Minor 11: Remote ID 3 s vs 1 s period | limitation | Sec. III-A states the 3 s choice and that the 1 s dynamic period would shrink message-wait terms proportionally; not re-run. |
+| Minor 12: Q3 takes a table and an abstract line | resolved | Q3 is one short paragraph (Sec. IV-C), no table, not in the abstract. |
+| Minor 13: classical amortization correspondence not named | open | The four classics remain title/abstract-level; the paper does not claim how our Merkle/MDS modes correspond and carries `\todo{check full text: wong1998digital, park2002efficient}`. |
+| Minor 14: OSNMA fractional frame payloads | resolved | Sec. III-A: "Frame counts use the bit capacity." |
+| Minor 15: provisional numbers in the abstract | limitation | All numbers now come from a full run, but on one cloud VM; banner ("timing numbers are from a single cloud VM pending runs on the authors' machines"), abstract last sentence and Sec. V "One machine". |
+
+Counts: resolved 21 (3 integrity, 7 major, 11 minor), limitation 5 (majors 6 and 9; minors 8, 11, 15), open 1 (minor 13). Major 4 is counted as resolved; its mixed-chain part is a stated limitation.
+
+Known placeholders (not counted by the review), status in draft 3:
+- `\todo`: FN-DSA standard citation; NIST additional-signature status citation; full text of hyoung2026post/fall2025sok; full text of wong1998digital/park2002efficient (new); Cortex-M timings; artifact URL.
+- `TODO-RESULT`: `\RunCPU`, `\HdrSrc` (replaces `\HdrRID/\HdrSIB/\HdrOS/\HdrCV`), `\PerDNS`, `\CertMeta`, `\BSMSizeCV` (new), `\LMSHigh` (new), `\DarziOTARepro`, `\DarziTenRepro`, `\JunqueraKeyRepro`, `\GoertzenRepro`, `\YoshizawaRepro`, `\ChenRepro`.
