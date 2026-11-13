@@ -1,0 +1,5 @@
+phase,seconds,quick,machine,git_commit,git_dirty
+setup,0,0,cloud-vm-4core,96d1dc7338b8de962dfaf34c4fa6bea316f45e01,0
+liboqs_build,1,0,cloud-vm-4core,96d1dc7338b8de962dfaf34c4fa6bea316f45e01,0
+timing,991,0,cloud-vm-4core,96d1dc7338b8de962dfaf34c4fa6bea316f45e01,0
+sizes_scoring,8,0,cloud-vm-4core,96d1dc7338b8de962dfaf34c4fa6bea316f45e01,0
