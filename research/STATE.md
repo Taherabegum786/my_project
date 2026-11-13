@@ -4,7 +4,7 @@ Updated by the orchestrator after every stage. One line per paper.
 
 | paper | survey | design | verify | experiments | write | review |
 |---|---|---|---|---|---|---|
-| benchmark | done | n/a | n/a | awaiting-approval (pass 3 run on cloud-vm-4core) | done (draft 2) | round 2: major revision |
+| benchmark | done | n/a | n/a | awaiting-approval (pass 3 run on cloud-vm-4core) | running (draft 3) | round 2: major revision |
 | v2x | todo | todo | todo | todo | todo | todo |
 | drones | todo | todo | todo | todo | todo | todo |
 | grid | todo | todo | todo | todo | todo | todo |
@@ -29,5 +29,3 @@ Values: todo / running / awaiting-approval / done.
 - benchmark pass 3: full run done on `cloud-vm-4core` at commit 694ba76 (clean tree). Run
   `MACHINE_NAME=<name> ./run.sh` in `papers/benchmark/experiments` on each of your machines (about
   30-40 min each) and the two-machine UDP run described in `ENV.md`; commit `results/raw/`.
-- benchmark: `papers/benchmark/paper/numbers.tex` and draft 2 are stale against the pass 3 summary;
-  next step is a rewrite (write stage) and a fresh review.
