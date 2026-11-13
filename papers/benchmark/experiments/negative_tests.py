@@ -238,7 +238,7 @@ def main():
     outp = sys.argv[1]; quick = "--quick" in sys.argv
     jobs = [(pq, mode) for pq in RP.PQS for mode in MO.MODES
             if not (quick and "SLH" in pq and mode not in ("chain", "merkle8", "chain_lead_cont", "frag_mds_w4"))
-            and not (quick and mode in ("frag_rep_w2", "frag_rep_w8", "frag_mds_w2", "frag_mds_w8", "hyb_rep_w1", "hyb_mds_w1", "merkle4", "merkle16"))]
+            and not (quick and mode in ("frag_rep_w2", "frag_mds_w2", "frag_mds_w8", "hyb_rep_w1", "hyb_mds_w1", "merkle4", "merkle16"))]
     jobs.sort(key=lambda j: "SLH" not in j[0])
     tg = tag()
     with mp.Pool(os.cpu_count()) as pool:

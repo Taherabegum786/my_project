@@ -121,6 +121,9 @@ class Plan:
         return T0_MS + (g + 1) * self.T_ms
 
 
+MAX_SLOT_SYMS = 255                                      # symbols per frame (1-byte count)
+
+
 class Alloc:
     """Allocation of (scheme, mode, plan): coding parameters per object, feasibility."""
     def __init__(self, pqname, mode, plan, sig_len, rho=None):
@@ -194,8 +197,11 @@ class Alloc:
         if not self.s:
             return (0, 0)
         cap = self.cap_syms(self.s, oid); k = self.k
-        if self.coder == "mds":
-            cap = min(cap, 255)
+        if self.coder == "mds" or self.kind == "frag":
+            # mds: n <= 255 coded symbols.  frag (rep too): W objects overlap in every slot, so the symbols per slot equal the symbols
+            # per object; one slot carries at most MAX_SLOT_SYMS (1-byte count in place_all / the frame).  Without this cap rep sent
+            # more than fits, the placement (priority = oldest object first) filled the slots with the first objects and starved all later ones.
+            cap = min(cap, MAX_SLOT_SYMS)
         if self.rho:
             cap = min(cap, math.ceil(self.rho * k))
         if cap < k:
@@ -255,14 +261,14 @@ def place_all(reqs, free, G, cost):
     out = [[] for _ in range(G)]; left = []
     for oid, j, st, W in reqs:
         t = st + (j % W)
-        if 0 <= t < G and free[t] >= cost and len(out[t]) < 255:
+        if 0 <= t < G and free[t] >= cost and len(out[t]) < MAX_SLOT_SYMS:
             free[t] -= cost; out[t].append((oid, j))
         else:
             left.append((oid, j, st, W))
     for oid, j, st, W in left:
         for off in range(1, W):
             t = st + ((j + off) % W)
-            if 0 <= t < G and free[t] >= cost and len(out[t]) < 255:
+            if 0 <= t < G and free[t] >= cost and len(out[t]) < MAX_SLOT_SYMS:
                 free[t] -= cost; out[t].append((oid, j)); break
     return out
 
