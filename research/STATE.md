@@ -4,7 +4,7 @@ Updated by the orchestrator after every stage. One line per paper.
 
 | paper | survey | design | verify | experiments | write | review |
 |---|---|---|---|---|---|---|
-| benchmark | done | n/a | n/a | awaiting-approval | done (draft 2) | round 2: major revision |
+| benchmark | done | n/a | n/a | running (pass 3: real implementations) | done (draft 2) | round 2: major revision |
 | v2x | todo | todo | todo | todo | todo | todo |
 | drones | todo | todo | todo | todo | todo | todo |
 | grid | todo | todo | todo | todo | todo | todo |
@@ -25,8 +25,4 @@ Values: todo / running / awaiting-approval / done.
   `papers/benchmark/results/raw/`.
 - benchmark: open TODO-RESULT items are listed at the end of `papers/benchmark/results/summary.md`
   (fragment-header sizes, OSNMA block count, darzi2026a reproduction, loss-model parameters).
-- benchmark review round 2 (`papers/benchmark/review-round2.md`): major revision for IEEE VNC short;
-  3 integrity, 9 major, 15 minor. The two-round limit is reached. Human decisions needed:
-  (1) venue/scope: cut to vehicles only for VNC, or keep cross-domain and pick another venue;
-  (2) approve a third experiments pass (symmetric chain model, OSNMA key vs signature budgets,
-  PQ certificate issuer, commit ids in the banner).
+- benchmark: scope kept cross-domain (vehicle profile added to the loss analysis); venue to be chosen after pass 3.
