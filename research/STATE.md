@@ -4,7 +4,7 @@ Updated by the orchestrator after every stage. One line per paper.
 
 | paper | survey | design | verify | experiments | write | review |
 |---|---|---|---|---|---|---|
-| benchmark | done | n/a | n/a | running (pass 3: real implementations) | done (draft 2) | round 2: major revision |
+| benchmark | done | n/a | n/a | awaiting-approval (pass 3 run on cloud-vm-4core) | done (draft 2) | round 2: major revision |
 | v2x | todo | todo | todo | todo | todo | todo |
 | drones | todo | todo | todo | todo | todo | todo |
 | grid | todo | todo | todo | todo | todo | todo |
@@ -26,3 +26,8 @@ Values: todo / running / awaiting-approval / done.
 - benchmark: open TODO-RESULT items are listed at the end of `papers/benchmark/results/summary.md`
   (fragment-header sizes, OSNMA block count, darzi2026a reproduction, loss-model parameters).
 - benchmark: scope kept cross-domain (vehicle profile added to the loss analysis); venue to be chosen after pass 3.
+- benchmark pass 3: full run done on `cloud-vm-4core` at commit 694ba76 (clean tree). Run
+  `MACHINE_NAME=<name> ./run.sh` in `papers/benchmark/experiments` on each of your machines (about
+  30-40 min each) and the two-machine UDP run described in `ENV.md`; commit `results/raw/`.
+- benchmark: `papers/benchmark/paper/numbers.tex` and draft 2 are stale against the pass 3 summary;
+  next step is a rewrite (write stage) and a fresh review.
