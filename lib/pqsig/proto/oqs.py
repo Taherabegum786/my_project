@@ -40,6 +40,7 @@ class Counters:
     """Thread-CPU nanoseconds spent inside signature calls."""
     def __init__(self):
         self.sign_ns = 0; self.verify_ns = 0; self.n_sign = 0; self.n_verify = 0
+        self.real_sign_ns = 0          # time actually spent inside liboqs sign calls in this run (cache hits cost 0 here)
 
     def reset(self):
         self.__init__()
@@ -48,6 +49,8 @@ class Counters:
 class PQ:
     """One liboqs signature scheme: keypair, sign, verify (real calls)."""
     _keys = {}
+    _sig_cache = {}          # (scheme, sk prefix, message) -> (signature, ns): identical messages are signed once per process;
+                             # the recorded sign time is still charged to the sender's CPU counters (sign_ns), real_sign_ns is not
 
     def __init__(self, name, ctr=None):
         L = lib()
@@ -68,14 +71,23 @@ class PQ:
             PQ._keys[self.name] = kp
         return kp
 
-    def sign(self, msg, sk):
+    def sign(self, msg, sk, cache=True):
+        ck = (self.name, sk[:32], msg)
+        if cache and ck in PQ._sig_cache:
+            sg, ns = PQ._sig_cache[ck]
+            self.ctr.sign_ns += ns; self.ctr.n_sign += 1
+            return sg
         sig = ctypes.create_string_buffer(self.sig_len); n = ctypes.c_size_t(0)
         t = time.thread_time_ns()
         ok = lib().pq_sign(self.h, sig, ctypes.byref(n), msg, len(msg), sk)
-        self.ctr.sign_ns += time.thread_time_ns() - t; self.ctr.n_sign += 1
+        ns = time.thread_time_ns() - t
+        self.ctr.sign_ns += ns; self.ctr.real_sign_ns += ns; self.ctr.n_sign += 1
         if not ok:
             raise RuntimeError("sign failed")
-        return sig.raw[:n.value]
+        sg = sig.raw[:n.value]
+        if cache:
+            PQ._sig_cache[ck] = (sg, ns)
+        return sg
 
     def verify(self, msg, sig, pk):
         t = time.thread_time_ns()

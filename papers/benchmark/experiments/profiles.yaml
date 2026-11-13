@@ -19,11 +19,12 @@ common:
     metadata_bytes: TODO-RESULT        # not stated in budget-evidence.md; derivations conflict (1002-897-64 = 41 B vs 170-64-33 = 73 B); code uses 0
     metadata_sensitivity_bytes: [41, 73]   # derived, see summary.md; reported as separate fit columns, never as the main number
     classical_issuer_fixed_bytes: 105  # abrar2026deployment Falcon-512 certificate 1,002 B - 897 B pk = metadata + issuer signature (classical issuer case)
-  protocol:                            # parameters of the real-protocol experiments (all assumed unless a source is given)
-    epoch_windows_E: 20                # assumed: windows (= application messages) per chain epoch
-    key_delay_windows_d: 1             # assumed (same as chain_key_delay_messages)
-    data_windows_N: 80                 # assumed: application messages per run (4 epochs; divisible by Merkle n = 4, 8, 16)
-    window_slots_M: [10, 40]           # assumed: slots per application message, identical for every mode; multiple of the certificate cadence
+  protocol:                            # parameters of the native-rate protocol experiments (all assumed unless a source is given)
+    epoch_windows_E: 20                # assumed: messages (= slots) per chain epoch
+    key_delay_slots_d: 2               # assumed: key of message i released at the start of slot i+d (d = 2 leaves one slot of clock slack)
+    measured_epochs: 4                 # steady-state epochs measured (one warm-up epoch before, 40 tail slots after)
+    tail_slots: 40
+    traffic: "one application message per slot, sent once, at the channel's native rate (C-V2X BSM 100 ms; SIB1 160 ms); no repetition"
 profiles:
   remote_id:
     source: wiethuechter2024drip

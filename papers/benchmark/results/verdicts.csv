@@ -1,0 +1,9 @@
+hypothesis,claim,iid,burst,verdict,n_iid,n_burst
+H1,"The chain authenticates a larger share of received messages within the analysis deadline than the best fragmentation mode (paired differences with CI, per scheme).",inconclusive,refuted,inconclusive,9,9
+H2,The chain needs fewer bytes on air per authenticated message than the best fragmentation mode (relative paired difference).,inconclusive,inconclusive,inconclusive,9,9
+H3,The chain has a lower unconditional delay (unauthenticated messages censored at the analysis deadline) than the best fragmentation mode.,refuted,refuted,refuted,9,9
+H4,"The chain authenticates >= 95% of received messages within the source-stated latency need (C-V2X 100 ms), lossless channel (best case).",refuted,n/a (lossless),refuted,14,0
+H5,The chain reaches the target share within the deadline with a smaller channel budget (bytes/s) than the best fragmentation mode.,inconclusive,inconclusive,inconclusive,0,0
+H6,"No mode accepts a forged message or a stale replay under symbol/fragment injection (1-30% of slots), replay of old epochs, or a receiver clock offset within the configured sync bound.",n/a,n/a,supported,5760,0
+H7,A mode keeps >= 90% of its no-attack share at 10% injection (pollution resistance of decode-and-verify).,n/a,n/a,supported,72,0
+H8,Receiver CPU under 10% injection stays within 2x the no-attack receiver CPU.,n/a,n/a,supported,72,0

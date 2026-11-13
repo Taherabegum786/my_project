@@ -116,7 +116,15 @@ def loss_sequence(rng, N, p, burst_len=None):
     return np.repeat(np.array([o[0] for o in out]), [o[1] for o in out])[:N]
 
 
-def make_mask(G, seed, p, burst_len=None):
-    """Deterministic loss mask for a slot stream of length G: same (seed, p, burst) -> same mask in every process/machine."""
-    rng = np.random.default_rng(np.random.SeedSequence([int(seed), int(round(p * 1000)), int(burst_len or 0)]))
+def stream_id(*parts):
+    """Stable 63-bit integer from strings/numbers (same in every process/machine): names an independent random stream."""
+    import hashlib
+    return int.from_bytes(hashlib.sha256("|".join(str(x) for x in parts).encode()).digest()[:8], "big") >> 1
+
+
+def make_mask(G, seed, p, burst_len=None, stream=0):
+    """Deterministic loss mask for a slot stream of length G: same (stream, seed, p, burst) -> same mask in every process/machine.
+    `stream` (default 0 = the legacy shared mask) names the independent group: the experiments use stream_id(profile, scheme, condition)
+    so masks are independent across profiles, schemes and loss conditions and shared (paired) only across modes inside one cell."""
+    rng = np.random.default_rng(np.random.SeedSequence([int(seed), int(round(p * 1000)), int(burst_len or 0), int(stream)]))
     return loss_sequence(rng, G, p, burst_len)

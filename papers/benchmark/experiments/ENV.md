@@ -19,9 +19,11 @@ Hardware of the smoke run: 4 cores, 15 GB RAM, shared cloud VM (Linux 6.18). Pro
 ## Pieces
 
 - `lib/pqsig/oqs_bench.c` - C timing harness (liboqs + OpenSSL); default scheme list = lowest-level class of each family plus all levels of ML-DSA, Falcon, MAYO, UOV, SNOVA and only the pure SLH-DSA sets; `FULL_LIST=1` in run.sh benchmarks all 221. Key generation is repeated at most 200 times.
-- `lib/pqsig/proto/` - real protocols (modes.py), liboqs ctypes binding (oqs.py), erasure coding (erasure.py).
-- `lib/pqsig/lossform.py` - closed forms (cross-check only) and the seeded loss masks.
-- `experiments/run_proto.py` - sweep and UDP runner; `udp_link.py` - UDP sender/receiver; `negative_tests.py`; `crosscheck_loss.py`; `score.py`; `summarize.py`.
+- `lib/pqsig/proto/modes.py` - native-rate senders / receivers (traffic model, allocation rule and security rules in the docstring); `erasure.py` (zfec Reed-Solomon, code-size rule, pollution-tolerant Assembler); `attacks.py` (attacker toolkit); `oqs.py` (liboqs through ctypes; per-process signature cache shared by modes of one (profile, scheme)).
+- `lib/pqsig/lossform.py` - seeded loss masks (`make_mask(..., stream=...)`: independent stream per profile / scheme / condition). The pass-3 closed forms were removed; the cross-check is in `crosscheck_loss.py`.
+- `experiments/hypotheses.yaml` - conditions, grids, deadlines, minimum effects and decision rules, read by `summarize.py` (fixed before the pass-4 results were seen).
+- `experiments/run_proto.py` - sweep (operating point, minimum-budget sweep, active attacker) and UDP runner; `udp_link.py`; `negative_tests.py` (reject tests and controls); `crosscheck_loss.py`; `estimate_duration.py`; `score.py`; `summarize.py`.
+- Pass-4 pins: one extra requirement-free dependency (none): scipy is NOT used (Student-t table in `summarize.py`).
 
 ## Two-machine UDP run
 

@@ -1,3 +1,5 @@
+# FROZEN review artifact: runs against the pass-3 code (commit 694ba76 / c95c6e3) only. It is superseded by experiments/negative_tests.py
+# (R8: the same forgery against the new secret-keyed chain is rejected; control C8: it still succeeds against the legacy derivation).
 import sys, struct, hashlib
 sys.path.insert(0, "/home/user/my_project/papers/benchmark/experiments"); sys.path.insert(0, "/home/user/my_project/lib")
 import run_proto as RP

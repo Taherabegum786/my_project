@@ -17,11 +17,23 @@ def estimate(raw, mn):
     p = pd.read_csv(ph); r = pd.read_csv(rt).iloc[0]; a = pd.read_csv(al)
     if not int(r.quick):
         return None
-    com = yaml.safe_load(open(os.path.join(HERE, "profiles.yaml")))["common"]["protocol"]
-    procs = int(r.procs); Ms = com["window_slots_M"]
-    ratio_len = sum(Ms) / min(Ms)                      # stream length relative to the QUICK M
-    cond_ratio = 1.5   # effective cost ratio of the 12 full loss conditions vs the 4 QUICK ones, MEASURED on a 40-config subset (full run 7.5x quick run = 5x stream length x 1.5)
-    proto = (a.build_s.sum() * (5 / 2) * len(Ms) + a.run_s.sum() * ratio_len * cond_ratio) / procs
+    hy = yaml.safe_load(open(os.path.join(HERE, "hypotheses.yaml")))
+    procs = int(r.procs)
+    pt = os.path.join(raw, f"proto_pairtime_{mn}.csv")
+    if not os.path.exists(pt):
+        return None
+    q = pd.read_csv(pt)
+    nmod = 19
+    nB_q, nB_f = len(hy["minbudget"]["multipliers"]["quick"]), len(hy["minbudget"]["multipliers"]["full"])
+    full_oper = len(hy["conditions"]["operating"]["full"]) * int(os.environ.get("SEEDS", 20)) * nmod
+    full_min = len(hy["conditions"]["minbudget"]["full"]) * nB_f * 10 * nmod
+    ah = hy["attack"]; full_att = (1 + len(ah["inject_rates"]["full"]) + len(ah["clock_offsets_slots"]["full"]) + 1) * 10 * nmod
+    tot = 0.0
+    for _, row in q.iterrows():
+        run_s = max(row.secs - row.build_s, 0.1)
+        c = run_s / max(1.0, 2 * row.rows_oper + row.rows_minb + row.rows_attack)       # joiner doubles the cost of operating rows
+        tot += row.build_s * nB_f / nB_q + c * (2 * full_oper + full_min + (full_att if row.rows_attack > 0 else 0))
+    proto = tot / procs * 1.2                                                     # 20% load imbalance / pool tail
     sec = dict(zip(p.phase, p.seconds))
     tp = os.path.join(raw, f"oqs_timing_{mn}.csv")
     timing_full = None
@@ -35,7 +47,7 @@ def estimate(raw, mn):
         "build+setup (reused if build/ exists)": sec.get("setup", 0) + sec.get("liboqs_build", 0),
         "timing (ITER=10000, ITER_SLOW=100; from this run's mean op times)": timing_full if timing_full is not None else sec.get("timing", 0) * 50,
         "sizes+scoring": sec.get("sizes_scoring", 0),
-        "negative tests (adds SLH-DSA, ~x2)": sec.get("negative_tests", 0) * 2,
+        "negative tests (all modes and SLH-DSA, ~x2.5)": sec.get("negative_tests", 0) * 2.5,
         "protocol sweep": proto,
         "crosscheck+udp+summary": sec.get("crosscheck", 0) + sec.get("udp_smoke", 0) + sec.get("summarize", 0) * 1.5,
     }

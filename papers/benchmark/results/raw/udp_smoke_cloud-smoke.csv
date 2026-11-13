@@ -1,5 +1,0 @@
-machine,date,git_commit,git_dirty,profile,pq,mode,M,loss_model,loss_p,burst_len,seed,build_id,transport,authenticated,share,rejected,delay_median_ms,delay_p95_ms,ttfa_ms,ttfa_censored,rx_cpu_us_per_msg,udp_frames_received,udp_frames_sent,udp_missing,inproc_same_outcome,inproc_authenticated
-cloud-smoke,2026-11-13T08:16:01Z,604cbb2ce083f2b51c55d4c3f0443ff7fd731753,1,sib1,ML-DSA-44,frag_mds,10,iid,0.2,0,5,0,udp,26,0.325,0,1600.0,1600.0,7680.0,0,110.1410875,800,800,0,1,26
-cloud-smoke,2026-11-13T08:16:04Z,604cbb2ce083f2b51c55d4c3f0443ff7fd731753,1,sib1,MAYO-1,chain,10,ge,0.2,5,7,0,udp,80,1.0,0,1760.0,2567.9999999999995,800.0,0,161.11705,810,810,0,1,80
-cloud-smoke,2026-11-13T08:16:07Z,604cbb2ce083f2b51c55d4c3f0443ff7fd731753,1,sib1,Falcon-padded-512,merkle8,10,iid,0.1,0,9,0,udp,80,1.0,0,12960.0,13600.0,12640.0,0,119.2112625,880,880,0,1,80
-cloud-smoke,2026-11-13T08:16:10Z,604cbb2ce083f2b51c55d4c3f0443ff7fd731753,1,sib1,ML-DSA-44,hyb_mds,10,iid,0.1,0,11,0,udp,61,0.7625,0,1440.0,1600.0,2240.0,0,261.2982875,800,800,0,1,61

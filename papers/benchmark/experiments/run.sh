@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 # Reproduce everything for paper "benchmark" from a clean Ubuntu 22.04/24.04 install, in one pass:
 #   build (liboqs 0.16.0 + ctypes shim + C bench) -> timing (liboqs + OpenSSL classical, C) -> sizes -> stateful rows -> scoring
-#   -> negative tests -> real-protocol sweep -> closed-form cross-check -> UDP loopback smoke -> summarize.
+#   -> negative tests (reject tests + controls) -> native-rate protocol sweep (operating point, minimum budget, active attacker)
+#   -> closed-form cross-check -> UDP loopback smoke -> summarize.
 # Usage:  MACHINE_NAME=<your-machine> ./run.sh                 full run (see the printed estimate)
-#         QUICK=1 ./run.sh                                      few-minute smoke run (fewer iterations/conditions, one M)
+#         QUICK=1 ./run.sh                                      smoke run (fewer iterations, loss conditions and budget-grid points; still 10 seeds)
 # Env:    ITER (default 10000; QUICK 200)  ITER_SLOW (default ITER/100 = 100; QUICK 10; used for SLH-DSA, CROSS, MQOM)  FULL_LIST=1 (benchmark every liboqs scheme)
-#         WORK (build dir, reused if present)  SKIP_APT=1  PROCS (default nproc)  SEEDS (default 20)
+#         WORK (build dir, reused if present)  SKIP_APT=1  PROCS (default nproc)  SEEDS (default 20 operating point, QUICK 10; minimum-budget and attacker experiments use 10)
 set -euo pipefail
 export PYTHONDONTWRITEBYTECODE=1
 HERE="$(cd "$(dirname "$0")" && pwd)"
@@ -16,7 +17,7 @@ if [ "$QUICK" = 1 ]; then : "${MACHINE_NAME:=quick-smoke}"; ITER="${ITER:-200}";
 else : "${MACHINE_NAME:?set MACHINE_NAME to the machine name, e.g. laptop-x86}"; ITER="${ITER:-10000}"; ITER_SLOW="${ITER_SLOW:-$((ITER/100 > 10 ? ITER/100 : 10))}"; QARG=""; fi
 export MACHINE_NAME
 LIBOQS_TAG="${LIBOQS_TAG:-0.16.0}"
-WORK="${WORK:-$HERE/build}"; PREFIX="$WORK/prefix"; PROCS="${PROCS:-$(nproc)}"; SEEDS="${SEEDS:-20}"
+WORK="${WORK:-$HERE/build}"; PREFIX="$WORK/prefix"; PROCS="${PROCS:-$(nproc)}"; if [ "$QUICK" = 1 ]; then SEEDS="${SEEDS:-10}"; else SEEDS="${SEEDS:-20}"; fi; export SEEDS
 SUDO=""; [ "$(id -u)" -ne 0 ] && SUDO=sudo
 if [ "${SKIP_APT:-0}" != 1 ] && ! (command -v cmake && command -v ninja && command -v gcc && command -v git && [ -f /usr/include/openssl/evp.h ]) >/dev/null 2>&1; then
   $SUDO apt-get update
@@ -104,12 +105,12 @@ phase_end
 phase_start udp_smoke
 # two real processes over loopback; same seeded loss; compared with the in-process outcome (use two hosts: see udp_link.py)
 UDPCSV="$RAW/udp_smoke_${MACHINE_NAME}.csv"; rm -f "$UDPCSV"; KF="$(mktemp -u)"; PORT=$((20000 + RANDOM % 20000))
-for CFG in "ML-DSA-44 frag_mds iid:0.2 5" "MAYO-1 chain ge:0.2:5 7" "Falcon-padded-512 merkle8 iid:0.1 9" "ML-DSA-44 hyb_mds iid:0.1 11"; do
+for CFG in "OV-Is frag_mds_w4 iid:0.2 5" "MAYO-1 chain ge:0.2:5 7" "Falcon-padded-512 merkle8 iid:0.1 9" "OV-Is hyb_mds_w4 iid:0.1 11"; do
   set -- $CFG; rm -f "$KF"; PORT=$((PORT + 1))
-  python3 "$HERE/run_proto.py" udp --role receiver --udp 127.0.0.1:$PORT --profile sib1 --pq "$1" --mode "$2" --M 10 --loss "$3" --seed "$4" \
+  python3 "$HERE/run_proto.py" udp --role receiver --udp 127.0.0.1:$PORT --profile sib1 --pq "$1" --mode "$2" --loss "$3" --seed "$4" \
       --keyfile "$KF" --out "$UDPCSV" --check --machine "$MACHINE_NAME" --timeout 60 > /dev/null &
   RXPID=$!
-  python3 "$HERE/run_proto.py" udp --role sender --udp 127.0.0.1:$PORT --profile sib1 --pq "$1" --mode "$2" --M 10 --speed 400 --keyfile "$KF" --start-delay 2 --machine "$MACHINE_NAME" > /dev/null
+  python3 "$HERE/run_proto.py" udp --role sender --udp 127.0.0.1:$PORT --profile sib1 --pq "$1" --mode "$2" --speed 400 --keyfile "$KF" --start-delay 2 --machine "$MACHINE_NAME" > /dev/null
   wait $RXPID
 done
 phase_end

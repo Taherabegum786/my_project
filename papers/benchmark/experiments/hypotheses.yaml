@@ -1,0 +1,69 @@
+# Hypotheses, contrasts and decision criteria for experiments pass 4.  FIXED BEFORE LOOKING AT THE RESULTS; summarize.py reads this file and
+# applies the rules mechanically (it contains no thresholds of its own).  Change a criterion only together with a new pass and say so in summary.md.
+
+conditions:                  # [model, loss p, mean burst length]; one independent random stream per (profile, scheme, condition)
+  operating:
+    full:  [[iid, 0.0, 0], [iid, 0.05, 0], [iid, 0.1, 0], [iid, 0.2, 0], [iid, 0.3, 0],
+            [ge, 0.1, 3], [ge, 0.1, 5], [ge, 0.1, 10], [ge, 0.2, 3], [ge, 0.2, 5], [ge, 0.2, 10], [ge, 0.3, 3], [ge, 0.3, 5], [ge, 0.3, 10]]
+    quick: [[iid, 0.0, 0], [iid, 0.1, 0], [iid, 0.2, 0], [iid, 0.3, 0], [ge, 0.2, 3], [ge, 0.2, 5], [ge, 0.2, 10]]
+  minbudget:
+    full:  [[iid, 0.1, 0], [iid, 0.3, 0], [ge, 0.2, 5], [ge, 0.2, 10]]
+    quick: [[iid, 0.1, 0], [ge, 0.2, 5]]
+
+minbudget:
+  multipliers:               # channel budget per slot = multiplier x the profile's real auth budget (bytes per slot; bytes/s = budget / slot period)
+    full:  [0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0]
+    quick: [0.5, 1.0, 2.0, 4.0, 8.0, 16.0]
+  targets: [0.95, 0.99]      # target share of RECEIVED messages authenticated within the deadline
+
+deadlines:                   # in message periods (slots); lag of 1 = authenticated by the end of the message's own slot
+  analysis_periods: 10       # ASSUMED analysis deadline for every profile (no source states one for SIB1; for C-V2X see `need`)
+  need_ms:                   # latency need stated by a source; TODO-RESULT where none
+    cv2x_437: {ms: 100, source: "mamun2026post (survey; BSM 10 Hz, 100 ms authentication budget) - secondary source"}
+    cv2x_j3161: {ms: 100, source: "mamun2026post (survey; BSM 10 Hz, 100 ms authentication budget) - secondary source"}
+    sib1: TODO-RESULT        # darzi2026a states no hard deadline (budget-evidence.md)
+
+contrast:
+  chain_mode: chain                       # headline chain variant; the others are reported next to it
+  competitor_modes: [frag_rep_w1, frag_rep_w2, frag_rep_w4, frag_rep_w8, frag_mds_w1, frag_mds_w2, frag_mds_w4, frag_mds_w8]   # "best fragmentation mode"
+  best_selection: "per (profile, scheme, loss class): the competitor with the best mean of the metric over all conditions of the class and seeds (selection on the same data favours the competitor, so it is conservative for the chain)"
+  loss_classes: {iid: [iid], burst: [ge]}
+  ci_level: 0.95
+  ci_method: "t interval over seeds of the per-seed difference averaged over the conditions of the class (conditions use independent masks, seeds are independent)"
+
+effects:                     # minimum meaningful effects
+  share_abs: 0.01
+  bytes_rel: 0.05
+  delay_rel: 0.05
+  budget_ratio_low: 0.8      # chain minimum budget / best fragmentation minimum budget <= 0.8 -> chain cheaper, >= 1.25 -> chain dearer
+  budget_ratio_high: 1.25
+
+verdict_rule:
+  group_outcome: "chain better: CI of the paired difference lies beyond the minimum effect in the favourable direction; chain worse: beyond it in the unfavourable direction; equivalent: CI inside +-minimum effect; otherwise unclear"
+  supported_fraction: 0.67   # supported if >= this fraction of decidable groups is 'chain better' and the fraction 'chain worse' is <= 0.10
+  refuted_fraction: 0.67     # refuted if >= this fraction of decidable groups is 'chain worse'
+  worse_tolerance: 0.10
+  combine_classes: "the hypothesis verdict is supported / refuted only if the i.i.d. and the burst class give the same verdict, else inconclusive (mixed)"
+  competitor_infeasible: "groups whose best fragmentation mode authenticates nothing (infeasible at native rate) are reported separately and excluded from the denominator"
+
+hypotheses:
+  H1: {metric: share_within_deadline, deadline: analysis, better: higher, text: "The chain authenticates a larger share of received messages within the analysis deadline than the best fragmentation mode (paired differences with CI, per scheme)."}
+  H2: {metric: bytes_per_auth_msg, better: lower, text: "The chain needs fewer bytes on air per authenticated message than the best fragmentation mode (relative paired difference)."}
+  H3: {metric: rmst_delay, deadline: analysis, better: lower, text: "The chain has a lower unconditional delay (unauthenticated messages censored at the analysis deadline) than the best fragmentation mode."}
+  H4: {metric: share_within_need, text: "The chain authenticates >= 95% of received messages within the source-stated latency need (C-V2X 100 ms), lossless channel (best case).", supported_at_least: 0.95, refuted_below: 0.5}
+  H5: {metric: min_budget, text: "The chain reaches the target share within the deadline with a smaller channel budget (bytes/s) than the best fragmentation mode.", targets: [0.95, 0.99]}
+  H6: {metric: forged_accepted, text: "No mode accepts a forged message or a stale replay under symbol/fragment injection (1-30% of slots), replay of old epochs, or a receiver clock offset within the configured sync bound."}
+  H7: {metric: injection_retention, retention: 0.9, at_rate: 0.1, text: "A mode keeps >= 90% of its no-attack share at 10% injection (pollution resistance of decode-and-verify).", supported_fraction: 0.67}
+  H8: {metric: injection_cpu, factor: 2.0, at_rate: 0.1, text: "Receiver CPU under 10% injection stays within 2x the no-attack receiver CPU."}
+
+attack:
+  background_loss: 0.1       # i.i.d. loss under which the attacker experiments run
+  inject_intensity: [1, 4]   # bogus frames per attacked slot; the pre-registered criteria H7 / H8 use 1, the others are descriptive
+  inject_rates: {full: [0.01, 0.02, 0.05, 0.1, 0.2, 0.3], quick: [0.01, 0.05, 0.1, 0.3]}
+  clock_offsets_slots: {full: [-4, -3, -2, -1, -0.5, 0, 0.5, 1, 2, 3, 4], quick: [-3, -1, 0, 0.5, 1, 3]}   # receiver clock offset / slot period (negative = receiver behind)
+  sync_bound_slots: 0.5      # receiver's configured bound (modes.DELTA_SLOTS); H6 requires 0 forgeries for |offset| <= this
+  pairs:                     # (profile, scheme) pairs with a feasible native-rate fragmentation mode
+    - [sib1, SNOVA_24_5_4]
+    - [cv2x_437, SNOVA_24_5_4]
+    - [cv2x_j3161, Falcon-512]
+    - [cv2x_j3161, MAYO-1]
