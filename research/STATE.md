@@ -4,7 +4,7 @@ Updated by the orchestrator after every stage. One line per paper.
 
 | paper | survey | design | verify | experiments | write | review |
 |---|---|---|---|---|---|---|
-| benchmark | done | n/a | n/a | awaiting-approval (pass 3 run on cloud-vm-4core) | done (draft 3) | round 3 running |
+| benchmark | done | n/a | n/a | awaiting-approval (pass 3 run on cloud-vm-4core) | done (draft 3) | round 3: major revision |
 | v2x | todo | todo | todo | todo | todo | todo |
 | drones | todo | todo | todo | todo | todo | todo |
 | grid | todo | todo | todo | todo | todo | todo |
@@ -29,3 +29,8 @@ Values: todo / running / awaiting-approval / done.
 - benchmark pass 3: full run done on `cloud-vm-4core` at commit 694ba76 (clean tree). Run
   `MACHINE_NAME=<name> ./run.sh` in `papers/benchmark/experiments` on each of your machines (about
   30-40 min each) and the two-machine UDP run described in `ENV.md`; commit `results/raw/`.
+- benchmark review round 3 (`papers/benchmark/review-round3.md`): major revision for a WiSec short paper;
+  3 integrity, 8 major, 8 minor. Key findings: chain keys are derived from the public run seed
+  (forgery demonstrated, `papers/benchmark/review-artifacts/forge_chain_seed.py`); the verdict cells are
+  not independent (462 cells ~ 66 groups); each message is repeated in all M slots, so C-V2X runs at
+  1 Hz / 0.25 Hz, not 10 Hz. Decide whether to run experiments pass 4 (fix list in the review).
