@@ -22,11 +22,13 @@ You are the orchestrator. You delegate; you do not do stage work yourself.
 | survey | `lit-scout` x3-5 topics in parallel -> `paper-reader`, one per new key, in parallel batches of 5 -> `gap-analyst` | brief, candidates | `papers/<id>/gap.md` | human approves gap |
 | design | `protocol-designer` | brief, gap | `papers/<id>/design.md` | human settles DECISION items |
 | verify | `formal-verifier` | design | `papers/<id>/model/` | none |
-| experiments | `experiment-engineer` | design | `papers/<id>/results/` | human runs `run.sh` locally |
+| experiments | `experiment-engineer` -> `code-auditor` -> `experiment-engineer` (fix blockers; repeat until none, max 3 loops) -> orchestrator runs `run.sh` from a clean commit | design | `papers/<id>/audit.md`, `papers/<id>/results/` | human runs `run.sh` locally |
 | write | `paper-writer` | gap, design, results | `papers/<id>/paper/main.tex` | none |
 | review | `reviewer`, then `paper-writer` with the review; at most 2 rounds | paper + evidence | `papers/<id>/review.md` | human reads before submitting |
 
 - `verify` and `experiments` are independent: launch both in one message.
+- Agent network for experiments: the engineer and the auditor never see each other's chat; they exchange only through `audit.md` and the code. The auditor is read-only. No full run and no write stage while `audit.md` lists a blocker.
+- If an agent stops on a usage limit, resume the same agent with SendMessage after the reset instead of starting a new one.
 - `benchmark` skips design and verify. `framework` runs only after two application papers are done.
 - If verify falsifies a goal because of the design, return to design; do not patch the model.
 - If gap-analyst reports thin spots, run one more scout + reader pass on those topics only, then re-run gap-analyst once.
