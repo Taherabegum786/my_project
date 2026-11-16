@@ -4,7 +4,7 @@ Updated by the orchestrator after every stage. One line per paper.
 
 | paper | survey | design | verify | experiments | write | review |
 |---|---|---|---|---|---|---|
-| benchmark | done | n/a | n/a | running (pass 4: security fixes, native rate, attacker) | done (draft 3) | round 3: major revision |
+| benchmark | done | n/a | n/a | awaiting-approval (pass 4, audited, run on cloud-vm-4core at 95ec879) | todo (draft 4; draft 3 is stale) | todo (round 4) |
 | v2x | todo | todo | todo | todo | todo | todo |
 | drones | todo | todo | todo | todo | todo | todo |
 | grid | todo | todo | todo | todo | todo | todo |
@@ -26,6 +26,8 @@ Values: todo / running / awaiting-approval / done.
 - benchmark: open TODO-RESULT items are listed at the end of `papers/benchmark/results/summary.md`
   (fragment-header sizes, OSNMA block count, darzi2026a reproduction, loss-model parameters).
 - benchmark: scope kept cross-domain (vehicle profile added to the loss analysis); venue to be chosen after pass 3.
-- benchmark pass 3: full run done on `cloud-vm-4core` at commit 694ba76 (clean tree). Run
-  `MACHINE_NAME=<name> ./run.sh` in `papers/benchmark/experiments` on each of your machines (about
-  30-40 min each) and the two-machine UDP run described in `ENV.md`; commit `results/raw/`.
+- benchmark pass 4: audited (audit.md, audit-2.md: no blockers; 4 minors open) and run in full on
+  `cloud-vm-4core` at commit 95ec879 (clean tree). Run `MACHINE_NAME=<name> ./run.sh` in
+  `papers/benchmark/experiments` on each of your machines (about 35-45 min) and commit `results/raw/`.
+  The three largest raw CSVs are stored gzipped; run.sh regenerates the plain files.
+- benchmark: draft 3 and numbers.tex are stale against the pass 4 summary; next is the write stage, then review round 4.

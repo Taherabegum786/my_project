@@ -1,0 +1,2 @@
+machine,quick,tasks,seeds_oper,seeds_min,procs,wall_s,liboqs,git_commit,git_dirty
+cloud-vm-4core,0,21,20,10,4,954.5,0.16.0,95ec879b6024e2e4f083e418bb163cbd441e9e31,0

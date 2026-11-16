@@ -1,5 +1,11 @@
 phase,seconds,quick,machine,git_commit,git_dirty
-setup,0,0,cloud-vm-4core,96d1dc7338b8de962dfaf34c4fa6bea316f45e01,0
-liboqs_build,1,0,cloud-vm-4core,96d1dc7338b8de962dfaf34c4fa6bea316f45e01,0
-timing,991,0,cloud-vm-4core,96d1dc7338b8de962dfaf34c4fa6bea316f45e01,0
-sizes_scoring,8,0,cloud-vm-4core,96d1dc7338b8de962dfaf34c4fa6bea316f45e01,0
+setup,0,0,cloud-vm-4core,95ec879b6024e2e4f083e418bb163cbd441e9e31,0
+liboqs_build,1,0,cloud-vm-4core,95ec879b6024e2e4f083e418bb163cbd441e9e31,0
+timing,851,0,cloud-vm-4core,95ec879b6024e2e4f083e418bb163cbd441e9e31,0
+sizes_scoring,7,0,cloud-vm-4core,95ec879b6024e2e4f083e418bb163cbd441e9e31,0
+negative_tests,260,0,cloud-vm-4core,95ec879b6024e2e4f083e418bb163cbd441e9e31,0
+lossless_invariant,16,0,cloud-vm-4core,95ec879b6024e2e4f083e418bb163cbd441e9e31,0
+protocol_sweep,955,0,cloud-vm-4core,95ec879b6024e2e4f083e418bb163cbd441e9e31,0
+crosscheck,1,0,cloud-vm-4core,95ec879b6024e2e4f083e418bb163cbd441e9e31,0
+udp_smoke,10,0,cloud-vm-4core,95ec879b6024e2e4f083e418bb163cbd441e9e31,0
+summarize,16,0,cloud-vm-4core,95ec879b6024e2e4f083e418bb163cbd441e9e31,0

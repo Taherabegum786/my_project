@@ -1,0 +1,5 @@
+machine,date,git_commit,git_dirty,profile,pq,mode,loss_model,loss_p,burst_len,seed,build_id,transport,authenticated,N_meas,share_of_sent,rejected,rx_cpu_us_per_msg,udp_frames_received,udp_frames_sent,udp_missing,inproc_same_outcome,inproc_authenticated
+cloud-vm-4core,2026-11-16T10:36:59Z,95ec879b6024e2e4f083e418bb163cbd441e9e31,0,sib1,OV-Is,frag_mds_w4,iid,0.2,0,5,0,udp,62,80,0.775,0,99.9447625,140,140,0,1,110
+cloud-vm-4core,2026-11-16T10:37:02Z,95ec879b6024e2e4f083e418bb163cbd441e9e31,0,sib1,MAYO-1,chain,ge,0.2,5,7,0,udp,75,80,0.9375,0,85.6942375,140,140,0,1,132
+cloud-vm-4core,2026-11-16T10:37:04Z,95ec879b6024e2e4f083e418bb163cbd441e9e31,0,sib1,Falcon-padded-512,merkle8,iid,0.1,0,9,0,udp,66,80,0.825,0,55.85355,140,140,0,1,115
+cloud-vm-4core,2026-11-16T10:37:06Z,95ec879b6024e2e4f083e418bb163cbd441e9e31,0,sib1,OV-Is,hyb_mds_w4,iid,0.1,0,11,0,udp,73,80,0.9125,0,304.8754375,140,140,0,1,125
