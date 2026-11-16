@@ -12,8 +12,14 @@ ALLOCATION RULE (identical for every mode):
     (k = ceil(blob/s) source symbols; 'mds' = systematic Reed-Solomon, n <= 255 coded symbols; 'rep' = the k raw fragments sent cyclically);
   * every symbol costs s + ov bytes (ov = 1 index byte, +1 age byte when several objects share a slot);
   * s is chosen once per (scheme, mode, budget) by erasure.choose_s (max design-point reliability at slot loss 0.2, MDS assumption);
-  * n = as many symbols as the span's free bytes allow (capped at 255 for mds and at ceil(rho*k) when rho is set: chain_r2 uses rho = 2);
-  * an object is infeasible when n < k; a mode is infeasible when no sampled object is feasible.
+  * n = the object's share of the span's free bytes, computed from the ACTUAL per-slot capacities (certificate and regular slots differ) and
+    shared among the scheduled objects that overlap each slot (capped at 255 symbols per slot, and at ceil(rho*k) when rho is set: chain_r2 uses rho = 2);
+  * the layout (Alloc.layout) decides which objects are scheduled: earliest-deadline-first over the slots finds the objects that can reach k symbols
+    in their span, and a placement check removes every object that would still deliver < k distinct symbols.  A scheduled object therefore decodes
+    with zero loss BY CONSTRUCTION; an unscheduled object is infeasible before any run.  feas_frac = share of the measured messages that
+    authenticate with zero loss (Alloc.lossless_set: frag = own object scheduled; merkle = batch scheduled and a path slot with capacity >= mand;
+    chain = tag slot, a later key slot and the epoch schedule available; on C-V2X the certificate slot (capacity max(0, B-P-S)) cannot carry
+    the chain tag, which caps the chain at 0.8); a mode is infeasible when feas_frac = 0.  tools: lossless_invariant.py checks all of this.
   * spans: frag/hyb = W slots starting at the message's slot; merkle = the n slots after the batch; chain = the E slots of the epoch
     (anchor of epoch e) or of the previous epoch (chain_lead*).
 
@@ -124,6 +130,14 @@ class Plan:
 MAX_SLOT_SYMS = 255                                      # symbols per frame (1-byte count)
 
 
+class Layout:
+    def __init__(self, params, slots, sched):
+        self.params, self.slots, self.sched = params, slots, sched
+
+
+_LAYOUTS = {}
+
+
 class Alloc:
     """Allocation of (scheme, mode, plan): coding parameters per object, feasibility."""
     def __init__(self, pqname, mode, plan, sig_len, rho=None):
@@ -158,14 +172,16 @@ class Alloc:
         ch = choose_s(self.blob_len, self.coder, samples, self.rho)
         if ch is None:
             self.s, self.k, self.feas_frac, self.feasible = 0, 0, 0.0, False
-            self.codes = {}
+            self.codes = {}; self.pred = set(); self.n_typ = 0
             return
         self.s, self.k = ch
         self.codes = {}
-        feas = [self.obj_params(o)[1] >= self.k for o in sample]
-        self.feas_frac = sum(feas) / len(feas)
+        L = self.layout()
+        meas = range(plan.W0, plan.W1)
+        self.pred = self.lossless_set()                                  # messages that authenticate with zero loss (see lossless_set)
+        self.feas_frac = sum(1 for g in meas if g in self.pred) / len(meas)
         self.feasible = self.feas_frac > 0
-        self.n_typ = max(self.obj_params(o)[0] for o in sample)
+        self.n_typ = max([L.params[o][0] for o in L.sched] or [0])
 
     # ---- geometry
     def slot_room(self, g):
@@ -191,27 +207,164 @@ class Alloc:
         return sum(max(0, self.slot_room(g)) // (s + self.ov) for g in self.span(oid))
 
     def obj_params(self, oid):
-        """(n_distinct, n_send) for object oid (deterministic from the plan; sender and receiver both compute it)."""
-        if oid in self._p:
-            return self._p[oid]
+        """(n_distinct, n_send) for object oid, from the layout (deterministic from the plan; sender and receiver both compute it).
+        (0, 0) = the object is not scheduled (the sender sends none of it)."""
         if not self.s:
             return (0, 0)
-        cap = self.cap_syms(self.s, oid); k = self.k
-        if self.coder == "mds" or self.kind == "frag":
-            # mds: n <= 255 coded symbols.  frag (rep too): W objects overlap in every slot, so the symbols per slot equal the symbols
-            # per object; one slot carries at most MAX_SLOT_SYMS (1-byte count in place_all / the frame).  Without this cap rep sent
-            # more than fits, the placement (priority = oldest object first) filled the slots with the first objects and starved all later ones.
-            cap = min(cap, MAX_SLOT_SYMS)
+        return self.layout().params.get(oid, (0, 0))
+
+    def objects(self):
+        P = self.plan
+        if self.kind == "frag":
+            return list(range(P.G))
+        if self.kind == "merkle":
+            return list(range(P.G // self.n))
+        return list(range(self.lead, P.G // P.E))
+
+    def span_full(self, oid):
+        sp = self.span(oid)
+        return sp.start, len(sp)
+
+    def layout(self):
+        """Symbol layout of the whole stream, computed from the ACTUAL per-slot capacities (certificate-bearing and regular slots differ):
+        1. u_t = whole symbols that slot t can carry (capped at MAX_SLOT_SYMS);
+        2. earliest-deadline-first over the slots decides which objects can reach k symbols in their own span (spans overlap for frag);
+        3. each scheduled object gets floor(sum over its span of u_t / (scheduled objects covering t)) symbols (>= k, bounded by MAX_SLOT_SYMS,
+           255 for mds, ceil(rho*k)); the first k are placed by augmenting-path matching, the rest by place_all (see _place);
+        4. every object whose placement delivers < k distinct symbols is unscheduled and the layout is recomputed, until all scheduled objects
+           deliver >= k distinct symbols.  So with zero loss every scheduled object decodes, by construction; unscheduled objects are infeasible
+           BEFORE any run.  Returns a Layout(params, slots, sched)."""
+        if getattr(self, "_layout", None) is not None:
+            return self._layout
+        P = self.plan; G = P.G; k = self.k; cost = self.s + self.ov
+        key = (self.mode, self.sig_len, self.s, k, self.rho, P.T_ms, P.B, P.digest, P.cert_every, P.cap_cert, P.E, P.G, P.W0)
+        if key in _LAYOUTS:
+            self._layout = _LAYOUTS[key]; return self._layout
+        room = [self.slot_room(g) for g in range(G)]
+        u = [min(MAX_SLOT_SYMS, max(0, r) // cost) for r in room]
+        objs = self.objects()
+        spans = {}
+        for o in objs:
+            st, w = self.span_full(o); spans[o] = (st, w, [t for t in range(st, st + w) if 0 <= t < G])
+        cover = [[] for _ in range(G)]
+        for o in objs:
+            for t in spans[o][2]:
+                cover[t].append(o)
+        # earliest deadline first: the object whose span ends first is served first
+        got = {o: 0 for o in objs}
+        for t in range(G):
+            left = u[t]
+            for o in sorted(cover[t], key=lambda x: (spans[x][0] + spans[x][1], x)):
+                if left <= 0:
+                    break
+                take = min(left, k - got[o])
+                got[o] += take; left -= take
+        sched = {o for o in objs if got[o] >= k}
+        cap_n = MAX_SLOT_SYMS if self.coder == "rep" else min(255, MAX_SLOT_SYMS)
         if self.rho:
-            cap = min(cap, math.ceil(self.rho * k))
-        if cap < k:
-            r = (0, 0)
-        elif self.coder == "mds":
-            r = (cap, cap)
+            cap_n = min(cap_n, math.ceil(self.rho * k))
+        params = {}; slots = [[] for _ in range(G)]
+        for _ in range(64):
+            m = [0] * G
+            for o in sched:
+                for t in spans[o][2]:
+                    m[t] += 1
+            params = {}
+            for o in sorted(sched):
+                share = sum(u[t] / m[t] for t in spans[o][2])
+                ns = max(k, min(cap_n, int(share + 1e-9)))
+                params[o] = (k if self.coder == "rep" else ns, ns)
+            slots, bad = self._place(sched, params, spans, u, G, cost)
+            dist = {}
+            for t in range(G):
+                for o, j in slots[t]:
+                    dist.setdefault(o, set()).add(j % params[o][0])
+            bad |= {o for o in sched if len(dist.get(o, ())) < k}
+            if not bad:
+                break
+            sched -= bad
         else:
-            r = (k, cap)
-        self._p[oid] = r
-        return r
+            raise AssertionError("layout did not converge")
+        self._layout = _LAYOUTS[key] = Layout(params, slots, sched)
+        return self._layout
+
+    def _place(self, sched, params, spans, u, G, cost):
+        """Placement of the scheduled objects.  Mandatory symbols (j < k: the symbols an object cannot do without) first: symbol j goes to its
+        preferred slot span_start + j mod W if that slot has room, otherwise an augmenting path moves other mandatory symbols to other slots of their
+        spans until a slot with room is reached (maximum matching: no object is lost to an unlucky preferred slot).  Then the redundant symbols
+        (j >= k) by place_all on the remaining room (preferred slot, then spill).  Returns (slots, objects that could not get all k symbols)."""
+        k = self.k; load = [0] * G; members = [[] for _ in range(G)]; where = {}; bad = set()
+        todo = []
+        for o in sorted(sched):
+            st, w, sl = spans[o]
+            for j in range(k):
+                t = st + j % w
+                if 0 <= t < G and load[t] < u[t]:
+                    load[t] += 1; members[t].append((o, j)); where[(o, j)] = t
+                else:
+                    todo.append((o, j))
+        for o, j in todo:
+            if o in bad:
+                continue
+            par = {t: None for t in spans[o][2]}; queue = list(spans[o][2]); end = None; qi = 0
+            while qi < len(queue):
+                t = queue[qi]; qi += 1
+                if load[t] < u[t]:
+                    end = t; break
+                for sym in members[t]:
+                    for t2 in spans[sym[0]][2]:
+                        if t2 not in par:
+                            par[t2] = (t, sym); queue.append(t2)
+            if end is None:
+                bad.add(o)
+                for jj in range(k):
+                    t = where.pop((o, jj), None)
+                    if t is not None:
+                        members[t].remove((o, jj)); load[t] -= 1
+                continue
+            cur = end
+            while par[cur] is not None:
+                pt, sym = par[cur]
+                members[pt].remove(sym); members[cur].append(sym); where[sym] = cur
+                load[cur] += 1; load[pt] -= 1; cur = pt
+            load[cur] += 1; members[cur].append((o, j)); where[(o, j)] = cur
+        reqs = []
+        for o in sorted(sched - bad):
+            st, w, _ = spans[o]
+            reqs += [(o, j, st, w) for j in range(k, params[o][1])]
+        extra = place_all(reqs, [(u[t] - load[t]) * cost for t in range(G)], G, cost)
+        slots = [sorted(members[t]) + extra[t] for t in range(G)]
+        return slots, bad
+
+    def lossless_set(self):
+        """Messages (seq in 0..G-1) that authenticate with zero loss, derived from the layout and the frame rules of the senders/receivers.
+        frag/hyb: the message's own object is scheduled.  merkle: its batch signature is scheduled and one of its two path slots exists and
+        has capacity >= mand.  chain: the tag slot has capacity >= mand, a key of index >= i of the epoch is disclosed in a slot with capacity
+        >= mand, and the epoch's schedule is known (anchor scheduled, or - continuity - an authenticated message of the previous epoch)."""
+        P = self.plan; G = P.G; S = self.layout().sched; ok = lambda t: 0 <= t < G and P.cap(t) >= self.mand      # noqa: E731
+        if self.kind == "frag":
+            return set(S)
+        if self.kind == "merkle":
+            n = self.n; out = set()
+            for g in range(G):
+                b = g // n
+                if b in S and (ok((b + 1) * n + g % n) or ok((b + 1) * n + (g % n + n // 2) % n)):
+                    out.add(g)
+            return out
+        E = P.E; d = P.d; out = set()
+        if d < 1 + DELTA_SLOTS:
+            return out
+        bridged = False
+        for e in range(G // E):
+            sched_ok = (e in S) or (e > 0 and self.cont and bridged)
+            cur = set()
+            for i in range(1, E + 1):
+                g = e * E + i - 1
+                if sched_ok and ok(g) and any(ok(e * E + i2 - 1 + d) for i2 in range(i, E + 1)):
+                    cur.add(g)
+            out |= cur
+            bridged = bool(cur)
+        return out
 
     def code(self, oid):
         n = self.obj_params(oid)[0]
@@ -221,7 +374,8 @@ class Alloc:
 
     def row(self):
         P = self.plan
-        nd, ns = self.obj_params({"frag": P.W0, "merkle": 1, "chain": 1 + self.lead}[self.kind]) if self.s else (0, 0)
+        typ = [o for o in sorted(self.layout().sched) if o >= {"frag": P.W0, "merkle": 1, "chain": 1 + self.lead}[self.kind]][:1] if self.s else []
+        nd, ns = self.obj_params(typ[0]) if typ else (0, 0)
         return dict(pq=self.pq, mode=self.mode, B_slot=P.B, cap_regular=P.cap_reg, cap_cert_slot=P.cap_cert, cert_every=P.cert_every,
                     blob_B=self.blob_len, symbol_B=self.s, k=self.k, n_distinct_typ=nd, n_send_typ=ns,
                     code_rate=(self.k / nd if nd else float("nan")), redundancy=(ns / self.k if self.k else float("nan")),
@@ -315,8 +469,7 @@ def build(pqname, mode, plan, build_seed=0, key=None, ed=None, chain_secret=None
         S.frames[g] = (apps[g], auth); S.fields[g] = fields; S.air[g] = len(auth)
 
     if A.kind == "frag":
-        free = [max(0, A.slot_room(g)) for g in range(G)]
-        reqs = []; tab = {}
+        tab = {}
         for d in range(G):
             nd, ns = A.obj_params(d)
             if ns < k:
@@ -326,8 +479,7 @@ def build(pqname, mode, plan, build_seed=0, key=None, ed=None, chain_secret=None
             body = (edk.sign(signed_frag(alg, d, ts, apps[d])) if A.hybrid else b"") + sig
             blob = struct.pack(">HI", len(sig), d) + ts_bytes(ts) + body
             tab[d] = (nd, A.code(d).encode(blob))
-            reqs += [(d, j, d, A.W) for j in range(ns)]
-        slot_syms = place_all(reqs, free, G, s + A.ov)
+        slot_syms = A.layout().slots
         for t in range(G):
             if slot_syms[t]:
                 fb = FB(); fb.pack(">BBB", T_FRAG, alg, len(slot_syms[t]))
@@ -337,8 +489,7 @@ def build(pqname, mode, plan, build_seed=0, key=None, ed=None, chain_secret=None
                 put(t, bytes(fb.b), fb.f)
     elif A.kind == "merkle":
         n, lg = A.n, A.lg; nb = G // n
-        free = [max(0, A.slot_room(g)) if A.slot_room(g) >= 0 else -1 for g in range(G)]
-        paths_of = {}; reqs = []; tab = {}
+        paths_of = {}; tab = {}
         for b in range(nb):
             leaves = [H16(b"\x00", struct.pack(">I", b * n + j), apps[b * n + j]) for j in range(n)]
             lv = [leaves]
@@ -356,8 +507,7 @@ def build(pqname, mode, plan, build_seed=0, key=None, ed=None, chain_secret=None
             if ns < k:
                 continue
             tab[b] = (nd, A.code(b).encode(blob))
-            reqs += [(b, j, (b + 1) * n, n) for j in range(ns)]
-        slot_syms = place_all(reqs, free, G, s + A.ov)
+        slot_syms = A.layout().slots
         for t in range(n, G):
             b = t // n - 1
             if b >= nb or P.cap(t) < A.mand:
@@ -387,8 +537,7 @@ def build(pqname, mode, plan, build_seed=0, key=None, ed=None, chain_secret=None
             sig = pq.sign(signed_anchor(alg, a, chains[a][0], t_e0, sched), sk)
             blob = struct.pack(">H", len(sig)) + chains[a][0] + struct.pack(">I", a) + ts_bytes(t_e0) + sched + sig
             anchors[a] = blob
-        free = [A.slot_room(g) if A.slot_room(g) >= 0 else -1 for g in range(G)]
-        reqs = []; tab = {}
+        tab = {}
         for a in range(Ne):
             if a - L < 0:
                 continue
@@ -396,8 +545,7 @@ def build(pqname, mode, plan, build_seed=0, key=None, ed=None, chain_secret=None
             if ns < k:
                 continue
             tab[a] = (nd, A.code(a).encode(anchors[a]))
-            reqs += [(a, j, (a - L) * E, E) for j in range(ns)]
-        slot_syms = place_all(reqs, free, G, s + A.ov)
+        slot_syms = A.layout().slots
         for g in range(G):
             if P.cap(g) < A.mand:
                 continue
@@ -686,7 +834,7 @@ class ChainRx(Rx):
             if not A.s or A.k == 0:
                 return
             # 16-bit epoch ids wrap, so the coding parameters come from a canonical epoch (the pattern is periodic for epochs >= 1)
-            a = self.anc[ae] = Assembler(A.code(1 + A.lead), seed=ae)
+            a = self.anc[ae] = Assembler(A.code(ae if A.obj_params(ae)[0] >= A.k else 1 + A.lead), seed=ae)
         new = False
         for idx, data in syms:
             new |= a.add(idx, data)

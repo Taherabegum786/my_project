@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Reproduce everything for paper "benchmark" from a clean Ubuntu 22.04/24.04 install, in one pass:
 #   build (liboqs 0.16.0 + ctypes shim + C bench) -> timing (liboqs + OpenSSL classical, C) -> sizes -> stateful rows -> scoring
-#   -> negative tests (reject tests + controls) -> native-rate protocol sweep (operating point, minimum budget, active attacker)
+#   -> negative tests (reject tests + controls) -> lossless invariant (allocation vs zero-loss real run, aborts on mismatch) -> native-rate protocol sweep (operating point, minimum budget, active attacker)
 #   -> closed-form cross-check -> UDP loopback smoke -> summarize.
 # Usage:  MACHINE_NAME=<your-machine> ./run.sh                 full run (see the printed estimate)
 #         QUICK=1 ./run.sh                                      smoke run (fewer iterations, loss conditions and budget-grid points; still 10 seeds)
@@ -92,6 +92,11 @@ phase_end
 
 phase_start negative_tests
 python3 "$HERE/negative_tests.py" "$RAW/negative_tests_${MACHINE_NAME}.csv" $QARG
+phase_end
+
+phase_start lossless_invariant
+# what the allocation promises (proto_alloc feasible / feasible_frac) must be what the real sender+receiver deliver with zero loss; aborts on any mismatch
+python3 "$HERE/lossless_invariant.py" "$RAW/lossless_invariant_${MACHINE_NAME}.csv" $QARG --procs "$PROCS"
 phase_end
 
 phase_start protocol_sweep

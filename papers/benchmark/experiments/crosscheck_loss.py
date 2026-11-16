@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """crosscheck_loss.py RAWDIR MACHINE -> RAWDIR/loss_crosscheck_<machine>.csv
 Compares the measured share (real implementation, i.i.d. loss) of the MDS fragmentation modes with an independent closed form:
-the sender's symbol placement is recomputed WITHOUT cryptography (modes.place_all on the allocation), giving c_{d,l} symbols of object d in
+the sender's symbol placement is recomputed WITHOUT cryptography (modes.Alloc.layout, the sender's layout), giving c_{d,l} symbols of object d in
 span slot d+l.  Given that the message's own slot arrived (the share is relative to received messages), the object decodes iff the symbols
 of the received span slots number at least k:  P_d = P[ c_{d,0} + sum_{l>=1} c_{d,l} B_l >= k ],  B_l ~ Bernoulli(1-p) independent.
 Expected share = mean over the measured messages of P_d.
@@ -25,13 +25,7 @@ from pqsig.proto.oqs import PQ               # noqa: E402
 
 def closed_share(A, p):
     P = A.plan; G = P.G; k = A.k
-    free = [max(0, A.slot_room(g)) for g in range(G)]
-    reqs = []
-    for d in range(G):
-        nd, ns = A.obj_params(d)
-        if ns >= k:
-            reqs += [(d, j, d, A.W) for j in range(ns)]
-    slots = MO.place_all(reqs, free, G, A.s + A.ov)
+    slots = A.layout().slots                                 # the sender's layout (modes.Alloc.layout), recomputed here without cryptography
     cnt = {}
     for t in range(G):
         for d, j in slots[t]:

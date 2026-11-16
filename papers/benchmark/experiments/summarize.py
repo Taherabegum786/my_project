@@ -38,7 +38,7 @@ HY = yaml.safe_load(open(os.path.join(HERE, "hypotheses.yaml")))
 sizes = rd("sizes_declared.csv"); pq = sizes[sizes.family_kind == "pq"]
 timing = rd(f"oqs_timing_{MN}.csv"); classical = rd(f"classical_timing_{MN}.csv"); sc = rd("scoring_all_levels.csv")
 res = rd(f"proto_results_{MN}.csv"); minb = rd(f"minbudget_{MN}.csv"); att = rd(f"attack_{MN}.csv"); alloc = rd(f"proto_alloc_{MN}.csv")
-xchk = rd(f"loss_crosscheck_{MN}.csv"); neg = rd(f"negative_tests_{MN}.csv")
+xchk = rd(f"loss_crosscheck_{MN}.csv"); neg = rd(f"negative_tests_{MN}.csv"); inv = rd(f"lossless_invariant_{MN}.csv")
 udp = opt(f"udp_smoke_{MN}.csv"); phases = opt(f"run_phases_{MN}.csv"); rt = opt(f"proto_runtime_{MN}.csv"); ptime = opt(f"proto_pairtime_{MN}.csv")
 PNAMES = list(PROF)
 SIGPROF = [p for p in PNAMES if PROF[p].get("role", "signature") == "signature"]
@@ -100,7 +100,7 @@ res = add_metrics(res); minb = add_metrics(minb)
 
 # ---------------------------------------------------------------- header, provenance
 commit_now, dirty_now = code_state()
-tags = pd.concat([d[["machine", "date", "git_commit", "git_dirty"]] for d in (sizes, timing, classical, sc, res, minb, att, alloc, xchk, neg)
+tags = pd.concat([d[["machine", "date", "git_commit", "git_dirty"]] for d in (sizes, timing, classical, sc, res, minb, att, alloc, xchk, neg, inv)
                   if "git_dirty" in d]).drop_duplicates()
 tags["date"] = tags.date.str[:10]
 tags = tags.drop_duplicates(["machine", "date", "git_commit", "git_dirty"])
@@ -158,6 +158,34 @@ for p in PROTO_P:
 w(md(pd.DataFrame(tm_rows))); w()
 w("A message whose own slot is lost cannot be authenticated by any mode, so every share below is relative to RECEIVED messages (`received`); the fraction of messages delivered at all is in the CSV (`delivered_frac`). "
   "The pass-3 'repeat the message in all M slots' assumption is gone: a mode that cannot carry its authentication data within the slot budget at the native rate is reported as infeasible (below), not helped by repetition.")
+w("### Zero-loss caps (predicted by the allocation, not discovered in the results)")
+w()
+w(f"`feasible_frac` in `raw/proto_alloc_{MN}.csv` is the share of the measured messages that authenticate with ZERO loss, computed before any run from the actual capacity of every slot "
+  "(`modes.Alloc.layout`, `modes.Alloc.lossless_set`; certificate-bearing and regular slots differ). It is an upper bound for every share reported below (shares are relative to received messages). "
+  "Reasons for a cap below 1: on C-V2X every 5th slot carries the certificate and has capacity max(0, B - P - S); a slot with capacity below the mandatory header cannot carry a chain tag / key / Merkle path, "
+  "so a chain message whose own slot is a certificate slot has no tag (cap 0.8 = 4 of 5 slots), and a fragmentation object that cannot collect k symbols from the slots of its span is not scheduled. "
+  "The table lists, at the profile's real budget (B_mult = 1), the caps per profile and family (schemes with 0 < cap < 1, the cap range over them, schemes with cap 1, schemes with cap 0).")
+w()
+a1_ = alloc[alloc.B_mult == 1.0].copy()
+a1_["family"] = a1_["mode"].map(lambda m: "frag (per mode)" if m.startswith("frag_") else "hybrid (per mode)" if m.startswith("hyb_") else "merkle (per mode)" if m.startswith("merkle") else m)
+cap_rows = []
+for (pf, fam), g in a1_.groupby(["profile", "family"]):
+    part_ = g[(g.feasible_frac > 0) & (g.feasible_frac < 1)]
+    cap_rows.append({"profile": pf, "family": fam, "(scheme, mode) with 0 < cap < 1": len(part_),
+                     "cap range": (f"{part_.feasible_frac.min():.2f} - {part_.feasible_frac.max():.2f}" if len(part_) else "-"),
+                     "with cap 1": int((g.feasible_frac >= 1).sum()), "with cap 0 (infeasible)": int((g.feasible_frac == 0).sum())})
+cap_df = pd.DataFrame(cap_rows); cap_df["profile"] = pd.Categorical(cap_df.profile, PROTO_P); cap_df = cap_df.sort_values(["profile", "family"])
+w(md(cap_df)); w()
+chain_cv = a1_[(a1_.profile.str.startswith("cv2x")) & (a1_["mode"].str.startswith("chain")) & (a1_.feasible_frac > 0)]
+w(f"Chain on C-V2X: the tag of a message in a certificate slot cannot be sent when the slot capacity is below the mandatory bytes, so the chain share is capped at {chain_cv.feasible_frac.min():.2f}-{chain_cv.feasible_frac.max():.2f} "
+  f"in {int((chain_cv.feasible_frac < 1).sum())} of {len(chain_cv)} feasible (profile, scheme, chain mode) configurations at B_mult = 1 (`feasible_frac`, same CSV); this cap is part of the design, not a loss effect, and the shares in the hypothesis tests are compared with it in mind.")
+w()
+ir = inv[inv.real_checked == 1]
+w(f"Lossless invariant (`raw/lossless_invariant_{MN}.csv`, run before the protocol sweep and aborting it on any mismatch): {len(inv)} (profile, scheme, mode, budget) cells replayed from the sender's symbol layout, "
+  f"{int((inv.replay_ok == 1).sum())} agree with the allocation; {len(ir)} cells ({int(ir.feasible.sum())} feasible) run with the real sender and receiver without loss, {int((ir.real_ok == 1).sum())} authenticate exactly the predicted set "
+  f"(of which {int(((ir.feasible_frac > 0) & (ir.feasible_frac < 1)).sum())} partially feasible, with 0 false accepts: {int((ir.real_false_accepts.fillna(0) == 0).sum())}/{len(ir)}). "
+  f"Mismatches: {int((inv.replay_ok != 1).sum() + (ir.real_ok == 0).sum())}.")
+w()
 w()
 w("## Assumptions and design choices that drive the results (one table)")
 w()
@@ -317,7 +345,7 @@ fe = fe[[c for c in ["best frag", "hybrid", "merkle4", "merkle8", "merkle16", "c
 fe["profile"] = pd.Categorical(fe.profile, PROTO_P); fe["pq"] = pd.Categorical(fe.pq, PQS); fe = fe.sort_values(["profile", "pq"])
 w("### Native-rate feasibility (a result)")
 w()
-w(f"Fraction of objects of the mode that can be carried at the profile's real budget (`feasible_frac` in `raw/proto_alloc_{MN}.csv`, B_mult = 1; maximum over the modes of the family; 0 = the scheme cannot keep up at the native rate, 1 = every object fits). "
+w(f"Share of the measured messages that authenticate with zero loss at the profile's real budget (`feasible_frac` in `raw/proto_alloc_{MN}.csv`, B_mult = 1; maximum over the modes of the family; 0 = the scheme cannot keep up at the native rate, 1 = every message can be authenticated). "
   "Without the pass-3 repetition assumption a signature that is larger than the free bytes per slot cannot be sent per message at all.")
 w(); w(md(fe, ".2f")); w()
 npairs = len(fe)
