@@ -64,8 +64,9 @@ def mask_for(profile, pqname, cond, seed, G):
     return LF.make_mask(G, seed, p, burst or None, stream=sid), f"{sid:x}-{seed}"
 
 
-def run_one(S, ed_pk, mask, join, with_join=True, rx_kw=None, inject=None, jam=None):
-    """Feed one stream through the steady receiver (CPU timed) and the late joiner."""
+def run_one(S, ed_pk, mask, join, with_join=True, rx_kw=None, inject=None, jam=None, inject_after=None):
+    """Feed one stream through the steady receiver (CPU timed) and the late joiner.  inject[g] frames are delivered in slot g BEFORE the honest
+    frame, inject_after[g] frames AFTER it (the order is an attacker choice and is labelled in the experiments)."""
     P = S.plan; A = S.alloc
     rctr = Counters(); rx = MO.make_rx(A, S.pk, 0, rctr, ed_pk, **(rx_kw or {}))
     rj = MO.make_rx(A, S.pk, join, Counters(), ed_pk) if with_join else None
@@ -77,6 +78,9 @@ def run_one(S, ed_pk, mask, join, with_join=True, rx_kw=None, inject=None, jam=N
                 if not jdone and g >= join:
                     rj.deliver(g, *f)
         if mask[g] or (jam and g in jam):
+            if inject_after and g in inject_after:
+                for f in inject_after[g]:
+                    t0 = tns(); rx.deliver(g, *f); cpu += tns() - t0
             continue
         f = S.frames[g]
         t0 = tns(); rx.deliver(g, *f); cpu += tns() - t0
@@ -84,6 +88,9 @@ def run_one(S, ed_pk, mask, join, with_join=True, rx_kw=None, inject=None, jam=N
             rj.deliver(g, *f)
             if rj.auth:
                 jdone = True; first = min(rj.auth.values())
+        if inject_after and g in inject_after:
+            for f in inject_after[g]:
+                t0 = tns(); rx.deliver(g, *f); cpu += tns() - t0
     return rx, rctr, cpu, first
 
 
@@ -166,36 +173,74 @@ def attack_rows(profile, pqname, mode, plan, streams, pk_ed, tg, quick, nseeds):
     rates = H["inject_rates"]["quick" if quick else "full"]; offs = H["clock_offsets_slots"]["quick" if quick else "full"]
     E = plan.E; d = plan.d
 
-    def mk(att, param, S, seed, mask, jam, inject, rx_kw=None, extra=None):
-        rx, rctr, cpu, _ = run_one(S, pk_ed, mask, 0, False, rx_kw, inject, jam)
+    CFG = {"baseline": dict(bind_slot=False, pend_cap=MO.PEND_CAP_BASELINE), "hardened": dict()}     # baseline = the pass-4 receiver (first-come caps), hardened = slot binding + larger chain tag cap
+
+    def mk(att, param, S, seed, mask, jam, inject, rx_kw=None, extra=None, inject_after=None, cfg="hardened"):
+        rx, rctr, cpu, _ = run_one(S, pk_ed, mask, 0, False, dict(CFG[cfg], **(rx_kw or {})), inject, jam, inject_after)
         m = metrics(S, rx, rctr, cpu, mask, jam)
         r = base_row(tg, "attack", profile, pqname, mode, plan, A, bg, seed, seed % nb, 1)
-        r.update(attack=att, param=param, **{k: m[k] for k in ("N_meas", "received", "authenticated", "share", "false_accepts", "stale_accepted",
+        r.update(attack=att, param=param, rx_cfg=cfg, **{k: m[k] for k in ("N_meas", "received", "authenticated", "share", "false_accepts", "stale_accepted",
                                                                "rejected", "stale_rej", "replay_rej", "rx_cpu_us_per_msg", "rx_verify_us_per_msg")})
         r.update(extra or {}); return r
+
+    def bogus(S, g, n, arng):
+        """n distinct bogus frames for slot g: same headers (seq, epoch/index, ages, indices) as the genuine frame, distinct application bytes
+        and random payload fields (symbols, tag, key, path, commitment): they fill every per-seq / per-index candidate list of the receiver."""
+        app, au = S.frames[g]; out = []
+        for i in range(n):
+            a_ = app[:4] + i.to_bytes(2, "big") + app[6:]
+            out.append(AT.pollute((a_, au), S.fields[g], arng))
+        return out
 
     for seed in range(nseeds):
         S = streams[seed % nb]
         mask, mid = mask_for(profile, pqname, bg, seed, plan.G)
         arng = random.Random(LF.stream_id(profile, pqname, "attacker", seed))
-        rows.append(dict(mk("none", 0, S, seed, mask, None, None), mask_id=mid))
+        for cfg in CFG:
+            rows.append(dict(mk("none", 0, S, seed, mask, None, None, cfg=cfg), mask_id=mid))
         for inten in H["inject_intensity"]:
             for r_ in rates:
                 inj = {}
                 for g in range(plan.G):
                     if arng.random() < r_ and S.fields.get(g):
                         inj[g] = [AT.pollute(S.frames[g], S.fields[g], arng) for _ in range(inten)]
-                rows.append(dict(mk("inject" if inten == 1 else f"inject_x{inten}", r_, S, seed, mask, None, inj), mask_id=mid))
-        # clock offset sweep with the delayed-forgery attacker: every 5th measured message is jammed and forged after its key is disclosed
+                for cfg in CFG:
+                    rows.append(dict(mk("inject" if inten == 1 else f"inject_x{inten}", r_, S, seed, mask, None, inj, cfg=cfg), mask_id=mid))
+        # STRONG injector (pre-filling): n bogus frames per attacked slot, up to and beyond every receiver cap (chain tags 4 / 32, apps 4, paths 3, symbols 3 per index).
+        # order = attacker choice: before = same slot, ahead of the honest frame; after = same slot, behind it; early = in the previous slot, claiming this slot.
+        pr = H["prefill_rates"]["quick" if quick else "full"]; pn = H["prefill_n"]["quick" if quick else "full"]
+        for r_ in pr:
+            hit = [g for g in range(plan.G) if arng.random() < r_ and S.fields.get(g)]
+            for n_ in pn:
+                for order in ("before", "after", "early"):
+                    inj = {}; inj_a = {}
+                    for g in hit:
+                        fr = bogus(S, g, n_, arng)
+                        if order == "before":
+                            inj[g] = fr
+                        elif order == "after":
+                            inj_a[g] = fr
+                        elif g >= 1:
+                            inj.setdefault(g - 1, []).extend(fr)
+                    for cfg in CFG:
+                        rows.append(dict(mk(f"prefill_{order}", r_, S, seed, mask, None, inj, extra=dict(prefill_n=n_), inject_after=inj_a, cfg=cfg), mask_id=mid))
+        # clock offset sweep.  Every 5th measured message is jammed and forged with its disclosed key.  Attackers: prompt = the forgery is injected in the
+        # key-disclosure slot m+d itself (earliest possible); delayed = one slot later (pass-4 attacker).  Reception-time model: stamp = end | start of the
+        # delivery slot (modes.Rx).  Slot binding is off here (the time-safety rule is measured on its own).  prompt_guard = the prompt attacker against a
+        # receiver with a guard interval of `guard_slots` added to the sync bound.
         targets = [m_ for m_ in range(plan.W0 + 2, plan.W1, 5)]
-        jam = set(targets); inj = {}
-        for m_ in targets:
-            g_f = m_ + d + 1
-            if g_f < plan.G and S.frames[m_][1]:
-                inj.setdefault(g_f, []).append(AT.forge_after_disclosure(S, m_))
-        for o in offs:
-            rx_kw = dict(clock_ms=int(o * plan.T_ms))
-            rows.append(dict(mk("clock", o, S, seed, mask, jam, inj, rx_kw), mask_id=mid))
+        jam = set(targets)
+        variants = [("prompt", "end", 0), ("prompt", "start", 0), ("delayed", "end", 0), ("delayed", "start", 0), ("prompt", "start", H["guard_slots"]), ("prompt", "end", H["guard_slots"])]
+        for att, stamp, gd in variants:
+            inj = {}
+            for m_ in targets:
+                g_f = m_ + d + (0 if att == "prompt" else 1)
+                if g_f < plan.G and S.frames[m_][1]:
+                    inj.setdefault(g_f, []).append(AT.forge_after_disclosure(S, m_))
+            for o in offs:
+                rx_kw = dict(clock_ms=int(o * plan.T_ms), stamp=stamp, bind_slot=False, guard_ms=int(gd * plan.T_ms))
+                name = f"clock_{att}_{stamp}" + (f"_guard{gd:g}" if gd else "")
+                rows.append(dict(mk(name, o, S, seed, mask, jam, inj, rx_kw), mask_id=mid))
         # replay of an old epoch: the receiver is offline during epoch 1 (messages W0..W0+E-1); the attacker replays the recorded frames
         # 4 epochs later (older than the freshness bound of 64 slots).  Control: the same receiver without freshness checks.
         old = list(range(plan.W0, plan.W0 + E)); shift = 4 * E

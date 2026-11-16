@@ -56,6 +56,8 @@ PQ_IDS = ["ML-DSA-44", "Falcon-512", "Falcon-padded-512", "MAYO-1", "SNOVA_24_5_
 TAG_B, KEY_B, COMMIT_B, NODE_B = 16, 16, 16, 16
 TS_B, SEQ_B, ED_SIG, SCHED_B = 6, 4, 64, 7
 A_MAX = 8                                                  # failed signature verifications per object before the receiver gives up
+PEND_CAP_BASELINE, PEND_CAP = 4, 32                         # chain tag candidates per (epoch, index): pass-4 receiver / hardened receiver
+APP_CAND, PATH_CAND, ROOT_CAND = 4, 3, 6                   # application candidates per message, paths per leaf, candidate roots tried per batch decode
 RW = 64                                                    # replay window (messages)
 FRESH_SLOTS = 64                                           # staleness bound of every signed timestamp (slots)
 DELTA_SLOTS = 0.5                                          # receiver's configured clock-sync bound (slots)
@@ -577,20 +579,36 @@ def build(pqname, mode, plan, build_seed=0, key=None, ed=None, chain_secret=None
 # ----------------------------------------------------------------------------- receivers
 class Rx:
     """Receiver base. A message counts as authenticated only when a verification of the received bytes succeeded and the
-    freshness / replay checks passed.  clock_ms = receiver clock offset (positive = receiver clock ahead)."""
-    def __init__(self, alloc, pk, join=0, ctr=None, ed_pk=None, clock_ms=0, enforce_fresh=True):
+    freshness / replay checks passed.  clock_ms = receiver clock offset (positive = receiver clock ahead).
+    RECEPTION-TIME MODEL (stamp): the harness delivers a frame as a unit in its slot g; the receiver stamps it either at the END of the slot
+    (stamp="end", t = t_start(g) + T: the whole frame has been received; the pass-4 model) or at the START (stamp="start", t = t_start(g) + 1 ms:
+    the earliest a frame that began in slot g can complete, the attacker-favourable model: an attacker that decodes the key from the first bytes
+    of the key frame and answers at once).  The time-safety result depends on this model, so the attacker experiments report both.
+    Time-safety rule: a tag is rejected when t_arrival + delta + guard > t_release + relax (delta = sync bound DELTA_SLOTS, guard = optional extra
+    margin in ms (default 0), relax = ablation only (mutation controls), default 0).
+    bind_slot: with enforce_fresh a frame delivered in slot g must carry the application message of slot g (messages are sent once, in their own
+    slot), otherwise it is dropped before any candidate is stored (kills pre-filling from other slots and replays of old frames; it does NOT
+    stop same-slot pre-filling).  pend_cap: chain tag candidates per (epoch, index) (the pass-4 value was 4)."""
+    def __init__(self, alloc, pk, join=0, ctr=None, ed_pk=None, clock_ms=0, enforce_fresh=True, stamp="end", bind_slot=True, pend_cap=PEND_CAP,
+                 guard_ms=0, relax_ms=0, delta_ms=None):
         self.A = alloc; self.plan = alloc.plan; self.pk = pk; self.join = join
         self.ctr = ctr or Counters(); self.pq = PQ(alloc.pq, self.ctr); self.alg = alg_id(alloc.pq)
         self.ed = Ed(self.ctr) if alloc.hybrid else None; self.ed_pk = ed_pk
         self.clock_ms = clock_ms; self.enf_fresh = enforce_fresh
+        self.stamp_ms = self.plan.T_ms if stamp == "end" else 1; self.bind = bind_slot; self.pend_cap = pend_cap
+        self.guard_ms = guard_ms; self.relax_ms = relax_ms
+        self.delta_eff = self.plan.delta_ms if delta_ms is None else delta_ms; self.bind_rej = 0
         self.auth = {}; self.app = {}; self.apps = {}; self.hi = -1
         self.rejected = 0; self.stale_rej = 0; self.replay_rej = 0; self.t = 0; self.g = 0
 
     def deliver(self, g, app, auth):
         if g < self.join:
             return
-        self.g = g; self.t = self.plan.t_arr(g) + self.clock_ms
+        self.g = g; self.t = self.plan.t_start(g) + self.stamp_ms + self.clock_ms
         if len(app) >= 4:
+            if self.bind and self.enf_fresh and self._seq(app) != g:
+                self.bind_rej += 1
+                return
             self.on_frame(g, app, auth)
 
     def fresh(self, t_msg):
@@ -610,7 +628,7 @@ class Rx:
     def _copy(self, seq, app):
         """remember an application-message candidate for seq; returns True when it is new"""
         c = self.apps.setdefault(seq, [])
-        if app not in c and len(c) < 4:
+        if app not in c and len(c) < APP_CAND:
             c.append(app)
             return True
         return False
@@ -659,10 +677,12 @@ class FragRx(Rx):
             return
         for blob, _ in a.blobs():
             r = self._verify(obj, blob, apps, g)
-            if r is True or r == "stale":
+            if r is True:
                 a.dead = True; break
-            if r is False:
-                a.fails += 1; self.rejected += 1
+            if r is False or r == "stale":                          # a stale blob (e.g. replayed symbols) costs one try, it does not kill the object
+                if r is False:
+                    self.rejected += 1
+                a.fails += 1
                 if a.fails >= A_MAX:
                     a.dead = True; break
 
@@ -721,7 +741,7 @@ class MerkleRx(Rx):
             if ls // n != b or ls < 0:
                 continue
             c = self.paths.setdefault(ls, [])
-            if path not in c and len(c) < 3:
+            if path not in c and len(c) < PATH_CAND:
                 c.append(path); touched.add(b)
         if b in self.root and b not in touched and nsym == 0:
             return
@@ -774,9 +794,12 @@ class MerkleRx(Rx):
             if nn == 0 or nn > self.A.sig_len or bb != b:
                 continue
             if not self.fresh(ts):
-                self.stale_rej += 1; a.dead = True; return
+                self.stale_rej += 1; a.fails += 1
+                if a.fails >= 2 * A_MAX:
+                    a.dead = True; return
+                continue
             sig = blob[6 + TS_B:6 + TS_B + nn]
-            for root, items in list(cands.items())[:6]:
+            for root, items in list(cands.items())[:ROOT_CAND]:
                 if self.bfail.get((b, root, sig)):
                     continue
                 if self.pq.verify(signed_root(self.alg, b, ts, root), sig, self.pk):
@@ -820,7 +843,7 @@ class ChainRx(Rx):
         if e != NOEPOCH and seq not in self.auth and 1 <= i <= pl.E:
             lst = self.pend.setdefault((e, i), [])
             item = (app, tag, nc, self.t)
-            if not any(x[:3] == item[:3] for x in lst) and len(lst) < 4:
+            if not any(x[:3] == item[:3] for x in lst) and len(lst) < self.pend_cap:
                 lst.append(item)
             self._resolve(e, g)
 
@@ -844,10 +867,8 @@ class ChainRx(Rx):
             r = self._verify_anchor(ae, blob, g)
             if r is True:
                 return
-            if r == "stale":
-                self.anc_dead.add(ae); return
-            if r is False:
-                a.fails += 1; self.rejected += 1
+            if r is False or r == "stale":                          # a stale anchor blob costs one try, it does not kill the epoch
+                a.fails += 1; self.rejected += int(r is False)
                 if a.fails >= A_MAX:
                     self.anc_dead.add(ae); return
 
@@ -881,8 +902,10 @@ class ChainRx(Rx):
         if e in self.sched:
             return
         self.sched[e] = dict(sch, commit=commit); self.kst[e] = (0, commit)
-        if e in self.stash:
-            ki, key = self.stash.pop(e); self._key(e, ki, key, g)
+        st = self.stash.pop(e, {})
+        for ki in sorted(st, reverse=True):
+            for key in st[ki]:
+                self._key(e, ki, key, g)
         self._resolve(e, g)
 
     # ---- keys and tags
@@ -890,8 +913,9 @@ class ChainRx(Rx):
         if ki > self.plan.E or ki < 1:
             return
         if ke not in self.sched:
-            if ki > self.stash.get(ke, (0, None))[0]:
-                self.stash[ke] = (ki, key)
+            lst = self.stash.setdefault(ke, {}).setdefault(ki, [])      # up to 2 candidates per key index (a bogus key cannot displace the honest ones)
+            if key not in lst and len(lst) < 2:
+                lst.append(key)
             return
         i0, k0 = self.kst[ke]
         if ki <= i0:
@@ -921,7 +945,7 @@ class ChainRx(Rx):
                 seq = self._seq(app)
                 if seq in self.auth:
                     lst.remove(item); continue
-                if self.enforce and t_arr + self.plan.delta_ms > t_rel:      # time safety: must arrive before the key can have been released
+                if self.enforce and t_arr + self.delta_eff + self.guard_ms > t_rel + self.relax_ms:      # time safety: must arrive before the key can have been released
                     self.rejected += 1; lst.remove(item); continue
                 if hmac.compare_digest(mac_tag(Ki, e, i, app, nc), tag):
                     if self.enf_fresh and self.t - t_start > self.plan.fresh_ms:

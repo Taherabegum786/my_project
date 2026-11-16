@@ -18,6 +18,7 @@ RES = os.path.join(HERE, "..", "results"); RAW = os.path.join(RES, "raw")
 sys.path.insert(0, os.path.join(HERE, "..", "..", "..", "lib")); sys.path.insert(0, HERE)
 import pqsig.accounting as acc                      # noqa: E402
 import pqsig.proto.modes as MO                      # noqa: E402
+from pqsig.proto.erasure import Assembler           # noqa: E402
 from pqsig.common import code_state                 # noqa: E402
 from pqsig.schemes import lowest_level              # noqa: E402
 
@@ -135,7 +136,7 @@ w("- **Q3 (size vs time).** Is signature size or timing tail binding (unchanged,
 w()
 hy = pd.DataFrame([{"id": k, "metric": v.get("metric"), "statement": v["text"]} for k, v in HY["hypotheses"].items()])
 w(md(hy)); w()
-w("Process note: the criteria and thresholds below were written before the first smoke run and have not been changed since. After the first smoke run the following were ADDED (no criterion changed): iid 0.2 in the QUICK operating conditions (needed to pair burst and i.i.d. loss), a second injection intensity (4 bogus frames per attacked slot, descriptive only), and the late single-frame replay test R5b / control C5b, which was added because the first smoke run showed Merkle receivers accepting stale leaves after a batch root had been verified (a freshness bug in the receiver, fixed in `modes.py`; the first run's H6 verdict was REFUTED because of it).")
+w("Process note: the criteria and thresholds below were written before the first smoke run and have not been changed since. After the first smoke run the following were ADDED (no criterion changed): iid 0.2 in the QUICK operating conditions (needed to pair burst and i.i.d. loss), a second injection intensity (4 bogus frames per attacked slot, descriptive only), and the late single-frame replay test R5b / control C5b, which was added because the first smoke run showed Merkle receivers accepting stale leaves after a batch root had been verified (a freshness bug in the receiver, fixed in `modes.py`; the first run's H6 verdict was REFUTED because of it). After audit 1 the attacker experiments were EXTENDED, again without changing any criterion: a strong pre-filling injector (H7 is now decided under it, the weak attacker is reported alongside) against the pass-4 (baseline) and the hardened receiver, a prompt forger next to the delayed one in the clock-offset experiment with two reception-time models and a guard-interval variant, and the mutation controls C4m1 / C4m2 of the negative tests. The hardening of the receiver (slot binding, chain tag cap, stale blobs cost one try, key stash per index) was made in response to the audit and is reported as a separate receiver configuration.")
 w()
 w(f"Decision rule (from `hypotheses.yaml`): groups are (profile, scheme, loss class), the chain variant is `{CH}`, the competitor is the best of {len(COMP)} fragmentation modes ({', '.join(COMP)}) "
   f"selected per group on the same data (conservative for the chain). Group outcome: {VR['group_outcome']}. Hypothesis verdict: supported if >= {VR['supported_fraction']:.0%} of decidable groups are 'chain better' and <= {VR['worse_tolerance']:.0%} are 'chain worse'; "
@@ -200,7 +201,9 @@ ass = [("tag length (chain MAC)", f"{MO.TAG_B} B (HMAC-SHA-256 truncated), key {
        ("Merkle", "path hashes 16 B, each path sent in 2 slots, batch signature MDS-coded over the n slots after the batch", "design choice"),
        ("freshness (bytes charged)", f"frag/hyb: seq {MO.SEQ_B} B + timestamp {MO.TS_B} B inside the signed blob; Merkle: batch id {MO.SEQ_B} B + timestamp {MO.TS_B} B per batch; chain anchor: epoch id {MO.SEQ_B} B + epoch-start timestamp {MO.TS_B} B + schedule {MO.SCHED_B} B", f"added bytes are inside the blobs and therefore inside the accounting: frag/hyb +{MO.SEQ_B + MO.TS_B} B per message; Merkle +{MO.SEQ_B + MO.TS_B} B per batch = " + ", ".join(f"{(MO.SEQ_B + MO.TS_B) / n_:.2f} B/msg (n={n_})" for n_ in (4, 8, 16)) + f"; chain anchor +{MO.SEQ_B + MO.TS_B - 4 + MO.SCHED_B} B per epoch vs pass 3 = {(MO.SEQ_B + MO.TS_B - 4 + MO.SCHED_B) / COM['protocol']['epoch_windows_E']:.2f} B/msg"),
        ("replay / staleness", f"timestamps older than {MO.FRESH_SLOTS} slots or from the future (> {MO.DELTA_SLOTS} slot) are rejected; replay window {MO.RW} messages", "receiver policy"),
-       ("pollution handling", f"up to {3} candidate symbols per index, decode-and-verify over subsets; at most {MO.A_MAX} failed signature verifications per object (Merkle {2 * MO.A_MAX}); {16} subset decodes", "no extra bytes; bound stated in the attacker section"),
+       ("pollution handling", f"up to {Assembler.CAND} candidate symbols per index, decode-and-verify over subsets; at most {MO.A_MAX} failed signature verifications per object (Merkle {2 * MO.A_MAX}); {Assembler.DEC_MAX} subset decodes; other per-message candidate caps: {MO.APP_CAND} applications, {MO.PATH_CAND} paths per leaf, {MO.ROOT_CAND} roots per decode, chain tags {MO.PEND_CAP_BASELINE} (pass-4) / {MO.PEND_CAP} (hardened)", "no extra bytes; first-come caps (pass-4) are what the strong attacker exploits; see the attacker section"),
+       ("receiver clock / reception-time model", "the harness delivers each frame as a unit in its slot; the receiver stamps it at the END of the slot (default; whole frame received) or, in the attacker experiments, also at the START + 1 ms (earliest a frame of the slot can complete); clock offset = a constant shift of that stamp; sync bound delta = " + f"{MO.DELTA_SLOTS} slot, optional guard interval (default 0)", "the time-safety result depends on this model (audit B1); the attacker experiments report both stamps and a prompt and a delayed forger"),
+       ("slot binding", "hardened receiver: a frame delivered in slot g must carry the application message of slot g, otherwise it is dropped before any candidate is stored (uses the link-layer slot counter, not the clock); the clock experiments switch it off", "defence against cross-slot pre-filling and replay; does not stop same-slot pre-filling"),
        ("chain keys", "os.urandom(32) secret per build; never derived from a seed", "regression-tested (R8)"),
        ("loss", "i.i.d. per slot; Gilbert-Elliott (0 in Good, 1 in Bad, mean burst 3 / 5 / 10 slots, same stationary loss); independent mask stream per (profile, scheme, condition), paired across modes inside the cell", "assumed channel, collision-free"),
        ("burst lengths run", ", ".join(str(int(b)) for b in sorted(res[res.loss_model == "ge"].burst_len.unique())), "generated from the data"),
@@ -718,121 +721,189 @@ w("## Active attacker (same harness)")
 w()
 AH = HY["attack"]
 w(f"Source: `raw/attack_{MN}.csv`. Attacker model (`lib/pqsig/proto/attacks.py`): hears all frames, knows formats, schedule and the public key, has neither the PQ secret key nor the chain secret; learns a chain key only through disclosure. "
-  f"Background channel: i.i.d. loss {AH['background_loss']}. (i) **Injection**: in a fraction r of the slots the attacker adds one frame that copies a genuine frame (same headers, same indices, the genuine application message) with random payload bytes in every symbol / tag / key / path / commitment field (at most one bogus frame per slot; a stronger attacker that sends several per slot is not modelled). "
-  "(ii) **Clock offset**: the receiver's clock is shifted by the given number of slots (negative = behind) while the attacker jams every 5th measured message and re-sends a forged version of it after its key was disclosed (the classic TESLA attack; for the other modes the forgery re-uses the genuine authenticator). "
+  f"Background channel: i.i.d. loss {AH['background_loss']}. (i) **Injection**: in a fraction r of the slots the attacker adds one frame that copies a genuine frame (same headers, same indices, the genuine application message) with random payload bytes in every symbol / tag / key / path / commitment field (weak attacker; the strong pre-filling attacker is described below). "
+  "(ii) **Clock offset**: the receiver's clock is shifted by the given number of slots (negative = behind) while the attacker jams every 5th measured message and re-sends a forged version of it with its disclosed key, promptly (in the key-disclosure slot) or one slot later (the classic TESLA attack; for the other modes the forgery re-uses the genuine authenticator). "
   "(iii) **Replay**: the receiver is offline for epoch 1 while the attacker records the frames; the recorded frames are replayed 4 epochs later (older than the freshness bound). The control receiver has no freshness / time-safety checks. "
   f"Pairs run (feasible fragmentation at the native rate): {', '.join(f'{p}/{q}' for p, q in AH['pairs'])}. Metrics: forged messages accepted (must be 0), share of honest (not jammed) received messages still authenticated, extra receiver CPU.")
 w()
 att["family"] = att["mode"].map(lambda m: CH if m == CH else m if m.startswith("chain") else "frag/hyb" if m.startswith(("frag", "hyb")) else "merkle")
-inj_all = att[att.attack.isin(["none", "inject", "inject_x4"])]
-inj = att[att.attack.isin(["none", "inject"])]
-inj4 = att[att.attack.isin(["none", "inject_x4"])]
-ij = inj.groupby(["profile", "pq", "mode", "param"]).agg(share=("share", "mean"), cpu=("rx_cpu_us_per_msg", "mean"), fa=("false_accepts", "sum")).reset_index()
+att["rx_cfg"] = att["rx_cfg"].fillna("hardened")
+attH = att[att.rx_cfg == "hardened"]; attB = att[att.rx_cfg == "baseline"]
+ra = HY["hypotheses"]["H7"]["at_rate"]; thr7 = HY["hypotheses"]["H7"]["retention"]; thr8 = HY["hypotheses"]["H8"]["factor"]
+fam_of = lambda m: "chain" if m.startswith("chain") else "merkle" if m.startswith("merkle") else "hybrid" if m.startswith("hyb") else "frag"      # noqa: E731
+
+
+def retention(df, attacks, cfg):
+    """per (profile, scheme, mode, attack, prefill_n): share at rate ra / share without attack (same receiver configuration), CPU ratio; cells where the mode works without attack"""
+    d = df[df.rx_cfg == cfg]
+    base = d[d.attack == "none"].groupby(["profile", "pq", "mode"]).agg(b=("share", "mean"), bc=("rx_cpu_us_per_msg", "mean"))
+    x = d[d.attack.isin(attacks) & np.isclose(d.param, ra)].copy()
+    x["prefill_n"] = x["prefill_n"].fillna(0) if "prefill_n" in x else 0
+    x = x.groupby(["profile", "pq", "mode", "attack", "prefill_n"]).agg(a=("share", "mean"), ac=("rx_cpu_us_per_msg", "mean"), fa=("false_accepts", "sum")).reset_index().join(base, on=["profile", "pq", "mode"])
+    x = x[x.b > 0].copy(); x["retention"] = x.a / x.b; x["cpu_ratio"] = x.ac / x.bc; x["family"] = x["mode"].map(fam_of); x["rx_cfg"] = cfg
+    return x
+
+
+def verdict7(r):
+    """per-cell worst case over the attacker choices in r, then the pre-registered decision rule"""
+    w_ = r.groupby(["profile", "pq", "mode", "family"]).retention.min().reset_index()
+    f7 = (w_.retention >= thr7).mean(); f7w = (w_.retention < thr7).mean()
+    return w_, ("supported" if f7 >= HY["hypotheses"]["H7"]["supported_fraction"] else "refuted" if f7w >= VR["refuted_fraction"] else "inconclusive")
+
+
 w("### (i) Symbol / fragment injection")
 w()
-rates = sorted(ij.param.unique())
+w(f"Two receiver configurations are compared: **baseline** = the pass-4 receiver (first-come candidate caps: {MO.PEND_CAP_BASELINE} chain tags per (epoch, index), {MO.APP_CAND} application candidates per message, {MO.PATH_CAND} paths per leaf, {Assembler.CAND} symbols per index) and **hardened** = the shipped receiver "
+  f"(frames must carry the application message of the slot they arrive in, `bind_slot`; chain tag cap {MO.PEND_CAP} per (epoch, index); stale blobs cost one try instead of killing the object; up to 2 stashed key candidates per index). "
+  "Weak attacker = `inject` / `inject_x4` (copies of the genuine frame with random payload fields, same application message). **Strong attacker = `prefill`**: n distinct bogus frames per attacked slot (distinct application bytes, random payload fields, genuine headers), "
+  "n up to and beyond every cap; the ORDER is an attacker choice and is reported separately: *before* = same slot, ahead of the honest frame; *after* = same slot, behind it; *early* = in the previous slot, claiming the next slot.")
+w()
+ij = attH[attH.attack.isin(["none", "inject"])].groupby(["profile", "pq", "mode", "param"]).agg(share=("share", "mean"), cpu=("rx_cpu_us_per_msg", "mean"), fa=("false_accepts", "sum")).reset_index()
 sh = ij.pivot_table(index=["profile", "pq", "mode"], columns="param", values="share").reset_index()
 sh.columns = [f"share @ {c:g}" if not isinstance(c, str) else c for c in sh.columns]
-w("Share of received honest messages authenticated within the run (mean over seeds) by injection rate (0 = no attack):"); w()
+w("Weak attacker, hardened receiver: share of received honest messages authenticated (mean over seeds) by injection rate (0 = no attack):"); w()
 w(md(sh.round(3))); w()
+inj_all = att[att.attack.str.startswith(("inject", "prefill"))]
 tot_fa_inj = int(inj_all.false_accepts.sum()); tot_st_inj = int(inj_all.stale_accepted.sum())
-w(f"**Forged messages accepted under injection: {tot_fa_inj}; stale acceptances: {tot_st_inj}** (over {len(inj_all)} runs with 1 or 4 bogus frames per attacked slot, all modes).")
+w(f"**Forged messages accepted under injection: {tot_fa_inj}; stale acceptances: {tot_st_inj}** (over {len(inj_all)} runs, weak and strong attackers, both receiver configurations, all modes).")
 w()
-ra = HY["hypotheses"]["H7"]["at_rate"]
-rows = []
-for (p, q, m), g in ij.groupby(["profile", "pq", "mode"]):
-    b = g[g.param == 0]; a = g[np.isclose(g.param, ra)]
-    if b.empty or a.empty or b.share.iloc[0] <= 0:
-        continue
-    rows.append({"profile": p, "pq": q, "mode": m, "family": "chain" if m.startswith("chain") else "merkle" if m.startswith("merkle") else "hybrid" if m.startswith("hyb") else "frag",
-                 "retention": a.share.iloc[0] / b.share.iloc[0], "cpu_ratio": a.cpu.iloc[0] / b.cpu.iloc[0] if b.cpu.iloc[0] > 0 else np.nan})
-rt_ = pd.DataFrame(rows)
-H7V = H8V = "no data"
-if len(rt_):
-    thr7 = HY["hypotheses"]["H7"]["retention"]; thr8 = HY["hypotheses"]["H8"]["factor"]
-    f7 = (rt_.retention >= thr7).mean(); f7w = (rt_.retention < thr7).mean()
-    H7V = "supported" if f7 >= HY["hypotheses"]["H7"]["supported_fraction"] else "refuted" if f7w >= VR["refuted_fraction"] else "inconclusive"
-    f8 = (rt_.cpu_ratio <= thr8).mean(); f8w = (rt_.cpu_ratio > thr8).mean()
+rw_h = retention(att, ["inject"], "hardened"); rw_b = retention(att, ["inject"], "baseline"); r4_h = retention(att, ["inject_x4"], "hardened")
+pf_names = sorted(a for a in att.attack.unique() if a.startswith("prefill_"))
+rs_h = retention(att, pf_names, "hardened"); rs_b = retention(att, pf_names, "baseline")
+H7W, H7V, H8V = "no data", "no data", "no data"
+if len(rw_h):
+    ww, H7W = verdict7(rw_h)
+    f8 = (rw_h.cpu_ratio <= thr8).mean(); f8w = (rw_h.cpu_ratio > thr8).mean()
     H8V = "supported" if f8 >= VR["supported_fraction"] else "refuted" if f8w >= VR["refuted_fraction"] else "inconclusive"
-    fam = rt_.groupby("family").agg(cells=("retention", "size"), retention_mean=("retention", "mean"), retention_min=("retention", "min"), cells_ge_threshold=("retention", lambda x: int((x >= thr7).sum())),
-                                    cpu_ratio_mean=("cpu_ratio", "mean"), cpu_ratio_max=("cpu_ratio", "max")).reset_index()
-    w(f"Retention = share at {ra:.0%} injection / share without attack; extra CPU = receiver CPU per message ratio. By mode family ({len(rt_)} (pair, mode) cells where the mode works without attack):"); w()
-    w(md(fam.round(3))); w()
-    worst = rt_.loc[rt_.retention.idxmin()]
-    w(f"Worst case: {worst['mode']} on {worst.profile}/{worst.pq}: retention {worst.retention:.3f}. **Verdict H7 (retention >= {thr7:.0%} at {ra:.0%} injection in >= {HY['hypotheses']['H7']['supported_fraction']:.0%} of cells): {H7V.upper()}** ({int((rt_.retention >= thr7).sum())}/{len(rt_)} cells)." + (" PROVISIONAL." if smoke else ""))
-    w(f"**Verdict H8 (receiver CPU <= {thr8:g}x at {ra:.0%} injection): {H8V.upper()}** ({int((rt_.cpu_ratio <= thr8).sum())}/{len(rt_)} cells; worst ratio {rt_.cpu_ratio.max():.2f})." + (" PROVISIONAL." if smoke else ""))
+if len(rs_h):
+    ws, H7V = verdict7(rs_h)
+    wsb, H7VB = verdict7(rs_b) if len(rs_b) else (None, "no data")
+    wwb, H7WB = verdict7(rw_b) if len(rw_b) else (None, "no data")
+    w(f"Retention = share at {ra:.0%} of slots attacked / share without attack (same receiver). **Weak attacker** (1 bogus copy per attacked slot), by family and receiver configuration:"); w()
+    wk = pd.concat([rw_h, rw_b]).groupby(["rx_cfg", "family"]).agg(cells=("retention", "size"), retention_mean=("retention", "mean"), retention_min=("retention", "min"),
+                                                                    cells_ge_threshold=("retention", lambda x: int((x >= thr7).sum())), cpu_ratio_max=("cpu_ratio", "max")).reset_index()
+    w(md(wk.round(3))); w()
+    w(f"**Strong attacker** (`prefill`), mean retention by family, receiver configuration, order and n bogus frames per attacked slot:"); w()
+    st = pd.concat([rs_h, rs_b]); st["order"] = st.attack.str.replace("prefill_", "", regex=False)
+    w(md(st.assign(col=st["order"] + " n=" + st.prefill_n.astype(int).astype(str)).pivot_table(index=["family", "rx_cfg"], columns="col", values="retention", aggfunc="mean").round(3).reset_index().rename_axis(None, axis=1))); w()
+    stm = st.groupby(["rx_cfg", "family", "order"]).retention.min().unstack("order").round(3).reset_index().rename_axis(None, axis=1)
+    w("Worst case (minimum retention over the cells, n) by family and order:"); w(); w(md(stm)); w()
+    worst = rs_h.loc[rs_h.retention.idxmin()]
+    cnt_h = int((ws.retention >= thr7).sum()); cnt_b = int((wsb.retention >= thr7).sum()) if wsb is not None else 0
+    w(f"The strong attacker's worst case over order and n per (profile, scheme, mode) cell decides H7: hardened receiver {cnt_h}/{len(ws)} cells keep >= {thr7:.0%}; baseline receiver {cnt_b}/{len(wsb) if wsb is not None else 0}. "
+      f"Worst single case (hardened): {worst['mode']} on {worst.profile}/{worst.pq}, {worst.attack}, n = {int(worst.prefill_n)}: retention {worst.retention:.3f}. "
+      f"**Verdict H7 under the strong attacker (hardened receiver; retention >= {thr7:.0%} at {ra:.0%} of slots attacked in >= {HY['hypotheses']['H7']['supported_fraction']:.0%} of cells): {H7V.upper()}**" + (" PROVISIONAL." if smoke else "") +
+      f" Reported alongside: weak attacker, hardened receiver: {H7W.upper()}; weak attacker, baseline receiver: {H7WB.upper()}; strong attacker, baseline receiver: {H7VB.upper()}.")
     w()
-ij4 = inj4.groupby(["profile", "pq", "mode", "param"]).agg(share=("share", "mean")).reset_index()
-rows4 = []
-for (p_, q_, m_), g in ij4.groupby(["profile", "pq", "mode"]):
-    b = g[g.param == 0]; a = g[np.isclose(g.param, ra)]
-    if b.empty or a.empty or b.share.iloc[0] <= 0:
-        continue
-    rows4.append({"mode": m_, "family": "chain" if m_.startswith("chain") else "merkle" if m_.startswith("merkle") else "hybrid" if m_.startswith("hyb") else "frag", "profile": p_, "pq": q_, "retention": a.share.iloc[0] / b.share.iloc[0]})
-if rows4:
-    r4 = pd.DataFrame(rows4)
-    f4 = r4.groupby("family").agg(cells=("retention", "size"), retention_mean=("retention", "mean"), retention_min=("retention", "min"), cells_ge_threshold=("retention", lambda x: int((x >= HY["hypotheses"]["H7"]["retention"]).sum()))).reset_index()
-    w(f"Descriptive (no pre-registered criterion): the same retention at {ra:.0%} of slots when the attacker sends 4 bogus frames per attacked slot (more than the 3 candidate symbols kept per index):"); w(); w(md(f4.round(3))); w()
-    w4 = r4.loc[r4.retention.idxmin()]
-    w(f"Worst case with 4 bogus frames: {w4['mode']} on {w4.profile}/{w4.pq}: retention {w4.retention:.3f}.")
+    for fam_ in sorted(ws.family.unique()):
+        g = ws[ws.family == fam_]
+        w(f"- {fam_}: {int((g.retention >= thr7).sum())}/{len(g)} cells >= {thr7:.0%}, minimum {g.retention.min():.3f}.")
     w()
-VERD.append(dict(hypothesis="H7", claim=HY["hypotheses"]["H7"]["text"], iid="n/a", burst="n/a", verdict=H7V, n_iid=len(rt_), n_burst=0))
-VERD.append(dict(hypothesis="H8", claim=HY["hypotheses"]["H8"]["text"], iid="n/a", burst="n/a", verdict=H8V, n_iid=len(rt_), n_burst=0))
+    w(f"**Verdict H8 (weak attacker, receiver CPU <= {thr8:g}x at {ra:.0%} injection): {H8V.upper()}** ({int((rw_h.cpu_ratio <= thr8).sum())}/{len(rw_h)} cells; worst ratio {rw_h.cpu_ratio.max():.2f}); strong attacker worst CPU ratio {rs_h.cpu_ratio.max():.2f} (descriptive)." + (" PROVISIONAL." if smoke else ""))
+    w()
+VERD.append(dict(hypothesis="H7", claim=HY["hypotheses"]["H7"]["text"] + " (verdict under the strong pre-filling attacker; weak attacker reported alongside)", iid="n/a", burst="n/a", verdict=H7V, n_iid=len(rs_h), n_burst=0))
+VERD.append(dict(hypothesis="H8", claim=HY["hypotheses"]["H8"]["text"], iid="n/a", burst="n/a", verdict=H8V, n_iid=len(rw_h), n_burst=0))
+inj = attH[attH.attack.isin(["none", "inject"])]; inj4 = attH[attH.attack.isin(["none", "inject_x4"])]
 fig, ax = plt.subplots(figsize=(7, 4))
 for fam_, c in (("frag/hyb", "C0"), ("merkle", "C2"), (CH, "C3"), ("chain_lead_cont", "C1")):
     d = inj[inj.family == fam_].groupby("param").share.mean()
     if len(d):
         ax.plot(d.index * 100, d.values, marker="o", ms=3, color=c, label=fam_)
-for fam_, c in (("frag/hyb", "C0"), ("merkle", "C2"), (CH, "C3"), ("chain_lead_cont", "C1")):
     d = inj4[inj4.family == fam_].groupby("param").share.mean()
     if len(d):
         ax.plot(d.index * 100, d.values, marker="x", ms=3, ls="--", color=c, alpha=0.7)
 ax.set_xlabel("injection rate (% of slots); solid: 1 bogus frame per attacked slot, dashed: 4"); ax.set_ylabel("share of honest messages authenticated"); ax.legend(fontsize=7); ax.set_ylim(0, 1.02)
 fig.tight_layout(); fig.savefig(os.path.join(RES, "fig_attack_inject.pdf")); plt.close(fig)
-w(f"Figure `fig_attack_inject.pdf` (source `raw/attack_{MN}.csv`; mean over pairs, seeds and modes of the family).")
+w(f"Figure `fig_attack_inject.pdf` (source `raw/attack_{MN}.csv`; weak attacker, hardened receiver, mean over pairs, seeds and modes of the family).")
+if len(rs_h):
+    fig, axs = plt.subplots(1, 2, figsize=(10, 3.8), sharey=True)
+    for ax, (cfg, dd) in zip(axs, (("baseline", rs_b), ("hardened", rs_h))):
+        for (fam_, order), g in dd.assign(order=dd.attack.str.replace("prefill_", "", regex=False)).groupby(["family", "order"]):
+            gg = g.groupby("prefill_n").retention.mean()
+            ax.plot(gg.index, gg.values, marker="o", ms=3, ls={"before": "-", "after": ":", "early": "--"}[order], label=f"{fam_} {order}")
+        ax.set_xscale("log", base=2); ax.set_title(f"{cfg} receiver", fontsize=8); ax.set_xlabel("bogus frames per attacked slot (n)"); ax.axhline(thr7, color="k", lw=0.5)
+    axs[0].set_ylabel(f"retention at {ra:.0%} of slots attacked"); axs[1].legend(fontsize=5, ncol=2); fig.tight_layout(); fig.savefig(os.path.join(RES, "fig_attack_prefill.pdf")); plt.close(fig)
+    w(f"Figure `fig_attack_prefill.pdf` (source `raw/attack_{MN}.csv`; strong attacker, mean retention over pairs and modes of the family).")
+w()
+w("What remains after hardening: same-slot pre-filling. Slot binding removes candidates that arrive in a slot other than the message's own (early order, replays), but an attacker that is in the same slot as the honest frame and sends more bogus candidates than a receiver keeps (chain tags: the cap above; application candidates: 4; paths: 3; roots tried: 6; symbols: 3 per index) still blocks the message in every mode; "
+  "the caps cannot be raised without bounding the receiver CPU (each application candidate costs one signature verification), so the table above is the measured limit, not a proof. Within the channel model the attacker can transmit as many frames as it wants; a real slot limits that number by airtime.")
 w()
 
-w("### (ii) Receiver clock offset with the delayed-forgery attacker")
+w("### (ii) Receiver clock offset: prompt and delayed forgery, two reception-time models")
 w()
-ck = att[att.attack == "clock"]
-cf = ck.groupby(["family", "param"]).agg(forged_accepted=("false_accepts", "sum"), honest_share=("share", "mean"), runs=("share", "size")).reset_index()
-w(f"Forged messages accepted and honest share by clock offset (offset in slots, negative = receiver behind; configured sync bound {AH['sync_bound_slots']} slot). Targets forged per run: every 5th measured message.")
-w(); w(md(cf.pivot_table(index="family", columns="param", values="forged_accepted", aggfunc="sum").reset_index().rename_axis(None, axis=1))); w()
-w(md(cf.pivot_table(index="family", columns="param", values="honest_share").reset_index().rename_axis(None, axis=1).round(3))); w()
-within_b = ck[ck.param.abs() <= AH["sync_bound_slots"]]
-beyond = ck[ck.param.abs() > AH["sync_bound_slots"]]
-fa_in = int(within_b.false_accepts.sum()); fa_out = beyond.groupby("family").false_accepts.sum()
-thr_c = 2 + MO.DELTA_SLOTS
-w(f"Forged accepted for |offset| <= {AH['sync_bound_slots']} slot: **{fa_in}** (over {len(within_b)} runs). Beyond the bound: " + ", ".join(f"{k}: {int(v)}" for k, v in fa_out.items()) +
-  f". Analysis from the schedule: the attacker hears the key at the end of slot m + d and sends the forgery in the next slot, i.e. at (m + d + 2) T; the receiver accepts a tag only if its (shifted) arrival time plus its sync bound ({MO.DELTA_SLOTS} slot) is before the release time (m + d) T, "
-  f"so forgeries become possible when the receiver clock is behind by at least {thr_c:g} slots; offsets in this run at which forged messages were accepted: {sorted(float(x) for x in beyond[beyond.false_accepts > 0].param.unique())}. "
+w(f"The attacker jams every 5th measured message and forges it with its disclosed key. **Prompt attacker**: the forgery is injected in the key-disclosure slot m + d itself (earliest the harness allows; delivered ahead of the honest key frame). **Delayed attacker** (the pass-4 attacker): one slot later. "
+  "**Reception-time model** (`modes.Rx`, stated in the assumptions table): `end` = the receiver stamps a frame at the end of its slot (whole frame received), `start` = at the start of the slot + 1 ms (earliest a frame of that slot can complete: an attacker that decodes the key from the first bytes of the key frame and answers at once). "
+  "Slot binding is off here so that the time-safety rule is measured on its own (with it on, the forgery is dropped at every offset, negative test R4d). `guard` rows: the receiver adds a guard interval of "
+  f"{AH['guard_slots']:g} slot to the sync bound ({MO.DELTA_SLOTS} slot) in the time-safety rule.")
+w()
+ck = attH[attH.attack.str.startswith("clock_")].copy()
+ck["variant"] = ck.attack.str.replace("clock_", "", regex=False)
+dl = MO.DELTA_SLOTS
+def analytic(variant):
+    parts = variant.split("_"); att_, stamp = parts[0], parts[1]; gd = float(parts[2].replace("guard", "")) if len(parts) > 2 else 0.0
+    x = dl + gd + (0 if att_ == "prompt" else 1) + (1 if stamp == "end" else 1.0 / float(np.mean(list(SLOT_MS.values()))))      # start stamp = slot start + 1 ms: the rule rejects up to and including the bound, accepts just beyond it
+    return x, gd
+rows = []
+for (v, m), g in ck.groupby(["variant", "mode"]):
+    if not m.startswith("chain"):
+        continue
+    acc = g[g.false_accepts > 0].param
+    neg_ = acc[acc < 0]
+    thr_meas = float(neg_.abs().min()) if len(neg_) else np.nan
+    x, gd = analytic(v)
+    rows.append({"attacker / reception stamp / guard": v, "chain variant": m, "forged accepted (all offsets)": int(g.false_accepts.sum()),
+                 "min |offset| accepted (slots)": thr_meas, "margin over the bound (slots)": (thr_meas - AH["sync_bound_slots"]) if np.isfinite(thr_meas) else np.nan,
+                 "analytic threshold (slots; accepted at or beyond this offset)": x})
+mt = pd.DataFrame(rows)
+mt_c = mt.groupby("attacker / reception stamp / guard").agg(**{"chain variants": ("chain variant", "size"), "min |offset| accepted (slots)": ("min |offset| accepted (slots)", "min"),
+                                                              "margin over the bound (slots)": ("margin over the bound (slots)", "min"), "analytic threshold (slots; accepted at or beyond this offset)": ("analytic threshold (slots; accepted at or beyond this offset)", "first")}).reset_index()
+w(f"Smallest |clock offset| (receiver behind) at which a forgery was accepted, per attacker variant, over the offsets tested ({', '.join(f'{x:g}' for x in sorted(ck.param.unique()))}); minimum over the chain variants, and margin relative to the configured {AH['sync_bound_slots']} slot bound (NaN = never accepted on the grid):"); w()
+w(md(mt_c.round(3))); w()
+w("Per chain variant:"); w(); w(md(mt.round(3))); w()
+within_b = ck[(ck.param.abs() <= AH["sync_bound_slots"]) & (~ck.variant.str.contains("guard"))]
+fa_in = int(within_b.false_accepts.sum())
+pe = mt_c[mt_c["attacker / reception stamp / guard"] == "prompt_start"]
+pe_thr = float(pe["min |offset| accepted (slots)"].iloc[0]) if len(pe) else float("nan")
+w(f"Forged accepted for |offset| <= {AH['sync_bound_slots']} slot, all four unguarded attacker/stamp variants: **{fa_in}** (over {len(within_b)} runs). "
+  f"Reading: the acceptance test is `arrival + delta + guard <= release`. The delayed attacker with end-of-slot stamping (the pass-4 measurement) is accepted only {analytic('delayed_end')[0]:g} slots behind (the pass-4 sentence), but that figure is an artefact of the delay and of the stamp; "
+  f"the prompt attacker with start-of-slot stamping is accepted from {pe_thr:g} slots behind, i.e. the real margin beyond the configured bound is {pe_thr - AH['sync_bound_slots']:g} slot on the tested grid (analytically just over delta = {dl:g}: the frame cannot arrive before the key is released, so the rule is sound exactly up to the sync bound and has no slack beyond it). "
   "Positive offsets (receiver ahead) only lose honest messages.")
 w()
-fig, axs = plt.subplots(1, 2, figsize=(10, 3.6))
-for fam_ in sorted(ck.family.unique()):
-    d = cf[cf.family == fam_]
-    axs[0].plot(d.param, d.forged_accepted, marker="o", ms=3, label=fam_); axs[1].plot(d.param, d.honest_share, marker="o", ms=3, label=fam_)
-axs[0].set_xlabel("receiver clock offset (slots)"); axs[0].set_ylabel("forged messages accepted (sum over runs)"); axs[1].set_xlabel("receiver clock offset (slots)"); axs[1].set_ylabel("honest share")
-axs[0].legend(fontsize=6); fig.tight_layout(); fig.savefig(os.path.join(RES, "fig_attack_clock.pdf")); plt.close(fig)
-w(f"Figure `fig_attack_clock.pdf` (source `raw/attack_{MN}.csv`).")
+gv = mt_c[mt_c["attacker / reception stamp / guard"].str.contains("guard")]
+gd_ = AH["guard_slots"]; dmin0 = 1 + 2 * dl; dmin_g = 1 + 2 * dl + gd_
+w(f"Guard interval ({gd_:g} slot, parameter `guard_ms` of the receiver, default 0): it moves the prompt attacker's threshold to {', '.join(f'{r['attacker / reception stamp / guard']}: {r['min |offset| accepted (slots)']:g}' for _, r in gv.iterrows())} slots. "
+  f"Delay cost: honest tags must satisfy arrival + delta + guard <= release; with end-of-slot arrival and tolerance of +/-delta in the receiver clock this needs d >= 1 + 2 delta + guard = {dmin_g:g} slots against {dmin0:g} without guard, i.e. d = {math.ceil(dmin_g)} instead of {math.ceil(dmin0)}: "
+  f"**+{math.ceil(dmin_g) - math.ceil(dmin0)} slot of key-disclosure delay = +{(math.ceil(dmin_g) - math.ceil(dmin0)) * 1:g} slot period of authentication delay for every chain message** (+{int(round(np.mean([SLOT_MS[p] for p in PROTO_P])))} ms on average over the profiles); with d kept at {COM['protocol']['key_delay_slots_d']} the tolerated positive offset shrinks by the guard (the honest share of the guard rows with end-of-slot stamping is in the CSV, `attack` = `clock_prompt_end_guard{gd_:g}`).")
+w()
+fig, axs = plt.subplots(1, 2, figsize=(11, 3.8))
+chs = ck[ck["mode"].str.startswith("chain")]
+for v, g in chs.groupby("variant"):
+    d = g.groupby("param").agg(f=("false_accepts", "sum"), h=("share", "mean"))
+    axs[0].plot(d.index, d.f, marker="o", ms=3, label=v); axs[1].plot(d.index, d.h, marker="o", ms=3, label=v)
+for ax in axs:
+    ax.axvspan(-AH["sync_bound_slots"], AH["sync_bound_slots"], color="0.9", zorder=0)
+axs[0].set_xlabel("receiver clock offset (slots; negative = behind); grey = configured bound"); axs[0].set_ylabel("forged messages accepted (sum, chain modes)")
+axs[1].set_xlabel("receiver clock offset (slots)"); axs[1].set_ylabel("honest share (chain modes)"); axs[0].legend(fontsize=6)
+fig.tight_layout(); fig.savefig(os.path.join(RES, "fig_attack_clock.pdf")); plt.close(fig)
+w(f"Figure `fig_attack_clock.pdf` (source `raw/attack_{MN}.csv`; chain modes, all attacker / stamp / guard variants; the grey band is the configured sync bound).")
 w()
 w("### (iii) Replay of old epochs")
 w()
-rp = att[att.attack == "replay"]
+rp = attH[attH.attack == "replay"]
 rpt = rp.groupby("family").agg(runs=("share", "size"), replay_accepted=("replay_accepted", "sum"), stale_accepted=("stale_accepted", "sum"), control_replay_accepted=("ctrl_replay_accepted", "sum"),
                                honest_share=("share", "mean")).reset_index()
 w(f"Messages of the replayed epoch authenticated (must be 0) and, as a control, the same count for a receiver without freshness / time-safety checks (> 0 shows the replay bites):"); w(); w(md(rpt.round(3))); w()
 fa_rep = int(rp.replay_accepted.sum()) + int(rp.stale_accepted.sum()) + int(rp.false_accepts.sum())
-# H6
+# H6: injection (weak and strong), replay, clock offset within the bound for every unguarded prompt / delayed variant
 h6_total = tot_fa_inj + tot_st_inj + fa_in + fa_rep
 H6V = "supported" if h6_total == 0 else "refuted"
-w(f"**Verdict H6: {H6V.upper()}.** Forged / stale acceptances: injection {tot_fa_inj + tot_st_inj}, replay {fa_rep}, clock offset within the bound {fa_in}; total {h6_total}. The control receiver accepted {int(rp.ctrl_replay_accepted.sum())} replayed messages." + (" PROVISIONAL." if smoke else ""))
+w(f"**Verdict H6: {H6V.upper()}.** Forged / stale acceptances: injection (weak and strong) {tot_fa_inj + tot_st_inj}, replay {fa_rep}, clock offset within the bound (prompt and delayed attacker, both reception-time models) {fa_in}; total {h6_total}. The control receiver accepted {int(rp.ctrl_replay_accepted.sum())} replayed messages." + (" PROVISIONAL." if smoke else ""))
 w()
-VERD.append(dict(hypothesis="H6", claim=HY["hypotheses"]["H6"]["text"], iid="n/a", burst="n/a", verdict=H6V, n_iid=len(inj) + len(rp) + len(within_b), n_burst=0))
+VERD.append(dict(hypothesis="H6", claim=HY["hypotheses"]["H6"]["text"], iid="n/a", burst="n/a", verdict=H6V, n_iid=len(inj_all) + len(rp) + len(within_b), n_burst=0))
 
 w("**What decode-and-verify does and does not protect (pollution).** The receivers keep up to 3 candidate symbols per index and verify subsets (at most 8 failed signature verifications per object; Merkle 16): no extra bytes are sent, the extra work per object is bounded by those verifications. "
   "It does NOT make a signature's own symbols individually authenticable: a symbol hash list or Merkle root over the symbols of a signature would have to be signed by something other than that signature (circular), so there is no per-symbol authentication for frag / Merkle signatures. "
-  "What remains unprotected: an attacker that injects enough bad candidates per index (more than 3 per index, or more bad symbols than the subset search can avoid when k is large) still blocks an object; the attacker section above measures how far one bogus frame per slot gets. "
+  "What remains unprotected: an attacker that injects enough bad candidates per index (more than the caps, or more bad symbols than the subset search can avoid when k is large) still blocks an object; the strong-attacker tables above measure how far that goes. "
   "`chain_lead_cont` is protected differently: once an epoch is authenticated its successor's commitment travels inside the MACs, so anchor pollution only affects joiners and recovery, not steady state.")
 w()
 
@@ -957,13 +1028,13 @@ w(md(pd.DataFrame({"mode": MO.MODES, "join_ms": jt.values, "censored": jc.values
 w("## Properties and limits (statements, not measurements)")
 w()
 w("- **The chain provides no non-repudiation.** Any receiver holding the disclosed key can compute valid tags; only the per-message signature and Merkle-batch modes give transferable evidence.")
-w("- **The chain needs loose time synchronisation and fails open beyond it**: with the receiver clock behind by more than the slack the delayed-forgery attacker succeeds (attacker section, (ii)); a receiver ahead of the sender only loses honest messages.")
+w("- **The chain needs loose time synchronisation and fails open beyond it**: with the receiver clock behind by more than the slack a forger that answers in the key-disclosure slot succeeds from just beyond the configured sync bound (attacker section, (ii): the margin beyond the bound is the length of one frame, not a slot; a guard interval buys margin at the price of key-disclosure delay); a receiver ahead of the sender only loses honest messages.")
 w("- **Anchor and schedule are signed**: the receiver takes epoch start, slot period, E, disclosure delay, tag / key length and the continuity flag from a verified anchor and applies a local policy (`D_MIN`..`D_MAX`, slot period, E); an anchor older than its epoch plus the freshness bound is rejected. Epoch ids in frame headers are 16 bit (wrap after 36 h at E = 20, 100 ms); the full 32-bit id is inside the signed anchor and the freshness check prevents aliasing.")
 w("- **Chain keys are secret per stream** (os.urandom); tags and keys are not reused across schemes or variants. The pass-3 forgery is a regression test.")
 w("- **Freshness for fragment and Merkle modes** uses a signed timestamp (6 B, Unix ms: the 32-bit ms timestamp of pass 3 would wrap after 49.7 days) and a replay window; the added bytes are counted inside the blobs.")
 w("- **Python receivers and ctypes**: CPU numbers are for Python receivers on a cloud VM and are not MCU or OBU numbers.")
 w("- Hybrid: both signatures must verify (R7); stripping the classical half is rejected; downgrade resistance beyond this is not analysed.")
-w("- Not modelled: collisions / congestion, a stronger pollution attacker (several bogus frames per slot, tampered key chain disclosure order), selective jamming beyond the delayed-forgery pattern, per-symbol authentication of signature symbols (circular, see attacker section), mixed PQ-CA certificate chains, ZK-compressed signatures.")
+w("- Not modelled: collisions / congestion, a pre-filling attacker that is limited by airtime (the strong attacker here sends up to n frames per slot without a bound), tampered key chain disclosure order, selective jamming beyond the jam-and-forge pattern, per-symbol authentication of signature symbols (circular, see attacker section), mixed PQ-CA certificate chains, ZK-compressed signatures.")
 w()
 
 # ---------------------------------------------------------------- runs needed / timing

@@ -174,17 +174,29 @@ def tests_for(pqname, mode):
         rx, fa, st = run_rx(S, fr, ed_pk=edpk); rec("R10b all symbols of one message replaced by random bytes (blocking attack)", "reject", base - {D}, rx, fa, st)
 
     if A.kind == "chain":
-        # ---- R4 forged message with the disclosed key, delivered after the key was released; the honest frame is jammed
+        # ---- R4 forged message with the disclosed key.  PROMPT attacker: it hears K_D in the key frame of slot D+M and answers in that same slot
+        # (the earliest the forgery can arrive); the honest frame D is jammed.  The receiver stamps frames at the START of their slot (stamp="start":
+        # attacker-favourable reception model) and has slot binding off, so that the time-safety rule is tested on its own.
         forged = AT.forge_after_disclosure(S, D)
-        inj = {D + M + 1: [forged]}
-        rx, fa, st = run_rx(S, F, inject=inj, jam={D}, ed_pk=edpk); rec("R4 forged message with the disclosed key (late delivery)", "reject", base - {D}, rx, fa, st)
-        rx0, fa0_, _ = run_rx(S, F, inject=inj, jam={D}, rx_kw=dict(enforce_time_safety=False), ed_pk=edpk)
+        kw0 = dict(bind_slot=False, stamp="start")
+        inj = {D + M: [forged]}
+        rx, fa, st = run_rx(S, F, inject=inj, jam={D}, rx_kw=kw0, ed_pk=edpk); rec("R4 forged message with the disclosed key (prompt attacker, injected in the key-disclosure slot)", "reject", base - {D}, rx, fa, st)
+        inj_late = {D + M + 1: [forged]}
+        rx, fa, st = run_rx(S, F, inject=inj_late, jam={D}, rx_kw=kw0, ed_pk=edpk); rec("R4b forged message with the disclosed key (delayed attacker, one slot after disclosure)", "reject", base - {D}, rx, fa, st)
+        rx0, fa0_, _ = run_rx(S, F, inject=inj, jam={D}, rx_kw=dict(kw0, enforce_time_safety=False), ed_pk=edpk)
         ctl("C4 same attack against a receiver WITHOUT the time-safety check", fa0_ >= 1, rx0, fa0_, "control: shows the time-safety test bites")
         for off in (-0.5, 0.5):
-            rx, fa, st = run_rx(S, F, inject=inj, jam={D}, rx_kw=dict(clock_ms=int(off * P.T_ms)), ed_pk=edpk)
-            rec(f"R4c same attack, receiver clock offset {off:+.1f} slot (within the configured bound)", "reject",
+            rx, fa, st = run_rx(S, F, inject=inj, jam={D}, rx_kw=dict(kw0, clock_ms=int(off * P.T_ms)), ed_pk=edpk)
+            rec(f"R4c same prompt attack, receiver clock offset {off:+.1f} slot (within the configured bound)", "reject",
                 set(rx.auth) - {D}, rx, fa, st, ok_extra=D not in rx.auth)
-        rx, fa, st = run_rx(S, F, inject=inj, jam={D}, rx_kw=dict(clock_ms=int(-3 * P.T_ms)), ed_pk=edpk)
+        # mutation controls: the SAME attack must succeed when the time-safety rule is loosened (R4c would otherwise pass for a rule that is too lenient)
+        rx, fa, st = run_rx(S, F, inject=inj, jam={D}, rx_kw=dict(kw0, clock_ms=int(-0.5 * P.T_ms), relax_ms=P.T_ms), ed_pk=edpk)
+        ctl("C4m1 mutation: time-safety release time relaxed by ONE slot, clock offset -0.5 (the R4c case): the forgery is accepted", fa >= 1, rx, fa, "control: R4c bites at one slot of slack")
+        rx, fa, st = run_rx(S, F, inject=inj, jam={D}, rx_kw=dict(kw0, clock_ms=int(-0.5 * P.T_ms), delta_ms=0), ed_pk=edpk)
+        ctl("C4m2 mutation: sync bound delta dropped (0), clock offset -0.5: the forgery is accepted", fa >= 1, rx, fa, "control: R4c bites without delta")
+        rx, fa, st = run_rx(S, F, inject=inj, jam={D}, rx_kw=dict(stamp="start", clock_ms=int(-3 * P.T_ms)), ed_pk=edpk)
+        rec("R4d default receiver (slot binding on): the same forgery is dropped at any clock offset", "reject", base - {D}, rx, fa, st, ok_extra=D not in rx.auth and rx.bind_rej >= 1)
+        rx, fa, st = run_rx(S, F, inject=inj, jam={D}, rx_kw=dict(kw0, clock_ms=int(-3 * P.T_ms)), ed_pk=edpk)
         ctl("C4c clock offset -3 slots (beyond the bound): the forgery is accepted", fa >= 1, rx, fa, "control: documents the sync assumption")
         # ---- R8 key derivability regression (pass-3 review: chain keys derived from the public run seed)
         fl = AT.legacy_key_forgery(S, D, 0)
