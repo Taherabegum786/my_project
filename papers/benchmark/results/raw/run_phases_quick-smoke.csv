@@ -1,3 +1,7 @@
 phase,seconds,quick,machine,git_commit,git_dirty
 setup,0,1,quick-smoke,4cd165f76efc3ed86defa3b645d4c12b458ba2f5,1
 liboqs_build,3,1,quick-smoke,4cd165f76efc3ed86defa3b645d4c12b458ba2f5,1
+timing,79,1,quick-smoke,4cd165f76efc3ed86defa3b645d4c12b458ba2f5,1
+sizes_scoring,7,1,quick-smoke,4cd165f76efc3ed86defa3b645d4c12b458ba2f5,1
+negative_tests,111,1,quick-smoke,4cd165f76efc3ed86defa3b645d4c12b458ba2f5,1
+lossless_invariant,7,1,quick-smoke,4cd165f76efc3ed86defa3b645d4c12b458ba2f5,1
