@@ -1,0 +1,2 @@
+machine,quick,tasks,seeds_oper,seeds_min,procs,wall_s,liboqs,git_commit,git_dirty
+quick-smoke,1,21,10,10,4,320.2,0.16.0,661a46f3fd5e3042bc5c63db257058b8e1670da5,0

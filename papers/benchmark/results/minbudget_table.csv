@@ -1,9 +1,9 @@
 profile,scheme,cond,cls,deadline,target,chain,chain_r2,chain_lead_cont,best frag mode,best frag,best merkle,best hybrid,outcome,ratio chain/frag
-cv2x_437,Falcon-512,GE 0.2/b5,burst,analysis,0.95,29920.0,inf,29920.0,frag_rep_w1,29920.0,inf,29920.0,similar,1.0
+cv2x_437,Falcon-512,GE 0.2/b5,burst,analysis,0.95,29920.0,inf,29920.0,frag_rep_w2,14960.0,inf,29920.0,chain dearer,2.0
 cv2x_437,Falcon-512,GE 0.2/b5,burst,analysis,0.99,inf,inf,inf,frag_rep_w1,29920.0,inf,29920.0,frag only,
 cv2x_437,Falcon-512,GE 0.2/b5,burst,need,0.95,inf,inf,inf,frag_rep_w1,29920.0,inf,29920.0,frag only,
 cv2x_437,Falcon-512,GE 0.2/b5,burst,need,0.99,inf,inf,inf,frag_rep_w1,29920.0,inf,29920.0,frag only,
-cv2x_437,Falcon-512,iid 0.1,iid,analysis,0.95,29920.0,inf,29920.0,frag_mds_w8,14960.0,29920.0,29920.0,chain dearer,2.0
+cv2x_437,Falcon-512,iid 0.1,iid,analysis,0.95,29920.0,inf,29920.0,frag_mds_w2,14960.0,29920.0,29920.0,chain dearer,2.0
 cv2x_437,Falcon-512,iid 0.1,iid,analysis,0.99,29920.0,inf,29920.0,frag_rep_w1,29920.0,inf,29920.0,similar,1.0
 cv2x_437,Falcon-512,iid 0.1,iid,need,0.95,inf,inf,inf,frag_rep_w1,29920.0,inf,29920.0,frag only,
 cv2x_437,Falcon-512,iid 0.1,iid,need,0.99,inf,inf,inf,frag_rep_w1,29920.0,inf,29920.0,frag only,
@@ -15,12 +15,12 @@ cv2x_437,Falcon-padded-512,iid 0.1,iid,analysis,0.95,29920.0,inf,29920.0,frag_re
 cv2x_437,Falcon-padded-512,iid 0.1,iid,analysis,0.99,29920.0,inf,29920.0,frag_rep_w1,29920.0,inf,29920.0,similar,1.0
 cv2x_437,Falcon-padded-512,iid 0.1,iid,need,0.95,inf,inf,inf,frag_rep_w1,29920.0,inf,29920.0,frag only,
 cv2x_437,Falcon-padded-512,iid 0.1,iid,need,0.99,inf,inf,inf,frag_rep_w1,29920.0,inf,29920.0,frag only,
-cv2x_437,MAYO-1,GE 0.2/b5,burst,analysis,0.95,29920.0,inf,29920.0,frag_rep_w2,14960.0,inf,14960.0,chain dearer,2.0
-cv2x_437,MAYO-1,GE 0.2/b5,burst,analysis,0.99,inf,inf,inf,frag_rep_w1,29920.0,inf,29920.0,frag only,
+cv2x_437,MAYO-1,GE 0.2/b5,burst,analysis,0.95,29920.0,inf,29920.0,frag_rep_w2,7480.0,inf,14960.0,chain dearer,4.0
+cv2x_437,MAYO-1,GE 0.2/b5,burst,analysis,0.99,inf,inf,inf,frag_mds_w4,14960.0,inf,29920.0,frag only,
 cv2x_437,MAYO-1,GE 0.2/b5,burst,need,0.95,inf,inf,inf,frag_rep_w1,29920.0,inf,29920.0,frag only,
 cv2x_437,MAYO-1,GE 0.2/b5,burst,need,0.99,inf,inf,inf,frag_rep_w1,29920.0,inf,29920.0,frag only,
-cv2x_437,MAYO-1,iid 0.1,iid,analysis,0.95,29920.0,inf,29920.0,frag_rep_w2,14960.0,7480.0,14960.0,chain dearer,2.0
-cv2x_437,MAYO-1,iid 0.1,iid,analysis,0.99,29920.0,inf,29920.0,frag_mds_w8,14960.0,29920.0,29920.0,chain dearer,2.0
+cv2x_437,MAYO-1,iid 0.1,iid,analysis,0.95,29920.0,inf,29920.0,frag_mds_w2,7480.0,7480.0,14960.0,chain dearer,4.0
+cv2x_437,MAYO-1,iid 0.1,iid,analysis,0.99,29920.0,inf,29920.0,frag_rep_w4,14960.0,29920.0,29920.0,chain dearer,2.0
 cv2x_437,MAYO-1,iid 0.1,iid,need,0.95,inf,inf,inf,frag_rep_w1,29920.0,inf,29920.0,frag only,
 cv2x_437,MAYO-1,iid 0.1,iid,need,0.99,inf,inf,inf,frag_rep_w1,29920.0,inf,29920.0,frag only,
 cv2x_437,ML-DSA-44,GE 0.2/b5,burst,analysis,0.95,59840.0,inf,59840.0,frag_rep_w2,59840.0,inf,59840.0,similar,1.0
@@ -28,15 +28,15 @@ cv2x_437,ML-DSA-44,GE 0.2/b5,burst,analysis,0.99,inf,inf,inf,,inf,inf,inf,neithe
 cv2x_437,ML-DSA-44,GE 0.2/b5,burst,need,0.95,inf,inf,inf,,inf,inf,inf,neither reaches,
 cv2x_437,ML-DSA-44,GE 0.2/b5,burst,need,0.99,inf,inf,inf,,inf,inf,inf,neither reaches,
 cv2x_437,ML-DSA-44,iid 0.1,iid,analysis,0.95,59840.0,inf,59840.0,frag_rep_w2,59840.0,29920.0,59840.0,similar,1.0
-cv2x_437,ML-DSA-44,iid 0.1,iid,analysis,0.99,59840.0,inf,59840.0,frag_mds_w4,59840.0,inf,59840.0,similar,1.0
+cv2x_437,ML-DSA-44,iid 0.1,iid,analysis,0.99,59840.0,inf,59840.0,frag_mds_w8,59840.0,inf,inf,similar,1.0
 cv2x_437,ML-DSA-44,iid 0.1,iid,need,0.95,inf,inf,inf,,inf,inf,inf,neither reaches,
 cv2x_437,ML-DSA-44,iid 0.1,iid,need,0.99,inf,inf,inf,,inf,inf,inf,neither reaches,
-cv2x_437,OV-Is,GE 0.2/b5,burst,analysis,0.95,inf,inf,inf,frag_rep_w2,3740.0,inf,7480.0,frag only,
+cv2x_437,OV-Is,GE 0.2/b5,burst,analysis,0.95,inf,inf,inf,frag_rep_w2,1870.0,inf,3740.0,frag only,
 cv2x_437,OV-Is,GE 0.2/b5,burst,analysis,0.99,inf,inf,inf,frag_rep_w2,3740.0,inf,7480.0,frag only,
 cv2x_437,OV-Is,GE 0.2/b5,burst,need,0.95,inf,inf,inf,,inf,inf,inf,neither reaches,
 cv2x_437,OV-Is,GE 0.2/b5,burst,need,0.99,inf,inf,inf,,inf,inf,inf,neither reaches,
-cv2x_437,OV-Is,iid 0.1,iid,analysis,0.95,inf,inf,inf,frag_rep_w2,3740.0,1870.0,3740.0,frag only,
-cv2x_437,OV-Is,iid 0.1,iid,analysis,0.99,inf,inf,inf,frag_mds_w4,3740.0,inf,3740.0,frag only,
+cv2x_437,OV-Is,iid 0.1,iid,analysis,0.95,inf,inf,inf,frag_mds_w2,1870.0,1870.0,3740.0,frag only,
+cv2x_437,OV-Is,iid 0.1,iid,analysis,0.99,inf,inf,inf,frag_rep_w4,3740.0,inf,7480.0,frag only,
 cv2x_437,OV-Is,iid 0.1,iid,need,0.95,inf,inf,inf,,inf,inf,inf,neither reaches,
 cv2x_437,OV-Is,iid 0.1,iid,need,0.99,inf,inf,inf,,inf,inf,inf,neither reaches,
 cv2x_437,SLH_DSA_PURE_SHA2_128S,GE 0.2/b5,burst,analysis,0.95,inf,inf,inf,,inf,inf,inf,neither reaches,
@@ -47,27 +47,27 @@ cv2x_437,SLH_DSA_PURE_SHA2_128S,iid 0.1,iid,analysis,0.95,inf,inf,inf,,inf,59840
 cv2x_437,SLH_DSA_PURE_SHA2_128S,iid 0.1,iid,analysis,0.99,inf,inf,inf,,inf,inf,inf,neither reaches,
 cv2x_437,SLH_DSA_PURE_SHA2_128S,iid 0.1,iid,need,0.95,inf,inf,inf,,inf,inf,inf,neither reaches,
 cv2x_437,SLH_DSA_PURE_SHA2_128S,iid 0.1,iid,need,0.99,inf,inf,inf,,inf,inf,inf,neither reaches,
-cv2x_437,SNOVA_24_5_4,GE 0.2/b5,burst,analysis,0.95,14960.0,inf,14960.0,frag_rep_w2,7480.0,inf,14960.0,chain dearer,2.0
-cv2x_437,SNOVA_24_5_4,GE 0.2/b5,burst,analysis,0.99,inf,inf,inf,frag_rep_w1,29920.0,inf,29920.0,frag only,
+cv2x_437,SNOVA_24_5_4,GE 0.2/b5,burst,analysis,0.95,14960.0,inf,14960.0,frag_rep_w2,7480.0,inf,7480.0,chain dearer,2.0
+cv2x_437,SNOVA_24_5_4,GE 0.2/b5,burst,analysis,0.99,inf,inf,inf,frag_mds_w8,14960.0,inf,29920.0,frag only,
 cv2x_437,SNOVA_24_5_4,GE 0.2/b5,burst,need,0.95,inf,inf,inf,frag_rep_w1,29920.0,inf,29920.0,frag only,
 cv2x_437,SNOVA_24_5_4,GE 0.2/b5,burst,need,0.99,inf,inf,inf,frag_rep_w1,29920.0,inf,29920.0,frag only,
 cv2x_437,SNOVA_24_5_4,iid 0.1,iid,analysis,0.95,14960.0,14960.0,14960.0,frag_rep_w2,7480.0,3740.0,7480.0,chain dearer,2.0
-cv2x_437,SNOVA_24_5_4,iid 0.1,iid,analysis,0.99,14960.0,inf,14960.0,frag_mds_w4,7480.0,14960.0,7480.0,chain dearer,2.0
+cv2x_437,SNOVA_24_5_4,iid 0.1,iid,analysis,0.99,14960.0,inf,14960.0,frag_mds_w8,7480.0,14960.0,14960.0,chain dearer,2.0
 cv2x_437,SNOVA_24_5_4,iid 0.1,iid,need,0.95,inf,inf,inf,frag_rep_w1,29920.0,inf,29920.0,frag only,
 cv2x_437,SNOVA_24_5_4,iid 0.1,iid,need,0.99,inf,inf,inf,frag_rep_w1,29920.0,inf,29920.0,frag only,
-cv2x_j3161,Falcon-512,GE 0.2/b5,burst,analysis,0.95,24140.0,inf,24140.0,frag_rep_w2,24140.0,inf,48280.0,similar,1.0
+cv2x_j3161,Falcon-512,GE 0.2/b5,burst,analysis,0.95,24140.0,inf,24140.0,frag_rep_w2,12070.0,inf,24140.0,chain dearer,2.0
 cv2x_j3161,Falcon-512,GE 0.2/b5,burst,analysis,0.99,inf,inf,inf,frag_rep_w1,48280.0,inf,48280.0,frag only,
 cv2x_j3161,Falcon-512,GE 0.2/b5,burst,need,0.95,inf,inf,inf,frag_rep_w1,48280.0,inf,48280.0,frag only,
 cv2x_j3161,Falcon-512,GE 0.2/b5,burst,need,0.99,inf,inf,inf,frag_rep_w1,48280.0,inf,48280.0,frag only,
-cv2x_j3161,Falcon-512,iid 0.1,iid,analysis,0.95,24140.0,inf,24140.0,frag_rep_w2,24140.0,12070.0,24140.0,similar,1.0
+cv2x_j3161,Falcon-512,iid 0.1,iid,analysis,0.95,24140.0,inf,24140.0,frag_mds_w2,12070.0,12070.0,24140.0,chain dearer,2.0
 cv2x_j3161,Falcon-512,iid 0.1,iid,analysis,0.99,24140.0,inf,24140.0,frag_mds_w4,24140.0,24140.0,24140.0,similar,1.0
 cv2x_j3161,Falcon-512,iid 0.1,iid,need,0.95,inf,inf,inf,frag_rep_w1,48280.0,inf,48280.0,frag only,
 cv2x_j3161,Falcon-512,iid 0.1,iid,need,0.99,inf,inf,inf,frag_rep_w1,48280.0,inf,48280.0,frag only,
-cv2x_j3161,Falcon-padded-512,GE 0.2/b5,burst,analysis,0.95,24140.0,inf,24140.0,frag_rep_w1,24140.0,inf,24140.0,similar,1.0
+cv2x_j3161,Falcon-padded-512,GE 0.2/b5,burst,analysis,0.95,24140.0,inf,24140.0,frag_mds_w2,12070.0,inf,24140.0,chain dearer,2.0
 cv2x_j3161,Falcon-padded-512,GE 0.2/b5,burst,analysis,0.99,inf,inf,inf,frag_rep_w1,24140.0,inf,24140.0,frag only,
 cv2x_j3161,Falcon-padded-512,GE 0.2/b5,burst,need,0.95,inf,inf,inf,frag_rep_w1,24140.0,inf,24140.0,frag only,
 cv2x_j3161,Falcon-padded-512,GE 0.2/b5,burst,need,0.99,inf,inf,inf,frag_rep_w1,24140.0,inf,24140.0,frag only,
-cv2x_j3161,Falcon-padded-512,iid 0.1,iid,analysis,0.95,24140.0,inf,24140.0,frag_rep_w1,24140.0,24140.0,24140.0,similar,1.0
+cv2x_j3161,Falcon-padded-512,iid 0.1,iid,analysis,0.95,24140.0,inf,24140.0,frag_mds_w2,12070.0,24140.0,24140.0,chain dearer,2.0
 cv2x_j3161,Falcon-padded-512,iid 0.1,iid,analysis,0.99,24140.0,inf,24140.0,frag_rep_w1,24140.0,inf,24140.0,similar,1.0
 cv2x_j3161,Falcon-padded-512,iid 0.1,iid,need,0.95,inf,inf,inf,frag_rep_w1,24140.0,inf,24140.0,frag only,
 cv2x_j3161,Falcon-padded-512,iid 0.1,iid,need,0.99,inf,inf,inf,frag_rep_w1,24140.0,inf,24140.0,frag only,
@@ -79,7 +79,7 @@ cv2x_j3161,MAYO-1,iid 0.1,iid,analysis,0.95,24140.0,inf,24140.0,frag_rep_w2,1207
 cv2x_j3161,MAYO-1,iid 0.1,iid,analysis,0.99,24140.0,inf,24140.0,frag_mds_w8,12070.0,24140.0,24140.0,chain dearer,2.0
 cv2x_j3161,MAYO-1,iid 0.1,iid,need,0.95,inf,inf,inf,frag_rep_w1,24140.0,inf,24140.0,frag only,
 cv2x_j3161,MAYO-1,iid 0.1,iid,need,0.99,inf,inf,inf,frag_rep_w1,24140.0,inf,24140.0,frag only,
-cv2x_j3161,ML-DSA-44,GE 0.2/b5,burst,analysis,0.95,48280.0,inf,48280.0,frag_rep_w1,96560.0,inf,96560.0,chain cheaper,0.5
+cv2x_j3161,ML-DSA-44,GE 0.2/b5,burst,analysis,0.95,48280.0,inf,48280.0,frag_rep_w4,48280.0,inf,48280.0,similar,1.0
 cv2x_j3161,ML-DSA-44,GE 0.2/b5,burst,analysis,0.99,inf,inf,inf,frag_rep_w1,96560.0,inf,96560.0,frag only,
 cv2x_j3161,ML-DSA-44,GE 0.2/b5,burst,need,0.95,inf,inf,inf,frag_rep_w1,96560.0,inf,96560.0,frag only,
 cv2x_j3161,ML-DSA-44,GE 0.2/b5,burst,need,0.99,inf,inf,inf,frag_rep_w1,96560.0,inf,96560.0,frag only,
