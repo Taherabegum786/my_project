@@ -58,6 +58,7 @@ TS_B, SEQ_B, ED_SIG, SCHED_B = 6, 4, 64, 7
 A_MAX = 8                                                  # failed signature verifications per object before the receiver gives up
 PEND_CAP_BASELINE, PEND_CAP = 4, 32                         # chain tag candidates per (epoch, index): pass-4 receiver / hardened receiver
 APP_CAND, PATH_CAND, ROOT_CAND = 4, 3, 6                   # application candidates per message, paths per leaf, candidate roots tried per batch decode
+BIND_TOL = 1                                               # slots: tolerance of the clock-derived slot index in the slot binding
 RW = 64                                                    # replay window (messages)
 FRESH_SLOTS = 64                                           # staleness bound of every signed timestamp (slots)
 DELTA_SLOTS = 0.5                                          # receiver's configured clock-sync bound (slots)
@@ -597,7 +598,7 @@ class Rx:
         self.clock_ms = clock_ms; self.enf_fresh = enforce_fresh
         self.stamp_ms = self.plan.T_ms if stamp == "end" else 1; self.bind = bind_slot; self.pend_cap = pend_cap
         self.guard_ms = guard_ms; self.relax_ms = relax_ms
-        self.delta_eff = self.plan.delta_ms if delta_ms is None else delta_ms; self.bind_rej = 0
+        self.delta_eff = self.plan.delta_ms if delta_ms is None else delta_ms; self.bind_rej = 0; self.bound = False; self._laycache = {}
         self.auth = {}; self.app = {}; self.apps = {}; self.hi = -1
         self.rejected = 0; self.stale_rej = 0; self.replay_rej = 0; self.t = 0; self.g = 0
 
@@ -605,11 +606,29 @@ class Rx:
         if g < self.join:
             return
         self.g = g; self.t = self.plan.t_start(g) + self.stamp_ms + self.clock_ms
+        self.bound = False
         if len(app) >= 4:
-            if self.bind and self.enf_fresh and self._seq(app) != g:
-                self.bind_rej += 1
-                return
+            if self.bind and self.enf_fresh:
+                # slot index from the RECEIVER'S OWN CLOCK (the same clock_ms the offset sweep shifts), never from the harness index: the frame's
+                # reception time minus the stamp convention, rounded to the nearest slot.  The application's 4-byte sequence number (already in the
+                # payload, not charged to the budget; SIB1: SFN, BSM: msgCnt/secMark in a real system) must be within BIND_TOL slots of it.
+                est = int(round((self.t - T0_MS - self.stamp_ms) / self.plan.T_ms))
+                if abs(self._seq(app) - est) > BIND_TOL:
+                    self.bind_rej += 1
+                    return
+                self.bound = True
             self.on_frame(g, app, auth)
+
+    def _lay(self, s):
+        """(object, symbol index) pairs that the (deterministic, shared) layout places in slot s; chain objects are keyed by their 16-bit epoch id"""
+        c = self._laycache.get(s)
+        if c is None:
+            L = self.A.layout(); c = set()
+            if 0 <= s < len(L.slots):
+                for o, j in L.slots[s]:
+                    c.add(((o & 0xFFFF) if self.A.kind == "chain" else o, j % L.params[o][0]))
+            self._laycache[s] = c
+        return c
 
     def fresh(self, t_msg):
         if not self.enf_fresh:
@@ -659,6 +678,8 @@ class FragRx(Rx):
             age, idx = auth[o], auth[o + 1]; data = auth[o + 2:o + 2 + s]; o += 2 + s
             obj = seq_f - age
             if obj < 0 or obj >= self.plan.G or obj in self.auth:
+                continue
+            if self.bound and (obj, idx) not in self._lay(seq_f):         # only the symbols the layout places in this slot
                 continue
             a = self.asm.get(obj)
             if a is None:
@@ -740,6 +761,8 @@ class MerkleRx(Rx):
             ls = seq_f - lage
             if ls // n != b or ls < 0:
                 continue
+            if self.bound and ls not in (b * n + seq_f % n, b * n + (seq_f % n + n // 2) % n):      # only the two leaves whose paths this slot carries
+                continue
             c = self.paths.setdefault(ls, [])
             if path not in c and len(c) < PATH_CAND:
                 c.append(path); touched.add(b)
@@ -755,6 +778,8 @@ class MerkleRx(Rx):
             if o + 1 + s > len(auth):
                 break
             idx = auth[o]; data = auth[o + 1:o + 1 + s]; o += 1 + s
+            if self.bound and (b, idx) not in self._lay(seq_f):
+                continue
             if a is not None and b not in self.root and a.add(idx, data):
                 touched.add(b)
         if touched:
@@ -837,10 +862,14 @@ class ChainRx(Rx):
                 if o + 1 + A.s > len(auth):
                     break
                 syms.append((auth[o], auth[o + 1:o + 1 + A.s])); o += 1 + A.s
-            self._anchor(ae, syms, g)
-        if ke != NOEPOCH:
+            if self.bound:
+                syms = [(ix, dt) for ix, dt in syms if (ae, ix) in self._lay(seq)]
+            if syms:
+                self._anchor(ae, syms, g)
+        m_ = seq - pl.d
+        if ke != NOEPOCH and (not self.bound or (m_ >= 0 and (ke, ki) == (m_ // pl.E, m_ % pl.E + 1))):
             self._key(ke, ki, key, g)
-        if e != NOEPOCH and seq not in self.auth and 1 <= i <= pl.E:
+        if e != NOEPOCH and seq not in self.auth and 1 <= i <= pl.E and (not self.bound or (e, i) == (seq // pl.E, seq % pl.E + 1)):
             lst = self.pend.setdefault((e, i), [])
             item = (app, tag, nc, self.t)
             if not any(x[:3] == item[:3] for x in lst) and len(lst) < self.pend_cap:

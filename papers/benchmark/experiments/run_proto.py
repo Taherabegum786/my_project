@@ -181,7 +181,7 @@ def attack_rows(profile, pqname, mode, plan, streams, pk_ed, tg, quick, nseeds):
         r = base_row(tg, "attack", profile, pqname, mode, plan, A, bg, seed, seed % nb, 1)
         r.update(attack=att, param=param, rx_cfg=cfg, **{k: m[k] for k in ("N_meas", "received", "authenticated", "share", "false_accepts", "stale_accepted",
                                                                "rejected", "stale_rej", "replay_rej", "rx_cpu_us_per_msg", "rx_verify_us_per_msg")})
-        r.update(extra or {}); return r
+        r.update(extra or {}, bind_rej=rx.bind_rej, g_total=plan.G); return r
 
     def bogus(S, g, n, arng):
         """n distinct bogus frames for slot g: same headers (seq, epoch/index, ages, indices) as the genuine frame, distinct application bytes
@@ -215,15 +215,18 @@ def attack_rows(profile, pqname, mode, plan, streams, pk_ed, tg, quick, nseeds):
                 for order in ("before", "after", "early"):
                     inj = {}; inj_a = {}
                     for g in hit:
-                        fr = bogus(S, g, n_, arng)
+                        fr = bogus(S, g, n_, arng) if order != "early" else (AT.early_prefill(S, g, n_, arng) if g >= 1 else [])
                         if order == "before":
                             inj[g] = fr
                         elif order == "after":
                             inj_a[g] = fr
                         elif g >= 1:
-                            inj.setdefault(g - 1, []).extend(fr)
+                            inj.setdefault(g - 1, []).extend(fr)       # early = cross-slot: in slot g-1, application of g-1, fields of slot g moved out of position
                     for cfg in CFG:
                         rows.append(dict(mk(f"prefill_{order}", r_, S, seed, mask, None, inj, extra=dict(prefill_n=n_), inject_after=inj_a, cfg=cfg), mask_id=mid))
+        # cost of the clock-based slot binding: honest traffic only, receiver clock shifted, binding on (default receiver), end-of-slot stamping
+        for o in offs:
+            rows.append(dict(mk("bindcost", o, S, seed, mask, None, None, dict(clock_ms=int(o * plan.T_ms)), extra=dict(delivered=int((~mask).sum()))), mask_id=mid))
         # clock offset sweep.  Every 5th measured message is jammed and forged with its disclosed key.  Attackers: prompt = the forgery is injected in the
         # key-disclosure slot m+d itself (earliest possible); delayed = one slot later (pass-4 attacker).  Reception-time model: stamp = end | start of the
         # delivery slot (modes.Rx).  Slot binding is off here (the time-safety rule is measured on its own).  prompt_guard = the prompt attacker against a

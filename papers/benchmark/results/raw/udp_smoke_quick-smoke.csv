@@ -1,5 +1,0 @@
-machine,date,git_commit,git_dirty,profile,pq,mode,loss_model,loss_p,burst_len,seed,build_id,transport,authenticated,N_meas,share_of_sent,rejected,rx_cpu_us_per_msg,udp_frames_received,udp_frames_sent,udp_missing,inproc_same_outcome,inproc_authenticated
-quick-smoke,2026-11-16T09:22:55Z,64485a361d3d356a4a7583cd1111913d3d1cb240,1,sib1,OV-Is,frag_mds_w4,iid,0.2,0,5,0,udp,62,80,0.775,0,86.1817,140,140,0,1,110
-quick-smoke,2026-11-16T09:22:57Z,64485a361d3d356a4a7583cd1111913d3d1cb240,1,sib1,MAYO-1,chain,ge,0.2,5,7,0,udp,75,80,0.9375,0,58.6151,140,140,0,1,132
-quick-smoke,2026-11-16T09:22:59Z,64485a361d3d356a4a7583cd1111913d3d1cb240,1,sib1,Falcon-padded-512,merkle8,iid,0.1,0,9,0,udp,66,80,0.825,0,55.9040125,140,140,0,1,115
-quick-smoke,2026-11-16T09:23:02Z,64485a361d3d356a4a7583cd1111913d3d1cb240,1,sib1,OV-Is,hyb_mds_w4,iid,0.1,0,11,0,udp,73,80,0.9125,0,278.28893750000003,140,140,0,1,125

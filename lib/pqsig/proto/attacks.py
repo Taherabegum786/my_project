@@ -37,6 +37,43 @@ def forge_after_disclosure(S, m, app_forged=None):
     return (app_forged, auth[:a0] + tag_f + auth[a1:])
 
 
+def shift_positions(S, auth, s_slot):
+    """Copy of an authentication field (taken from slot s_slot + 1) whose POSITION fields are moved so that no claim is one that the layout places in
+    slot s_slot: frag: symbol ages + 1, and where (object, index) still happens to be a position of slot s_slot (repetition codes reuse indices) the index
+    is changed to an unplaced one; Merkle: path leaf ages + 1.  Chain fields (epoch, index, key, anchor symbols) of another slot are out of position as they are."""
+    A = S.alloc; b = bytearray(auth); L = A.layout()
+    placed = set()
+    for o, j in (L.slots[s_slot] if 0 <= s_slot < len(L.slots) else []):
+        placed.add((o, j % L.params[o][0]))
+    if A.kind == "frag" and len(b) >= 3:
+        o = 3
+        for _ in range(b[2]):
+            b[o] = (b[o] + 1) & 0xFF
+            obj = s_slot - b[o]
+            if (obj, b[o + 1]) in placed:
+                nd = L.params[obj][0] if obj in L.params else 0
+                free = [ix for ix in range(nd) if (obj, ix) not in placed]
+                if free:
+                    b[o + 1] = free[0]
+                else:
+                    b[o] = 255                                           # no unplaced index: the claim is for an object that does not exist
+            o += 2 + A.s
+    elif A.kind == "merkle" and len(b) >= 4:
+        o = 4
+        for _ in range(min(b[2], 4)):
+            b[o] = (b[o] + 1) & 0xFF; o += 1 + MO.NODE_B * A.lg
+    return bytes(b)
+
+
+def early_prefill(S, g, n, rng):
+    """CROSS-SLOT pre-filling: n frames to be injected in slot g-1 that carry the application of slot g-1 (the application binding passes) and
+    the authentication fields of slot g moved out of position (chain: future (epoch, index), future key, anchor symbols of other slots; frag: symbols of
+    objects still in their span; Merkle: paths of other leaves, symbols of the batch) with random payload.  A receiver without field binding stores them
+    as candidates and its first-come caps then reject the honest data that arrives later."""
+    app_prev = S.frames[g - 1][0]; au = shift_positions(S, S.frames[g][1], g - 1)
+    return [pollute((app_prev, au), S.fields[g], rng) for _ in range(n)]
+
+
 def legacy_key_forgery(S, m, build_seed):
     """Regression attack of the pass-3 review (forge_chain_seed.py): recompute the chain keys from the PUBLIC run seed with the old derivation
     and forge an in-time message.  Returns the forged frame for slot m (chain modes only)."""

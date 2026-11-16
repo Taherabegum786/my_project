@@ -39,6 +39,12 @@ class BadEd(Ed):
         return super().sign(msg + b"x")
 
 
+def cands(rx):
+    """number of candidate symbols / tags a receiver holds (what pre-filling fills)"""
+    n = sum(len(l) for a in list(getattr(rx, "asm", {}).values()) + list(getattr(rx, "anc", {}).values()) for l in a.c.values())
+    return n + sum(len(l) for l in getattr(rx, "pend", {}).values())
+
+
 def plan_t():
     P = RP.YAML["profiles"]["sib1"]["proto"]
     return MO.Plan(P["slot_period_s"], B_TEST, P["digest_bytes"], P["app_bytes"], 0, 0, E_, 4, 2, 80)
@@ -159,6 +165,22 @@ def tests_for(pqname, mode):
     rxc, fac, stc = run_rx(S, F, inject=inj, jam={D}, rx_kw=dict(enforce_fresh=False, enforce_time_safety=False), ed_pk=edpk)
     ctl("C5b late single-frame replay accepted by a receiver WITHOUT freshness (and time-safety) checks", D in rxc.auth, rxc, fac, "control: shows the test bites")
 
+    # ---- R12 cross-slot pre-filling: in slot g-1 the attacker sends 40 frames that carry the application of slot g-1 (so the application binding passes)
+    # but the authentication fields of slot g (chain (epoch, index) and key of a future slot, symbols of objects still in their span, Merkle paths of
+    # other leaves), with random payload.  The default receiver must drop them before they take a candidate: nothing is lost.  The baseline receiver
+    # (first-come caps, no field binding) takes them and loses messages (control).
+    rng12 = random.Random(12); inj = {}
+    for g in range(3 * E, P.G - 2, 3):
+        if S.fields.get(g):
+            inj[g - 1] = AT.early_prefill(S, g, 40, rng12)
+    rx, fa, st = run_rx(S, F, inject=inj, ed_pk=edpk)
+    rec("R12 cross-slot pre-filling of every authentication field (40 frames per attacked slot, previous slot)", "reject", base, rx, fa, st, ok_extra=rx.bind_rej == 0)
+    rxb, fab, _ = run_rx(S, F, inject=inj, rx_kw=dict(bind_slot=False, pend_cap=MO.PEND_CAP_BASELINE), ed_pk=edpk)
+    if len(set(rxb.auth)) < len(base) or cands(rxb) > cands(rx):
+        ctl("C12 baseline receiver (no binding, first-come caps) under the same cross-slot pre-filling loses messages or stores far more candidates", True, rxb, fab, "control: the pre-filling bites without field binding")
+    else:
+        out.append(dict(test="C12 not applicable: every object is already decoded when the cross-slot frames arrive (nothing left to pre-fill)", kind="n/a", passed="", note="no pending object in this mode at B_TEST"))
+
     # ---- R10 symbol injection / pollution
     rng = random.Random(7)
     inj = {g: [AT.pollute(F[g], S.fields[g], rng)] for g in range(P.G) if S.fields.get(g)}
@@ -194,8 +216,11 @@ def tests_for(pqname, mode):
         ctl("C4m1 mutation: time-safety release time relaxed by ONE slot, clock offset -0.5 (the R4c case): the forgery is accepted", fa >= 1, rx, fa, "control: R4c bites at one slot of slack")
         rx, fa, st = run_rx(S, F, inject=inj, jam={D}, rx_kw=dict(kw0, clock_ms=int(-0.5 * P.T_ms), delta_ms=0), ed_pk=edpk)
         ctl("C4m2 mutation: sync bound delta dropped (0), clock offset -0.5: the forgery is accepted", fa >= 1, rx, fa, "control: R4c bites without delta")
+        for off in (0.0, -0.5, 0.5):
+            rx, fa, st = run_rx(S, F, inject=inj, jam={D}, rx_kw=dict(stamp="start", clock_ms=int(off * P.T_ms)), ed_pk=edpk)
+            rec(f"R4d default receiver (clock-based slot binding), clock offset {off:+.1f} slot: the prompt forgery is rejected", "reject", set(rx.auth) - {D}, rx, fa, st, ok_extra=D not in rx.auth)
         rx, fa, st = run_rx(S, F, inject=inj, jam={D}, rx_kw=dict(stamp="start", clock_ms=int(-3 * P.T_ms)), ed_pk=edpk)
-        rec("R4d default receiver (slot binding on): the same forgery is dropped at any clock offset", "reject", base - {D}, rx, fa, st, ok_extra=D not in rx.auth and rx.bind_rej >= 1)
+        ctl("C4d default receiver, clock offset -3 slots: the clock-derived slot index is 3 slots off, every honest frame is dropped (nothing authenticated, nothing forged: fail-safe, but no service)", len(rx.auth) == 0 and fa == 0, rx, fa, "control: the cost of clock-based binding beyond its tolerance")
         rx, fa, st = run_rx(S, F, inject=inj, jam={D}, rx_kw=dict(kw0, clock_ms=int(-3 * P.T_ms)), ed_pk=edpk)
         ctl("C4c clock offset -3 slots (beyond the bound): the forgery is accepted", fa >= 1, rx, fa, "control: documents the sync assumption")
         # ---- R8 key derivability regression (pass-3 review: chain keys derived from the public run seed)

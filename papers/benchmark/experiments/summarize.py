@@ -136,12 +136,14 @@ w("- **Q3 (size vs time).** Is signature size or timing tail binding (unchanged,
 w()
 hy = pd.DataFrame([{"id": k, "metric": v.get("metric"), "statement": v["text"]} for k, v in HY["hypotheses"].items()])
 w(md(hy)); w()
-w("Process note: the criteria and thresholds below were written before the first smoke run and have not been changed since. After the first smoke run the following were ADDED (no criterion changed): iid 0.2 in the QUICK operating conditions (needed to pair burst and i.i.d. loss), a second injection intensity (4 bogus frames per attacked slot, descriptive only), and the late single-frame replay test R5b / control C5b, which was added because the first smoke run showed Merkle receivers accepting stale leaves after a batch root had been verified (a freshness bug in the receiver, fixed in `modes.py`; the first run's H6 verdict was REFUTED because of it). After audit 1 the attacker experiments were EXTENDED, again without changing any criterion: a strong pre-filling injector (H7 is now decided under it, the weak attacker is reported alongside) against the pass-4 (baseline) and the hardened receiver, a prompt forger next to the delayed one in the clock-offset experiment with two reception-time models and a guard-interval variant, and the mutation controls C4m1 / C4m2 of the negative tests. The hardening of the receiver (slot binding, chain tag cap, stale blobs cost one try, key stash per index) was made in response to the audit and is reported as a separate receiver configuration.")
+w("Process note: the criteria and thresholds below (hypotheses.yaml) were written before the first smoke run and no criterion has been changed since. Chronology of what was added, never changing a criterion: (1) after the first smoke run: iid 0.2 in the QUICK operating conditions (needed to pair burst and i.i.d. loss), a second injection intensity (4 bogus frames per attacked slot, descriptive only), and the late single-frame replay test R5b / control C5b (the first smoke run showed Merkle receivers accepting stale leaves after a batch root had been verified, a freshness bug in the receiver, fixed in `modes.py`; the first run's H6 verdict was REFUTED because of it). "
+  "(2) after audit 1: a prompt forger and two reception-time models in the clock-offset experiment, a guard-interval variant, a strong pre-filling injector (`prefill`), mutation controls C4m1 / C4m2, and receiver hardening. In that step H7 was briefly decided under the strong attacker; that was a change of the decision rule after seeing results and has been REVERSED. "
+  "(3) after audit 2: the pre-registered H7 / H8 verdicts are again computed on the criterion written in hypotheses.yaml (1 bogus frame per attacked slot), for the shipped (hardened) receiver and, alongside, for the pass-4 baseline receiver; the strong attacker is a separate, descriptive result. The slot binding now uses the receiver's own clock and checks every authentication field against the shared layout (R12 / C12 added).")
 w()
 w(f"Decision rule (from `hypotheses.yaml`): groups are (profile, scheme, loss class), the chain variant is `{CH}`, the competitor is the best of {len(COMP)} fragmentation modes ({', '.join(COMP)}) "
   f"selected per group on the same data (conservative for the chain). Group outcome: {VR['group_outcome']}. Hypothesis verdict: supported if >= {VR['supported_fraction']:.0%} of decidable groups are 'chain better' and <= {VR['worse_tolerance']:.0%} are 'chain worse'; "
   f"refuted if >= {VR['refuted_fraction']:.0%} are 'chain worse'; otherwise inconclusive. {VR['combine_classes']}. {VR['competitor_infeasible']}. "
-  f"Minimum effects: share {EFF['share_abs']}, bytes {EFF['bytes_rel']:.0%}, delay {EFF['delay_rel']:.0%}, budget ratio {EFF['budget_ratio_low']} / {EFF['budget_ratio_high']}.")
+  f"The denominator of these fractions is the number of groups with data and a feasible competitor; groups whose outcome is 'unclear' stay in it (conservative: they count as neither better nor worse). Minimum effects: share {EFF['share_abs']}, bytes {EFF['bytes_rel']:.0%}, delay {EFF['delay_rel']:.0%}, budget ratio {EFF['budget_ratio_low']} / {EFF['budget_ratio_high']}.")
 w()
 
 # ---------------------------------------------------------------- traffic model + assumptions
@@ -203,7 +205,8 @@ ass = [("tag length (chain MAC)", f"{MO.TAG_B} B (HMAC-SHA-256 truncated), key {
        ("replay / staleness", f"timestamps older than {MO.FRESH_SLOTS} slots or from the future (> {MO.DELTA_SLOTS} slot) are rejected; replay window {MO.RW} messages", "receiver policy"),
        ("pollution handling", f"up to {Assembler.CAND} candidate symbols per index, decode-and-verify over subsets; at most {MO.A_MAX} failed signature verifications per object (Merkle {2 * MO.A_MAX}); {Assembler.DEC_MAX} subset decodes; other per-message candidate caps: {MO.APP_CAND} applications, {MO.PATH_CAND} paths per leaf, {MO.ROOT_CAND} roots per decode, chain tags {MO.PEND_CAP_BASELINE} (pass-4) / {MO.PEND_CAP} (hardened)", "no extra bytes; first-come caps (pass-4) are what the strong attacker exploits; see the attacker section"),
        ("receiver clock / reception-time model", "the harness delivers each frame as a unit in its slot; the receiver stamps it at the END of the slot (default; whole frame received) or, in the attacker experiments, also at the START + 1 ms (earliest a frame of the slot can complete); clock offset = a constant shift of that stamp; sync bound delta = " + f"{MO.DELTA_SLOTS} slot, optional guard interval (default 0)", "the time-safety result depends on this model (audit B1); the attacker experiments report both stamps and a prompt and a delayed forger"),
-       ("slot binding", "hardened receiver: a frame delivered in slot g must carry the application message of slot g, otherwise it is dropped before any candidate is stored (uses the link-layer slot counter, not the clock); the clock experiments switch it off", "defence against cross-slot pre-filling and replay; does not stop same-slot pre-filling"),
+       ("slot binding (hardened receiver)", f"the receiver derives the slot of a frame from its OWN clock (reception time minus the stamp convention, rounded to a slot, so the offset sweep shifts it too) and accepts the frame only if the application's 4-byte sequence number is within {MO.BIND_TOL} slot of it; the sequence number is a field the payload already carries and is not charged (SIB1: SFN, BSM: msgCnt / secMark in a real system). It then accepts only the chain (epoch, index), key index, anchor / fragment symbols, Merkle leaves and batch symbols that the shared deterministic layout places in that slot. The clock experiments switch it off", "defence against cross-slot pre-filling and replay; does not stop same-slot pre-filling; beyond the tolerance of the clock it drops every honest frame (cost table in the attacker section)"),
+       ("receiver used for the Q2 operating point, minimum budget, joiner and invariant", f"the hardened receiver (slot binding on, chain tag cap {MO.PEND_CAP}), receiver clock offset 0, end-of-slot stamping", "run_one builds the default receiver; the baseline receiver appears only in the attacker section"),
        ("chain keys", "os.urandom(32) secret per build; never derived from a seed", "regression-tested (R8)"),
        ("loss", "i.i.d. per slot; Gilbert-Elliott (0 in Good, 1 in Bad, mean burst 3 / 5 / 10 slots, same stationary loss); independent mask stream per (profile, scheme, condition), paired across modes inside the cell", "assumed channel, collision-free"),
        ("burst lengths run", ", ".join(str(int(b)) for b in sorted(res[res.loss_model == "ge"].burst_len.unique())), "generated from the data"),
@@ -477,7 +480,7 @@ tb = inf.groupby(["profile", "cls"]).agg(schemes=("pq", lambda x: ", ".join(sort
 w("No fragmentation mode authenticates any message; the chain's share within the deadline is shown for information only (not a contest):"); w(); w(md(tb)); w()
 
 # ---- H4 stated latency need
-w("### H4: the stated latency need (C-V2X 100 ms)")
+w("### H4: the stated latency need (C-V2X 100 ms): a design consequence, not a tested verdict")
 w()
 h4 = []
 for p in PROTO_P:
@@ -507,9 +510,10 @@ if len(h4):
     w(md(h4[["profile", "scheme", "need ms", "need slots", "chain_within_need", "best frag mode", "best frag within_need", "min chain delay ms", "chain verdict"]].round(3))); w()
     w(f"SIB1: latency need is TODO-RESULT (darzi2026a states no hard deadline), so H4 is not evaluated for it. For reference the chain's minimum delay on SIB1 is {(COM['protocol']['key_delay_slots_d'] + 1) * SLOT_MS['sib1']} ms.")
     w()
-    w(f"**Verdict H4: {H4V.upper()}** ({int((h4['chain verdict'] == 'supported').sum())} of {len(h4)} (profile, scheme) pairs supported, {int((h4['chain verdict'] == 'refuted').sum())} refuted)." + (" PROVISIONAL (smoke run)." if smoke else ""))
+    w(f"**H4 is a consequence of the design parameter d, not a tested verdict.** The chain cannot authenticate a message before its key is released, so its minimum delay is (d + 1) slots = {(COM['protocol']['key_delay_slots_d'] + 1) * min(SLOT_MS[p] for p in PROTO_P if NEED[p])} ms against a need of {min(NEED[p]['ms'] for p in PROTO_P if NEED[p])} ms: the chain misses the need by construction for any d >= 1, whatever the channel does; the measured fractions above only confirm the arithmetic. "
+      f"The pre-registered rule applied mechanically gives {H4V.upper()} ({int((h4['chain verdict'] == 'supported').sum())} of {len(h4)} (profile, scheme) pairs supported, {int((h4['chain verdict'] == 'refuted').sum())} refuted)." + (" PROVISIONAL (smoke run)." if smoke else ""))
     w()
-VERD.append(dict(hypothesis="H4", claim=HY["hypotheses"]["H4"]["text"], iid=H4V, burst="n/a (lossless)", verdict=H4V, n_iid=len(h4), n_burst=0))
+VERD.append(dict(hypothesis="H4", claim=HY["hypotheses"]["H4"]["text"] + " (design consequence of d, not an independent test)", iid=H4V, burst="n/a (lossless)", verdict=H4V, n_iid=len(h4), n_burst=0))
 
 # ---- delay distribution
 w("### Unconditional delay distribution at i.i.d. loss 0.1 (all received messages, unauthenticated = censored)")
@@ -642,8 +646,14 @@ mbm.to_csv(os.path.join(RES, "minbudget_cells.csv"), index=False)
 
 
 def minbps(sub, col, t):
-    ok = sub[sub[col] >= t]
-    return float(ok.bps.min()) if len(ok) else np.inf
+    # smallest budget from which EVERY larger grid point also reaches the target (monotone success), not merely the smallest passing point
+    g = sub.groupby("bps")[col].mean().sort_index(ascending=False); best = np.inf
+    for b_, v_ in g.items():
+        if v_ >= t:
+            best = float(b_)
+        else:
+            break
+    return best
 
 
 rows = []
@@ -753,10 +763,10 @@ def verdict7(r):
 
 w("### (i) Symbol / fragment injection")
 w()
-w(f"Two receiver configurations are compared: **baseline** = the pass-4 receiver (first-come candidate caps: {MO.PEND_CAP_BASELINE} chain tags per (epoch, index), {MO.APP_CAND} application candidates per message, {MO.PATH_CAND} paths per leaf, {Assembler.CAND} symbols per index) and **hardened** = the shipped receiver "
-  f"(frames must carry the application message of the slot they arrive in, `bind_slot`; chain tag cap {MO.PEND_CAP} per (epoch, index); stale blobs cost one try instead of killing the object; up to 2 stashed key candidates per index). "
-  "Weak attacker = `inject` / `inject_x4` (copies of the genuine frame with random payload fields, same application message). **Strong attacker = `prefill`**: n distinct bogus frames per attacked slot (distinct application bytes, random payload fields, genuine headers), "
-  "n up to and beyond every cap; the ORDER is an attacker choice and is reported separately: *before* = same slot, ahead of the honest frame; *after* = same slot, behind it; *early* = in the previous slot, claiming the next slot.")
+w(f"Two receiver configurations are compared: **baseline** = the pass-4 receiver (first-come candidate caps: {MO.PEND_CAP_BASELINE} chain tags per (epoch, index), {MO.APP_CAND} application candidates per message, {MO.PATH_CAND} paths per leaf, {Assembler.CAND} symbols per index, no binding) and **hardened** = the shipped receiver "
+  f"(slot binding from the receiver's own clock with tolerance {MO.BIND_TOL} slot and binding of every authentication field to the shared layout, see the assumptions table; chain tag cap {MO.PEND_CAP} per (epoch, index); stale blobs cost one try instead of killing the object; up to 2 stashed key candidates per index). "
+  "**Pre-registered attacker (H7 / H8)** = `inject`: copies of the genuine frame with random payload fields, 1 bogus frame per attacked slot (`inject_x4` with 4 is descriptive). **Strong attacker (descriptive only, not part of any verdict)** = `prefill`: n distinct bogus frames per attacked slot (distinct application bytes, random payload fields, genuine headers), "
+  "n up to and beyond every cap; the ORDER is an attacker choice and is reported separately: *before* = same slot, ahead of the honest frame; *after* = same slot, behind it; *early* = cross-slot, in the previous slot: the frame carries the application of the previous slot (so an application-only binding passes) and the authentication fields of the target slot moved out of position (future chain (epoch, index) and key, in-span fragment symbols, other Merkle leaves, anchor symbols).")
 w()
 ij = attH[attH.attack.isin(["none", "inject"])].groupby(["profile", "pq", "mode", "param"]).agg(share=("share", "mean"), cpu=("rx_cpu_us_per_msg", "mean"), fa=("false_accepts", "sum")).reset_index()
 sh = ij.pivot_table(index=["profile", "pq", "mode"], columns="param", values="share").reset_index()
@@ -772,36 +782,39 @@ pf_names = sorted(a for a in att.attack.unique() if a.startswith("prefill_"))
 rs_h = retention(att, pf_names, "hardened"); rs_b = retention(att, pf_names, "baseline")
 H7W, H7V, H8V = "no data", "no data", "no data"
 if len(rw_h):
-    ww, H7W = verdict7(rw_h)
+    ww, H7W = verdict7(rw_h); H7V = H7W
     f8 = (rw_h.cpu_ratio <= thr8).mean(); f8w = (rw_h.cpu_ratio > thr8).mean()
     H8V = "supported" if f8 >= VR["supported_fraction"] else "refuted" if f8w >= VR["refuted_fraction"] else "inconclusive"
 if len(rs_h):
-    ws, H7V = verdict7(rs_h)
-    wsb, H7VB = verdict7(rs_b) if len(rs_b) else (None, "no data")
+    ws, H7S = verdict7(rs_h)
+    wsb, H7SB = verdict7(rs_b) if len(rs_b) else (None, "no data")
     wwb, H7WB = verdict7(rw_b) if len(rw_b) else (None, "no data")
-    w(f"Retention = share at {ra:.0%} of slots attacked / share without attack (same receiver). **Weak attacker** (1 bogus copy per attacked slot), by family and receiver configuration:"); w()
+    H7V = H7W
+    w(f"Retention = share at {ra:.0%} of slots attacked / share without attack (same receiver). **Pre-registered attacker** (1 bogus copy per attacked slot), by family and receiver configuration:"); w()
     wk = pd.concat([rw_h, rw_b]).groupby(["rx_cfg", "family"]).agg(cells=("retention", "size"), retention_mean=("retention", "mean"), retention_min=("retention", "min"),
                                                                     cells_ge_threshold=("retention", lambda x: int((x >= thr7).sum())), cpu_ratio_max=("cpu_ratio", "max")).reset_index()
     w(md(wk.round(3))); w()
-    w(f"**Strong attacker** (`prefill`), mean retention by family, receiver configuration, order and n bogus frames per attacked slot:"); w()
+    f7h = int((ww.retention >= thr7).sum()); f7b = int((wwb.retention >= thr7).sum()) if wwb is not None else 0
+    w(f"**Verdict H7 (pre-registered: retention >= {thr7:.0%} at {ra:.0%} of slots attacked with 1 bogus frame per attacked slot, in >= {HY['hypotheses']['H7']['supported_fraction']:.0%} of cells): {H7V.upper()}** for the hardened receiver ({f7h}/{len(ww)} cells), {H7WB.upper()} for the pass-4 baseline receiver ({f7b}/{len(wwb) if wwb is not None else 0} cells)." + (" PROVISIONAL." if smoke else ""))
+    w()
+    w(f"**Strong pre-filling attacker: descriptive result, not a verdict, and a plain statement: the defence FAILS against it.** Mean retention by family, receiver configuration, order and n bogus frames per attacked slot:"); w()
     st = pd.concat([rs_h, rs_b]); st["order"] = st.attack.str.replace("prefill_", "", regex=False)
     w(md(st.assign(col=st["order"] + " n=" + st.prefill_n.astype(int).astype(str)).pivot_table(index=["family", "rx_cfg"], columns="col", values="retention", aggfunc="mean").round(3).reset_index().rename_axis(None, axis=1))); w()
     stm = st.groupby(["rx_cfg", "family", "order"]).retention.min().unstack("order").round(3).reset_index().rename_axis(None, axis=1)
-    w("Worst case (minimum retention over the cells, n) by family and order:"); w(); w(md(stm)); w()
+    w("Worst case (minimum retention over the cells and n) by family and order:"); w(); w(md(stm)); w()
     worst = rs_h.loc[rs_h.retention.idxmin()]
     cnt_h = int((ws.retention >= thr7).sum()); cnt_b = int((wsb.retention >= thr7).sum()) if wsb is not None else 0
-    w(f"The strong attacker's worst case over order and n per (profile, scheme, mode) cell decides H7: hardened receiver {cnt_h}/{len(ws)} cells keep >= {thr7:.0%}; baseline receiver {cnt_b}/{len(wsb) if wsb is not None else 0}. "
+    w(f"Per cell, the strong attacker's worst case over order and n leaves {cnt_h}/{len(ws)} cells of the hardened receiver and {cnt_b}/{len(wsb) if wsb is not None else 0} cells of the baseline receiver at >= {thr7:.0%} retention (the pre-registered rule would give {H7S.upper()} / {H7SB.upper()}, reported for information only). "
       f"Worst single case (hardened): {worst['mode']} on {worst.profile}/{worst.pq}, {worst.attack}, n = {int(worst.prefill_n)}: retention {worst.retention:.3f}. "
-      f"**Verdict H7 under the strong attacker (hardened receiver; retention >= {thr7:.0%} at {ra:.0%} of slots attacked in >= {HY['hypotheses']['H7']['supported_fraction']:.0%} of cells): {H7V.upper()}**" + (" PROVISIONAL." if smoke else "") +
-      f" Reported alongside: weak attacker, hardened receiver: {H7W.upper()}; weak attacker, baseline receiver: {H7WB.upper()}; strong attacker, baseline receiver: {H7VB.upper()}.")
+      "Cross-slot (`early`) pre-filling is removed by the field binding (hardened retention vs baseline in the table above), same-slot pre-filling (`before`) is not, and for several modes neither receiver configuration keeps 90%.")
     w()
     for fam_ in sorted(ws.family.unique()):
         g = ws[ws.family == fam_]
-        w(f"- {fam_}: {int((g.retention >= thr7).sum())}/{len(g)} cells >= {thr7:.0%}, minimum {g.retention.min():.3f}.")
+        w(f"- {fam_}: {int((g.retention >= thr7).sum())}/{len(g)} cells >= {thr7:.0%} under the strong attacker, minimum {g.retention.min():.3f}.")
     w()
-    w(f"**Verdict H8 (weak attacker, receiver CPU <= {thr8:g}x at {ra:.0%} injection): {H8V.upper()}** ({int((rw_h.cpu_ratio <= thr8).sum())}/{len(rw_h)} cells; worst ratio {rw_h.cpu_ratio.max():.2f}); strong attacker worst CPU ratio {rs_h.cpu_ratio.max():.2f} (descriptive)." + (" PROVISIONAL." if smoke else ""))
+    w(f"**Verdict H8 (pre-registered: receiver CPU <= {thr8:g}x at {ra:.0%} injection with 1 bogus frame per attacked slot): {H8V.upper()}** ({int((rw_h.cpu_ratio <= thr8).sum())}/{len(rw_h)} cells; worst ratio {rw_h.cpu_ratio.max():.2f}); strong attacker worst CPU ratio {rs_h.cpu_ratio.max():.2f} (descriptive)." + (" PROVISIONAL." if smoke else ""))
     w()
-VERD.append(dict(hypothesis="H7", claim=HY["hypotheses"]["H7"]["text"] + " (verdict under the strong pre-filling attacker; weak attacker reported alongside)", iid="n/a", burst="n/a", verdict=H7V, n_iid=len(rs_h), n_burst=0))
+VERD.append(dict(hypothesis="H7", claim=HY["hypotheses"]["H7"]["text"] + " (pre-registered attacker: 1 bogus frame per attacked slot, hardened receiver; the strong pre-filling attacker is descriptive)", iid="n/a", burst="n/a", verdict=H7V, n_iid=len(rw_h), n_burst=0))
 VERD.append(dict(hypothesis="H8", claim=HY["hypotheses"]["H8"]["text"], iid="n/a", burst="n/a", verdict=H8V, n_iid=len(rw_h), n_burst=0))
 inj = attH[attH.attack.isin(["none", "inject"])]; inj4 = attH[attH.attack.isin(["none", "inject_x4"])]
 fig, ax = plt.subplots(figsize=(7, 4))
@@ -825,15 +838,29 @@ if len(rs_h):
     axs[0].set_ylabel(f"retention at {ra:.0%} of slots attacked"); axs[1].legend(fontsize=5, ncol=2); fig.tight_layout(); fig.savefig(os.path.join(RES, "fig_attack_prefill.pdf")); plt.close(fig)
     w(f"Figure `fig_attack_prefill.pdf` (source `raw/attack_{MN}.csv`; strong attacker, mean retention over pairs and modes of the family).")
 w()
-w("What remains after hardening: same-slot pre-filling. Slot binding removes candidates that arrive in a slot other than the message's own (early order, replays), but an attacker that is in the same slot as the honest frame and sends more bogus candidates than a receiver keeps (chain tags: the cap above; application candidates: 4; paths: 3; roots tried: 6; symbols: 3 per index) still blocks the message in every mode; "
-  "the caps cannot be raised without bounding the receiver CPU (each application candidate costs one signature verification), so the table above is the measured limit, not a proof. Within the channel model the attacker can transmit as many frames as it wants; a real slot limits that number by airtime.")
+w("What the hardening does and what remains: the receiver now ignores any candidate that the shared layout does not place in the slot the frame arrives in (chain (epoch, index), key index, anchor and fragment symbols, Merkle leaves and batch symbols, all checked against the slot derived from the receiver's own clock), "
+  "which removes cross-slot pre-filling (the `early` rows). It does NOT stop same-slot pre-filling: an attacker in the same slot as the honest frame that sends more bogus candidates for the positions of that slot than the receiver keeps (chain tags: the cap above; application candidates: "
+  f"{MO.APP_CAND}; paths: {MO.PATH_CAND}; roots tried: {MO.ROOT_CAND}; symbols: {Assembler.CAND} per index) still blocks the message in every mode (`before` rows); the caps cannot be raised without bounding the receiver CPU (each application candidate costs one signature verification), so the tables are the measured limit, not a proof. "
+  "Within the channel model the attacker can transmit as many frames as it wants; a real slot limits that number by airtime.")
 w()
 
+bc = attH[attH.attack == "bindcost"].copy()
+if len(bc):
+    bc["dropped"] = bc.bind_rej / bc.delivered
+    bct = bc.groupby(["family", "param"]).agg(frames_dropped_by_binding=("dropped", "mean"), honest_share=("share", "mean")).reset_index()
+    w(f"**Cost of the clock-based slot binding** (honest traffic only, i.i.d. loss {AH['background_loss']}, end-of-slot stamping, tolerance {MO.BIND_TOL} slot; `attack` = `bindcost` in `raw/attack_{MN}.csv`): fraction of delivered honest frames dropped by the binding, and honest share, by receiver clock offset (slots; negative = behind):"); w()
+    pv = bct.pivot_table(index="family", columns="param", values="frames_dropped_by_binding").round(3).reset_index().rename_axis(None, axis=1)
+    w(md(pv)); w()
+    pv2 = bct.pivot_table(index="family", columns="param", values="honest_share").round(3).reset_index().rename_axis(None, axis=1)
+    w(md(pv2)); w()
+    w(f"Below |offset| = {MO.BIND_TOL + 0.5:g} slots the binding drops no honest frame (the slot is estimated by rounding); at exactly {MO.BIND_TOL + 0.5:g} slots about half are dropped (rounding tie), beyond it every honest frame, so the receiver authenticates nothing: it fails safe but gives no service. "
+      "At positive offsets of the chain the honest share also drops through the time-safety rule (a receiver ahead of the sender rejects tags as late).")
+    w()
 w("### (ii) Receiver clock offset: prompt and delayed forgery, two reception-time models")
 w()
 w(f"The attacker jams every 5th measured message and forges it with its disclosed key. **Prompt attacker**: the forgery is injected in the key-disclosure slot m + d itself (earliest the harness allows; delivered ahead of the honest key frame). **Delayed attacker** (the pass-4 attacker): one slot later. "
   "**Reception-time model** (`modes.Rx`, stated in the assumptions table): `end` = the receiver stamps a frame at the end of its slot (whole frame received), `start` = at the start of the slot + 1 ms (earliest a frame of that slot can complete: an attacker that decodes the key from the first bytes of the key frame and answers at once). "
-  "Slot binding is off here so that the time-safety rule is measured on its own (with it on, the forgery is dropped at every offset, negative test R4d). `guard` rows: the receiver adds a guard interval of "
+  "Slot binding is off here so that the time-safety rule is measured on its own. With the clock-based binding on, the forgery is rejected within the sync bound by BOTH rules (negative test R4d, offsets 0 and +/-0.5); at larger offsets the binding does not help (its slot estimate shifts with the clock exactly as the time-safety rule does) and from |offset| = " f"{MO.BIND_TOL + 0.5:g} slots on it drops (half, then all) honest frames too (control C4d). `guard` rows: the receiver adds a guard interval of "
   f"{AH['guard_slots']:g} slot to the sync bound ({MO.DELTA_SLOTS} slot) in the time-safety rule.")
 w()
 ck = attH[attH.attack.str.startswith("clock_")].copy()
@@ -901,7 +928,7 @@ w(f"**Verdict H6: {H6V.upper()}.** Forged / stale acceptances: injection (weak a
 w()
 VERD.append(dict(hypothesis="H6", claim=HY["hypotheses"]["H6"]["text"], iid="n/a", burst="n/a", verdict=H6V, n_iid=len(inj_all) + len(rp) + len(within_b), n_burst=0))
 
-w("**What decode-and-verify does and does not protect (pollution).** The receivers keep up to 3 candidate symbols per index and verify subsets (at most 8 failed signature verifications per object; Merkle 16): no extra bytes are sent, the extra work per object is bounded by those verifications. "
+w(f"**What decode-and-verify does and does not protect (pollution).** The receivers keep up to {Assembler.CAND} candidate symbols per index and verify subsets (at most {MO.A_MAX} failed signature verifications per object; Merkle {2 * MO.A_MAX}): no extra bytes are sent, the extra work per object is bounded by those verifications. "
   "It does NOT make a signature's own symbols individually authenticable: a symbol hash list or Merkle root over the symbols of a signature would have to be signed by something other than that signature (circular), so there is no per-symbol authentication for frag / Merkle signatures. "
   "What remains unprotected: an attacker that injects enough bad candidates per index (more than the caps, or more bad symbols than the subset search can avoid when k is large) still blocks an object; the strong-attacker tables above measure how far that goes. "
   "`chain_lead_cont` is protected differently: once an epoch is authenticated its successor's commitment travels inside the MACs, so anchor pollution only affects joiners and recovery, not steady state.")
@@ -915,7 +942,7 @@ w(f"Source: `raw/negative_tests_{MN}.csv`. SIB1 slot timing and message size, ge
 w()
 nt = neg[neg.passed.isin([0, 1])]
 rej = nt[nt.kind == "reject"]; ctl = nt[nt.kind == "control"]
-w(f"**{int(rej.passed.sum())}/{len(rej)} reject tests passed; {int(ctl.passed.sum())}/{len(ctl)} positive controls passed** (reported separately), over {rej.pq.nunique()} PQ schemes x {rej['mode'].nunique()} modes ({neg[neg.kind == 'n/a'].shape[0]} configurations infeasible at the test budget are listed as n/a).")
+w(f"**{int(rej.passed.sum())}/{len(rej)} reject tests passed; {int(ctl.passed.sum())}/{len(ctl)} positive controls passed** (reported separately), over {rej.pq.nunique()} PQ schemes x {rej['mode'].nunique()} modes ({int((neg[neg.kind == 'n/a'].test == 'build').sum())} configurations infeasible at the test budget and {int(neg[neg.kind == 'n/a'].test.str.startswith('C12').sum())} control applications with nothing left to pre-fill are listed as n/a).")
 w()
 gtab = nt.assign(family=nt.test.str.split(" ").str[0]).groupby(["kind", "test"]).agg(runs=("passed", "size"), passed=("passed", "sum"), false_accepts=("false_accepts", "sum")).reset_index()
 w(md(gtab)); w()
