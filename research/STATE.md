@@ -19,25 +19,13 @@ Values: todo / running / awaiting-approval / done.
   bauer2026mayo (2026/1634), aardal2024optimized (2024/1563), pornin2025falcon (2025/123).
 - IEEE Xplore, ACM and Springer could not be searched from the cloud session; check them by
   hand for a survey of post-quantum broadcast authentication.
-- benchmark experiments: only cloud smoke runs exist. On each of your three machines run
-  `MACHINE_NAME=<name> ITER=10000 ITER_SLOW=200 ./run.sh` in `papers/benchmark/experiments`
-  (several hours; `run.sh` has not yet completed in a single clean pass), then commit
-  `papers/benchmark/results/raw/`.
 - benchmark: open TODO-RESULT items are listed at the end of `papers/benchmark/results/summary.md`
   (fragment-header sizes, OSNMA block count, darzi2026a reproduction, loss-model parameters).
-- benchmark: scope kept cross-domain (vehicle profile added to the loss analysis); venue to be chosen after pass 3.
 - benchmark pass 4: audited (audit.md, audit-2.md: no blockers; 4 minors open) and run in full on
   `cloud-vm-4core` at commit 95ec879 (clean tree). Run `MACHINE_NAME=<name> ./run.sh` in
   `papers/benchmark/experiments` on each of your machines (about 35-45 min) and commit `results/raw/`.
-  The three largest raw CSVs are stored gzipped; run.sh regenerates the plain files.
+  The three largest raw CSVs are stored gzipped; run.sh writes gzipped copies for committing.
 - benchmark: draft 3 and numbers.tex are stale against the pass 4 summary; next is the write stage, then review round 4.
 
-## Handoff for a session on the user's own machine
-Branch `ccr-13230261-tcy4yq`. The benchmark paper is at: experiments pass 4 audited and run on
-`cloud-vm-4core`; the user's machines still need the full run. On a machine, from
-`papers/benchmark/experiments`: `QUICK=1 PROCS=<n> ./run.sh`, then
-`MACHINE_NAME=<name> PROCS=<n> ./run.sh 2>&1 | tee ~/run_<name>.log`
-(names/PROCS: ubuntu-i5 4, wsl-i7 6, wsl-ryzen7 3), then commit ONLY that machine's raw files with the
-`git add` command run.sh prints, `git restore papers/benchmark/results`, `git pull --rebase`, push.
-Do not commit summary.md or figures from a user machine. After both machines are pushed: per-machine
-summaries, the two-machine UDP run (native Ubuntu as receiver), then the write stage (draft 4) and review round 4.
+## Handoff
+See `HANDOFF.md` at the repository root for the full history, current results and next steps.

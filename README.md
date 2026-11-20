@@ -3,6 +3,7 @@
 PhD research workspace: post-quantum broadcast authentication for constrained
 cyber-physical systems (vehicles, drones, smart grid).
 
+- `HANDOFF.md` - full history, current results and next steps (start here)
 - `research/brief.md` - thesis scope and fixed decisions
 - `research/STATE.md` - progress of each paper through the pipeline
 - `.claude/agents/` - the eight pipeline agents
