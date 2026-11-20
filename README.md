@@ -12,6 +12,7 @@ Match List I with List II, Assertion–Reason, Statement I / Statement II, multi
 | 4 | Database Management Systems | 480 | [practice/dbms](practice/dbms/README.md) |
 | 5 | System Software and Operating System | 556 | [practice/operating-systems](practice/operating-systems/README.md) |
 | 7 | Data Structures and Algorithms | 458 | [practice/data-structures-algorithms](practice/data-structures-algorithms/README.md) |
+| 8 | Theory of Computation and Compilers | 346 | [practice/toc-compilers](practice/toc-compilers/README.md) |
 | 9 | Data Communication and Computer Networks | 417 | [practice/computer-networks](practice/computer-networks/README.md) |
 
 More subjects will be added in the same format.

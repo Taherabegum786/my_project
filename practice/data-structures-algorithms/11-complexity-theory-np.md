@@ -259,16 +259,16 @@ To prove that a new problem X is NP-complete, it is sufficient to show that
 **Q18.** `Medium`  
 Match List I with List II.  
 List I (Problem): A. Travelling salesman (decision)  B. Euler circuit  C. Minimum cut in a network  D. Graph isomorphism  
-List II (Status): I. In P  II. In P via max-flow min-cut  III. NP-complete  IV. In NP, not known to be in P or NP-complete
+List II (Status): I. In P by checking that every vertex has even degree (and connectivity)  II. In P via max-flow min-cut  III. NP-complete  IV. In NP, not known to be in P or NP-complete
 
-(1) A-I, B-III, C-II, D-IV  
-(2) A-III, B-II, C-I, D-IV  
-(3) A-III, B-I, C-II, D-IV  
+(1) A-III, B-I, C-II, D-IV  
+(2) A-I, B-III, C-II, D-IV  
+(3) A-III, B-II, C-I, D-IV  
 (4) A-III, B-I, C-IV, D-II  
 
 <details><summary>Answer</summary>
 
-**(3)** — Babai's 2015 result puts graph isomorphism in quasi-polynomial time.
+**(1)** — Babai's 2015 result puts graph isomorphism in quasi-polynomial time.
 
 </details>
 

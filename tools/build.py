@@ -119,7 +119,7 @@ TEX_UNICODE = {
     "←": r"$\leftarrow$", "Σ": r"$\Sigma$", "√": r"$\surd$", "³": r"\textsuperscript{3}",
     "σ": r"$\sigma$", "π": r"$\pi$", "⋈": r"$\bowtie$", "÷": r"$\div$", "∪": r"$\cup$",
     "∩": r"$\cap$", "∀": r"$\forall$", "∃": r"$\exists$", "¬": r"$\neg$", "∧": r"$\wedge$",
-    "∨": r"$\vee$", "⊆": r"$\subseteq$", "∈": r"$\in$", "⁺": r"\textsuperscript{+}", "≺": r"$\prec$", "γ": r"$\gamma$", "⌈": r"$\lceil$", "⌉": r"$\rceil$", "⌊": r"$\lfloor$", "⌋": r"$\rfloor$", "ε": r"$\varepsilon$", "⋉": r"$\ltimes$", "θ": r"$\theta$", "Θ": r"$\Theta$", "Ω": r"$\Omega$", "ω": r"$\omega$", "λ": r"$\lambda$", "·": r"$\cdot$", "é": r"\'e", "∏": r"$\prod$", "→→": r"$\twoheadrightarrow$", "²": r"\textsuperscript{2}", "—": "---", "–": "--", "è": r"\`e",
+    "∨": r"$\vee$", "⊆": r"$\subseteq$", "∈": r"$\in$", "⁺": r"\textsuperscript{+}", "≺": r"$\prec$", "γ": r"$\gamma$", "⌈": r"$\lceil$", "⌉": r"$\rceil$", "⌊": r"$\lfloor$", "⌋": r"$\rfloor$", "ε": r"$\varepsilon$", "⋉": r"$\ltimes$", "θ": r"$\theta$", "Θ": r"$\Theta$", "Ω": r"$\Omega$", "ω": r"$\omega$", "λ": r"$\lambda$", "·": r"$\cdot$", "é": r"\'e", "∅": r"$\emptyset$", "δ": r"$\delta$", "⇒": r"$\Rightarrow$", "Γ": r"$\Gamma$", "⊂": r"$\subset$", "∉": r"$\notin$", "⊢": r"$\vdash$", "β": r"$\beta$", "⊃": r"$\supset$", "≐": r"$\doteq$", "∏": r"$\prod$", "→→": r"$\twoheadrightarrow$", "²": r"\textsuperscript{2}", "—": "---", "–": "--", "è": r"\`e",
 }
 
 # Multi-character symbols must be replaced before their single-character parts.

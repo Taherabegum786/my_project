@@ -2528,8 +2528,8 @@ To prove that a new problem X is NP-complete, it is sufficient to show that
 \begin{question}{M}
 Match List I with List II.\\
 List I (Problem): A. Travelling salesman (decision)  B. Euler circuit  C. Minimum cut in a network  D. Graph isomorphism\\
-List II (Status): I. In P  II. In P via max-flow min-cut  III. NP-complete  IV. In NP, not known to be in P or NP-complete
-\optsshort{A-I, B-III, C-II, D-IV}{A-III, B-II, C-I, D-IV}{A-III, B-I, C-II, D-IV}{A-III, B-I, C-IV, D-II}
+List II (Status): I. In P by checking that every vertex has even degree (and connectivity)  II. In P via max-flow min-cut  III. NP-complete  IV. In NP, not known to be in P or NP-complete
+\optsshort{A-III, B-I, C-II, D-IV}{A-I, B-III, C-II, D-IV}{A-III, B-II, C-I, D-IV}{A-III, B-I, C-IV, D-II}
 \end{question}
 
 \begin{question}{M}
@@ -2601,7 +2601,7 @@ Karp's 1972 paper showed NP-completeness of how many combinatorial problems?
 \ans{15}{3}{Tautology (is every assignment satisfying?) is co-NP-complete.}
 \ans{16}{3}{P is closed under complement, so P = NP implies NP = co-NP.}
 \ans{17}{1}{The reduction must go from the known problem to X.}
-\ans{18}{3}{Babai's 2015 result puts graph isomorphism in quasi-polynomial time.}
+\ans{18}{1}{Babai's 2015 result puts graph isomorphism in quasi-polynomial time.}
 \ans{19}{4}{Such problems (e.g. 3-partition, TSP) have no pseudo-polynomial algorithm unless P = NP.}
 \ans{20}{1}{3-SAT is in NP, and the reduction from SAT shows that it is NP-hard.}
 \ans{21}{1}{Optimization versions are NP-hard; decision versions with a bound k are in NP.}

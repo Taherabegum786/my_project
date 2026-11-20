@@ -1,0 +1,470 @@
+# Set 3 — Context-Free Grammars, Derivations, Ambiguity, Chomsky and Greibach Normal Forms
+
+**32 questions** — High: 11, Medium: 20, Low: 1
+
+Each question carries 2 marks, has exactly one correct option and no negative marking (UGC NET Paper II pattern). Click **Answer** to check.
+
+---
+
+**Q1.** `High`  
+The grammar E → E + E | E * E | id generates the string id + id * id with how many distinct parse trees?
+
+(1) 1  
+(2) 4  
+(3) 3  
+(4) 2  
+
+<details><summary>Answer</summary>
+
+**(4)** — One tree groups (id + id) * id and the other id + (id * id), so the grammar is ambiguous.
+
+</details>
+
+**Q2.** `High`  
+With the grammar E → E + E | E * E | id, the number of parse trees for id + id * id + id (three operators) is
+
+(1) 6  
+(2) 5  
+(3) 3  
+(4) 4  
+
+<details><summary>Answer</summary>
+
+**(2)** — The number of ways to bracket k binary operators is the Catalan number C(k) = C(3) = 5.
+
+</details>
+
+**Q3.** `Medium`  
+With the grammar S → SS | a, the number of parse trees for the string aaaa is
+
+(1) 14  
+(2) 3  
+(3) 4  
+(4) 5  
+
+<details><summary>Answer</summary>
+
+**(4)** — It is the Catalan number C(3) = 5.
+
+</details>
+
+**Q4.** `High`  
+A grammar is ambiguous if
+
+(1) it has left recursion  
+(2) it has ε-productions  
+(3) it generates an infinite language  
+(4) some string has more than one leftmost derivation (or more than one parse tree)  
+
+<details><summary>Answer</summary>
+
+**(4)** — Equivalently, some string has more than one rightmost derivation.
+
+</details>
+
+**Q5.** `High`  
+Given below are two statements.  
+Statement I: Whether an arbitrary context-free grammar is ambiguous is undecidable.  
+Statement II: Every context-free language has an unambiguous grammar.
+
+(1) Both Statement I and Statement II are true  
+(2) Both Statement I and Statement II are false  
+(3) Statement I is true but Statement II is false  
+(4) Statement I is false but Statement II is true  
+
+<details><summary>Answer</summary>
+
+**(3)** — Some CFLs, such as {a^i b^j c^k : i = j or j = k}, are inherently ambiguous.
+
+</details>
+
+**Q6.** `High`  
+Which of the following languages is inherently ambiguous?
+
+(1) {a^i b^j c^k : i = j or j = k}  
+(2) {a^n b^m : n ≠ m}  
+(3) {w w^R : w ∈ {a, b}*}  
+(4) {a^n b^n : n ≥ 0}  
+
+<details><summary>Answer</summary>
+
+**(1)** — Strings with i = j = k have two essentially different derivations in every grammar.
+
+</details>
+
+**Q7.** `High`  
+In Chomsky normal form, every production is of the form
+
+(1) A → α with |α| ≤ 2  
+(2) A → BC or A → a (plus S → ε if ε is in the language)  
+(3) A → aα with α a string of variables  
+(4) A → aB or A → a  
+
+<details><summary>Answer</summary>
+
+**(2)** — B and C are variables and a is a terminal.
+
+</details>
+
+**Q8.** `High`  
+If a grammar is in Chomsky normal form, the number of steps in a derivation of a string of length n ≥ 1 is
+
+(1) 2n  
+(2) n  
+(3) 2n − 1  
+(4) n + 1  
+
+<details><summary>Answer</summary>
+
+**(3)** — n − 1 applications of A → BC and n applications of A → a.
+
+</details>
+
+**Q9.** `High`  
+In Greibach normal form, every production is of the form
+
+(1) A → BC  
+(2) A → a only  
+(3) A → aα, where a is a terminal and α is a (possibly empty) string of variables  
+(4) A → αa  
+
+<details><summary>Answer</summary>
+
+**(3)** — Each step of a derivation produces exactly one terminal, so a string of length n needs n steps.
+
+</details>
+
+**Q10.** `High`  
+Arrange the steps of converting a context-free grammar to Chomsky normal form in a correct order.  
+A. Eliminate unit productions  B. Eliminate ε-productions  C. Break right sides longer than two into binary productions and replace terminals in long right sides by variables  D. Eliminate useless symbols
+
+(1) A, B, C, D  
+(2) D, C, B, A  
+(3) C, B, A, D  
+(4) B, A, D, C  
+
+<details><summary>Answer</summary>
+
+**(4)** — Removing ε-productions can create unit productions, and both can create useless symbols, so this order is safe.
+
+</details>
+
+**Q11.** `Medium`  
+Given below are two statements: one is labelled as Assertion A and the other is labelled as Reason R.  
+Assertion A: In a CNF grammar, the parse tree of a string of length n has height at least about log2 n.  
+Reason R: Every internal node of a CNF parse tree that is not directly above a terminal has exactly two children.
+
+(1) Both A and R are true and R is the correct explanation of A  
+(2) Both A and R are true but R is NOT the correct explanation of A  
+(3) A is true but R is false  
+(4) A is false but R is true  
+
+<details><summary>Answer</summary>
+
+**(1)** — The tree is essentially binary, which is used in the pumping lemma for CFLs.
+
+</details>
+
+**Q12.** `High`  
+The CYK algorithm decides membership of a string of length n for a grammar in Chomsky normal form in time
+
+(1) O(n³)  
+(2) O(n)  
+(3) O(2^n)  
+(4) O(n²)  
+
+<details><summary>Answer</summary>
+
+**(1)** — It fills a triangular table over all substrings and split points.
+
+</details>
+
+**Q13.** `High`  
+Left recursion A → Aα | β is removed by replacing it with
+
+(1) A → Aβ | α  
+(2) A → βα*  
+(3) A → βA', A' → αA' | ε  
+(4) A → αA', A' → βA' | ε  
+
+<details><summary>Answer</summary>
+
+**(3)** — Both generate β α*, but the new grammar is right-recursive and suits top-down parsing.
+
+</details>
+
+**Q14.** `Medium`  
+Left factoring is used to transform a grammar so that
+
+(1) left recursion is removed  
+(2) a predictive parser can choose a production with one symbol of lookahead when alternatives share a common prefix  
+(3) the grammar becomes ambiguous  
+(4) ε-productions are removed  
+
+<details><summary>Answer</summary>
+
+**(2)** — A → αβ1 | αβ2 becomes A → αA', A' → β1 | β2.
+
+</details>
+
+**Q15.** `Medium`  
+Given below are two statements.  
+Statement I: Removing useless symbols changes the language generated by the grammar.  
+Statement II: A variable is useless if it is not reachable from the start symbol or derives no terminal string.
+
+(1) Both Statement I and Statement II are true  
+(2) Both Statement I and Statement II are false  
+(3) Statement I is true but Statement II is false  
+(4) Statement I is false but Statement II is true  
+
+<details><summary>Answer</summary>
+
+**(4)** — Useless symbols take part in no derivation of a terminal string, so removing them does not change the language.
+
+</details>
+
+**Q16.** `Medium`  
+A unit production is a production of the form
+
+(1) A → BC  
+(2) A → ε  
+(3) A → B, where A and B are variables  
+(4) A → a  
+
+<details><summary>Answer</summary>
+
+**(3)** — Unit productions are removed by substituting the productions of B.
+
+</details>
+
+**Q17.** `Medium`  
+The grammar S → aSb | ε generates
+
+(1) {a^n b^m : n, m ≥ 0}  
+(2) {(ab)^n : n ≥ 0}  
+(3) {a^n b^n : n ≥ 0}  
+(4) {a^n b^n : n ≥ 1}  
+
+<details><summary>Answer</summary>
+
+**(3)** — Each application of S → aSb adds one a and one b.
+
+</details>
+
+**Q18.** `Medium`  
+The grammar S → aSa | bSb | a | b | ε generates
+
+(1) strings with equal numbers of a's and b's  
+(2) strings of even length only  
+(3) all palindromes over {a, b}  
+(4) all strings over {a, b}  
+
+<details><summary>Answer</summary>
+
+**(3)** — ε gives even-length palindromes and a or b gives odd-length ones.
+
+</details>
+
+**Q19.** `Medium`  
+The grammar S → aSbS | bSaS | ε generates
+
+(1) palindromes  
+(2) strings with more a's than b's  
+(3) strings with equal numbers of a's and b's  
+(4) a^n b^n only  
+
+<details><summary>Answer</summary>
+
+**(3)** — Every production adds one a and one b, and the grammar can generate any balanced arrangement.
+
+</details>
+
+**Q20.** `Medium`  
+The dangling-else ambiguity in "if E then if E then S else S" is usually resolved by
+
+(1) reporting an error  
+(2) ignoring the else  
+(3) associating each else with the outermost if  
+(4) associating each else with the nearest unmatched then (if)  
+
+<details><summary>Answer</summary>
+
+**(4)** — Parser generators such as Yacc resolve the shift-reduce conflict in favour of shifting.
+
+</details>
+
+**Q21.** `Medium`  
+To make the expression grammar E → E + E | E * E | id unambiguous, giving * higher precedence than + and making both left-associative, we write
+
+(1) E → E * T | T, T → T + F | F, F → id  
+(2) E → T + E | T, T → F * T | F, F → id  
+(3) E → E + T | T, T → T * F | F, F → id  
+(4) E → id + E | id * E | id  
+
+<details><summary>Answer</summary>
+
+**(3)** — Precedence is encoded by levels; left recursion gives left associativity.
+
+</details>
+
+**Q22.** `Medium`  
+Given below are two statements: one is labelled as Assertion A and the other is labelled as Reason R.  
+Assertion A: The grammar E → E − E | id generates the right language for subtraction but is unsuitable for compilers.  
+Reason R: The grammar is ambiguous, so id − id − id could be grouped as (id − id) − id or id − (id − id), which give different values.
+
+(1) Both A and R are true and R is the correct explanation of A  
+(2) Both A and R are true but R is NOT the correct explanation of A  
+(3) A is true but R is false  
+(4) A is false but R is true  
+
+<details><summary>Answer</summary>
+
+**(1)** — Compilers need a grammar that encodes associativity.
+
+</details>
+
+**Q23.** `Medium`  
+A leftmost derivation is one in which
+
+(1) terminals are replaced first  
+(2) the start symbol is never used  
+(3) the leftmost variable is replaced at each step  
+(4) the rightmost variable is replaced at each step  
+
+<details><summary>Answer</summary>
+
+**(3)** — Top-down parsers construct leftmost derivations; bottom-up parsers construct rightmost derivations in reverse.
+
+</details>
+
+**Q24.** `Medium`  
+Given below are two statements.  
+Statement I: Each parse tree corresponds to exactly one leftmost derivation.  
+Statement II: A string with two different rightmost derivations always has two different parse trees.
+
+(1) Both Statement I and Statement II are true  
+(2) Both Statement I and Statement II are false  
+(3) Statement I is true but Statement II is false  
+(4) Statement I is false but Statement II is true  
+
+<details><summary>Answer</summary>
+
+**(1)** — Parse trees correspond one-to-one with leftmost derivations, and also with rightmost derivations.
+
+</details>
+
+**Q25.** `Medium`  
+The yield of a parse tree is
+
+(1) the height of the tree  
+(2) the number of nodes  
+(3) the string of leaf labels read from left to right  
+(4) the root label  
+
+<details><summary>Answer</summary>
+
+**(3)** — For a complete parse tree it is a terminal string in the language.
+
+</details>
+
+**Q26.** `Medium`  
+A context-free grammar G = (V, T, P, S) is in Chomsky normal form with 3 variables. The maximum number of distinct productions of the form A → BC is
+
+(1) 9  
+(2) 81  
+(3) 27  
+(4) 18  
+
+<details><summary>Answer</summary>
+
+**(3)** — 3 choices for each of A, B and C: 3³ = 27.
+
+</details>
+
+**Q27.** `Medium`  
+Which of the following grammars is left-recursive?
+
+(1) S → Sa | b  
+(2) S → ab  
+(3) S → aSb | ε  
+(4) S → aS | b  
+
+<details><summary>Answer</summary>
+
+**(1)** — A production whose right side begins with its own left-hand variable is left-recursive.
+
+</details>
+
+**Q28.** `Medium`  
+Given below are two statements.  
+Statement I: Every context-free grammar is a regular grammar.  
+Statement II: Every context-free language is regular.
+
+(1) Both Statement I and Statement II are true  
+(2) Both Statement I and Statement II are false  
+(3) Statement I is true but Statement II is false  
+(4) Statement I is false but Statement II is true  
+
+<details><summary>Answer</summary>
+
+**(2)** — Regular grammars are a restricted kind of CFG, and {a^n b^n} is context-free but not regular.
+
+</details>
+
+**Q29.** `Low`  
+BNF (Backus-Naur Form) is a notation used to describe
+
+(1) context-free grammars of programming languages  
+(2) regular expressions  
+(3) machine code  
+(4) lexical tokens only  
+
+<details><summary>Answer</summary>
+
+**(1)** — It was first used to define ALGOL 60.
+
+</details>
+
+**Q30.** `Medium`  
+Given below are two statements: one is labelled as Assertion A and the other is labelled as Reason R.  
+Assertion A: Converting a grammar to Chomsky normal form always removes left recursion.  
+Reason R: In Greibach normal form every production begins with a terminal.
+
+(1) Both A and R are true and R is the correct explanation of A  
+(2) Both A and R are true but R is NOT the correct explanation of A  
+(3) A is true but R is false  
+(4) A is false but R is true  
+
+<details><summary>Answer</summary>
+
+**(4)** — CNF productions such as A → AB can still be left-recursive; it is GNF that removes left recursion, because of R.
+
+</details>
+
+**Q31.** `Medium`  
+The grammar S → aB | bA, A → a | aS | bAA, B → b | bS | aBB generates
+
+(1) a^n b^n  
+(2) palindromes  
+(3) strings with equal numbers of a's and b's (non-empty)  
+(4) strings ending with a  
+
+<details><summary>Answer</summary>
+
+**(3)** — A derives strings with one more a than b, and B strings with one more b than a.
+
+</details>
+
+**Q32.** `Medium`  
+Which of the following is the correct leftmost derivation of id + id using E → E + T | T, T → id?
+
+(1) E ⇒ T ⇒ id  
+(2) E ⇒ E + T ⇒ T + T ⇒ id + T ⇒ id + id  
+(3) E ⇒ E + T ⇒ E + id ⇒ T + id ⇒ id + id  
+(4) E ⇒ E + T ⇒ id + id  
+
+<details><summary>Answer</summary>
+
+**(2)** — The second option is a rightmost derivation.
+
+</details>
