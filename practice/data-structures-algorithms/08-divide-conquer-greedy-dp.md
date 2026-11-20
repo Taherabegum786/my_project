@@ -32,14 +32,14 @@ Strassen's algorithm multiplies two 2 × 2 block matrices using
 
 <details><summary>Answer</summary>
 
-**(2)** — It trades one multiplication for extra additions, giving Θ(n^2.81).
+**(2)** — It trades one multiplication for extra additions, giving Θ(n^(2.81)).
 
 </details>
 
 **Q3.** `Medium`  
 Karatsuba's algorithm multiplies two n-digit numbers using
 
-(1) three half-size multiplications, giving Θ(n^1.585)  
+(1) three half-size multiplications, giving Θ(n^(1.585))  
 (2) two half-size multiplications  
 (3) four half-size multiplications  
 (4) n multiplications  
@@ -395,7 +395,7 @@ The dynamic-programming algorithm for constructing an optimal binary search tree
 **Q28.** `Medium`  
 The longest increasing subsequence of a sequence of n numbers can be found in
 
-(1) O(n^1.5)  
+(1) O(n^(1.5))  
 (2) O(n log n)  
 (3) O(n³)  
 (4) O(2^n)  

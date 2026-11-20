@@ -35,7 +35,7 @@ In the triplet (row, column, value) representation of a sparse matrix with t non
 \end{question}
 
 \begin{question}{H}
-The value of the postfix expression 6 2 3 + $-$ 3 8 2 / + * 2 ^ 3 + is
+The value of the postfix expression 6 2 3 + $-$ 3 8 2 / + * 2 \textasciicircum{} 3 + is
 \optsshort{55}{52}{64}{49}
 \end{question}
 
@@ -50,8 +50,8 @@ The postfix form of the infix expression A + B * C $-$ D / E is
 \end{question}
 
 \begin{question}{H}
-The postfix form of A + B * (C ^ D $-$ E) ^ (F + G * H) $-$ I is
-\optsshort{ABCDE\textsuperscript{$-$FGH}*+^*+I$-$}{ABCD\textsuperscript{E}$-$FGH*+^+*I$-$}{ABCD\textsuperscript{E}$-$FGH*+^*+I$-$}{AB+CD\textsuperscript{E}$-$*FGH*+\textsuperscript{I}$-$}
+The postfix form of A + B * (C \textasciicircum{} D $-$ E) \textasciicircum{} (F + G * H) $-$ I is
+\optsshort{ABCDE\textasciicircum{}$-$FGH*+\textasciicircum{}*+I$-$}{ABCD\textasciicircum{}E$-$FGH*+\textasciicircum{}+*I$-$}{ABCD\textasciicircum{}E$-$FGH*+\textasciicircum{}*+I$-$}{AB+CD\textasciicircum{}E$-$*FGH*+\textasciicircum{}I$-$}
 \end{question}
 
 \begin{question}{H}
@@ -60,8 +60,8 @@ The prefix form of the infix expression A + B * C $-$ D / E is
 \end{question}
 
 \begin{question}{M}
-Since ^ is right-associative, the postfix form of A ^ B ^ C is
-\optsshort{ABC^ ^ (with A\textsuperscript{B} first)}{ABC^^}{AB\textsuperscript{C}^}{A\textsuperscript{BC}^}
+Since \textasciicircum{} is right-associative, the postfix form of A \textasciicircum{} B \textasciicircum{} C is
+\optsshort{\textasciicircum{}\textasciicircum{}ABC}{ABC\textasciicircum{}\textasciicircum{}}{AB\textasciicircum{}C\textasciicircum{}}{A\textasciicircum{}BC\textasciicircum{}}
 \end{question}
 
 \begin{question}{M}
@@ -232,9 +232,9 @@ Statement II: In row-major order, the elements of each row are stored contiguous
 \ans{7}{2}{6 $-$ 5 = 1; 8/2 + 3 = 7; 1 $\times$ 7 = 7; 7\textsuperscript{2} = 49; 49 + 3 = 52.}
 \ans{8}{2}{5 $\times$ (6 + 2) = 40; 12/4 = 3; 40 $-$ 3 = 37.}
 \ans{9}{4}{* and / are applied before + and $-$, and operators of equal precedence associate left to right.}
-\ans{10}{3}{^ has the highest precedence and is right-associative.}
+\ans{10}{3}{\textasciicircum{} has the highest precedence and is right-associative.}
 \ans{11}{1}{The last operator applied is $-$, whose operands are A + B * C and D / E.}
-\ans{12}{2}{A ^ B ^ C means A ^ (B ^ C), giving ABC^^.}
+\ans{12}{2}{A \textasciicircum{} B \textasciicircum{} C means A \textasciicircum{} (B \textasciicircum{} C), giving ABC\textasciicircum{}\textasciicircum{}.}
 \ans{13}{2}{/ and * are left-associative: ((A $-$ B) / C) * D, then + E.}
 \ans{14}{1}{2, 3 and 4 are pushed before the first operator is applied.}
 \ans{15}{2}{After 4, 5 and 3 are popped, 2 is above 1 on the stack, so 1 cannot come out before 2.}
@@ -398,7 +398,7 @@ The kth smallest element in a binary min-heap of n elements can be found, using 
 \begin{question}{M}
 Match List I with List II.\\
 List I (Heap variant): A. Binomial heap  B. Fibonacci heap  C. d-ary heap\\
-List II (Feature): I. Height O(log\_d n), cheaper decrease-key and more expensive delete-min  II. O(1) amortized decrease-key, used to speed up Dijkstra and Prim  III. Collection of binomial trees supporting union in O(log n)
+List II (Feature): I. Height O(log\_\allowbreak{}d n), cheaper decrease-key and more expensive delete-min  II. O(1) amortized decrease-key, used to speed up Dijkstra and Prim  III. Collection of binomial trees supporting union in O(log n)
 \optsshort{A-III, B-II, C-I}{A-II, B-III, C-I}{A-I, B-II, C-III}{A-III, B-I, C-II}
 \end{question}
 
@@ -949,7 +949,7 @@ Statement II: The height of a red-black tree with n nodes can be $\Theta$(n).
 
 \begin{question}{M}
 In a B-tree of order m with n keys, the height is
-\optsshort{O(m log n)}{O(n)}{O(log\_m n)}{O(n/m)}
+\optsshort{O(m log n)}{O(n)}{O(log\_\allowbreak{}m n)}{O(n/m)}
 \end{question}
 
 \begin{answers}
@@ -1175,7 +1175,7 @@ In the mid-square hashing method
 \ans{15}{3}{($\surd$5 $-$ 1)/2 $\approx$ 0.618 works well; the value of m is not critical in this method.}
 \ans{16}{1}{P(no collision) = (10 $\times$ 9 $\times$ 8) / 10\textsuperscript{3} = 0.72, so P(collision) = 0.28.}
 \ans{17}{1}{This guarantees good expected performance for any input.}
-\ans{18}{1}{The second-level table for a slot with n\_j keys has size n\_j\textsuperscript{2}, which makes collisions avoidable.}
+\ans{18}{1}{The second-level table for a slot with n\_\allowbreak{}j keys has size n\_\allowbreak{}j\textsuperscript{2}, which makes collisions avoidable.}
 \ans{19}{4}{Doubling the table keeps the amortized insertion cost O(1).}
 \ans{20}{2}{Secondary clustering refers to keys with the same home slot sharing a probe sequence.}
 \ans{21}{4}{The first $\lceil$m/2$\rceil$ probe positions are distinct when m is prime.}
@@ -1503,7 +1503,7 @@ Using the master theorem, the solution of T(n) = 4T(n/2) + n\textsuperscript{3} 
 
 \begin{question}{H}
 The recurrence of Strassen's matrix multiplication, T(n) = 7T(n/2) + $\Theta$(n\textsuperscript{2}), has the solution
-\optsshort{$\Theta$(n\textsuperscript{3})}{$\Theta$(n\textsuperscript{2} log n)}{$\Theta$(n\textsuperscript{2})}{$\Theta$(n\textsuperscript{log2 7}) $\approx$ $\Theta$(n\textsuperscript{2}.81)}
+\optsshort{$\Theta$(n\textsuperscript{3})}{$\Theta$(n\textsuperscript{2} log n)}{$\Theta$(n\textsuperscript{2})}{$\Theta$(n\textsuperscript{log2 7}) $\approx$ $\Theta$(n\textsuperscript{2.81})}
 \end{question}
 
 \begin{question}{H}
@@ -1538,7 +1538,7 @@ The solution of T(n) = 3T(n/4) + n log n is
 
 \begin{question}{M}
 The solution of T(n) = T(n/3) + T(2n/3) + n is
-\optsshort{$\Theta$(n log n)}{$\Theta$(n)}{$\Theta$(n\textsuperscript{2})}{$\Theta$(n\textsuperscript{1}.5)}
+\optsshort{$\Theta$(n log n)}{$\Theta$(n)}{$\Theta$(n\textsuperscript{2})}{$\Theta$(n\textsuperscript{1.5})}
 \end{question}
 
 \begin{question}{M}
@@ -1621,7 +1621,7 @@ The value of n\textsuperscript{1/log2 n} is
 
 \begin{question}{M}
 Which of the following is NOT O(n\textsuperscript{2})?
-\optsshort{n log n}{n}{100n\textsuperscript{2} + 5}{n\textsuperscript{2}.5}
+\optsshort{n log n}{n}{100n\textsuperscript{2} + 5}{n\textsuperscript{2.5}}
 \end{question}
 
 \begin{question}{M}
@@ -1661,18 +1661,18 @@ Choose the correct answer from the options given below:
 
 \begin{question}{M}
 The solution of T(n) = 8T(n/2) + n\textsuperscript{2} is
-\optsshort{$\Theta$(n\textsuperscript{3})}{$\Theta$(n\textsuperscript{2} log n)}{$\Theta$(n\textsuperscript{2})}{$\Theta$(n\textsuperscript{2}.81)}
+\optsshort{$\Theta$(n\textsuperscript{3})}{$\Theta$(n\textsuperscript{2} log n)}{$\Theta$(n\textsuperscript{2})}{$\Theta$(n\textsuperscript{2.81})}
 \end{question}
 
 \begin{question}{M}
 The solution of T(n) = 3T(n/2) + n (Karatsuba multiplication) is
-\optsshort{$\Theta$(n log n)}{$\Theta$(n\textsuperscript{log2 3}) $\approx$ $\Theta$(n\textsuperscript{1}.585)}{$\Theta$(n\textsuperscript{1}.5)}{$\Theta$(n\textsuperscript{2})}
+\optsshort{$\Theta$(n log n)}{$\Theta$(n\textsuperscript{log2 3}) $\approx$ $\Theta$(n\textsuperscript{1.585})}{$\Theta$(n\textsuperscript{1.5})}{$\Theta$(n\textsuperscript{2})}
 \end{question}
 
 \begin{question}{M}
 Given below are two statements.\\
-Statement I: n log n = O(n\textsuperscript{1}.001).\\
-Statement II: (log n)\textsuperscript{100} = O(n\textsuperscript{0}.01).
+Statement I: n log n = O(n\textsuperscript{1.001}).\\
+Statement II: (log n)\textsuperscript{100} = O(n\textsuperscript{0.01}).
 \optslong{Both Statement I and Statement II are true}{Both Statement I and Statement II are false}{Statement I is true but Statement II is false}{Statement I is false but Statement II is true}
 \end{question}
 
@@ -1702,8 +1702,8 @@ int i = n; while (i > 1) \{ i = i / 3; \}
 \ans{12}{3}{This is the Tower of Hanoi recurrence: T(n) = 2\textsuperscript{n} $-$ 1.}
 \ans{13}{2}{Substituting n = 2\textsuperscript{m} gives S(m) = 2S(m/2) + m, so S(m) = $\Theta$(m log m).}
 \ans{14}{2}{With n = 2\textsuperscript{m}: S(m) = S(m/2) + 1 = $\Theta$(log m).}
-\ans{15}{4}{n\textsuperscript{log4 3} $\approx$ n\textsuperscript{0}.79 is dominated by n log n (case 3).}
-\ans{16}{1}{A recursion tree has about log\_(3/2) n levels, each doing O(n) work.}
+\ans{15}{4}{n\textsuperscript{log4 3} $\approx$ n\textsuperscript{0.79} is dominated by n log n (case 3).}
+\ans{16}{1}{A recursion tree has about log\_\allowbreak{}(3/2) n levels, each doing O(n) work.}
 \ans{17}{3}{This falls between the master theorem cases; the extended case 2 gives $\Theta$(n log\textsuperscript{2} n).}
 \ans{18}{4}{i doubles each iteration, so the loop runs about log2 n times.}
 \ans{19}{4}{The inner loop runs n/i times: n(1 + 1/2 + ... + 1/n) = $\Theta$(n log n).}
@@ -1717,7 +1717,7 @@ int i = n; while (i > 1) \{ i = i / 3; \}
 \ans{27}{2}{Bit i flips n/2\textsuperscript{i} times, so the total is less than 2n.}
 \ans{28}{4}{Big-O is transitive but not symmetric (n = O(n\textsuperscript{2}), but n\textsuperscript{2} $\neq$ O(n)).}
 \ans{29}{4}{n\textsuperscript{1/log2 n} = 2\textsuperscript{log2 n / log2 n} = 2.}
-\ans{30}{4}{n\textsuperscript{2}.5 grows faster than n\textsuperscript{2}.}
+\ans{30}{4}{n\textsuperscript{2.5} grows faster than n\textsuperscript{2}.}
 \ans{31}{1}{The number of subproblems a must be a constant.}
 \ans{32}{4}{For small n or large constant factors an O(n\textsuperscript{2}) algorithm can be faster; R is exactly why A is false.}
 \ans{33}{4}{T(n) = 2T(n/2) + 1 = $\Theta$(n).}
@@ -1747,7 +1747,7 @@ Strassen's algorithm multiplies two 2 $\times$ 2 block matrices using
 
 \begin{question}{M}
 Karatsuba's algorithm multiplies two n-digit numbers using
-\optslong{three half-size multiplications, giving $\Theta$(n\textsuperscript{1}.585)}{two half-size multiplications}{four half-size multiplications}{n multiplications}
+\optslong{three half-size multiplications, giving $\Theta$(n\textsuperscript{1.585})}{two half-size multiplications}{four half-size multiplications}{n multiplications}
 \end{question}
 
 \begin{question}{H}
@@ -1878,7 +1878,7 @@ The dynamic-programming algorithm for constructing an optimal binary search tree
 
 \begin{question}{M}
 The longest increasing subsequence of a sequence of n numbers can be found in
-\optsshort{O(n\textsuperscript{1}.5)}{O(n log n)}{O(n\textsuperscript{3})}{O(2\textsuperscript{n})}
+\optsshort{O(n\textsuperscript{1.5})}{O(n log n)}{O(n\textsuperscript{3})}{O(2\textsuperscript{n})}
 \end{question}
 
 \begin{question}{M}
@@ -1941,7 +1941,7 @@ Binary search is an example of which design technique?
 
 \begin{answers}
 \ans{1}{4}{Standard classification of algorithms by design technique.}
-\ans{2}{2}{It trades one multiplication for extra additions, giving $\Theta$(n\textsuperscript{2}.81).}
+\ans{2}{2}{It trades one multiplication for extra additions, giving $\Theta$(n\textsuperscript{2.81}).}
 \ans{3}{1}{T(n) = 3T(n/2) + O(n).}
 \ans{4}{3}{Divide and conquer suits independent subproblems; overlapping subproblems are what DP exploits.}
 \ans{5}{4}{(A1 A2) A3 costs 10$\cdot$100$\cdot$5 + 10$\cdot$5$\cdot$50 = 5000 + 2500 = 7500; A1 (A2 A3) costs 75,000.}
@@ -2421,7 +2421,7 @@ The A* search algorithm finds an optimal path if its heuristic h is
 \ans{35}{3}{Each vertex's row of V entries is scanned.}
 \ans{36}{2}{v is a descendant of u (its interval is nested inside u's), so a non-tree edge u $\rightarrow$ v is a forward edge.}
 \ans{37}{4}{Because of R, BFS is correct only for unweighted graphs (or equal weights); otherwise Dijkstra is needed.}
-\ans{38}{2}{K\_n has n(n $-$ 1)/2 edges.}
+\ans{38}{2}{K\_\allowbreak{}n has n(n $-$ 1)/2 edges.}
 \ans{39}{4}{The cut \{S\} has capacity 3 + 2 = 5, and S$\rightarrow$A$\rightarrow$T 2, S$\rightarrow$A$\rightarrow$B$\rightarrow$T 1, S$\rightarrow$B$\rightarrow$T 2 achieves 5.}
 \ans{40}{2}{With h = 0, A* reduces to Dijkstra's algorithm.}
 \end{answers}
@@ -2696,7 +2696,7 @@ Evaluating a polynomial of degree n at a point using Horner's rule requires
 
 \begin{question}{H}
 Multiplying two polynomials of degree n using the fast Fourier transform takes
-\optsshort{O(n log\textsuperscript{2} n)}{O(n\textsuperscript{2})}{O(n\textsuperscript{1}.58)}{O(n log n)}
+\optsshort{O(n log\textsuperscript{2} n)}{O(n\textsuperscript{2})}{O(n\textsuperscript{1.58})}{O(n log n)}
 \end{question}
 
 \begin{question}{H}
@@ -2824,7 +2824,7 @@ Reason R: The inverse DFT requires $\Theta$(n\textsuperscript{2}) time.
 \ans{15}{3}{a0 + x(a1 + x(a2 + ... + x an)).}
 \ans{16}{4}{Evaluate at 2n roots of unity with FFT, multiply pointwise, and interpolate with inverse FFT.}
 \ans{17}{3}{Naive evaluation at n points with Horner's rule takes O(n\textsuperscript{2}).}
-\ans{18}{2}{A(x) = A\_even(x\textsuperscript{2}) + x A\_odd(x\textsuperscript{2}) splits the problem into two halves.}
+\ans{18}{2}{A(x) = A\_\allowbreak{}even(x\textsuperscript{2}) + x A\_\allowbreak{}odd(x\textsuperscript{2}) splits the problem into two halves.}
 \ans{19}{1}{The polynomial is padded with zero coefficients if needed.}
 \ans{20}{1}{Standard complexities from CLRS.}
 \ans{21}{4}{$\pi$[q] is the length of the longest proper prefix of P[1..q] that is also its suffix.}
@@ -2838,7 +2838,7 @@ Reason R: The inverse DFT requires $\Theta$(n\textsuperscript{2}) time.
 \ans{29}{3}{The hashes of all patterns can be stored in a set.}
 \ans{30}{4}{Miller-Rabin is a randomized (Monte Carlo) test with a small probability of error for composites.}
 \ans{31}{1}{5 has order 9 modulo 19 (5\textsuperscript{9} $\equiv$ 1), and 117 = 9 $\times$ 13.}
-\ans{32}{1}{Karatsuba reduces it to O(n\textsuperscript{1}.585), and FFT-based methods to about O(n log n).}
+\ans{32}{1}{Karatsuba reduces it to O(n\textsuperscript{1.585}), and FFT-based methods to about O(n log n).}
 \ans{33}{1}{Ukkonen's and McCreight's algorithms are linear for a constant alphabet.}
 \ans{34}{2}{Any common divisor would also divide their difference, 1.}
 \ans{35}{3}{The inverse DFT uses conjugate roots of unity and division by n, so it also takes O(n log n).}
@@ -3026,7 +3026,7 @@ Statement II: A Las Vegas algorithm may return an incorrect answer.
 \ans{2}{2}{Numbers are added in pairs in a balanced binary tree of depth log2 n.}
 \ans{3}{2}{T1 is the best sequential time and Tp the parallel time on p processors.}
 \ans{4}{2}{Speedup = 100/20 = 5; efficiency = 5/8 = 62.5\%.}
-\ans{5}{2}{More precisely, T\_p $\leq$ W/p + D.}
+\ans{5}{2}{More precisely, T\_\allowbreak{}p $\leq$ W/p + D.}
 \ans{6}{2}{It performs O(n log\textsuperscript{2} n) comparisons in total.}
 \ans{7}{2}{Odd and even pairs are compared alternately.}
 \ans{8}{2}{Up-sweep and down-sweep phases each take log n steps.}

@@ -332,7 +332,7 @@ Entity set E1 (key a1, multivalued attribute a2) is in a one-to-many relationshi
 \begin{question}{H}
 Match List I with List II.\\
 List I (Attribute type): A. Composite attribute  B. Multivalued attribute  C. Derived attribute  D. Key attribute\\
-List II (Example): I. Age, computed from Date\_of\_birth  II. Name, made of First\_name and Last\_name  III. Roll\_no, which uniquely identifies a student  IV. Phone\_numbers of a person
+List II (Example): I. Age, computed from Date\_\allowbreak{}of\_\allowbreak{}birth  II. Name, made of First\_\allowbreak{}name and Last\_\allowbreak{}name  III. Roll\_\allowbreak{}no, which uniquely identifies a student  IV. Phone\_\allowbreak{}numbers of a person
 \optsshort{A-II, B-IV, C-I, D-III}{A-II, B-I, C-IV, D-III}{A-II, B-IV, C-III, D-I}{A-IV, B-II, C-I, D-III}
 \end{question}
 
@@ -383,7 +383,7 @@ In the EER model, a subclass inherits from its superclass
 \end{question}
 
 \begin{question}{M}
-A subclass that has more than one superclass, for example Teaching\_assistant as a subclass of both Employee and Student, is called a
+A subclass that has more than one superclass, for example Teaching\_\allowbreak{}assistant as a subclass of both Employee and Student, is called a
 \optslong{aggregate}{shared subclass (multiple inheritance)}{union type}{weak subclass}
 \end{question}
 
@@ -416,7 +416,7 @@ In mapping an EER specialization to relations, which option creates relations on
 
 \begin{question}{M}
 Which of the following is the correct ER-to-relational mapping of a multivalued attribute Skill of entity Employee (key Eno)?
-\optslong{Create a relation Emp\_skill(Eno, Skill) with primary key (Eno, Skill)}{Add Skill as a column of Employee}{Ignore the attribute}{Create a relation Emp\_skill(Skill) with primary key Skill}
+\optslong{Create a relation Emp\_\allowbreak{}skill(Eno, Skill) with primary key (Eno, Skill)}{Add Skill as a column of Employee}{Ignore the attribute}{Create a relation Emp\_\allowbreak{}skill(Skill) with primary key Skill}
 \end{question}
 
 \begin{question}{M}
@@ -432,12 +432,12 @@ Reason R: Each entity on the ``many'' side participates in at most one relations
 \end{question}
 
 \begin{question}{M}
-An attribute whose value can be computed from other attributes, such as Number\_of\_employees of a department, is called a
+An attribute whose value can be computed from other attributes, such as Number\_\allowbreak{}of\_\allowbreak{}employees of a department, is called a
 \optsshort{stored attribute}{key attribute}{composite attribute}{derived attribute}
 \end{question}
 
 \begin{question}{M}
-An attribute that can have a null value because it does not apply to some entities, for example Apartment\_number for people living in houses, illustrates
+An attribute that can have a null value because it does not apply to some entities, for example Apartment\_\allowbreak{}number for people living in houses, illustrates
 \optslong{the multivalued property}{a derived attribute}{a composite key}{a null value meaning ``not applicable''}
 \end{question}
 
@@ -508,7 +508,7 @@ Statement II: The ER model is a representational (implementation) data model.
 \ans{11}{1}{Total participation (existence dependency) means every entity must take part in at least one relationship instance.}
 \ans{12}{1}{Unary (recursive), binary and ternary relationships have degrees 1, 2 and 3.}
 \ans{13}{3}{Role names distinguish the participations, for example supervisor and supervisee.}
-\ans{14}{1}{For example Supplies(Supplier, Part, Project) differs from Can\_supply, Uses and Supplies\_to taken together.}
+\ans{14}{1}{For example Supplies(Supplier, Part, Project) differs from Can\_\allowbreak{}supply, Uses and Supplies\_\allowbreak{}to taken together.}
 \ans{15}{3}{min = 0 means partial participation; min $\geq$ 1 means total participation.}
 \ans{16}{3}{Constraints on specialization and generalization in the EER model.}
 \ans{17}{1}{They are inverse processes of each other.}
@@ -521,14 +521,14 @@ Statement II: The ER model is a representational (implementation) data model.
 \ans{24}{3}{This option works best for total, disjoint specializations.}
 \ans{25}{1}{Each value of the multivalued attribute becomes a separate tuple.}
 \ans{26}{1}{The key is the owner's key plus the partial key, and Eno is also a foreign key.}
-\ans{27}{1}{Hence a relationship attribute such as Start\_date can be stored with the employee.}
+\ans{27}{1}{Hence a relationship attribute such as Start\_\allowbreak{}date can be stored with the employee.}
 \ans{28}{4}{Derived attributes are drawn as dashed ellipses.}
 \ans{29}{4}{Nulls can mean ``not applicable'' or ``unknown''.}
 \ans{30}{2}{Multiplicities such as 0..* and 1..1 express cardinality and participation.}
 \ans{31}{4}{Chen published the ER model in 1976.}
 \ans{32}{2}{One relation for each entity type and one for R, whose key combines the three foreign keys.}
-\ans{33}{4}{A key may be simple or composite, and an entity type can have several candidate keys (for example Vehicle\_id and Registration).}
-\ans{34}{1}{A foreign key Manager\_id referencing the same table represents the relationship.}
+\ans{33}{4}{A key may be simple or composite, and an entity type can have several candidate keys (for example Vehicle\_\allowbreak{}id and Registration).}
+\ans{34}{1}{A foreign key Manager\_\allowbreak{}id referencing the same table represents the relationship.}
 \ans{35}{3}{Basic ER terminology.}
 \ans{36}{1}{Both statements are standard results.}
 \ans{37}{1}{Rectangles are entity types and ellipses are attributes.}
@@ -574,7 +574,7 @@ Relation Enrolled(Student, Course) contains (s1, c1), (s1, c2), (s2, c1), (s3, c
 
 \begin{question}{H}
 The relational algebra division R(A, B) $\div$ S(B) can be expressed using basic operators as
-\optslong{$\pi$\_A(R $\times$ S) $-$ R}{$\pi$\_A(R) $\cap$ $\pi$\_A(S)}{$\pi$\_A(R $-$ S)}{$\pi$\_A(R) $-$ $\pi$\_A(($\pi$\_A(R) $\times$ S) $-$ R)}
+\optslong{$\pi$\_\allowbreak{}A(R $\times$ S) $-$ R}{$\pi$\_\allowbreak{}A(R) $\cap$ $\pi$\_\allowbreak{}A(S)}{$\pi$\_\allowbreak{}A(R $-$ S)}{$\pi$\_\allowbreak{}A(R) $-$ $\pi$\_\allowbreak{}A(($\pi$\_\allowbreak{}A(R) $\times$ S) $-$ R)}
 \end{question}
 
 \begin{question}{H}
@@ -606,8 +606,8 @@ Two relations are union-compatible if they have
 
 \begin{question}{M}
 Given below are two statements.\\
-Statement I: Selection is commutative: $\sigma$\_c1($\sigma$\_c2(R)) = $\sigma$\_c2($\sigma$\_c1(R)).\\
-Statement II: A cascade of projections $\pi$\_L1($\pi$\_L2(R)) can be replaced by $\pi$\_L2(R) when L1 $\subseteq$ L2.
+Statement I: Selection is commutative: $\sigma$\_\allowbreak{}c1($\sigma$\_\allowbreak{}c2(R)) = $\sigma$\_\allowbreak{}c2($\sigma$\_\allowbreak{}c1(R)).\\
+Statement II: A cascade of projections $\pi$\_\allowbreak{}L1($\pi$\_\allowbreak{}L2(R)) can be replaced by $\pi$\_\allowbreak{}L2(R) when L1 $\subseteq$ L2.
 \optslong{Both Statement I and Statement II are true}{Both Statement I and Statement II are false}{Statement I is true but Statement II is false}{Statement I is false but Statement II is true}
 \end{question}
 
@@ -714,7 +714,7 @@ A relational calculus expression is called unsafe if it
 
 \begin{question}{M}
 The relational calculus query \{t | $\exists$s $\in$ R (t[A] = s[A])\} corresponds to the relational algebra expression
-\optsshort{R $\times$ R}{$\pi$\_A(R)}{R $\div$ A}{$\sigma$\_A(R)}
+\optsshort{R $\times$ R}{$\pi$\_\allowbreak{}A(R)}{R $\div$ A}{$\sigma$\_\allowbreak{}A(R)}
 \end{question}
 
 \begin{question}{M}
@@ -740,12 +740,12 @@ For relations R(A, B) and S(B, C), the theta join R $\bowtie$ (R.B = S.B) S diff
 \end{question}
 
 \begin{question}{H}
-The number of tuples in $\sigma$\_c(R), where R has n tuples, lies in the range
+The number of tuples in $\sigma$\_\allowbreak{}c(R), where R has n tuples, lies in the range
 \optsshort{0 to n}{1 to n}{n to 2n}{exactly n}
 \end{question}
 
 \begin{question}{M}
-Projection $\pi$\_A(R) on a relation R with n tuples (set semantics, n $\geq$ 1) returns
+Projection $\pi$\_\allowbreak{}A(R) on a relation R with n tuples (set semantics, n $\geq$ 1) returns
 \optsshort{more than n tuples}{0 tuples always}{between 1 and n tuples}{exactly n tuples}
 \end{question}
 
@@ -769,7 +769,7 @@ The outer join operations were introduced into relational algebra in order to
 \end{question}
 
 \begin{question}{M}
-The grouping operator $\gamma$ in extended relational algebra, written $\gamma$\_G,F(R), groups the tuples of R by attributes G and
+The grouping operator $\gamma$ in extended relational algebra, written $\gamma$\_\allowbreak{}G,F(R), groups the tuples of R by attributes G and
 \optslong{applies aggregate functions F such as SUM, COUNT and AVG to each group}{sorts them}{removes all NULLs}{projects only G}
 \end{question}
 
@@ -785,13 +785,13 @@ A. SQL (SEQUEL)  B. Relational algebra  C. Query-By-Example
 \end{question}
 
 \begin{question}{M}
-Given relation R(A, B, C) with tuples (1, 2, 3), (1, 2, 4), (2, 2, 3), the number of tuples in $\pi$\_A,B(R) is
+Given relation R(A, B, C) with tuples (1, 2, 3), (1, 2, 4), (2, 2, 3), the number of tuples in $\pi$\_\allowbreak{}A,B(R) is
 \optsshort{1}{6}{2}{3}
 \end{question}
 
 \begin{question}{M}
 Which relational algebra expression returns the names of employees who work in department 5, for Employee(Eno, Name, Dno)?
-\optsshort{$\pi$\_Dno=5($\sigma$\_Name(Employee))}{$\pi$\_Name($\sigma$\_Dno=5(Employee))}{$\sigma$\_Dno=5($\pi$\_Name(Employee))}{$\sigma$\_Name(Employee) $\times$ Dno}
+\optsshort{$\pi$\_\allowbreak{}Dno=5($\sigma$\_\allowbreak{}Name(Employee))}{$\pi$\_\allowbreak{}Name($\sigma$\_\allowbreak{}Dno=5(Employee))}{$\sigma$\_\allowbreak{}Dno=5($\pi$\_\allowbreak{}Name(Employee))}{$\sigma$\_\allowbreak{}Name(Employee) $\times$ Dno}
 \end{question}
 
 \begin{question}{M}
@@ -809,13 +809,13 @@ Statement II: The natural join of two relations with no common attributes is alw
 \ans{5}{4}{Left outer join adds (3, 4, NULL); full outer join also adds (NULL, 9, 9).}
 \ans{6}{3}{(1, 2) and (2, 3) have matches in s; a semijoin never duplicates r tuples.}
 \ans{7}{1}{Division returns the students enrolled in every course of Course: s1 and s3 (s2 lacks c2).}
-\ans{8}{4}{($\pi$\_A(R) $\times$ S) $-$ R gives the missing combinations; their A values are removed from $\pi$\_A(R).}
+\ans{8}{4}{($\pi$\_\allowbreak{}A(R) $\times$ S) $-$ R gives the missing combinations; their A values are removed from $\pi$\_\allowbreak{}A(R).}
 \ans{9}{3}{Intersection, join and division can be derived from the basic operations.}
 \ans{10}{3}{$\sigma$ selects tuples, $\pi$ selects attributes, $\rho$ renames and $\div$ divides.}
 \ans{11}{2}{Removing from R the tuples that are not in S leaves exactly R $\cap$ S.}
 \ans{12}{4}{At least the larger relation, and at most every tuple of both if there are no duplicates.}
 \ans{13}{1}{Union, intersection and difference require union compatibility.}
-\ans{14}{3}{The cascade of projections is equivalent to the outermost projection $\pi$\_L1(R), not $\pi$\_L2(R).}
+\ans{14}{3}{The cascade of projections is equivalent to the outermost projection $\pi$\_\allowbreak{}L1(R), not $\pi$\_\allowbreak{}L2(R).}
 \ans{15}{3}{Every candidate key is a superkey, but not conversely.}
 \ans{16}{4}{Any superset of \{A\}: 2\textsuperscript{4} = 16.}
 \ans{17}{2}{Supersets of A: 16; supersets of B: 16; supersets of both A and B: 8; total 16 + 16 $-$ 8 = 24.}
@@ -879,7 +879,7 @@ Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, 
 \end{question}
 
 \begin{question}{M}
-Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, CS, 60000), (3, Chitra, EE, 40000), (4, Deepak, EE, NULL), (5, Esha, ME, 70000), (6, Farhan, CS, NULL). Which names are returned by SELECT name FROM EMP WHERE name LIKE '\_s\%'?
+Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, CS, 60000), (3, Chitra, EE, 40000), (4, Deepak, EE, NULL), (5, Esha, ME, 70000), (6, Farhan, CS, NULL). Which names are returned by SELECT name FROM EMP WHERE name LIKE '\_\allowbreak{}s\%'?
 \optsshort{Asha only}{Asha, Bala and Esha}{Esha only}{Asha and Esha}
 \end{question}
 
@@ -1043,7 +1043,7 @@ Statement II: VARCHAR(n) stores variable-length strings up to n characters.
 \end{question}
 
 \begin{question}{M}
-For the scores 100, 90, 90 and 80 in descending order, the values produced by RANK() and DENSE\_RANK() are respectively
+For the scores 100, 90, 90 and 80 in descending order, the values produced by RANK() and DENSE\_\allowbreak{}RANK() are respectively
 \optsshort{1, 1, 2, 3 and 1, 2, 3, 4}{1, 2, 2, 3 and 1, 2, 2, 4}{1, 2, 2, 4 and 1, 2, 2, 3}{1, 2, 3, 4 and 1, 2, 2, 3}
 \end{question}
 
@@ -1141,7 +1141,7 @@ Reason R: SQL automatically removes duplicate rows from every table.
 \ans{3}{1}{CS has 3 rows and EE has 2; ME has only 1.}
 \ans{4}{2}{For the two NULL salaries both comparisons are UNKNOWN, so those rows are not returned.}
 \ans{5}{4}{40000, 50000 and 60000; BETWEEN is inclusive and NULLs do not qualify.}
-\ans{6}{4}{\_ matches exactly one character, so the second letter must be s.}
+\ans{6}{4}{\_\allowbreak{} matches exactly one character, so the second letter must be s.}
 \ans{7}{4}{Only Bala (60000); Farhan's NULL salary makes the condition UNKNOWN.}
 \ans{8}{2}{Among the four non-null salaries there are C(4, 2) = 6 ordered pairs with E1 higher.}
 \ans{9}{4}{For x = 4, ``4 NOT IN (1, 2, 2, 3, NULL)'' is UNKNOWN because of the NULL, so no row qualifies.}
@@ -1170,7 +1170,7 @@ Reason R: SQL automatically removes duplicate rows from every table.
 \ans{32}{3}{With bound parameters, user input is always treated as data, never as SQL code.}
 \ans{33}{1}{Precision 5 is the total number of digits, 2 of which follow the decimal point.}
 \ans{34}{1}{Both statements are true.}
-\ans{35}{3}{RANK leaves a gap after ties; DENSE\_RANK does not.}
+\ans{35}{3}{RANK leaves a gap after ties; DENSE\_\allowbreak{}RANK does not.}
 \ans{36}{1}{ALTER TABLE changes the schema; UPDATE changes data.}
 \ans{37}{1}{SQL keeps duplicates by default because duplicate elimination is expensive.}
 \ans{38}{2}{ROLLBACK TO SAVEPOINT undoes only the work done after the savepoint.}
@@ -1626,7 +1626,7 @@ In a B+ tree of order p (maximum p pointers per internal node), every internal n
 
 \begin{question}{M}
 Searching for a key in a B+ tree with n keys and fan-out f requires approximately
-\optsshort{O(1) node accesses}{O(n) node accesses}{O(log\_f n) node accesses}{O(f) node accesses}
+\optsshort{O(1) node accesses}{O(n) node accesses}{O(log\_\allowbreak{}f n) node accesses}{O(f) node accesses}
 \end{question}
 
 \begin{question}{H}
@@ -1672,8 +1672,8 @@ For a nested-loop join of student (100 blocks) and takes (400 blocks), if the sm
 \end{question}
 
 \begin{question}{M}
-The cost of a merge join on two relations that are already sorted on the join attribute, with b\_r and b\_s blocks, is about
-\optsshort{2(b\_r + b\_s) log(b\_r + b\_s)}{b\_r $\times$ b\_s}{b\_r + b\_s block transfers}{b\_r log b\_s}
+The cost of a merge join on two relations that are already sorted on the join attribute, with b\_\allowbreak{}r and b\_\allowbreak{}s blocks, is about
+\optsshort{2(b\_\allowbreak{}r + b\_\allowbreak{}s) log(b\_\allowbreak{}r + b\_\allowbreak{}s)}{b\_\allowbreak{}r $\times$ b\_\allowbreak{}s}{b\_\allowbreak{}r + b\_\allowbreak{}s block transfers}{b\_\allowbreak{}r log b\_\allowbreak{}s}
 \end{question}
 
 \begin{question}{H}
@@ -1709,7 +1709,7 @@ Reason R: In pipelining, the result of one operation is passed directly to the n
 
 \begin{question}{M}
 Which of the following equivalence rules is valid in relational algebra?
-\optslong{$\pi$\_L(E1 $-$ E2) = $\pi$\_L(E1) $-$ $\pi$\_L(E2) always}{$\sigma$\_$\theta$(E1 $\times$ E2) = E1 $\bowtie$\_$\theta$ E2}{E1 $-$ E2 = E2 $-$ E1}{$\sigma$\_$\theta$1(E) $\cup$ $\sigma$\_$\theta$2(E) = $\sigma$\_$\theta$1 $\wedge$ $\theta$2(E)}
+\optslong{$\pi$\_\allowbreak{}L(E1 $-$ E2) = $\pi$\_\allowbreak{}L(E1) $-$ $\pi$\_\allowbreak{}L(E2) always}{$\sigma$\_\allowbreak{}$\theta$(E1 $\times$ E2) = E1 $\bowtie$\_\allowbreak{}$\theta$ E2}{E1 $-$ E2 = E2 $-$ E1}{$\sigma$\_\allowbreak{}$\theta$1(E) $\cup$ $\sigma$\_\allowbreak{}$\theta$2(E) = $\sigma$\_\allowbreak{}$\theta$1 $\wedge$ $\theta$2(E)}
 \end{question}
 
 \begin{question}{M}
@@ -1718,7 +1718,7 @@ The selectivity of a condition is
 \end{question}
 
 \begin{question}{M}
-For a relation r with n\_r = 10,000 tuples and an attribute A with V(A, r) = 50 distinct values, the estimated number of tuples satisfying A = a is
+For a relation r with n\_\allowbreak{}r = 10,000 tuples and an attribute A with V(A, r) = 50 distinct values, the estimated number of tuples satisfying A = a is
 \optsshort{200}{500}{50}{10,000}
 \end{question}
 
@@ -1767,7 +1767,7 @@ Reason R: When the root splits, a new root is created one level above it.
 \end{question}
 
 \begin{question}{M}
-In the catalog statistics used by a query optimizer, b\_r denotes
+In the catalog statistics used by a query optimizer, b\_\allowbreak{}r denotes
 \optslong{the number of distinct values of an attribute}{the number of tuples in r}{the size of a tuple of r}{the number of blocks containing tuples of r}
 \end{question}
 
@@ -1808,9 +1808,9 @@ In a B tree of order m, the maximum number of keys stored in a node is
 \ans{17}{4}{The directory has 2\textsuperscript{d} entries, where d is the global depth.}
 \ans{18}{4}{Buckets are split in linear order, with overflow chains handling temporary overflow.}
 \ans{19}{3}{Too many overflow buckets degrade performance, which motivates dynamic hashing.}
-\ans{20}{2}{n\_r $\times$ b\_s + b\_r = 5000 $\times$ 400 + 100 = 2,000,100.}
-\ans{21}{3}{b\_r $\times$ b\_s + b\_r = 100 $\times$ 400 + 100 = 40,100 block transfers.}
-\ans{22}{2}{Each relation is read only once: b\_r + b\_s = 500.}
+\ans{20}{2}{n\_\allowbreak{}r $\times$ b\_\allowbreak{}s + b\_\allowbreak{}r = 5000 $\times$ 400 + 100 = 2,000,100.}
+\ans{21}{3}{b\_\allowbreak{}r $\times$ b\_\allowbreak{}s + b\_\allowbreak{}r = 100 $\times$ 400 + 100 = 40,100 block transfers.}
+\ans{22}{2}{Each relation is read only once: b\_\allowbreak{}r + b\_\allowbreak{}s = 500.}
 \ans{23}{3}{Each block is read once; if unsorted, sorting cost must be added.}
 \ans{24}{3}{The three basic steps of query processing.}
 \ans{25}{1}{Pushing selections and projections down reduces the size of intermediate results.}
@@ -1819,7 +1819,7 @@ In a B tree of order m, the maximum number of keys stored in a node is
 \ans{28}{4}{Sorting and some aggregations are blocking operations that need their whole input before producing output.}
 \ans{29}{2}{Selection on a Cartesian product is a theta join; projection does not distribute over difference in general.}
 \ans{30}{4}{Optimizers use selectivity to estimate the size of intermediate results.}
-\ans{31}{1}{Assuming uniform distribution: n\_r / V(A, r) = 10,000 / 50 = 200.}
+\ans{31}{1}{Assuming uniform distribution: n\_\allowbreak{}r / V(A, r) = 10,000 / 50 = 200.}
 \ans{32}{2}{Sorted runs are created and then merged in one or more passes.}
 \ans{33}{1}{Tuples are partitioned on the hash of the join attribute, so only equality conditions can be used.}
 \ans{34}{1}{The query can be answered from the index alone (an index-only scan).}
@@ -1828,7 +1828,7 @@ In a B tree of order m, the maximum number of keys stored in a node is
 \ans{37}{4}{One bit vector per distinct value allows fast Boolean combination of conditions.}
 \ans{38}{2}{One access per tree level plus one access to the data block.}
 \ans{39}{1}{B+ trees grow at the root, which keeps all leaves at the same depth.}
-\ans{40}{4}{n\_r is the number of tuples and l\_r the size of a tuple.}
+\ans{40}{4}{n\_\allowbreak{}r is the number of tuples and l\_\allowbreak{}r the size of a tuple.}
 \ans{41}{3}{ISAM indexes do not change on updates, so overflow chains grow; B+ trees replaced them.}
 \ans{42}{4}{Hashing scatters adjacent key values, so range queries need a full scan.}
 \ans{43}{2}{A node with m child pointers holds m $-$ 1 keys.}
@@ -2923,7 +2923,7 @@ Precision in classification is defined as
 \ans{3}{4}{Dice selects on two or more dimensions.}
 \ans{4}{2}{Normalized dimension tables describe a snowflake schema, which still has a central fact table.}
 \ans{5}{3}{Each dimension is either included or aggregated away: 2\textsuperscript{3} = 8.}
-\ans{6}{1}{$\prod$(L\_i + 1) = 5 $\times$ 4 $\times$ 3 = 60.}
+\ans{6}{1}{$\prod$(L\_\allowbreak{}i + 1) = 5 $\times$ 4 $\times$ 3 = 60.}
 \ans{7}{2}{Roll-up climbs from street towards country.}
 \ans{8}{1}{ROLAP scales well; MOLAP gives fast indexing into precomputed data.}
 \ans{9}{2}{Data is extracted from sources, cleaned and transformed, and loaded into the warehouse.}

@@ -8,9 +8,9 @@ M|In the triplet (row, column, value) representation of a sparse matrix with t n
 H|The value of the postfix expression 6 2 3 + − 3 8 2 / + * 2 ^ 3 + is|49|52|55|64|2|6 − 5 = 1; 8/2 + 3 = 7; 1 × 7 = 7; 7^2 = 49; 49 + 3 = 52.
 H|The value of the postfix expression 5 6 2 + * 12 4 / − is|37|40|43|46|1|5 × (6 + 2) = 40; 12/4 = 3; 40 − 3 = 37.
 H|The postfix form of the infix expression A + B * C − D / E is|ABC*+DE/−|AB+C*DE/−|ABC*+DE−/|ABC+*DE/−|1|* and / are applied before + and −, and operators of equal precedence associate left to right.
-H|The postfix form of A + B * (C ^ D − E) ^ (F + G * H) − I is|ABCD^E−FGH*+^*+I−|ABCD^E−FGH*+^+*I−|AB+CD^E−*FGH*+^I−|ABCDE^−FGH*+^*+I−|1|^ has the highest precedence and is right-associative.
+H|The postfix form of A + B * (C ^ D − E) ^ (F + G * H) − I is|ABCD\^E−FGH*+\^*+I−|ABCD\^E−FGH*+\^+*I−|AB+CD\^E−*FGH*+\^I−|ABCDE\^−FGH*+\^*+I−|1|^ has the highest precedence and is right-associative.
 H|The prefix form of the infix expression A + B * C − D / E is|−+A*BC/DE|+A−*BC/DE|−+*ABC/DE|+−A*BC/DE|1|The last operator applied is −, whose operands are A + B * C and D / E.
-M|Since ^ is right-associative, the postfix form of A ^ B ^ C is|AB^C^|ABC^^|A^BC^|ABC^ ^ (with A^B first)|2|A ^ B ^ C means A ^ (B ^ C), giving ABC^^.
+M|Since ^ is right-associative, the postfix form of A ^ B ^ C is|AB\^C\^|ABC\^\^|A\^BC\^|\^\^ABC|2|A ^ B ^ C means A ^ (B ^ C), giving ABC\^\^.
 M|The postfix form of (A − B) / C * D + E is|AB−C/D*E+|AB−CD*/E+|ABC−/D*E+|AB−C/DE*+|1|/ and * are left-associative: ((A − B) / C) * D, then + E.
 M|During the evaluation of the postfix expression 2 3 4 * + 5 − using a stack, the maximum number of elements on the stack at any time is|2|3|4|5|2|2, 3 and 4 are pushed before the first operator is applied.
 H|The numbers 1, 2, 3, 4, 5 are pushed onto a stack in that order, and pops may occur at any time. Which output sequence is NOT possible?|3, 2, 4, 1, 5|5, 4, 3, 2, 1|4, 5, 3, 1, 2|2, 1, 5, 4, 3|3|After 4, 5 and 3 are popped, 2 is above 1 on the stack, so 1 cannot come out before 2.

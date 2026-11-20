@@ -127,7 +127,7 @@ The recurrence of Strassen's matrix multiplication, T(n) = 7T(n/2) + Θ(n²), ha
 (1) Θ(n³)  
 (2) Θ(n² log n)  
 (3) Θ(n²)  
-(4) Θ(n^(log2 7)) ≈ Θ(n^2.81)  
+(4) Θ(n^(log2 7)) ≈ Θ(n^(2.81))  
 
 <details><summary>Answer</summary>
 
@@ -215,7 +215,7 @@ The solution of T(n) = 3T(n/4) + n log n is
 
 <details><summary>Answer</summary>
 
-**(4)** — n^(log4 3) ≈ n^0.79 is dominated by n log n (case 3).
+**(4)** — n^(log4 3) ≈ n^(0.79) is dominated by n log n (case 3).
 
 </details>
 
@@ -225,7 +225,7 @@ The solution of T(n) = T(n/3) + T(2n/3) + n is
 (1) Θ(n log n)  
 (2) Θ(n)  
 (3) Θ(n²)  
-(4) Θ(n^1.5)  
+(4) Θ(n^(1.5))  
 
 <details><summary>Answer</summary>
 
@@ -434,11 +434,11 @@ Which of the following is NOT O(n²)?
 (1) n log n  
 (2) n  
 (3) 100n² + 5  
-(4) n^2.5  
+(4) n^(2.5)  
 
 <details><summary>Answer</summary>
 
-**(4)** — n^2.5 grows faster than n².
+**(4)** — n^(2.5) grows faster than n².
 
 </details>
 
@@ -537,7 +537,7 @@ The solution of T(n) = 8T(n/2) + n² is
 (1) Θ(n³)  
 (2) Θ(n² log n)  
 (3) Θ(n²)  
-(4) Θ(n^2.81)  
+(4) Θ(n^(2.81))  
 
 <details><summary>Answer</summary>
 
@@ -549,8 +549,8 @@ The solution of T(n) = 8T(n/2) + n² is
 The solution of T(n) = 3T(n/2) + n (Karatsuba multiplication) is
 
 (1) Θ(n log n)  
-(2) Θ(n^(log2 3)) ≈ Θ(n^1.585)  
-(3) Θ(n^1.5)  
+(2) Θ(n^(log2 3)) ≈ Θ(n^(1.585))  
+(3) Θ(n^(1.5))  
 (4) Θ(n²)  
 
 <details><summary>Answer</summary>
@@ -561,8 +561,8 @@ The solution of T(n) = 3T(n/2) + n (Karatsuba multiplication) is
 
 **Q39.** `Medium`  
 Given below are two statements.  
-Statement I: n log n = O(n^1.001).  
-Statement II: (log n)^100 = O(n^0.01).
+Statement I: n log n = O(n^(1.001)).  
+Statement II: (log n)^100 = O(n^(0.01)).
 
 (1) Both Statement I and Statement II are true  
 (2) Both Statement I and Statement II are false  

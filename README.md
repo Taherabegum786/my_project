@@ -11,6 +11,7 @@ Match List I with List II, Assertion–Reason, Statement I / Statement II, multi
 |---|---|---|---|
 | 4 | Database Management Systems | 480 | [practice/dbms](practice/dbms/README.md) |
 | 5 | System Software and Operating System | 556 | [practice/operating-systems](practice/operating-systems/README.md) |
+| 6 | Software Engineering | 239 | [practice/software-engineering](practice/software-engineering/README.md) |
 | 7 | Data Structures and Algorithms | 458 | [practice/data-structures-algorithms](practice/data-structures-algorithms/README.md) |
 | 8 | Theory of Computation and Compilers | 346 | [practice/toc-compilers](practice/toc-compilers/README.md) |
 | 9 | Data Communication and Computer Networks | 417 | [practice/computer-networks](practice/computer-networks/README.md) |
@@ -26,7 +27,9 @@ The same questions are generated as LaTeX in `latex/`:
 - `latex/preamble.tex` — shared packages and macros (edit this to change the layout).
 - `latex/subjects/<subject>.tex` — one chapter per subject, with no preamble of its own.
 
-Compile with `pdflatex main.tex` (twice, for the table of contents) from inside `latex/`,
+The book compiles cleanly with pdflatex (TeX Live 2023: `texlive-latex-recommended`,
+`texlive-fonts-recommended`, `lmodern`). Compile with `pdflatex main.tex` (twice, for the
+table of contents) from inside `latex/`,
 or upload the `latex/` folder to Overleaf and set `main.tex` as the main document. Answers
 with explanations are printed at the end of each set.
 

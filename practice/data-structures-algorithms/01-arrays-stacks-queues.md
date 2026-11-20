@@ -163,7 +163,7 @@ The prefix form of the infix expression A + B * C − D / E is
 **Q12.** `Medium`  
 Since ^ is right-associative, the postfix form of A ^ B ^ C is
 
-(1) ABC^ ^ (with A^B first)  
+(1) ^^ABC  
 (2) ABC^^  
 (3) AB^C^  
 (4) A^BC^  

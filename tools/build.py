@@ -5,7 +5,8 @@ Line format (one question per line, '#' lines are comments):
     PRIORITY|question|opt1|opt2|opt3|opt4|answer(1-4)|explanation
 PRIORITY is H, M or L. Use \\n inside the question for a line break.
 Shorthand for the option block: '@AR' (Assertion-Reason) or '@S2' (two statements).
-Write a literal '|' inside a field as '\\|'.
+Write a literal '|' inside a field as '\\|', and a caret that is an operator
+(not a superscript), as in the postfix string AB^C^, as '\\^'.
 The first comment line of a file ('# title: ...') gives the set title.
 """
 import pathlib
@@ -14,6 +15,7 @@ import re
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+CARET = "\x01"  # marks a literal (operator) caret written as \^ in the data files
 PRIORITY = {"H": "High", "M": "Medium", "L": "Low"}
 # UGC NET Paper II (Computer Science and Applications) syllabus units. Subjects are
 # ordered by unit in the merged book; a data/ folder not listed here goes last.
@@ -60,7 +62,8 @@ def parse(path):
             if line.lower().startswith("# title:"):
                 title = line.split(":", 1)[1].strip()
             continue
-        parts = [f.replace("\\|", "|") for f in re.split(r"(?<!\\)\|", line)]
+        parts = [f.replace("\\|", "|").replace("\\^", CARET)
+                 for f in re.split(r"(?<!\\)\|", line)]
         fixed = len(parts) == 5 and parts[2] in MACROS
         if fixed:
             parts = parts[:2] + MACROS[parts[2]] + parts[3:]
@@ -105,12 +108,12 @@ def render(title, questions):
             "</details>",
             "",
         ]
-    return "\n".join(out), counts
+    return "\n".join(out).replace(CARET, "^"), counts
 
 
 # ---------------------------------------------------------------- LaTeX output
 TEX_ESCAPES = {"\\": r"\textbackslash{}", "&": r"\&", "%": r"\%", "$": r"\$",
-               "#": r"\#", "_": r"\_", "{": r"\{", "}": r"\}", "~": r"\textasciitilde{}"}
+               "#": r"\#", "_": r"\_\allowbreak{}", "{": r"\{", "}": r"\}", "~": r"\textasciitilde{}"}
 TEX_UNICODE = {
     "−": "$-$", "×": r"$\times$", "≈": r"$\approx$", "≡": r"$\equiv$",
     "≠": r"$\neq$", "≥": r"$\geq$", "≤": r"$\leq$", "⊕": r"$\oplus$",
@@ -119,7 +122,7 @@ TEX_UNICODE = {
     "←": r"$\leftarrow$", "Σ": r"$\Sigma$", "√": r"$\surd$", "³": r"\textsuperscript{3}",
     "σ": r"$\sigma$", "π": r"$\pi$", "⋈": r"$\bowtie$", "÷": r"$\div$", "∪": r"$\cup$",
     "∩": r"$\cap$", "∀": r"$\forall$", "∃": r"$\exists$", "¬": r"$\neg$", "∧": r"$\wedge$",
-    "∨": r"$\vee$", "⊆": r"$\subseteq$", "∈": r"$\in$", "⁺": r"\textsuperscript{+}", "≺": r"$\prec$", "γ": r"$\gamma$", "⌈": r"$\lceil$", "⌉": r"$\rceil$", "⌊": r"$\lfloor$", "⌋": r"$\rfloor$", "ε": r"$\varepsilon$", "⋉": r"$\ltimes$", "θ": r"$\theta$", "Θ": r"$\Theta$", "Ω": r"$\Omega$", "ω": r"$\omega$", "λ": r"$\lambda$", "·": r"$\cdot$", "é": r"\'e", "∅": r"$\emptyset$", "δ": r"$\delta$", "⇒": r"$\Rightarrow$", "Γ": r"$\Gamma$", "⊂": r"$\subset$", "∉": r"$\notin$", "⊢": r"$\vdash$", "β": r"$\beta$", "⊃": r"$\supset$", "≐": r"$\doteq$", "∏": r"$\prod$", "→→": r"$\twoheadrightarrow$", "²": r"\textsuperscript{2}", "—": "---", "–": "--", "è": r"\`e",
+    "∨": r"$\vee$", "⊆": r"$\subseteq$", "∈": r"$\in$", "⁺": r"\textsuperscript{+}", "≺": r"$\prec$", "γ": r"$\gamma$", "⌈": r"$\lceil$", "⌉": r"$\rceil$", "⌊": r"$\lfloor$", "⌋": r"$\rfloor$", "ε": r"$\varepsilon$", "⋉": r"$\ltimes$", "θ": r"$\theta$", "Θ": r"$\Theta$", "Ω": r"$\Omega$", "ω": r"$\omega$", "λ": r"$\lambda$", "·": r"$\cdot$", "é": r"\'e", "∅": r"$\emptyset$", "δ": r"$\delta$", "⇒": r"$\Rightarrow$", "Γ": r"$\Gamma$", "⊂": r"$\subset$", "∉": r"$\notin$", "⊢": r"$\vdash$", "β": r"$\beta$", "⊃": r"$\supset$", "≐": r"$\doteq$", "«": r"\guillemotleft{}", "»": r"\guillemotright{}", "∏": r"$\prod$", "→→": r"$\twoheadrightarrow$", "²": r"\textsuperscript{2}", "—": "---", "–": "--", "è": r"\`e",
 }
 
 # Multi-character symbols must be replaced before their single-character parts.
@@ -140,6 +143,8 @@ def tex(text):
         sys.exit(f"no LaTeX mapping for {set(bad)}; add it to TEX_UNICODE")
     # Adjacent symbols such as "$\\alpha$$\\beta$" would form "$$" (display math).
     text = re.sub(r"(?<!\\)\$\$", "", text)
+    # Any caret left after the superscript rule is literal text (e.g. "A ^ B").
+    text = text.replace("^", r"\textasciicircum{}").replace(CARET, r"\textasciicircum{}")
     return text.replace("\\textbackslash{}n", "\\\\\n")
 
 
@@ -176,6 +181,7 @@ def write_tex(subjects):
         r"\input{preamble}",
         r"\begin{document}",
         r"\frontmatter",
+        r"\hypersetup{pageanchor=false}",
         r"\begin{titlepage}\centering\vspace*{5cm}",
         r"{\Huge\bfseries UGC NET\par\medskip Computer Science and Applications\par}",
         r"\vspace{1cm}{\LARGE Unit-wise Practice Questions\par}",
@@ -183,6 +189,7 @@ def write_tex(subjects):
         r"\vfill{\large Priority tags: \prio{H} high, \prio{M} medium, \prio{L} low",
         r"likelihood, estimated from previous-year question trends\par}",
         r"\end{titlepage}",
+        r"\hypersetup{pageanchor=true}",
         r"\tableofcontents",
         r"\mainmatter",
         *[r"\input{subjects/%s}" % slug for slug, _ in subjects],

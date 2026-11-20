@@ -225,7 +225,7 @@ Multiplying two polynomials of degree n using the fast Fourier transform takes
 
 (1) O(n log² n)  
 (2) O(n²)  
-(3) O(n^1.58)  
+(3) O(n^(1.58))  
 (4) O(n log n)  
 
 <details><summary>Answer</summary>
@@ -464,7 +464,7 @@ The number of operations needed to multiply two n-digit integers with the school
 
 <details><summary>Answer</summary>
 
-**(1)** — Karatsuba reduces it to O(n^1.585), and FFT-based methods to about O(n log n).
+**(1)** — Karatsuba reduces it to O(n^(1.585)), and FFT-based methods to about O(n log n).
 
 </details>
 

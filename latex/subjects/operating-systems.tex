@@ -744,7 +744,7 @@ List II (Description): I. Compiler directives such as \#pragma omp parallel  II.
 \begin{question}{M}
 Given below are two statements.\\
 Statement I: Pthreads is a thread library implementation available only on Linux.\\
-Statement II: pthread\_join() makes the calling thread wait for the specified thread to terminate.
+Statement II: pthread\_\allowbreak{}join() makes the calling thread wait for the specified thread to terminate.
 \optslong{Both Statement I and Statement II are true}{Both Statement I and Statement II are false}{Statement I is true but Statement II is false}{Statement I is false but Statement II is true}
 \end{question}
 
@@ -856,7 +856,7 @@ When a process terminates, causing all its children to be terminated as well, th
 \end{question}
 
 \begin{question}{M}
-Which Linux system call creates a new task and, through flags such as CLONE\_VM and CLONE\_FILES, decides how much is shared with the parent?
+Which Linux system call creates a new task and, through flags such as CLONE\_\allowbreak{}VM and CLONE\_\allowbreak{}FILES, decides how much is shared with the parent?
 \optsshort{clone()}{exec()}{spawn()}{fork()}
 \end{question}
 
@@ -1193,7 +1193,7 @@ Under process-contention scope (PCS), threads
 
 \begin{question}{M}
 Which of the following real-time scheduling policies are defined by POSIX?
-\optsshort{SCHED\_LOTTERY and SCHED\_FAIR}{SCHED\_FIFO and SCHED\_RR}{SCHED\_EDF and SCHED\_RM}{SCHED\_SJF and SCHED\_HRRN}
+\optsshort{SCHED\_\allowbreak{}LOTTERY and SCHED\_\allowbreak{}FAIR}{SCHED\_\allowbreak{}FIFO and SCHED\_\allowbreak{}RR}{SCHED\_\allowbreak{}EDF and SCHED\_\allowbreak{}RM}{SCHED\_\allowbreak{}SJF and SCHED\_\allowbreak{}HRRN}
 \end{question}
 
 \begin{question}{M}
@@ -1282,7 +1282,7 @@ Simultaneous multithreading (hyper-threading) allows
 \ans{45}{3}{Affinity avoids migration, so the process can reuse the contents of its processor's cache.}
 \ans{46}{1}{In pull migration, an idle processor pulls a waiting task from a busy one.}
 \ans{47}{1}{System-contention scope (SCS) competes among all threads in the system; one-to-one systems such as Linux use only SCS.}
-\ans{48}{2}{SCHED\_OTHER is the implementation-defined non-real-time policy.}
+\ans{48}{2}{SCHED\_\allowbreak{}OTHER is the implementation-defined non-real-time policy.}
 \ans{49}{3}{It is a probabilistic proportional-share scheduler.}
 \ans{50}{2}{It switches context, switches to user mode and jumps to the proper location.}
 \ans{51}{2}{CPU-bound processes have a few long CPU bursts.}
@@ -1356,13 +1356,13 @@ Spinlocks are most appropriate when
 \end{question}
 
 \begin{question}{M}
-The test\_and\_set() hardware instruction, used in the simple lock algorithm, guarantees mutual exclusion but does NOT satisfy
+The test\_\allowbreak{}and\_\allowbreak{}set() hardware instruction, used in the simple lock algorithm, guarantees mutual exclusion but does NOT satisfy
 \optsshort{mutual exclusion}{bounded waiting}{atomicity}{progress}
 \end{question}
 
 \begin{question}{M}
-The compare\_and\_swap(value, expected, new\_value) instruction sets value to new\_value only if
-\optslong{value is zero}{the lock is held}{new\_value is greater than value}{value equals expected}
+The compare\_\allowbreak{}and\_\allowbreak{}swap(value, expected, new\_\allowbreak{}value) instruction sets value to new\_\allowbreak{}value only if
+\optslong{value is zero}{the lock is held}{new\_\allowbreak{}value is greater than value}{value equals expected}
 \end{question}
 
 \begin{question}{H}
@@ -1383,7 +1383,7 @@ In the first readers-writers problem (readers have priority), which process may 
 \end{question}
 
 \begin{question}{M}
-In the first readers-writers solution, the variables rw\_mutex, mutex and read\_count are initialised to
+In the first readers-writers solution, the variables rw\_\allowbreak{}mutex, mutex and read\_\allowbreak{}count are initialised to
 \optsshort{0, 1 and 1}{1, 1 and 1}{1, 1 and 0}{1, 0 and 0}
 \end{question}
 
@@ -1558,7 +1558,7 @@ A condition variable in a monitor is used with the operations
 \ans{14}{1}{empty counts empty slots, full counts full slots and mutex protects the buffer.}
 \ans{15}{4}{The order of signal operations is harmless; it is swapping wait(mutex) and wait(empty) that can deadlock, as R describes.}
 \ans{16}{2}{A continuous stream of readers can keep a writer waiting forever.}
-\ans{17}{3}{The first reader locks rw\_mutex and the last reader releases it.}
+\ans{17}{3}{The first reader locks rw\_\allowbreak{}mutex and the last reader releases it.}
 \ans{18}{3}{Each holds one chopstick and waits for another: a circular wait.}
 \ans{19}{1}{Changing the thinking time does not remove the possibility of circular wait.}
 \ans{20}{3}{A condition-variable signal with no waiting process has no effect; unlike a semaphore, it is not remembered.}
@@ -3648,8 +3648,8 @@ The Linux process with PID 1 in modern distributions is usually
 \ans{3}{1}{CFS was replaced by the similar EEVDF scheduler in kernel 6.6, but CFS remains the textbook answer.}
 \ans{4}{4}{The task with the smallest vruntime (leftmost node) is chosen next.}
 \ans{5}{1}{Real-time priorities occupy 0--99 and normal tasks map to 100--139.}
-\ans{6}{1}{A thread is a task created with CLONE\_VM, CLONE\_FS, CLONE\_FILES and CLONE\_SIGHAND.}
-\ans{7}{4}{Pages are grouped into zones such as ZONE\_DMA, ZONE\_NORMAL and ZONE\_HIGHMEM.}
+\ans{6}{1}{A thread is a task created with CLONE\_\allowbreak{}VM, CLONE\_\allowbreak{}FS, CLONE\_\allowbreak{}FILES and CLONE\_\allowbreak{}SIGHAND.}
+\ans{7}{4}{Pages are grouped into zones such as ZONE\_\allowbreak{}DMA, ZONE\_\allowbreak{}NORMAL and ZONE\_\allowbreak{}HIGHMEM.}
 \ans{8}{1}{It chooses a victim using a badness score.}
 \ans{9}{1}{Standard Filesystem Hierarchy Standard directories.}
 \ans{10}{3}{For example /proc/cpuinfo and /proc/<pid>/status.}
@@ -3667,7 +3667,7 @@ The Linux process with PID 1 in modern distributions is usually
 \ans{22}{1}{Small files can be stored entirely inside their MFT records.}
 \ans{23}{3}{B+ trees keep look-up cost logarithmic and avoid reorganisation.}
 \ans{24}{2}{NTFS also supports journaling, encryption and much larger volumes.}
-\ans{25}{4}{The registry is organised into hives such as HKEY\_LOCAL\_MACHINE.}
+\ans{25}{4}{The registry is organised into hives such as HKEY\_\allowbreak{}LOCAL\_\allowbreak{}MACHINE.}
 \ans{26}{1}{Both rely on Windows sessions.}
 \ans{27}{4}{SMB (and its dialect CIFS) runs over TCP/IP.}
 \ans{28}{4}{It stores information about users, computers and policies in a domain.}

@@ -7,14 +7,14 @@ H|Using the master theorem, the solution of T(n) = 2T(n/2) + n is|Θ(n)|Θ(n log
 H|Using the master theorem, the solution of T(n) = 4T(n/2) + n is|Θ(n)|Θ(n log n)|Θ(n²)|Θ(n² log n)|3|n^(log2 4) = n² dominates f(n) = n (case 1).
 H|Using the master theorem, the solution of T(n) = 4T(n/2) + n² is|Θ(n²)|Θ(n² log n)|Θ(n³)|Θ(n log n)|2|f(n) = n² equals n^(log2 4), so case 2 adds a log factor.
 H|Using the master theorem, the solution of T(n) = 4T(n/2) + n³ is|Θ(n²)|Θ(n² log n)|Θ(n³)|Θ(n³ log n)|3|f(n) = n³ dominates n², and the regularity condition holds (case 3).
-H|The recurrence of Strassen's matrix multiplication, T(n) = 7T(n/2) + Θ(n²), has the solution|Θ(n²)|Θ(n^(log2 7)) ≈ Θ(n^2.81)|Θ(n³)|Θ(n² log n)|2|n^(log2 7) dominates n² (case 1).
+H|The recurrence of Strassen's matrix multiplication, T(n) = 7T(n/2) + Θ(n²), has the solution|Θ(n²)|Θ(n^(log2 7)) ≈ Θ(n^(2.81))|Θ(n³)|Θ(n² log n)|2|n^(log2 7) dominates n² (case 1).
 H|The solution of T(n) = T(n/2) + 1 (binary search) is|Θ(1)|Θ(log n)|Θ(n)|Θ(n log n)|2|Case 2 of the master theorem with a = 1, b = 2.
 H|The solution of T(n) = T(n − 1) + n, with T(1) = 1, is|Θ(n)|Θ(n log n)|Θ(n²)|Θ(2^n)|3|T(n) = 1 + 2 + ... + n = n(n + 1)/2.
 H|The solution of T(n) = 2T(n − 1) + 1, with T(1) = 1, is|Θ(n)|Θ(n²)|Θ(2^n)|Θ(n!)|3|This is the Tower of Hanoi recurrence: T(n) = 2^n − 1.
 H|The solution of T(n) = 2T(√n) + log n is|Θ(log n)|Θ(log n log log n)|Θ(√n)|Θ(n)|2|Substituting n = 2^m gives S(m) = 2S(m/2) + m, so S(m) = Θ(m log m).
 M|The solution of T(n) = T(√n) + 1 is|Θ(log n)|Θ(log log n)|Θ(√n)|Θ(1)|2|With n = 2^m: S(m) = S(m/2) + 1 = Θ(log m).
-M|The solution of T(n) = 3T(n/4) + n log n is|Θ(n)|Θ(n log n)|Θ(n^(log4 3))|Θ(n log² n)|2|n^(log4 3) ≈ n^0.79 is dominated by n log n (case 3).
-M|The solution of T(n) = T(n/3) + T(2n/3) + n is|Θ(n)|Θ(n log n)|Θ(n²)|Θ(n^1.5)|2|A recursion tree has about log_(3/2) n levels, each doing O(n) work.
+M|The solution of T(n) = 3T(n/4) + n log n is|Θ(n)|Θ(n log n)|Θ(n^(log4 3))|Θ(n log² n)|2|n^(log4 3) ≈ n^(0.79) is dominated by n log n (case 3).
+M|The solution of T(n) = T(n/3) + T(2n/3) + n is|Θ(n)|Θ(n log n)|Θ(n²)|Θ(n^(1.5))|2|A recursion tree has about log_(3/2) n levels, each doing O(n) work.
 M|The solution of T(n) = 2T(n/2) + n log n is|Θ(n log n)|Θ(n log² n)|Θ(n²)|Θ(n log log n)|2|This falls between the master theorem cases; the extended case 2 gives Θ(n log² n).
 H|What is the time complexity of the following code?\nfor (i = 1; i < n; i = i * 2) count++;|Θ(n)|Θ(log n)|Θ(n log n)|Θ(√n)|2|i doubles each iteration, so the loop runs about log2 n times.
 H|What is the time complexity of the following code?\nfor (i = 1; i <= n; i++) for (j = 1; j <= n; j = j + i) count++;|Θ(n)|Θ(n log n)|Θ(n²)|Θ(n√n)|2|The inner loop runs n/i times: n(1 + 1/2 + ... + 1/n) = Θ(n log n).
@@ -28,15 +28,15 @@ M|Match List I with List II.\nList I (Amortized analysis method): A. Aggregate m
 M|Incrementing a binary counter n times, starting from 0, takes total time|Θ(n log n)|Θ(n)|Θ(n²)|Θ(log n)|2|Bit i flips n/2^i times, so the total is less than 2n.
 M|Given below are two statements.\nStatement I: If f(n) = O(g(n)), then g(n) = O(f(n)).\nStatement II: If f(n) = O(g(n)) and g(n) = O(h(n)), then f(n) = O(h(n)).|@S2|4|Big-O is transitive but not symmetric (n = O(n²), but n² ≠ O(n)).
 M|The value of n^(1/log2 n) is|n|log n|2|1|3|n^(1/log2 n) = 2^(log2 n / log2 n) = 2.
-M|Which of the following is NOT O(n²)?|n log n|100n² + 5|n^2.5|n|3|n^2.5 grows faster than n².
+M|Which of the following is NOT O(n²)?|n log n|100n² + 5|n^(2.5)|n|3|n^(2.5) grows faster than n².
 M|The master theorem cannot be applied directly to|T(n) = 2T(n/2) + n|T(n) = 2^n T(n/2) + n|T(n) = 9T(n/3) + n|T(n) = T(2n/3) + 1|2|The number of subproblems a must be a constant.
 M|Given below are two statements: one is labelled as Assertion A and the other is labelled as Reason R.\nAssertion A: An algorithm that is O(n²) can never be faster in practice than an O(n log n) algorithm.\nReason R: Asymptotic notation ignores constant factors and lower-order terms.|@AR|4|For small n or large constant factors an O(n²) algorithm can be faster; R is exactly why A is false.
 M|The time complexity of the following recursive function is\nvoid f(int n) { if (n <= 1) return; f(n/2); f(n/2); }|Θ(log n)|Θ(n)|Θ(n log n)|Θ(n²)|2|T(n) = 2T(n/2) + 1 = Θ(n).
 M|The best-case time complexity of an algorithm is|an upper bound on its running time for every input|its running time on the input of size n that takes the least time|always O(1)|the same as its average case|2|Worst case gives an upper bound over all inputs of size n.
 M|Space complexity measures|the number of comparisons|the total memory an algorithm needs as a function of input size|disk usage only|the number of instructions|2|Auxiliary space excludes the input itself.
 M|Which of the following methods are used to solve recurrences?\nA. Substitution method  B. Recursion-tree method  C. Master method  D. Greedy method\nChoose the correct answer from the options given below:|A, B and C only|A and D only|B, C and D only|A, B, C and D|1|The greedy method is an algorithm design technique.
-M|The solution of T(n) = 8T(n/2) + n² is|Θ(n²)|Θ(n² log n)|Θ(n³)|Θ(n^2.81)|3|n^(log2 8) = n³ dominates n² (case 1). This is the recurrence of standard divide-and-conquer matrix multiplication.
-M|The solution of T(n) = 3T(n/2) + n (Karatsuba multiplication) is|Θ(n log n)|Θ(n^(log2 3)) ≈ Θ(n^1.585)|Θ(n²)|Θ(n^1.5)|2|n^(log2 3) dominates n (case 1).
-M|Given below are two statements.\nStatement I: n log n = O(n^1.001).\nStatement II: (log n)^100 = O(n^0.01).|@S2|1|Any power of log n grows more slowly than any positive power of n.
+M|The solution of T(n) = 8T(n/2) + n² is|Θ(n²)|Θ(n² log n)|Θ(n³)|Θ(n^(2.81))|3|n^(log2 8) = n³ dominates n² (case 1). This is the recurrence of standard divide-and-conquer matrix multiplication.
+M|The solution of T(n) = 3T(n/2) + n (Karatsuba multiplication) is|Θ(n log n)|Θ(n^(log2 3)) ≈ Θ(n^(1.585))|Θ(n²)|Θ(n^(1.5))|2|n^(log2 3) dominates n (case 1).
+M|Given below are two statements.\nStatement I: n log n = O(n^(1.001)).\nStatement II: (log n)^100 = O(n^(0.01)).|@S2|1|Any power of log n grows more slowly than any positive power of n.
 L|The term "asymptotic" in complexity analysis refers to behaviour as|n approaches 0|n grows without bound|n equals 1|n is negative|2|Constants and lower-order terms become irrelevant for large n.
 M|What is the time complexity of the following code?\nint i = n; while (i > 1) { i = i / 3; }|Θ(n/3)|Θ(log n)|Θ(√n)|Θ(n)|2|i is divided by 3 each time: about log3 n iterations.
