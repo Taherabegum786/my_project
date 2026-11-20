@@ -31,3 +31,13 @@ Values: todo / running / awaiting-approval / done.
   `papers/benchmark/experiments` on each of your machines (about 35-45 min) and commit `results/raw/`.
   The three largest raw CSVs are stored gzipped; run.sh regenerates the plain files.
 - benchmark: draft 3 and numbers.tex are stale against the pass 4 summary; next is the write stage, then review round 4.
+
+## Handoff for a session on the user's own machine
+Branch `ccr-13230261-tcy4yq`. The benchmark paper is at: experiments pass 4 audited and run on
+`cloud-vm-4core`; the user's machines still need the full run. On a machine, from
+`papers/benchmark/experiments`: `QUICK=1 PROCS=<n> ./run.sh`, then
+`MACHINE_NAME=<name> PROCS=<n> ./run.sh 2>&1 | tee ~/run_<name>.log`
+(names/PROCS: ubuntu-i5 4, wsl-i7 6, wsl-ryzen7 3), then commit ONLY that machine's raw files with the
+`git add` command run.sh prints, `git restore papers/benchmark/results`, `git pull --rebase`, push.
+Do not commit summary.md or figures from a user machine. After both machines are pushed: per-machine
+summaries, the two-machine UDP run (native Ubuntu as receiver), then the write stage (draft 4) and review round 4.
