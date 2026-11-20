@@ -116,9 +116,14 @@ TEX_UNICODE = {
     "≠": r"$\neq$", "≥": r"$\geq$", "≤": r"$\leq$", "⊕": r"$\oplus$",
     "→": r"$\rightarrow$", "φ": r"$\varphi$", "α": r"$\alpha$", "ρ": r"$\rho$",
     "µ": r"$\mu$", "τ": r"$\tau$", "Δ": r"$\Delta$", "∞": r"$\infty$",
-    "←": r"$\leftarrow$", "Σ": r"$\Sigma$", "√": r"$\surd$", "³": r"\textsuperscript{3}", "²": r"\textsuperscript{2}", "—": "---", "–": "--", "è": r"\`e",
+    "←": r"$\leftarrow$", "Σ": r"$\Sigma$", "√": r"$\surd$", "³": r"\textsuperscript{3}",
+    "σ": r"$\sigma$", "π": r"$\pi$", "⋈": r"$\bowtie$", "÷": r"$\div$", "∪": r"$\cup$",
+    "∩": r"$\cap$", "∀": r"$\forall$", "∃": r"$\exists$", "¬": r"$\neg$", "∧": r"$\wedge$",
+    "∨": r"$\vee$", "⊆": r"$\subseteq$", "∈": r"$\in$", "⁺": r"\textsuperscript{+}", "≺": r"$\prec$", "γ": r"$\gamma$", "⌈": r"$\lceil$", "⌉": r"$\rceil$", "⌊": r"$\lfloor$", "⌋": r"$\rfloor$", "ε": r"$\varepsilon$", "⋉": r"$\ltimes$", "θ": r"$\theta$", "∏": r"$\prod$", "→→": r"$\twoheadrightarrow$", "²": r"\textsuperscript{2}", "—": "---", "–": "--", "è": r"\`e",
 }
 
+# Multi-character symbols must be replaced before their single-character parts.
+TEX_UNICODE = {k: TEX_UNICODE[k] for k in sorted(TEX_UNICODE, key=len, reverse=True)}
 
 def tex(text):
     """Convert one plain-text field of a question bank to LaTeX."""
@@ -133,6 +138,8 @@ def tex(text):
     bad = [c for c in text if ord(c) > 127]
     if bad:
         sys.exit(f"no LaTeX mapping for {set(bad)}; add it to TEX_UNICODE")
+    # Adjacent symbols such as "$\\alpha$$\\beta$" would form "$$" (display math).
+    text = re.sub(r"(?<!\\)\$\$", "", text)
     return text.replace("\\textbackslash{}n", "\\\\\n")
 
 
