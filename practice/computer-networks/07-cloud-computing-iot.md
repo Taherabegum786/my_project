@@ -217,7 +217,7 @@ The property by which a single instance of software serves several customers, wi
 
 **Q15.** `High`  
 Given below are two statements.  
-Statement I: Vertical scaling (scaling up) adds more CPU or memory to an existing server.  
+Statement I: Vertical scaling (scaling up) adds more servers or instances to the pool.  
 Statement II: Horizontal scaling (scaling out) adds more servers or instances to the pool.
 
 (1) Both Statement I and Statement II are true  
@@ -227,7 +227,7 @@ Statement II: Horizontal scaling (scaling out) adds more servers or instances to
 
 <details><summary>Answer</summary>
 
-**(1)** — Standard definitions of scale-up and scale-out.
+**(4)** — Vertical scaling adds CPU or memory to an existing server.
 
 </details>
 
@@ -537,7 +537,7 @@ How many quality-of-service levels does MQTT define?
 **Q37.** `High`  
 Given below are two statements: one is labelled as Assertion A and the other is labelled as Reason R.  
 Assertion A: IPv6 is considered essential for the large-scale deployment of IoT.  
-Reason R: The 128-bit address space of IPv6 can give a unique address to each of billions of devices.
+Reason R: IPv6 addresses are 64 bits long.
 
 (1) Both A and R are true and R is the correct explanation of A  
 (2) Both A and R are true but R is NOT the correct explanation of A  
@@ -546,7 +546,7 @@ Reason R: The 128-bit address space of IPv6 can give a unique address to each of
 
 <details><summary>Answer</summary>
 
-**(1)** — IPv4's 32-bit space is too small for the number of connected things.
+**(3)** — IPv6 addresses are 128 bits long; that huge space is what can address billions of devices.
 
 </details>
 

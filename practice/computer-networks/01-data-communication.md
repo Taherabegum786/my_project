@@ -291,7 +291,7 @@ List II (Property): I. Bipolar; alternate 1s take opposite polarity  II. Transit
 **Q21.** `High`  
 Given below are two statements: one is labelled as Assertion A and the other is labelled as Reason R.  
 Assertion A: Manchester encoding provides self-synchronisation between sender and receiver.  
-Reason R: In Manchester encoding there is a transition in the middle of every bit interval.
+Reason R: Manchester encoding needs about twice the bandwidth of NRZ.
 
 (1) Both A and R are true and R is the correct explanation of A  
 (2) Both A and R are true but R is NOT the correct explanation of A  
@@ -300,7 +300,7 @@ Reason R: In Manchester encoding there is a transition in the middle of every bi
 
 <details><summary>Answer</summary>
 
-**(1)** — The guaranteed mid-bit transition lets the receiver recover the clock, which is exactly why the code is self-clocking.
+**(2)** — Both are true, but self-synchronisation comes from the mid-bit transition, not from the extra bandwidth.
 
 </details>
 
@@ -520,7 +520,7 @@ A geostationary satellite orbits at an altitude of approximately
 
 **Q37.** `Medium`  
 Given below are two statements.  
-Statement I: In frequency hopping spread spectrum (FHSS) the carrier frequency hops according to a pseudo-random sequence known to both sender and receiver.  
+Statement I: In frequency hopping spread spectrum (FHSS) each data bit is replaced by a sequence of chips.  
 Statement II: In direct sequence spread spectrum (DSSS) each data bit is replaced by a sequence of chips.
 
 (1) Both Statement I and Statement II are true  
@@ -530,7 +530,7 @@ Statement II: In direct sequence spread spectrum (DSSS) each data bit is replace
 
 <details><summary>Answer</summary>
 
-**(1)** — Both are the defining properties of the two spread-spectrum techniques.
+**(4)** — Chipping is DSSS; FHSS hops the carrier frequency according to a pseudo-random sequence.
 
 </details>
 

@@ -7,9 +7,10 @@ Match List I with List II, Assertion–Reason, Statement I / Statement II, multi
 
 ## Available
 
-| Subject (syllabus unit) | Questions | Link |
-|---|---|---|
-| Data Communication and Computer Networks (Unit 8) | 417 | [practice/computer-networks](practice/computer-networks/README.md) |
+| Unit | Subject | Questions | Link |
+|---|---|---|---|
+| 5 | System Software and Operating System | 556 | [practice/operating-systems](practice/operating-systems/README.md) |
+| 9 | Data Communication and Computer Networks | 417 | [practice/computer-networks](practice/computer-networks/README.md) |
 
 More subjects will be added in the same format.
 
@@ -17,8 +18,8 @@ More subjects will be added in the same format.
 
 The same questions are generated as LaTeX in `latex/`:
 
-- `latex/main.tex` — the single merged book. It `\input`s every subject, so compiling it
-  always gives one file with all subjects completed so far.
+- `latex/main.tex` — the single merged book. It `\input`s every subject in syllabus-unit
+  order, so compiling it always gives one file with all subjects completed so far.
 - `latex/preamble.tex` — shared packages and macros (edit this to change the layout).
 - `latex/subjects/<subject>.tex` — one chapter per subject, with no preamble of its own.
 

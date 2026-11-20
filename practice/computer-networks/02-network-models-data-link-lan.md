@@ -855,8 +855,8 @@ FDDI uses which of the following access methods and media?
 
 **Q60.** `Medium`  
 Given below are two statements.  
-Statement I: A VLAN divides a single switched network into multiple broadcast domains.  
-Statement II: Communication between hosts in different VLANs requires a layer-3 device.
+Statement I: A VLAN cannot span more than one physical switch.  
+Statement II: Hosts in different VLANs can communicate through a layer-2 switch without any router.
 
 (1) Both Statement I and Statement II are true  
 (2) Both Statement I and Statement II are false  
@@ -865,7 +865,7 @@ Statement II: Communication between hosts in different VLANs requires a layer-3 
 
 <details><summary>Answer</summary>
 
-**(1)** — Each VLAN is its own broadcast domain, and inter-VLAN traffic must be routed.
+**(2)** — VLANs span switches using 802.1Q trunks, and inter-VLAN traffic must be routed by a layer-3 device.
 
 </details>
 

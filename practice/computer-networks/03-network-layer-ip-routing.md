@@ -432,7 +432,7 @@ Which of the following types of address is NOT defined in IPv6?
 
 **Q31.** `Medium`  
 Given below are two statements.  
-Statement I: In IPv6, fragmentation can be performed only by the source host and not by intermediate routers.  
+Statement I: In IPv6, intermediate routers fragment packets that exceed the MTU of the next link.  
 Statement II: The IPv6 base header contains a 20-bit flow label field.
 
 (1) Both Statement I and Statement II are true  
@@ -442,7 +442,7 @@ Statement II: The IPv6 base header contains a 20-bit flow label field.
 
 <details><summary>Answer</summary>
 
-**(1)** — IPv6 routers never fragment (a fragment extension header is used by the source), and the flow label is 20 bits.
+**(4)** — IPv6 routers never fragment; the source host does, using the fragment extension header.
 
 </details>
 

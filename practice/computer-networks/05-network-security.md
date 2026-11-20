@@ -358,8 +358,8 @@ List II (Where it is applied): I. E-mail security  II. Wireless LAN security  II
 
 **Q25.** `High`  
 Given below are two statements.  
-Statement I: The Authentication Header (AH) protocol of IPSec provides source authentication and data integrity but not confidentiality.  
-Statement II: The Encapsulating Security Payload (ESP) protocol of IPSec provides confidentiality.
+Statement I: The Authentication Header (AH) protocol of IPSec provides confidentiality by encrypting the payload.  
+Statement II: The Encapsulating Security Payload (ESP) protocol of IPSec provides only authentication and cannot encrypt data.
 
 (1) Both Statement I and Statement II are true  
 (2) Both Statement I and Statement II are false  
@@ -368,7 +368,7 @@ Statement II: The Encapsulating Security Payload (ESP) protocol of IPSec provide
 
 <details><summary>Answer</summary>
 
-**(1)** — ESP can provide encryption as well as authentication; AH cannot encrypt.
+**(2)** — It is the reverse: AH provides authentication and integrity without encryption; ESP provides confidentiality.
 
 </details>
 

@@ -413,7 +413,7 @@ Which of the following statements about FTP is correct?
 
 **Q29.** `High`  
 Given below are two statements.  
-Statement I: SMTP is a push protocol used to transfer mail from the sender's mail server to the receiver's mail server.  
+Statement I: SMTP is a pull protocol used by a user agent to retrieve mail from its mail server.  
 Statement II: POP3 and IMAP are pull protocols used by a user agent to retrieve mail from the mail server.
 
 (1) Both Statement I and Statement II are true  
@@ -423,7 +423,7 @@ Statement II: POP3 and IMAP are pull protocols used by a user agent to retrieve 
 
 <details><summary>Answer</summary>
 
-**(1)** — SMTP pushes mail; message access agents pull it.
+**(4)** — SMTP is a push protocol for sending mail.
 
 </details>
 
@@ -630,7 +630,7 @@ Which HTTP request header and status code are used by a cache to verify that its
 
 **Q44.** `Medium`  
 Given below are two statements.  
-Statement I: HTTP/1.1 uses persistent connections by default.  
+Statement I: HTTP/1.0 uses persistent connections by default.  
 Statement II: HTTPS is HTTP running over TLS/SSL and uses port 443 by default.
 
 (1) Both Statement I and Statement II are true  
@@ -640,7 +640,7 @@ Statement II: HTTPS is HTTP running over TLS/SSL and uses port 443 by default.
 
 <details><summary>Answer</summary>
 
-**(1)** — Both statements are true.
+**(4)** — HTTP/1.0 is non-persistent by default; persistent connections became the default in HTTP/1.1.
 
 </details>
 
@@ -704,7 +704,7 @@ A. TCP connection establishment  B. DNS lookup of the host name  C. HTTP request
 **Q49.** `High`  
 Given below are two statements: one is labelled as Assertion A and the other is labelled as Reason R.  
 Assertion A: DNS uses UDP for ordinary name queries.  
-Reason R: A query and its response are short, and avoiding connection set-up reduces the delay.
+Reason R: DNS zone transfers between servers use TCP.
 
 (1) Both A and R are true and R is the correct explanation of A  
 (2) Both A and R are true but R is NOT the correct explanation of A  
@@ -713,7 +713,7 @@ Reason R: A query and its response are short, and avoiding connection set-up red
 
 <details><summary>Answer</summary>
 
-**(1)** — The low overhead of UDP suits short request-response exchanges.
+**(2)** — Both are true, but R does not explain A; UDP is used because queries are short and need no connection set-up.
 
 </details>
 

@@ -186,8 +186,8 @@ List II (Function): I. Stores authentication and ciphering keys  II. Database of
 
 **Q13.** `Medium`  
 Given below are two statements.  
-Statement I: The IMSI identifies the subscriber and is stored in the SIM.  
-Statement II: The IMEI identifies the mobile equipment.
+Statement I: The IMEI identifies the subscriber and is stored in the SIM.  
+Statement II: The IMSI identifies the mobile handset hardware.
 
 (1) Both Statement I and Statement II are true  
 (2) Both Statement I and Statement II are false  
@@ -196,7 +196,7 @@ Statement II: The IMEI identifies the mobile equipment.
 
 <details><summary>Answer</summary>
 
-**(1)** — IMSI is tied to the subscription, IMEI to the handset.
+**(2)** — The IMSI identifies the subscriber (stored in the SIM); the IMEI identifies the equipment.
 
 </details>
 
@@ -288,7 +288,7 @@ SMS messages are delivered using
 **Q20.** `High`  
 Given below are two statements: one is labelled as Assertion A and the other is labelled as Reason R.  
 Assertion A: CDMA systems require tight power control.  
-Reason R: Without it, a transmitter near the base station would drown out the signals of distant mobiles (the near-far problem).
+Reason R: In CDMA each user transmits on a separate frequency band, so users never interfere with one another.
 
 (1) Both A and R are true and R is the correct explanation of A  
 (2) Both A and R are true but R is NOT the correct explanation of A  
@@ -297,7 +297,7 @@ Reason R: Without it, a transmitter near the base station would drown out the si
 
 <details><summary>Answer</summary>
 
-**(1)** — All users share the same frequency, so received powers must be equalised.
+**(3)** — All CDMA users share the same band; power control prevents nearby mobiles from drowning out distant ones (the near-far problem).
 
 </details>
 
