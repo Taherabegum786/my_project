@@ -11,6 +11,7 @@ Match List I with List II, Assertion–Reason, Statement I / Statement II, multi
 |---|---|---|---|
 | 4 | Database Management Systems | 480 | [practice/dbms](practice/dbms/README.md) |
 | 5 | System Software and Operating System | 556 | [practice/operating-systems](practice/operating-systems/README.md) |
+| 7 | Data Structures and Algorithms | 458 | [practice/data-structures-algorithms](practice/data-structures-algorithms/README.md) |
 | 9 | Data Communication and Computer Networks | 417 | [practice/computer-networks](practice/computer-networks/README.md) |
 
 More subjects will be added in the same format.
@@ -43,5 +44,7 @@ Question banks live in `data/<subject>/*.txt`, one question per line:
 
     PRIORITY|question|option1|option2|option3|option4|answer|explanation
 
-Run `python3 tools/build.py` to regenerate the Markdown in `practice/` and the LaTeX in `latex/`. Options are
+Run `python3 tools/build.py` to regenerate the Markdown in `practice/` and the LaTeX in `latex/`.
+Run `python3 tools/check.py` to catch ambiguous questions (duplicate options or
+duplicate List II entries in match questions). Options are
 shuffled (deterministically) at build time so the answer key is evenly spread.
