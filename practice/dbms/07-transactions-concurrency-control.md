@@ -390,7 +390,7 @@ In multiple-granularity locking, which of the following pairs of lock modes is c
 </details>
 
 **Q27.** `High`  
-In basic timestamp ordering, transaction T issues write(Q) and TS(T) < R-timestamp(Q). The protocol
+In basic timestamp ordering, transaction T issues write(Q) and TS(T) &lt; R-timestamp(Q). The protocol
 
 (1) rejects the write and rolls back T  
 (2) executes the write  
@@ -404,7 +404,7 @@ In basic timestamp ordering, transaction T issues write(Q) and TS(T) < R-timesta
 </details>
 
 **Q28.** `High`  
-Thomas' write rule modifies the timestamp-ordering protocol so that, when TS(T) < W-timestamp(Q) for a write(Q),
+Thomas' write rule modifies the timestamp-ordering protocol so that, when TS(T) &lt; W-timestamp(Q) for a write(Q),
 
 (1) the obsolete write is ignored  
 (2) T waits  

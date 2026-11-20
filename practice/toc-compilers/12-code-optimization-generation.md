@@ -7,7 +7,7 @@ Each question carries 2 marks, has exactly one correct option and no negative ma
 ---
 
 **Q1.** `High`  
-Consider the three-address code: (1) a = 0  (2) i = 1  (3) t = a + i  (4) a = t  (5) i = i + 1  (6) if i <= 10 goto (3)  (7) print a. The number of basic blocks is
+Consider the three-address code: (1) a = 0  (2) i = 1  (3) t = a + i  (4) a = t  (5) i = i + 1  (6) if i &lt;= 10 goto (3)  (7) print a. The number of basic blocks is
 
 (1) 2  
 (2) 4  
@@ -273,7 +273,7 @@ Which of the following is a machine-dependent optimization?
 </details>
 
 **Q19.** `Medium`  
-In the flow graph of the code (1) a = 0  (2) i = 1  (3) t = a + i  (4) a = t  (5) i = i + 1  (6) if i <= 10 goto (3)  (7) print a, the number of edges between basic blocks is
+In the flow graph of the code (1) a = 0  (2) i = 1  (3) t = a + i  (4) a = t  (5) i = i + 1  (6) if i &lt;= 10 goto (3)  (7) print a, the number of edges between basic blocks is
 
 (1) 2  
 (2) 4  

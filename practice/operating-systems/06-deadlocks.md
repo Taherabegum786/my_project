@@ -371,7 +371,7 @@ A situation in which two processes keep changing their state in response to each
 </details>
 
 **Q26.** `Medium`  
-Ordering resource types R1 < R2 < R3 and requiring every process to request resources in increasing order prevents deadlock because
+Ordering resource types R1 &lt; R2 &lt; R3 and requiring every process to request resources in increasing order prevents deadlock because
 
 (1) mutual exclusion is removed  
 (2) preemption is allowed  

@@ -7,7 +7,7 @@ Each question carries 2 marks, has exactly one correct option and no negative ma
 ---
 
 **Q1.** `High`  
-For the grammar E → TE', E' → +TE' | ε, T → FT', T' → *FT' | ε, F → (E) | id, the set FIRST(E') is
+For the grammar E → TE', E' → +TE' | ε, T → FT', T' → \*FT' | ε, F → (E) | id, the set FIRST(E') is
 
 (1) {(, id}  
 (2) {+, ε}  
@@ -21,12 +21,12 @@ For the grammar E → TE', E' → +TE' | ε, T → FT', T' → *FT' | ε, F → 
 </details>
 
 **Q2.** `High`  
-For the grammar E → TE', E' → +TE' | ε, T → FT', T' → *FT' | ε, F → (E) | id, the set FOLLOW(T) is
+For the grammar E → TE', E' → +TE' | ε, T → FT', T' → \*FT' | ε, F → (E) | id, the set FOLLOW(T) is
 
 (1) {+, ), $}  
 (2) {), $}  
-(3) {+, *}  
-(4) {*, +, ), $}  
+(3) {+, \*}  
+(4) {\*, +, ), $}  
 
 <details><summary>Answer</summary>
 
@@ -35,21 +35,21 @@ For the grammar E → TE', E' → +TE' | ε, T → FT', T' → *FT' | ε, F → 
 </details>
 
 **Q3.** `High`  
-For the grammar E → TE', E' → +TE' | ε, T → FT', T' → *FT' | ε, F → (E) | id, the set FOLLOW(F) is
+For the grammar E → TE', E' → +TE' | ε, T → FT', T' → \*FT' | ε, F → (E) | id, the set FOLLOW(F) is
 
 (1) {(, id}  
-(2) {*, $}  
-(3) {*, +, ), $}  
+(2) {\*, $}  
+(3) {\*, +, ), $}  
 (4) {+, ), $}  
 
 <details><summary>Answer</summary>
 
-**(3)** — FOLLOW(F) includes FIRST(T') − {ε} = {*} and FOLLOW(T) = {+, ), $}.
+**(3)** — FOLLOW(F) includes FIRST(T') − {ε} = {\*} and FOLLOW(T) = {+, ), $}.
 
 </details>
 
 **Q4.** `High`  
-For the grammar E → TE', E' → +TE' | ε, T → FT', T' → *FT' | ε, F → (E) | id, the set FOLLOW(E) is
+For the grammar E → TE', E' → +TE' | ε, T → FT', T' → \*FT' | ε, F → (E) | id, the set FOLLOW(E) is
 
 (1) {(, id}  
 (2) {+, ), $}  
@@ -63,12 +63,12 @@ For the grammar E → TE', E' → +TE' | ε, T → FT', T' → *FT' | ε, F → 
 </details>
 
 **Q5.** `High`  
-In the LL(1) parsing table for E → TE', E' → +TE' | ε, T → FT', T' → *FT' | ε, F → (E) | id, the production E' → ε is placed in the entries
+In the LL(1) parsing table for E → TE', E' → +TE' | ε, T → FT', T' → \*FT' | ε, F → (E) | id, the production E' → ε is placed in the entries
 
 (1) M[E', id]  
 (2) M[E', +]  
 (3) M[E', )] and M[E', $]  
-(4) M[E', *]  
+(4) M[E', \*]  
 
 <details><summary>Answer</summary>
 
@@ -79,7 +79,7 @@ In the LL(1) parsing table for E → TE', E' → +TE' | ε, T → FT', T' → *F
 **Q6.** `High`  
 A grammar is LL(1) if, for every pair of productions A → α | β,
 
-(1) FIRST(α) and FIRST(β) are disjoint, and if β ⇒* ε then FIRST(α) and FOLLOW(A) are disjoint  
+(1) FIRST(α) and FIRST(β) are disjoint, and if β ⇒\* ε then FIRST(α) and FOLLOW(A) are disjoint  
 (2) α and β have the same length  
 (3) A is the start symbol  
 (4) the grammar is ambiguous  

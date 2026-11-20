@@ -22,7 +22,7 @@ fork(); fork(); printf("hello");
 </details>
 
 **Q2.** `High`  
-A process executes the code for (i = 0; i < 3; i++) fork(); The total number of processes at the end, including the original, is
+A process executes the code for (i = 0; i &lt; 3; i++) fork(); The total number of processes at the end, including the original, is
 
 (1) 7  
 (2) 8  
@@ -36,7 +36,7 @@ A process executes the code for (i = 0; i < 3; i++) fork(); The total number of 
 </details>
 
 **Q3.** `High`  
-A program executes for (i = 0; i < n; i++) fork(); The number of child processes created is
+A program executes for (i = 0; i &lt; n; i++) fork(); The number of child processes created is
 
 (1) n  
 (2) 2n  
@@ -378,7 +378,7 @@ List II (Description): I. Compiler directives such as #pragma omp parallel  II. 
 **Q26.** `Medium`  
 Given below are two statements.  
 Statement I: Pthreads is a thread library implementation available only on Linux.  
-Statement II: pthread_join() makes the calling thread wait for the specified thread to terminate.
+Statement II: pthread\_join() makes the calling thread wait for the specified thread to terminate.
 
 (1) Both Statement I and Statement II are true  
 (2) Both Statement I and Statement II are false  
@@ -679,7 +679,7 @@ When a process terminates, causing all its children to be terminated as well, th
 </details>
 
 **Q47.** `Medium`  
-Which Linux system call creates a new task and, through flags such as CLONE_VM and CLONE_FILES, decides how much is shared with the parent?
+Which Linux system call creates a new task and, through flags such as CLONE\_VM and CLONE\_FILES, decides how much is shared with the parent?
 
 (1) clone()  
 (2) exec()  
@@ -737,7 +737,7 @@ if (fork()) fork(); fork();
 
 **Q51.** `Medium`  
 How many processes in total, including the parent, are created by the following code?  
-for (i = 0; i < 4; i++) if (fork() == 0) break;
+for (i = 0; i &lt; 4; i++) if (fork() == 0) break;
 
 (1) 4  
 (2) 5  

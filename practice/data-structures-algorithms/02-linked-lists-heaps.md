@@ -25,10 +25,10 @@ List II (Time): I. O(1)  II. O(n)  III. O(k)  IV. O(n log n)
 **Q2.** `High`  
 In a doubly linked list, given a pointer p to a node to be deleted (not the first or last node), which statements delete it?
 
-(1) p->prev = p->next; p->next = p->prev;  
-(2) p->prev->next = p->next; p->next->prev = p->prev;  
-(3) p->next->next = p->prev; p->prev->prev = p->next;  
-(4) p->next = NULL; p->prev = NULL;  
+(1) p-&gt;prev = p-&gt;next; p-&gt;next = p-&gt;prev;  
+(2) p-&gt;prev-&gt;next = p-&gt;next; p-&gt;next-&gt;prev = p-&gt;prev;  
+(3) p-&gt;next-&gt;next = p-&gt;prev; p-&gt;prev-&gt;prev = p-&gt;next;  
+(4) p-&gt;next = NULL; p-&gt;prev = NULL;  
 
 <details><summary>Answer</summary>
 
@@ -98,7 +98,7 @@ Choose the correct answer from the options given below:
 
 **Q7.** `Medium`  
 What does the following function print for a linked list 1 → 2 → 3 → 4?  
-void f(Node *h) { if (h == NULL) return; f(h->next); printf("%d ", h->data); }
+void f(Node \*h) { if (h == NULL) return; f(h-&gt;next); printf("%d ", h-&gt;data); }
 
 (1) 1 2 3 4  
 (2) 4 2  
@@ -344,7 +344,7 @@ The kth smallest element in a binary min-heap of n elements can be found, using 
 **Q24.** `Medium`  
 Match List I with List II.  
 List I (Heap variant): A. Binomial heap  B. Fibonacci heap  C. d-ary heap  
-List II (Feature): I. Height O(log_d n), cheaper decrease-key and more expensive delete-min  II. O(1) amortized decrease-key, used to speed up Dijkstra and Prim  III. Collection of binomial trees supporting union in O(log n)
+List II (Feature): I. Height O(log\_d n), cheaper decrease-key and more expensive delete-min  II. O(1) amortized decrease-key, used to speed up Dijkstra and Prim  III. Collection of binomial trees supporting union in O(log n)
 
 (1) A-III, B-II, C-I  
 (2) A-II, B-III, C-I  
@@ -383,7 +383,7 @@ In a min-heap stored in an array, which of the following arrays is a valid min-h
 
 <details><summary>Answer</summary>
 
-**(4)** — In option 2, 5 > 4 (its child); in option 3, 2 > 1; in option 4, 2 > 0.
+**(4)** — In option 2, 5 &gt; 4 (its child); in option 3, 2 &gt; 1; in option 4, 2 &gt; 0.
 
 </details>
 
@@ -397,7 +397,7 @@ Which of the following is a valid max-heap?
 
 <details><summary>Answer</summary>
 
-**(2)** — In option 2, 12 < 13 (its child); in option 3, 12 < 16; in option 4, 14 < 16.
+**(2)** — In option 2, 12 &lt; 13 (its child); in option 3, 12 &lt; 16; in option 4, 14 &lt; 16.
 
 </details>
 

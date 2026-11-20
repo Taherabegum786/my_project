@@ -159,10 +159,10 @@ In MoSCoW prioritisation, used in DSDM, the letters stand for
 **Q11.** `Medium`  
 In FDD, a feature is expressed using the template
 
-(1) <action> the <result> <by | for | of | to> a(n) <object>  
-(2) <noun> <verb> <noun>  
-(3) as a <role> I want <goal>  
-(4) given <context> when <event> then <outcome>  
+(1) &lt;action&gt; the &lt;result&gt; &lt;by | for | of | to&gt; a(n) &lt;object&gt;  
+(2) &lt;noun&gt; &lt;verb&gt; &lt;noun&gt;  
+(3) as a &lt;role&gt; I want &lt;goal&gt;  
+(4) given &lt;context&gt; when &lt;event&gt; then &lt;outcome&gt;  
 
 <details><summary>Answer</summary>
 

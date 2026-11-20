@@ -23,7 +23,7 @@ In the access-matrix model of protection, rows and columns represent respectivel
 **Q2.** `High`  
 Match List I with List II.  
 List I (Access-matrix implementation): A. Access control list  B. Capability list  C. Global table  D. Lock-key mechanism  
-List II (Description): I. Each domain has a list of objects with the operations allowed on them  II. Each object has unique bit patterns (locks) and each domain has keys  III. Each object has a list of domains with their access rights  IV. A set of ordered triples <domain, object, rights-set>
+List II (Description): I. Each domain has a list of objects with the operations allowed on them  II. Each object has unique bit patterns (locks) and each domain has keys  III. Each object has a list of domains with their access rights  IV. A set of ordered triples &lt;domain, object, rights-set&gt;
 
 (1) A-III, B-I, C-IV, D-II  
 (2) A-III, B-IV, C-I, D-II  
@@ -571,7 +571,7 @@ In the protection model, a domain switch in UNIX occurs when
 </details>
 
 **Q39.** `Medium`  
-In the access-matrix model, a right marked with an asterisk (for example read*) indicates the
+In the access-matrix model, a right marked with an asterisk (for example read\*) indicates the
 
 (1) copy right, allowing the right to be copied to other domains for the same object  
 (2) control right  

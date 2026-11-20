@@ -17,7 +17,7 @@ A. Functional  B. Coincidental  C. Temporal  D. Sequential  E. Logical
 
 <details><summary>Answer</summary>
 
-**(2)** — Coincidental < logical < temporal < procedural < communicational < sequential < functional.
+**(2)** — Coincidental &lt; logical &lt; temporal &lt; procedural &lt; communicational &lt; sequential &lt; functional.
 
 </details>
 
@@ -32,7 +32,7 @@ A. Data coupling  B. Content coupling  C. Control coupling  D. Common coupling  
 
 <details><summary>Answer</summary>
 
-**(2)** — Content > common > external > control > stamp > data coupling.
+**(2)** — Content &gt; common &gt; external &gt; control &gt; stamp &gt; data coupling.
 
 </details>
 

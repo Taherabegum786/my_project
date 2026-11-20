@@ -7,7 +7,7 @@ Each question carries 2 marks, has exactly one correct option and no negative ma
 ---
 
 **Q1.** `High`  
-Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, CS, 60000), (3, Chitra, EE, 40000), (4, Deepak, EE, NULL), (5, Esha, ME, 70000), (6, Farhan, CS, NULL). The query SELECT COUNT(*), COUNT(salary) FROM EMP returns
+Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, CS, 60000), (3, Chitra, EE, 40000), (4, Deepak, EE, NULL), (5, Esha, ME, 70000), (6, Farhan, CS, NULL). The query SELECT COUNT(\*), COUNT(salary) FROM EMP returns
 
 (1) 4 and 4  
 (2) 6 and 4  
@@ -16,7 +16,7 @@ Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, 
 
 <details><summary>Answer</summary>
 
-**(2)** — COUNT(*) counts rows; COUNT(column) ignores NULLs.
+**(2)** — COUNT(\*) counts rows; COUNT(column) ignores NULLs.
 
 </details>
 
@@ -35,7 +35,7 @@ Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, 
 </details>
 
 **Q3.** `High`  
-Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, CS, 60000), (3, Chitra, EE, 40000), (4, Deepak, EE, NULL), (5, Esha, ME, 70000), (6, Farhan, CS, NULL). How many rows does SELECT dept, COUNT(*) FROM EMP GROUP BY dept HAVING COUNT(*) > 1 return?
+Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, CS, 60000), (3, Chitra, EE, 40000), (4, Deepak, EE, NULL), (5, Esha, ME, 70000), (6, Farhan, CS, NULL). How many rows does SELECT dept, COUNT(\*) FROM EMP GROUP BY dept HAVING COUNT(\*) &gt; 1 return?
 
 (1) 2  
 (2) 6  
@@ -49,7 +49,7 @@ Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, 
 </details>
 
 **Q4.** `High`  
-Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, CS, 60000), (3, Chitra, EE, 40000), (4, Deepak, EE, NULL), (5, Esha, ME, 70000), (6, Farhan, CS, NULL). How many rows does SELECT * FROM EMP WHERE salary > 45000 OR salary <= 45000 return?
+Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, CS, 60000), (3, Chitra, EE, 40000), (4, Deepak, EE, NULL), (5, Esha, ME, 70000), (6, Farhan, CS, NULL). How many rows does SELECT \* FROM EMP WHERE salary &gt; 45000 OR salary &lt;= 45000 return?
 
 (1) 0  
 (2) 4  
@@ -63,7 +63,7 @@ Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, 
 </details>
 
 **Q5.** `Medium`  
-Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, CS, 60000), (3, Chitra, EE, 40000), (4, Deepak, EE, NULL), (5, Esha, ME, 70000), (6, Farhan, CS, NULL). How many rows does SELECT * FROM EMP WHERE salary BETWEEN 40000 AND 60000 return?
+Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, CS, 60000), (3, Chitra, EE, 40000), (4, Deepak, EE, NULL), (5, Esha, ME, 70000), (6, Farhan, CS, NULL). How many rows does SELECT \* FROM EMP WHERE salary BETWEEN 40000 AND 60000 return?
 
 (1) 2  
 (2) 5  
@@ -77,7 +77,7 @@ Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, 
 </details>
 
 **Q6.** `Medium`  
-Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, CS, 60000), (3, Chitra, EE, 40000), (4, Deepak, EE, NULL), (5, Esha, ME, 70000), (6, Farhan, CS, NULL). Which names are returned by SELECT name FROM EMP WHERE name LIKE '_s%'?
+Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, CS, 60000), (3, Chitra, EE, 40000), (4, Deepak, EE, NULL), (5, Esha, ME, 70000), (6, Farhan, CS, NULL). Which names are returned by SELECT name FROM EMP WHERE name LIKE '\_s%'?
 
 (1) Asha only  
 (2) Asha, Bala and Esha  
@@ -86,12 +86,12 @@ Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, 
 
 <details><summary>Answer</summary>
 
-**(4)** — _ matches exactly one character, so the second letter must be s.
+**(4)** — \_ matches exactly one character, so the second letter must be s.
 
 </details>
 
 **Q7.** `Medium`  
-Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, CS, 60000), (3, Chitra, EE, 40000), (4, Deepak, EE, NULL), (5, Esha, ME, 70000), (6, Farhan, CS, NULL). How many rows does SELECT * FROM EMP WHERE dept = 'CS' AND salary <> 50000 return?
+Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, CS, 60000), (3, Chitra, EE, 40000), (4, Deepak, EE, NULL), (5, Esha, ME, 70000), (6, Farhan, CS, NULL). How many rows does SELECT \* FROM EMP WHERE dept = 'CS' AND salary &lt;&gt; 50000 return?
 
 (1) 0  
 (2) 2  
@@ -105,7 +105,7 @@ Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, 
 </details>
 
 **Q8.** `Medium`  
-Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, CS, 60000), (3, Chitra, EE, 40000), (4, Deepak, EE, NULL), (5, Esha, ME, 70000), (6, Farhan, CS, NULL). The number of rows returned by SELECT * FROM EMP E1, EMP E2 WHERE E1.salary > E2.salary is
+Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, CS, 60000), (3, Chitra, EE, 40000), (4, Deepak, EE, NULL), (5, Esha, ME, 70000), (6, Farhan, CS, NULL). The number of rows returned by SELECT \* FROM EMP E1, EMP E2 WHERE E1.salary &gt; E2.salary is
 
 (1) 4  
 (2) 6  
@@ -119,7 +119,7 @@ Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, 
 </details>
 
 **Q9.** `High`  
-Table T1(x) contains 1, 2, 2, 3 and NULL; table T2(x) contains 2, 3 and 4. How many rows does SELECT * FROM T2 WHERE x NOT IN (SELECT x FROM T1) return?
+Table T1(x) contains 1, 2, 2, 3 and NULL; table T2(x) contains 2, 3 and 4. How many rows does SELECT \* FROM T2 WHERE x NOT IN (SELECT x FROM T1) return?
 
 (1) 1  
 (2) 3  
@@ -147,7 +147,7 @@ Table T1(x) contains 1, 2, 2, 3 and NULL; table T2(x) contains 2, 3 and 4. The n
 </details>
 
 **Q11.** `Medium`  
-Table T1(x) contains 1, 2, 2, 3 and NULL. The query SELECT COUNT(x), COUNT(*), COUNT(DISTINCT x) FROM T1 returns
+Table T1(x) contains 1, 2, 2, 3 and NULL. The query SELECT COUNT(x), COUNT(\*), COUNT(DISTINCT x) FROM T1 returns
 
 (1) 5, 5, 4  
 (2) 4, 5, 3  
@@ -252,16 +252,16 @@ Statement II: A table can have only one PRIMARY KEY but several UNIQUE constrain
 </details>
 
 **Q18.** `Medium`  
-The condition salary > ALL (SELECT salary FROM EMP WHERE dept = 'EE'), where the EE salaries are 40000 and 45000, is equivalent to
+The condition salary &gt; ALL (SELECT salary FROM EMP WHERE dept = 'EE'), where the EE salaries are 40000 and 45000, is equivalent to
 
 (1) salary IN (40000, 45000)  
-(2) salary > 45000  
-(3) salary > 40000  
-(4) salary > 85000  
+(2) salary &gt; 45000  
+(3) salary &gt; 40000  
+(4) salary &gt; 85000  
 
 <details><summary>Answer</summary>
 
-**(2)** — > ALL means greater than the maximum of the set (assuming no NULLs).
+**(2)** — &gt; ALL means greater than the maximum of the set (assuming no NULLs).
 
 </details>
 
@@ -269,13 +269,13 @@ The condition salary > ALL (SELECT salary FROM EMP WHERE dept = 'EE'), where the
 Which of the following is equivalent to x IN (subquery)?
 
 (1) x = ALL (subquery)  
-(2) x <> ANY (subquery)  
-(3) x > ALL (subquery)  
+(2) x &lt;&gt; ANY (subquery)  
+(3) x &gt; ALL (subquery)  
 (4) x = ANY (subquery)  
 
 <details><summary>Answer</summary>
 
-**(4)** — NOT IN is equivalent to <> ALL.
+**(4)** — NOT IN is equivalent to &lt;&gt; ALL.
 
 </details>
 
@@ -444,7 +444,7 @@ Which of the following distinguishes a stored function from a stored procedure i
 </details>
 
 **Q31.** `High`  
-A login form builds the query "SELECT * FROM users WHERE name = '" + input + "' AND pwd = '...'". Entering the name ' OR '1'='1' -- is an example of
+A login form builds the query "SELECT \* FROM users WHERE name = '" + input + "' AND pwd = '...'". Entering the name ' OR '1'='1' -- is an example of
 
 (1) a buffer overflow  
 (2) cross-site scripting  
@@ -502,7 +502,7 @@ Statement II: VARCHAR(n) stores variable-length strings up to n characters.
 </details>
 
 **Q35.** `Medium`  
-For the scores 100, 90, 90 and 80 in descending order, the values produced by RANK() and DENSE_RANK() are respectively
+For the scores 100, 90, 90 and 80 in descending order, the values produced by RANK() and DENSE\_RANK() are respectively
 
 (1) 1, 1, 2, 3 and 1, 2, 3, 4  
 (2) 1, 2, 2, 3 and 1, 2, 2, 4  
@@ -511,7 +511,7 @@ For the scores 100, 90, 90 and 80 in descending order, the values produced by RA
 
 <details><summary>Answer</summary>
 
-**(3)** — RANK leaves a gap after ties; DENSE_RANK does not.
+**(3)** — RANK leaves a gap after ties; DENSE\_RANK does not.
 
 </details>
 
@@ -574,7 +574,7 @@ Which SQL construct allows a program to process the rows of a query result one a
 </details>
 
 **Q40.** `Medium`  
-Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, CS, 60000), (3, Chitra, EE, 40000), (4, Deepak, EE, NULL), (5, Esha, ME, 70000), (6, Farhan, CS, NULL). The query SELECT SUM(salary) / COUNT(*) FROM EMP returns approximately
+Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, CS, 60000), (3, Chitra, EE, 40000), (4, Deepak, EE, NULL), (5, Esha, ME, 70000), (6, Farhan, CS, NULL). The query SELECT SUM(salary) / COUNT(\*) FROM EMP returns approximately
 
 (1) 36667  
 (2) 55000  
@@ -583,7 +583,7 @@ Table EMP(eid, name, dept, salary) has the rows (1, Asha, CS, 50000), (2, Bala, 
 
 <details><summary>Answer</summary>
 
-**(1)** — 220000 / 6 ≈ 36667, which differs from AVG(salary) because COUNT(*) includes the NULL rows.
+**(1)** — 220000 / 6 ≈ 36667, which differs from AVG(salary) because COUNT(\*) includes the NULL rows.
 
 </details>
 
@@ -618,7 +618,7 @@ Statement II: ORDER BY can refer to a column alias defined in the SELECT list.
 </details>
 
 **Q43.** `Medium`  
-Which of the following SQL constraints ensures that all values in a column satisfy a Boolean condition, such as age >= 18?
+Which of the following SQL constraints ensures that all values in a column satisfy a Boolean condition, such as age &gt;= 18?
 
 (1) FOREIGN KEY  
 (2) CHECK  
@@ -707,9 +707,9 @@ Statement II: Every non-aggregated column in the SELECT list must appear in the 
 Which of the following correctly lists employees whose salary is above the average salary?
 
 (1) SELECT name, AVG(salary) FROM EMP  
-(2) SELECT name FROM EMP WHERE salary > AVG(salary)  
-(3) SELECT name FROM EMP HAVING salary > AVG(salary)  
-(4) SELECT name FROM EMP WHERE salary > (SELECT AVG(salary) FROM EMP)  
+(2) SELECT name FROM EMP WHERE salary &gt; AVG(salary)  
+(3) SELECT name FROM EMP HAVING salary &gt; AVG(salary)  
+(4) SELECT name FROM EMP WHERE salary &gt; (SELECT AVG(salary) FROM EMP)  
 
 <details><summary>Answer</summary>
 

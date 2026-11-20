@@ -307,12 +307,12 @@ List II (Order of visiting): I. Left, right, root  II. Root, left, right  III. L
 </details>
 
 **Q22.** `Medium`  
-For an expression tree of (a + b) * (c − d), the postorder traversal gives
+For an expression tree of (a + b) \* (c − d), the postorder traversal gives
 
-(1) a b + c d − *  
-(2) a + b * c − d  
-(3) + a b * − c d  
-(4) * + a b − c d  
+(1) a b + c d − \*  
+(2) a + b \* c − d  
+(3) + a b \* − c d  
+(4) \* + a b − c d  
 
 <details><summary>Answer</summary>
 
@@ -468,7 +468,7 @@ The time complexity of finding the height of a binary tree with n nodes is
 
 **Q33.** `Medium`  
 What does the following function return for a binary tree?  
-int f(Node *t) { if (t == NULL) return 0; if (t->left == NULL && t->right == NULL) return 1; return f(t->left) + f(t->right); }
+int f(Node \*t) { if (t == NULL) return 0; if (t-&gt;left == NULL && t-&gt;right == NULL) return 1; return f(t-&gt;left) + f(t-&gt;right); }
 
 (1) The number of internal nodes  
 (2) The number of nodes  
@@ -543,8 +543,8 @@ An expression tree for an arithmetic expression has operators at
 In a complete binary tree with n nodes stored in an array (1-indexed), node i is a leaf if
 
 (1) i = 1  
-(2) i > n/2  
-(3) i < n/2  
+(2) i &gt; n/2  
+(3) i &lt; n/2  
 (4) i is even  
 
 <details><summary>Answer</summary>

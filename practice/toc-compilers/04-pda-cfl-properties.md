@@ -25,7 +25,7 @@ List II (Accepting automaton): I. Linear-bounded automaton  II. Turing machine  
 **Q2.** `High`  
 Given below are two statements.  
 Statement I: Deterministic PDAs accept exactly the same class of languages as non-deterministic PDAs.  
-Statement II: The language {w w^R : w ∈ {a, b}*} can be accepted by a non-deterministic PDA but not by any deterministic PDA.
+Statement II: The language {w w^R : w ∈ {a, b}\*} can be accepted by a non-deterministic PDA but not by any deterministic PDA.
 
 (1) Both Statement I and Statement II are true  
 (2) Both Statement I and Statement II are false  
@@ -41,10 +41,10 @@ Statement II: The language {w w^R : w ∈ {a, b}*} can be accepted by a non-dete
 **Q3.** `High`  
 Which of the following languages is a deterministic context-free language?
 
-(1) {w w : w ∈ {a, b}*}  
-(2) {w w^R : w ∈ {a, b}*}  
+(1) {w w : w ∈ {a, b}\*}  
+(2) {w w^R : w ∈ {a, b}\*}  
 (3) {a^n b^n c^n : n ≥ 0}  
-(4) {w c w^R : w ∈ {a, b}*}  
+(4) {w c w^R : w ∈ {a, b}\*}  
 
 <details><summary>Answer</summary>
 
@@ -84,8 +84,8 @@ Which of the following languages is NOT context-free?
 Which of the following languages is NOT context-free?
 
 (1) {w : w has equal numbers of a's and b's}  
-(2) {w w : w ∈ {a, b}*}  
-(3) {w w^R : w ∈ {a, b}*}  
+(2) {w w : w ∈ {a, b}\*}  
+(3) {w w^R : w ∈ {a, b}\*}  
 (4) {a^i b^j : i ≤ j}  
 
 <details><summary>Answer</summary>
@@ -173,8 +173,8 @@ A PDA with two stacks is equivalent in power to a
 **Q12.** `Medium`  
 The transition function of a non-deterministic PDA maps
 
-(1) Q × (Σ ∪ {ε}) × Γ to finite subsets of Q × Γ*  
-(2) Q × Σ × Γ to Q × Γ*  
+(1) Q × (Σ ∪ {ε}) × Γ to finite subsets of Q × Γ\*  
+(2) Q × Σ × Γ to Q × Γ\*  
 (3) Q × Σ to Q  
 (4) Q × Γ to Σ  
 
@@ -201,7 +201,7 @@ In the pumping lemma for context-free languages, a long string z in L is written
 **Q14.** `Medium`  
 Which problem is decidable for context-free grammars?
 
-(1) Whether L(G) = Σ*  
+(1) Whether L(G) = Σ\*  
 (2) Whether two CFGs generate the same language  
 (3) Whether a CFG is ambiguous  
 (4) Whether L(G) is empty  
@@ -398,7 +398,7 @@ Which of the following languages is context-free?
 
 <details><summary>Answer</summary>
 
-**(2)** — c^k is free, so the language is {a^n b^n} followed by c*.
+**(2)** — c^k is free, so the language is {a^n b^n} followed by c\*.
 
 </details>
 

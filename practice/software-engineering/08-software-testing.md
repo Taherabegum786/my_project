@@ -21,7 +21,7 @@ A program's control flow graph has 9 edges and 7 nodes. Its cyclomatic complexit
 </details>
 
 **Q2.** `High`  
-The code if (a > b) { if (b > c) x = 1; else x = 2; } else x = 3; while (i < n) i++; has cyclomatic complexity
+The code if (a &gt; b) { if (b &gt; c) x = 1; else x = 2; } else x = 3; while (i &lt; n) i++; has cyclomatic complexity
 
 (1) 2  
 (2) 5  

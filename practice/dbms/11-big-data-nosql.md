@@ -282,10 +282,10 @@ Statement II: Most NoSQL systems provide full ACID transactions across all nodes
 **Q19.** `High`  
 In a replicated NoSQL store with N = 3 replicas, a write quorum W and a read quorum R guarantee that every read sees the latest write when
 
-(1) R + W < N  
+(1) R + W &lt; N  
 (2) R + W = N − 1  
 (3) R = W = 1  
-(4) R + W > N  
+(4) R + W &gt; N  
 
 <details><summary>Answer</summary>
 
@@ -303,7 +303,7 @@ In a Dynamo-style store with N = 3, which setting gives strongly consistent read
 
 <details><summary>Answer</summary>
 
-**(4)** — 2 + 2 > 3, so every read quorum overlaps every write quorum.
+**(4)** — 2 + 2 &gt; 3, so every read quorum overlaps every write quorum.
 
 </details>
 

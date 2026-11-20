@@ -81,6 +81,19 @@ def parse(path):
     return title, questions
 
 
+def md(text):
+    """Escape characters that Markdown would otherwise treat as formatting.
+
+    Questions contain code (int **q, #include <stdio.h>) and postfix strings
+    (ABC*+), which would turn into bold or italic text, HTML tags or headings.
+    """
+    for ch in "*_`":
+        text = text.replace(ch, "\\" + ch)
+    text = text.replace("<", "&lt;").replace(">", "&gt;")
+    return "\n".join("\\" + line if line.startswith("#") else line
+                     for line in text.split("\n"))
+
+
 def render(title, questions):
     counts = {k: sum(q[0] == k for q in questions) for k in PRIORITY}
     out = [
@@ -96,14 +109,14 @@ def render(title, questions):
         "",
     ]
     for i, (pri, text, o1, o2, o3, o4, ans, expl) in enumerate(questions, 1):
-        body = text.replace("\\n", "  \n")
+        body = "  \n".join(md(line) for line in text.split("\\n"))
         out += [f"**Q{i}.** `{PRIORITY[pri]}`  ", body, ""]
-        out += [f"({k}) {o}  " for k, o in enumerate((o1, o2, o3, o4), 1)]
+        out += [f"({k}) {md(o)}  " for k, o in enumerate((o1, o2, o3, o4), 1)]
         out += [
             "",
             "<details><summary>Answer</summary>",
             "",
-            f"**({ans})** — {expl}",
+            f"**({ans})** — {md(expl)}",
             "",
             "</details>",
             "",
@@ -122,7 +135,7 @@ TEX_UNICODE = {
     "←": r"$\leftarrow$", "Σ": r"$\Sigma$", "√": r"$\surd$", "³": r"\textsuperscript{3}",
     "σ": r"$\sigma$", "π": r"$\pi$", "⋈": r"$\bowtie$", "÷": r"$\div$", "∪": r"$\cup$",
     "∩": r"$\cap$", "∀": r"$\forall$", "∃": r"$\exists$", "¬": r"$\neg$", "∧": r"$\wedge$",
-    "∨": r"$\vee$", "⊆": r"$\subseteq$", "∈": r"$\in$", "⁺": r"\textsuperscript{+}", "≺": r"$\prec$", "γ": r"$\gamma$", "⌈": r"$\lceil$", "⌉": r"$\rceil$", "⌊": r"$\lfloor$", "⌋": r"$\rfloor$", "ε": r"$\varepsilon$", "⋉": r"$\ltimes$", "θ": r"$\theta$", "Θ": r"$\Theta$", "Ω": r"$\Omega$", "ω": r"$\omega$", "λ": r"$\lambda$", "·": r"$\cdot$", "é": r"\'e", "∅": r"$\emptyset$", "δ": r"$\delta$", "⇒": r"$\Rightarrow$", "Γ": r"$\Gamma$", "⊂": r"$\subset$", "∉": r"$\notin$", "⊢": r"$\vdash$", "β": r"$\beta$", "⊃": r"$\supset$", "≐": r"$\doteq$", "«": r"\guillemotleft{}", "»": r"\guillemotright{}", "∏": r"$\prod$", "→→": r"$\twoheadrightarrow$", "²": r"\textsuperscript{2}", "—": "---", "–": "--", "è": r"\`e",
+    "∨": r"$\vee$", "⊆": r"$\subseteq$", "∈": r"$\in$", "⁺": r"\textsuperscript{+}", "≺": r"$\prec$", "γ": r"$\gamma$", "⌈": r"$\lceil$", "⌉": r"$\rceil$", "⌊": r"$\lfloor$", "⌋": r"$\rfloor$", "ε": r"$\varepsilon$", "⋉": r"$\ltimes$", "θ": r"$\theta$", "Θ": r"$\Theta$", "Ω": r"$\Omega$", "ω": r"$\omega$", "λ": r"$\lambda$", "·": r"$\cdot$", "é": r"\'e", "∅": r"$\emptyset$", "δ": r"$\delta$", "⇒": r"$\Rightarrow$", "Γ": r"$\Gamma$", "⊂": r"$\subset$", "∉": r"$\notin$", "⊢": r"$\vdash$", "β": r"$\beta$", "⊃": r"$\supset$", "≐": r"$\doteq$", "«": r"\guillemotleft{}", "°": r"$^{\circ}$", "»": r"\guillemotright{}", "∏": r"$\prod$", "→→": r"$\twoheadrightarrow$", "²": r"\textsuperscript{2}", "—": "---", "–": "--", "è": r"\`e",
 }
 
 # Multi-character symbols must be replaced before their single-character parts.
@@ -133,9 +146,13 @@ def tex(text):
     text = re.sub(r"_{3,}", "\x00", text)
     text = "".join(TEX_ESCAPES.get(c, c) for c in text)
     text = text.replace("\x00", r"\underline{\hspace{3em}}")
-    text = re.sub(r'"([^"]*)"', r"``\1''", text)
+    # Straight quotes are kept (T1 encoding prints them as "), so code such as
+    # printf("%d") looks right; typographic quotes would be wrong inside code.
     text = re.sub(r"\^(?:\(([^)]*)\)|([-−]?\w+))",
                   lambda m: r"\textsuperscript{%s}" % (m.group(1) or m.group(2)), text)
+    # Any caret left after the superscript rule is literal text (e.g. "A ^ B").
+    # This must run before the symbol table, whose replacements may contain ^.
+    text = text.replace("^", r"\textasciicircum{}").replace(CARET, r"\textasciicircum{}")
     for char, repl in TEX_UNICODE.items():
         text = text.replace(char, repl)
     bad = [c for c in text if ord(c) > 127]
@@ -143,8 +160,6 @@ def tex(text):
         sys.exit(f"no LaTeX mapping for {set(bad)}; add it to TEX_UNICODE")
     # Adjacent symbols such as "$\\alpha$$\\beta$" would form "$$" (display math).
     text = re.sub(r"(?<!\\)\$\$", "", text)
-    # Any caret left after the superscript rule is literal text (e.g. "A ^ B").
-    text = text.replace("^", r"\textasciicircum{}").replace(CARET, r"\textasciicircum{}")
     return text.replace("\\textbackslash{}n", "\\\\\n")
 
 

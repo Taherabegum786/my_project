@@ -685,14 +685,14 @@ Under process-contention scope (PCS), threads
 **Q48.** `Medium`  
 Which of the following real-time scheduling policies are defined by POSIX?
 
-(1) SCHED_LOTTERY and SCHED_FAIR  
-(2) SCHED_FIFO and SCHED_RR  
-(3) SCHED_EDF and SCHED_RM  
-(4) SCHED_SJF and SCHED_HRRN  
+(1) SCHED\_LOTTERY and SCHED\_FAIR  
+(2) SCHED\_FIFO and SCHED\_RR  
+(3) SCHED\_EDF and SCHED\_RM  
+(4) SCHED\_SJF and SCHED\_HRRN  
 
 <details><summary>Answer</summary>
 
-**(2)** — SCHED_OTHER is the implementation-defined non-real-time policy.
+**(2)** — SCHED\_OTHER is the implementation-defined non-real-time policy.
 
 </details>
 

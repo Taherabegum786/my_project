@@ -91,7 +91,7 @@ In the triplet (row, column, value) representation of a sparse matrix with t non
 </details>
 
 **Q7.** `High`  
-The value of the postfix expression 6 2 3 + − 3 8 2 / + * 2 ^ 3 + is
+The value of the postfix expression 6 2 3 + − 3 8 2 / + \* 2 ^ 3 + is
 
 (1) 55  
 (2) 52  
@@ -105,7 +105,7 @@ The value of the postfix expression 6 2 3 + − 3 8 2 / + * 2 ^ 3 + is
 </details>
 
 **Q8.** `High`  
-The value of the postfix expression 5 6 2 + * 12 4 / − is
+The value of the postfix expression 5 6 2 + \* 12 4 / − is
 
 (1) 43  
 (2) 37  
@@ -119,26 +119,26 @@ The value of the postfix expression 5 6 2 + * 12 4 / − is
 </details>
 
 **Q9.** `High`  
-The postfix form of the infix expression A + B * C − D / E is
+The postfix form of the infix expression A + B \* C − D / E is
 
-(1) ABC+*DE/−  
-(2) AB+C*DE/−  
-(3) ABC*+DE−/  
-(4) ABC*+DE/−  
+(1) ABC+\*DE/−  
+(2) AB+C\*DE/−  
+(3) ABC\*+DE−/  
+(4) ABC\*+DE/−  
 
 <details><summary>Answer</summary>
 
-**(4)** — * and / are applied before + and −, and operators of equal precedence associate left to right.
+**(4)** — \* and / are applied before + and −, and operators of equal precedence associate left to right.
 
 </details>
 
 **Q10.** `High`  
-The postfix form of A + B * (C ^ D − E) ^ (F + G * H) − I is
+The postfix form of A + B \* (C ^ D − E) ^ (F + G \* H) − I is
 
-(1) ABCDE^−FGH*+^*+I−  
-(2) ABCD^E−FGH*+^+*I−  
-(3) ABCD^E−FGH*+^*+I−  
-(4) AB+CD^E−*FGH*+^I−  
+(1) ABCDE^−FGH\*+^\*+I−  
+(2) ABCD^E−FGH\*+^+\*I−  
+(3) ABCD^E−FGH\*+^\*+I−  
+(4) AB+CD^E−\*FGH\*+^I−  
 
 <details><summary>Answer</summary>
 
@@ -147,16 +147,16 @@ The postfix form of A + B * (C ^ D − E) ^ (F + G * H) − I is
 </details>
 
 **Q11.** `High`  
-The prefix form of the infix expression A + B * C − D / E is
+The prefix form of the infix expression A + B \* C − D / E is
 
-(1) −+A*BC/DE  
-(2) +−A*BC/DE  
-(3) +A−*BC/DE  
-(4) −+*ABC/DE  
+(1) −+A\*BC/DE  
+(2) +−A\*BC/DE  
+(3) +A−\*BC/DE  
+(4) −+\*ABC/DE  
 
 <details><summary>Answer</summary>
 
-**(1)** — The last operator applied is −, whose operands are A + B * C and D / E.
+**(1)** — The last operator applied is −, whose operands are A + B \* C and D / E.
 
 </details>
 
@@ -175,21 +175,21 @@ Since ^ is right-associative, the postfix form of A ^ B ^ C is
 </details>
 
 **Q13.** `Medium`  
-The postfix form of (A − B) / C * D + E is
+The postfix form of (A − B) / C \* D + E is
 
-(1) AB−CD*/E+  
-(2) AB−C/D*E+  
-(3) ABC−/D*E+  
-(4) AB−C/DE*+  
+(1) AB−CD\*/E+  
+(2) AB−C/D\*E+  
+(3) ABC−/D\*E+  
+(4) AB−C/DE\*+  
 
 <details><summary>Answer</summary>
 
-**(2)** — / and * are left-associative: ((A − B) / C) * D, then + E.
+**(2)** — / and \* are left-associative: ((A − B) / C) \* D, then + E.
 
 </details>
 
 **Q14.** `Medium`  
-During the evaluation of the postfix expression 2 3 4 * + 5 − using a stack, the maximum number of elements on the stack at any time is
+During the evaluation of the postfix expression 2 3 4 \* + 5 − using a stack, the maximum number of elements on the stack at any time is
 
 (1) 3  
 (2) 2  
@@ -437,7 +437,7 @@ Statement II: A postfix expression needs parentheses to specify the order of eva
 </details>
 
 **Q31.** `Medium`  
-The number of push operations needed to evaluate the postfix expression 2 3 + 4 5 * − (counting the pushes of results as well) is
+The number of push operations needed to evaluate the postfix expression 2 3 + 4 5 \* − (counting the pushes of results as well) is
 
 (1) 4  
 (2) 5  
@@ -446,7 +446,7 @@ The number of push operations needed to evaluate the postfix expression 2 3 + 4 
 
 <details><summary>Answer</summary>
 
-**(4)** — Four operands are pushed, plus three results (for +, * and −): 7 pushes.
+**(4)** — Four operands are pushed, plus three results (for +, \* and −): 7 pushes.
 
 </details>
 
@@ -515,10 +515,10 @@ Statement II: Storing a sparse matrix as a linked list or as triplets saves memo
 **Q36.** `Medium`  
 Which of the following expressions is in prefix (Polish) notation?
 
-(1) AB+C*  
-(2) +*ABC  
-(3) A B C + *  
-(4) A+B*C  
+(1) AB+C\*  
+(2) +\*ABC  
+(3) A B C + \*  
+(4) A+B\*C  
 
 <details><summary>Answer</summary>
 
@@ -527,7 +527,7 @@ Which of the following expressions is in prefix (Polish) notation?
 </details>
 
 **Q37.** `Medium`  
-The value of the prefix expression − + 4 * 2 3 / 8 4 is
+The value of the prefix expression − + 4 \* 2 3 / 8 4 is
 
 (1) 8  
 (2) 12  
@@ -536,7 +536,7 @@ The value of the prefix expression − + 4 * 2 3 / 8 4 is
 
 <details><summary>Answer</summary>
 
-**(1)** — * 2 3 = 6; + 4 6 = 10; / 8 4 = 2; − 10 2 = 8.
+**(1)** — \* 2 3 = 6; + 4 6 = 10; / 8 4 = 2; − 10 2 = 8.
 
 </details>
 

@@ -7,7 +7,7 @@ Each question carries 2 marks, has exactly one correct option and no negative ma
 ---
 
 **Q1.** `High`  
-The three-address code for a = b * −c + b * −c, generated without detecting common subexpressions, has how many instructions (including the final assignment)?
+The three-address code for a = b \* −c + b \* −c, generated without detecting common subexpressions, has how many instructions (including the final assignment)?
 
 (1) 6  
 (2) 7  
@@ -16,12 +16,12 @@ The three-address code for a = b * −c + b * −c, generated without detecting 
 
 <details><summary>Answer</summary>
 
-**(1)** — t1 = minus c; t2 = b * t1; t3 = minus c; t4 = b * t3; t5 = t2 + t4; a = t5.
+**(1)** — t1 = minus c; t2 = b \* t1; t3 = minus c; t4 = b \* t3; t5 = t2 + t4; a = t5.
 
 </details>
 
 **Q2.** `High`  
-If common subexpressions are detected using a DAG, the three-address code for a = b * −c + b * −c can be reduced to how many instructions?
+If common subexpressions are detected using a DAG, the three-address code for a = b \* −c + b \* −c can be reduced to how many instructions?
 
 (1) 4  
 (2) 6  
@@ -30,7 +30,7 @@ If common subexpressions are detected using a DAG, the three-address code for a 
 
 <details><summary>Answer</summary>
 
-**(1)** — t1 = minus c; t2 = b * t1; t3 = t2 + t2; a = t3.
+**(1)** — t1 = minus c; t2 = b \* t1; t3 = t2 + t2; a = t3.
 
 </details>
 
@@ -67,7 +67,7 @@ Reason R: In triples, other instructions refer to a result by its position, so m
 </details>
 
 **Q5.** `High`  
-The syntax tree for a + a * (b − c) + (b − c) * d has 13 nodes. The corresponding DAG has
+The syntax tree for a + a \* (b − c) + (b − c) \* d has 13 nodes. The corresponding DAG has
 
 (1) 11 nodes  
 (2) 9 nodes  
@@ -81,7 +81,7 @@ The syntax tree for a + a * (b − c) + (b − c) * d has 13 nodes. The correspo
 </details>
 
 **Q6.** `Medium`  
-The minimum number of temporary variables needed to compute (a + b) * (c + d) in three-address code, if temporaries may be reused, is
+The minimum number of temporary variables needed to compute (a + b) \* (c + d) in three-address code, if temporaries may be reused, is
 
 (1) 2  
 (2) 3  
@@ -90,17 +90,17 @@ The minimum number of temporary variables needed to compute (a + b) * (c + d) in
 
 <details><summary>Answer</summary>
 
-**(1)** — t1 = a + b; t2 = c + d; t1 = t1 * t2.
+**(1)** — t1 = a + b; t2 = c + d; t1 = t1 \* t2.
 
 </details>
 
 **Q7.** `High`  
-In static single-assignment form, the code x = a; x = x + 1; y = x * 2 becomes
+In static single-assignment form, the code x = a; x = x + 1; y = x \* 2 becomes
 
-(1) x = a; x = x + 1; y = x * 2  
-(2) x1 = a; x2 = x1 + 1; y1 = x2 * 2  
-(3) x1 = a; x1 = x1 + 1; y1 = x1 * 2  
-(4) x = a + 1; y = x * 2  
+(1) x = a; x = x + 1; y = x \* 2  
+(2) x1 = a; x2 = x1 + 1; y1 = x2 \* 2  
+(3) x1 = a; x1 = x1 + 1; y1 = x1 \* 2  
+(4) x = a + 1; y = x \* 2  
 
 <details><summary>Answer</summary>
 
@@ -151,11 +151,11 @@ Backpatching is used in intermediate code generation to
 </details>
 
 **Q11.** `Medium`  
-With short-circuit (jumping) code for the boolean expression a < b or c < d, if a < b is true,
+With short-circuit (jumping) code for the boolean expression a &lt; b or c &lt; d, if a &lt; b is true,
 
 (1) the expression evaluates to false  
-(2) c < d is still evaluated  
-(3) control jumps directly to the true exit without evaluating c < d  
+(2) c &lt; d is still evaluated  
+(3) control jumps directly to the true exit without evaluating c &lt; d  
 (4) an error occurs  
 
 <details><summary>Answer</summary>
@@ -181,16 +181,16 @@ Statement II: Postfix notation is a form of intermediate representation.
 </details>
 
 **Q13.** `Medium`  
-The postfix form of the expression a + b * c is
+The postfix form of the expression a + b \* c is
 
-(1) a+bc*  
-(2) ab+c*  
-(3) abc*+  
-(4) +a*bc  
+(1) a+bc\*  
+(2) ab+c\*  
+(3) abc\*+  
+(4) +a\*bc  
 
 <details><summary>Answer</summary>
 
-**(3)** — * has higher precedence than +.
+**(3)** — \* has higher precedence than +.
 
 </details>
 
@@ -253,7 +253,7 @@ Which of the following is NOT a form of three-address instruction?
 </details>
 
 **Q18.** `Medium`  
-The triple representation of a = b * −c + b * −c needs
+The triple representation of a = b \* −c + b \* −c needs
 
 (1) 6 entries  
 (2) 5 entries  
@@ -262,7 +262,7 @@ The triple representation of a = b * −c + b * −c needs
 
 <details><summary>Answer</summary>
 
-**(1)** — (0) minus c; (1) * b, (0); (2) minus c; (3) * b, (2); (4) + (1), (3); (5) = a, (4).
+**(1)** — (0) minus c; (1) \* b, (0); (2) minus c; (3) \* b, (2); (4) + (1), (3); (5) = a, (4).
 
 </details>
 
@@ -292,12 +292,12 @@ Three-address code is called so because each instruction has
 
 <details><summary>Answer</summary>
 
-**(3)** — For example t1 = b * c.
+**(3)** — For example t1 = b \* c.
 
 </details>
 
 **Q21.** `Medium`  
-In translating the statement while (a < b) a = a + 1;, the intermediate code needs
+In translating the statement while (a &lt; b) a = a + 1;, the intermediate code needs
 
 (1) a call instruction  
 (2) only one label  
@@ -306,6 +306,6 @@ In translating the statement while (a < b) a = a + 1;, the intermediate code nee
 
 <details><summary>Answer</summary>
 
-**(4)** — L1: if a >= b goto L2; a = a + 1; goto L1; L2:.
+**(4)** — L1: if a &gt;= b goto L2; a = a + 1; goto L1; L2:.
 
 </details>

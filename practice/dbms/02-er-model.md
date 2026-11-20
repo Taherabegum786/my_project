@@ -139,7 +139,7 @@ Entity set E1 (key a1, multivalued attribute a2) is in a one-to-many relationshi
 **Q10.** `High`  
 Match List I with List II.  
 List I (Attribute type): A. Composite attribute  B. Multivalued attribute  C. Derived attribute  D. Key attribute  
-List II (Example): I. Age, computed from Date_of_birth  II. Name, made of First_name and Last_name  III. Roll_no, which uniquely identifies a student  IV. Phone_numbers of a person
+List II (Example): I. Age, computed from Date\_of\_birth  II. Name, made of First\_name and Last\_name  III. Roll\_no, which uniquely identifies a student  IV. Phone\_numbers of a person
 
 (1) A-II, B-IV, C-I, D-III  
 (2) A-II, B-I, C-IV, D-III  
@@ -206,7 +206,7 @@ Reason R: The three binary relationships may not capture which combinations of t
 
 <details><summary>Answer</summary>
 
-**(1)** — For example Supplies(Supplier, Part, Project) differs from Can_supply, Uses and Supplies_to taken together.
+**(1)** — For example Supplies(Supplier, Part, Project) differs from Can\_supply, Uses and Supplies\_to taken together.
 
 </details>
 
@@ -271,7 +271,7 @@ In the EER model, a subclass inherits from its superclass
 </details>
 
 **Q19.** `Medium`  
-A subclass that has more than one superclass, for example Teaching_assistant as a subclass of both Employee and Student, is called a
+A subclass that has more than one superclass, for example Teaching\_assistant as a subclass of both Employee and Student, is called a
 
 (1) aggregate  
 (2) shared subclass (multiple inheritance)  
@@ -359,10 +359,10 @@ In mapping an EER specialization to relations, which option creates relations on
 **Q25.** `Medium`  
 Which of the following is the correct ER-to-relational mapping of a multivalued attribute Skill of entity Employee (key Eno)?
 
-(1) Create a relation Emp_skill(Eno, Skill) with primary key (Eno, Skill)  
+(1) Create a relation Emp\_skill(Eno, Skill) with primary key (Eno, Skill)  
 (2) Add Skill as a column of Employee  
 (3) Ignore the attribute  
-(4) Create a relation Emp_skill(Skill) with primary key Skill  
+(4) Create a relation Emp\_skill(Skill) with primary key Skill  
 
 <details><summary>Answer</summary>
 
@@ -396,12 +396,12 @@ Reason R: Each entity on the "many" side participates in at most one relationshi
 
 <details><summary>Answer</summary>
 
-**(1)** — Hence a relationship attribute such as Start_date can be stored with the employee.
+**(1)** — Hence a relationship attribute such as Start\_date can be stored with the employee.
 
 </details>
 
 **Q28.** `Medium`  
-An attribute whose value can be computed from other attributes, such as Number_of_employees of a department, is called a
+An attribute whose value can be computed from other attributes, such as Number\_of\_employees of a department, is called a
 
 (1) stored attribute  
 (2) key attribute  
@@ -415,7 +415,7 @@ An attribute whose value can be computed from other attributes, such as Number_o
 </details>
 
 **Q29.** `Medium`  
-An attribute that can have a null value because it does not apply to some entities, for example Apartment_number for people living in houses, illustrates
+An attribute that can have a null value because it does not apply to some entities, for example Apartment\_number for people living in houses, illustrates
 
 (1) the multivalued property  
 (2) a derived attribute  
@@ -438,7 +438,7 @@ In UML class diagrams used for conceptual design, a relationship type is represe
 
 <details><summary>Answer</summary>
 
-**(2)** — Multiplicities such as 0..* and 1..1 express cardinality and participation.
+**(2)** — Multiplicities such as 0..\* and 1..1 express cardinality and participation.
 
 </details>
 
@@ -482,7 +482,7 @@ Statement II: An entity type can have more than one key attribute.
 
 <details><summary>Answer</summary>
 
-**(4)** — A key may be simple or composite, and an entity type can have several candidate keys (for example Vehicle_id and Registration).
+**(4)** — A key may be simple or composite, and an entity type can have several candidate keys (for example Vehicle\_id and Registration).
 
 </details>
 
@@ -496,7 +496,7 @@ An entity set Employee has a recursive one-to-many relationship Manages (each em
 
 <details><summary>Answer</summary>
 
-**(1)** — A foreign key Manager_id referencing the same table represents the relationship.
+**(1)** — A foreign key Manager\_id referencing the same table represents the relationship.
 
 </details>
 

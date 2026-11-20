@@ -33,7 +33,7 @@ A. n log n  B. 2^n  C. √n  D. n!  E. log n
 
 <details><summary>Answer</summary>
 
-**(4)** — log n < √n < n log n < 2^n < n!.
+**(4)** — log n &lt; √n &lt; n log n &lt; 2^n &lt; n!.
 
 </details>
 
@@ -229,7 +229,7 @@ The solution of T(n) = T(n/3) + T(2n/3) + n is
 
 <details><summary>Answer</summary>
 
-**(1)** — A recursion tree has about log_(3/2) n levels, each doing O(n) work.
+**(1)** — A recursion tree has about log\_(3/2) n levels, each doing O(n) work.
 
 </details>
 
@@ -249,7 +249,7 @@ The solution of T(n) = 2T(n/2) + n log n is
 
 **Q18.** `High`  
 What is the time complexity of the following code?  
-for (i = 1; i < n; i = i * 2) count++;
+for (i = 1; i &lt; n; i = i \* 2) count++;
 
 (1) Θ(n)  
 (2) Θ(√n)  
@@ -264,7 +264,7 @@ for (i = 1; i < n; i = i * 2) count++;
 
 **Q19.** `High`  
 What is the time complexity of the following code?  
-for (i = 1; i <= n; i++) for (j = 1; j <= n; j = j + i) count++;
+for (i = 1; i &lt;= n; i++) for (j = 1; j &lt;= n; j = j + i) count++;
 
 (1) Θ(n)  
 (2) Θ(n√n)  
@@ -279,7 +279,7 @@ for (i = 1; i <= n; i++) for (j = 1; j <= n; j = j + i) count++;
 
 **Q20.** `High`  
 What is the time complexity of the following code?  
-for (i = n; i > 0; i = i / 2) for (j = 0; j < i; j++) count++;
+for (i = n; i &gt; 0; i = i / 2) for (j = 0; j &lt; i; j++) count++;
 
 (1) Θ(log n)  
 (2) Θ(n log n)  
@@ -294,7 +294,7 @@ for (i = n; i > 0; i = i / 2) for (j = 0; j < i; j++) count++;
 
 **Q21.** `High`  
 What is the time complexity of the following code?  
-for (i = 0; i < n; i++) for (j = 0; j < i; j++) count++;
+for (i = 0; i &lt; n; i++) for (j = 0; j &lt; i; j++) count++;
 
 (1) Θ(n³)  
 (2) Θ(n²)  
@@ -309,7 +309,7 @@ for (i = 0; i < n; i++) for (j = 0; j < i; j++) count++;
 
 **Q22.** `Medium`  
 What is the time complexity of the following code?  
-for (i = 1; i * i <= n; i++) count++;
+for (i = 1; i \* i &lt;= n; i++) count++;
 
 (1) Θ(√n)  
 (2) Θ(n²)  
@@ -474,7 +474,7 @@ Reason R: Asymptotic notation ignores constant factors and lower-order terms.
 
 **Q33.** `Medium`  
 The time complexity of the following recursive function is  
-void f(int n) { if (n <= 1) return; f(n/2); f(n/2); }
+void f(int n) { if (n &lt;= 1) return; f(n/2); f(n/2); }
 
 (1) Θ(n²)  
 (2) Θ(n log n)  
@@ -591,7 +591,7 @@ The term "asymptotic" in complexity analysis refers to behaviour as
 
 **Q41.** `Medium`  
 What is the time complexity of the following code?  
-int i = n; while (i > 1) { i = i / 3; }
+int i = n; while (i &gt; 1) { i = i / 3; }
 
 (1) Θ(√n)  
 (2) Θ(n)  

@@ -37,7 +37,7 @@ The write-ahead logging (WAL) rule requires that
 </details>
 
 **Q3.** `High`  
-A log contains, in order: <T1 start>, <T1, A, 10, 20>, <T2 start>, <T1 commit>, <checkpoint {T2}>, <T3 start>, <T2, B, 5, 15>, <T3, C, 7, 9>, <T3 commit>, and then the system crashes. With immediate update, the recovery manager must
+A log contains, in order: &lt;T1 start&gt;, &lt;T1, A, 10, 20&gt;, &lt;T2 start&gt;, &lt;T1 commit&gt;, &lt;checkpoint {T2}&gt;, &lt;T3 start&gt;, &lt;T2, B, 5, 15&gt;, &lt;T3, C, 7, 9&gt;, &lt;T3 commit&gt;, and then the system crashes. With immediate update, the recovery manager must
 
 (1) undo T3 and redo T2  
 (2) undo T2 and redo T3  
@@ -114,7 +114,7 @@ Statement II: During undo, ARIES writes compensation log records (CLRs).
 </details>
 
 **Q8.** `Medium`  
-An update log record of the form <Ti, X, V1, V2> contains
+An update log record of the form &lt;Ti, X, V1, V2&gt; contains
 
 (1) only the new value  
 (2) the transaction, data item, old value and new value  
@@ -246,7 +246,7 @@ List II (Description): I. Privileges are assigned to roles, which are assigned t
 </details>
 
 **Q17.** `High`  
-In the Bell-LaPadula model, the simple security property and the *-property state respectively that
+In the Bell-LaPadula model, the simple security property and the \*-property state respectively that
 
 (1) subjects may read down and write down  
 (2) a subject may not read an object of higher classification, and may not write an object of lower classification  
@@ -392,7 +392,7 @@ Statement II: After a system crash, transactions whose commit record is in the l
 </details>
 
 **Q27.** `Medium`  
-A log with <T1 start>, <T1, A, 100, 200>, <T1, B, 50, 60>, followed by a crash (no commit record for T1), is recovered under immediate update by
+A log with &lt;T1 start&gt;, &lt;T1, A, 100, 200&gt;, &lt;T1, B, 50, 60&gt;, followed by a crash (no commit record for T1), is recovered under immediate update by
 
 (1) setting A = 200 and B = 60  
 (2) leaving A and B unchanged  

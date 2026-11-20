@@ -197,7 +197,7 @@ The multiplicative inverse of a modulo n exists if and only if
 
 (1) a is odd  
 (2) n is prime  
-(3) a < n  
+(3) a &lt; n  
 (4) gcd(a, n) = 1  
 
 <details><summary>Answer</summary>
@@ -260,7 +260,7 @@ The FFT algorithm is based on which technique?
 
 <details><summary>Answer</summary>
 
-**(2)** — A(x) = A_even(x²) + x A_odd(x²) splits the problem into two halves.
+**(2)** — A(x) = A\_even(x²) + x A\_odd(x²) splits the problem into two halves.
 
 </details>
 

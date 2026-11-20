@@ -107,14 +107,14 @@ Relation Enrolled(Student, Course) contains (s1, c1), (s1, c2), (s2, c1), (s3, c
 **Q8.** `High`  
 The relational algebra division R(A, B) ÷ S(B) can be expressed using basic operators as
 
-(1) π_A(R × S) − R  
-(2) π_A(R) ∩ π_A(S)  
-(3) π_A(R − S)  
-(4) π_A(R) − π_A((π_A(R) × S) − R)  
+(1) π\_A(R × S) − R  
+(2) π\_A(R) ∩ π\_A(S)  
+(3) π\_A(R − S)  
+(4) π\_A(R) − π\_A((π\_A(R) × S) − R)  
 
 <details><summary>Answer</summary>
 
-**(4)** — (π_A(R) × S) − R gives the missing combinations; their A values are removed from π_A(R).
+**(4)** — (π\_A(R) × S) − R gives the missing combinations; their A values are removed from π\_A(R).
 
 </details>
 
@@ -192,8 +192,8 @@ Two relations are union-compatible if they have
 
 **Q14.** `Medium`  
 Given below are two statements.  
-Statement I: Selection is commutative: σ_c1(σ_c2(R)) = σ_c2(σ_c1(R)).  
-Statement II: A cascade of projections π_L1(π_L2(R)) can be replaced by π_L2(R) when L1 ⊆ L2.
+Statement I: Selection is commutative: σ\_c1(σ\_c2(R)) = σ\_c2(σ\_c1(R)).  
+Statement II: A cascade of projections π\_L1(π\_L2(R)) can be replaced by π\_L2(R) when L1 ⊆ L2.
 
 (1) Both Statement I and Statement II are true  
 (2) Both Statement I and Statement II are false  
@@ -202,7 +202,7 @@ Statement II: A cascade of projections π_L1(π_L2(R)) can be replaced by π_L2(
 
 <details><summary>Answer</summary>
 
-**(3)** — The cascade of projections is equivalent to the outermost projection π_L1(R), not π_L2(R).
+**(3)** — The cascade of projections is equivalent to the outermost projection π\_L1(R), not π\_L2(R).
 
 </details>
 
@@ -433,7 +433,7 @@ Statement II: Safe expressions of tuple relational calculus, safe expressions of
 </details>
 
 **Q30.** `Medium`  
-In tuple relational calculus, the expression {t | t ∈ Employee ∧ t.salary > 50000} returns
+In tuple relational calculus, the expression {t | t ∈ Employee ∧ t.salary &gt; 50000} returns
 
 (1) the number of employees with salary greater than 50000  
 (2) all employee tuples with salary greater than 50000  
@@ -464,9 +464,9 @@ A relational calculus expression is called unsafe if it
 The relational calculus query {t | ∃s ∈ R (t[A] = s[A])} corresponds to the relational algebra expression
 
 (1) R × R  
-(2) π_A(R)  
+(2) π\_A(R)  
 (3) R ÷ A  
-(4) σ_A(R)  
+(4) σ\_A(R)  
 
 <details><summary>Answer</summary>
 
@@ -533,7 +533,7 @@ For relations R(A, B) and S(B, C), the theta join R ⋈ (R.B = S.B) S differs fr
 </details>
 
 **Q37.** `High`  
-The number of tuples in σ_c(R), where R has n tuples, lies in the range
+The number of tuples in σ\_c(R), where R has n tuples, lies in the range
 
 (1) 0 to n  
 (2) 1 to n  
@@ -547,7 +547,7 @@ The number of tuples in σ_c(R), where R has n tuples, lies in the range
 </details>
 
 **Q38.** `Medium`  
-Projection π_A(R) on a relation R with n tuples (set semantics, n ≥ 1) returns
+Projection π\_A(R) on a relation R with n tuples (set semantics, n ≥ 1) returns
 
 (1) more than n tuples  
 (2) 0 tuples always  
@@ -607,7 +607,7 @@ The outer join operations were introduced into relational algebra in order to
 </details>
 
 **Q42.** `Medium`  
-The grouping operator γ in extended relational algebra, written γ_G,F(R), groups the tuples of R by attributes G and
+The grouping operator γ in extended relational algebra, written γ\_G,F(R), groups the tuples of R by attributes G and
 
 (1) applies aggregate functions F such as SUM, COUNT and AVG to each group  
 (2) sorts them  
@@ -650,7 +650,7 @@ A. SQL (SEQUEL)  B. Relational algebra  C. Query-By-Example
 </details>
 
 **Q45.** `Medium`  
-Given relation R(A, B, C) with tuples (1, 2, 3), (1, 2, 4), (2, 2, 3), the number of tuples in π_A,B(R) is
+Given relation R(A, B, C) with tuples (1, 2, 3), (1, 2, 4), (2, 2, 3), the number of tuples in π\_A,B(R) is
 
 (1) 1  
 (2) 6  
@@ -666,10 +666,10 @@ Given relation R(A, B, C) with tuples (1, 2, 3), (1, 2, 4), (2, 2, 3), the numbe
 **Q46.** `Medium`  
 Which relational algebra expression returns the names of employees who work in department 5, for Employee(Eno, Name, Dno)?
 
-(1) π_Dno=5(σ_Name(Employee))  
-(2) π_Name(σ_Dno=5(Employee))  
-(3) σ_Dno=5(π_Name(Employee))  
-(4) σ_Name(Employee) × Dno  
+(1) π\_Dno=5(σ\_Name(Employee))  
+(2) π\_Name(σ\_Dno=5(Employee))  
+(3) σ\_Dno=5(π\_Name(Employee))  
+(4) σ\_Name(Employee) × Dno  
 
 <details><summary>Answer</summary>
 

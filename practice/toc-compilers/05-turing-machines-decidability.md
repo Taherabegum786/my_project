@@ -228,8 +228,8 @@ A universal Turing machine is one that
 
 **Q16.** `Medium`  
 Given below are two statements: one is labelled as Assertion A and the other is labelled as Reason R.  
-Assertion A: The diagonal language L_d = {w_i : M_i does not accept w_i} is recursively enumerable.  
-Reason R: If some TM M_j accepted L_d, then w_j would be in L_d exactly when it is not.
+Assertion A: The diagonal language L\_d = {w\_i : M\_i does not accept w\_i} is recursively enumerable.  
+Reason R: If some TM M\_j accepted L\_d, then w\_j would be in L\_d exactly when it is not.
 
 (1) Both A and R are true and R is the correct explanation of A  
 (2) Both A and R are true but R is NOT the correct explanation of A  
@@ -238,7 +238,7 @@ Reason R: If some TM M_j accepted L_d, then w_j would be in L_d exactly when it 
 
 <details><summary>Answer</summary>
 
-**(4)** — R is the contradiction that proves L_d is not recursively enumerable.
+**(4)** — R is the contradiction that proves L\_d is not recursively enumerable.
 
 </details>
 
@@ -321,7 +321,7 @@ Which of the following problems about a Turing machine M is decidable?
 Which problem is undecidable for context-free grammars?
 
 (1) Membership  
-(2) Whether L(G) = Σ*  
+(2) Whether L(G) = Σ\*  
 (3) Finiteness  
 (4) Emptiness  
 

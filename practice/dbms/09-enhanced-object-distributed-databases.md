@@ -544,7 +544,7 @@ Reason R: Distributed query processing must consider the cost of transferring da
 </details>
 
 **Q37.** `Medium`  
-In XPath, the expression /bookstore/book[price > 35]/title selects
+In XPath, the expression /bookstore/book[price &gt; 35]/title selects
 
 (1) all prices greater than 35  
 (2) the first book only  

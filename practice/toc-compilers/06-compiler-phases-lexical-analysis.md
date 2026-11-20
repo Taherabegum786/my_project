@@ -52,7 +52,7 @@ The number of tokens in the C statement printf("i = %d, &i = %x", i, &i); is
 </details>
 
 **Q4.** `High`  
-The number of tokens in the C declaration int a[10], *p = &a[0]; is
+The number of tokens in the C declaration int a[10], \*p = &a[0]; is
 
 (1) 14  
 (2) 13  
@@ -61,7 +61,7 @@ The number of tokens in the C declaration int a[10], *p = &a[0]; is
 
 <details><summary>Answer</summary>
 
-**(4)** — int a [ 10 ] , * p = & a [ 0 ] ; — 15 tokens.
+**(4)** — int a [ 10 ] , \* p = & a [ 0 ] ; — 15 tokens.
 
 </details>
 
@@ -302,7 +302,7 @@ List II (Function): I. Converts assembly language into relocatable machine code 
 </details>
 
 **Q21.** `Medium`  
-In the Lex pattern [a-zA-Z_][a-zA-Z0-9_]*, the strings matched are
+In the Lex pattern [a-zA-Z\_][a-zA-Z0-9\_]\*, the strings matched are
 
 (1) identifiers that start with a letter or underscore  
 (2) floating-point numbers  
@@ -404,7 +404,7 @@ The phases of a compiler that depend mainly on the source language and not on th
 </details>
 
 **Q28.** `Medium`  
-The number of tokens in the statement if (a >= b) max = a; else max = b; is
+The number of tokens in the statement if (a &gt;= b) max = a; else max = b; is
 
 (1) 16  
 (2) 14  
@@ -413,6 +413,6 @@ The number of tokens in the statement if (a >= b) max = a; else max = b; is
 
 <details><summary>Answer</summary>
 
-**(3)** — if ( a >= b ) max = a ; else max = b ; — 15 tokens.
+**(3)** — if ( a &gt;= b ) max = a ; else max = b ; — 15 tokens.
 
 </details>

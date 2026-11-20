@@ -122,7 +122,7 @@ Statement II: SQL is primarily a declarative (non-procedural) language.
 \end{question}
 
 \begin{question}{M}
-Which of the following describes a ``view'' in a DBMS?
+Which of the following describes a "view" in a DBMS?
 \optslong{An index on a table}{A physical copy of a table stored on disk}{A virtual relation defined by a query on base relations}{A backup of the database}
 \end{question}
 
@@ -154,7 +154,7 @@ Which of the following is NOT a feature of the database approach?
 \end{question}
 
 \begin{question}{M}
-In the context of DBMS, ``entity integrity'' and ``referential integrity'' are examples of
+In the context of DBMS, "entity integrity" and "referential integrity" are examples of
 \optsshort{security mechanisms}{indexing techniques}{storage structures}{integrity constraints}
 \end{question}
 
@@ -246,7 +246,7 @@ Statement II: Every relational DBMS stores each table in a separate operating-sy
 \ans{7}{2}{The schema is the intension; the instance (extension) changes with every update.}
 \ans{8}{1}{IMS is hierarchical, IDMS follows the CODASYL network model, and Codd proposed the relational model.}
 \ans{9}{4}{Each child record has only one parent; many-to-many relationships need virtual records.}
-\ans{10}{2}{This ``data about data'' is called metadata.}
+\ans{10}{2}{This "data about data" is called metadata.}
 \ans{11}{3}{All five are classic problems listed by Silberschatz.}
 \ans{12}{4}{Application programs are written by application programmers.}
 \ans{13}{4}{Components of the query processor and the storage manager.}
@@ -426,8 +426,8 @@ A weak entity set Dependent (partial key Dname) is owned by Employee (key Eno). 
 
 \begin{question}{H}
 Given below are two statements: one is labelled as Assertion A and the other is labelled as Reason R.\\
-Assertion A: In a one-to-many relationship, the attributes of the relationship can be moved to the entity type on the ``many'' side.\\
-Reason R: Each entity on the ``many'' side participates in at most one relationship instance.
+Assertion A: In a one-to-many relationship, the attributes of the relationship can be moved to the entity type on the "many" side.\\
+Reason R: Each entity on the "many" side participates in at most one relationship instance.
 \optslong{Both A and R are true and R is the correct explanation of A}{Both A and R are true but R is NOT the correct explanation of A}{A is true but R is false}{A is false but R is true}
 \end{question}
 
@@ -438,7 +438,7 @@ An attribute whose value can be computed from other attributes, such as Number\_
 
 \begin{question}{M}
 An attribute that can have a null value because it does not apply to some entities, for example Apartment\_\allowbreak{}number for people living in houses, illustrates
-\optslong{the multivalued property}{a derived attribute}{a composite key}{a null value meaning ``not applicable''}
+\optslong{the multivalued property}{a derived attribute}{a composite key}{a null value meaning "not applicable"}
 \end{question}
 
 \begin{question}{M}
@@ -500,7 +500,7 @@ Statement II: The ER model is a representational (implementation) data model.
 \ans{3}{2}{The key of the weak entity is the owner's key plus the partial key.}
 \ans{4}{3}{The owner is normally a strong entity type (although a weak entity can, in turn, own another weak entity).}
 \ans{5}{4}{One table for each entity set and one for R, with primary key (a1, b1).}
-\ans{6}{3}{The key of E1 is added as a foreign key to the table of E2, the ``many'' side.}
+\ans{6}{3}{The key of E1 is added as a foreign key to the table of E2, the "many" side.}
 \ans{7}{4}{With total participation on both sides, both entity sets and the relationship can be merged into a single table.}
 \ans{8}{2}{The multivalued attribute needs its own table with key (k, m).}
 \ans{9}{2}{E1, a table for the multivalued attribute a2, and E2 with a1 as a foreign key: 3 tables.}
@@ -523,7 +523,7 @@ Statement II: The ER model is a representational (implementation) data model.
 \ans{26}{1}{The key is the owner's key plus the partial key, and Eno is also a foreign key.}
 \ans{27}{1}{Hence a relationship attribute such as Start\_\allowbreak{}date can be stored with the employee.}
 \ans{28}{4}{Derived attributes are drawn as dashed ellipses.}
-\ans{29}{4}{Nulls can mean ``not applicable'' or ``unknown''.}
+\ans{29}{4}{Nulls can mean "not applicable" or "unknown".}
 \ans{30}{2}{Multiplicities such as 0..* and 1..1 express cardinality and participation.}
 \ans{31}{4}{Chen published the ER model in 1976.}
 \ans{32}{2}{One relation for each entity type and one for R, whose key combines the three foreign keys.}
@@ -725,7 +725,7 @@ Statement II: Query-By-Example (QBE) is based on tuple relational calculus.
 \end{question}
 
 \begin{question}{M}
-A query asking for ``students who have taken all courses offered by the CS department'' is most naturally expressed in relational algebra using
+A query asking for "students who have taken all courses offered by the CS department" is most naturally expressed in relational algebra using
 \optsshort{outer join}{division}{Cartesian product only}{union}
 \end{question}
 
@@ -826,7 +826,7 @@ Statement II: The natural join of two relations with no common attributes is alw
 \ans{22}{1}{SET NULL and SET DEFAULT are alternatives; RESTRICT or NO ACTION rejects the deletion.}
 \ans{23}{1}{Rule 1: all information is in tables; Rule 2: every value is reachable by table, primary key and column; Rule 3: nulls; Rule 4: the catalog is itself relational.}
 \ans{24}{1}{Rule 11 is distribution independence, and Rule 0 is the foundation rule.}
-\ans{25}{3}{Rules 0 to 12 are usually called ``Codd's twelve rules''.}
+\ans{25}{3}{Rules 0 to 12 are usually called "Codd's twelve rules".}
 \ans{26}{4}{This is Rule 12.}
 \ans{27}{3}{A relation is a set of tuples, so duplicates are not allowed (SQL tables, however, are multisets).}
 \ans{28}{1}{A relation with 5 columns and 100 rows has degree 5 and cardinality 100.}
@@ -835,7 +835,7 @@ Statement II: The natural join of two relations with no common attributes is alw
 \ans{31}{2}{Safe expressions restrict results to values in the domain of the expression.}
 \ans{32}{2}{It returns the A values of tuples in R.}
 \ans{33}{2}{DRC variables range over attribute domains, and QBE is based on domain relational calculus.}
-\ans{34}{2}{``For all'' queries correspond to division (or to $\forall$ in relational calculus).}
+\ans{34}{2}{"For all" queries correspond to division (or to $\forall$ in relational calculus).}
 \ans{35}{4}{R $-$ S is generally different from S $-$ R.}
 \ans{36}{2}{Natural join is an equijoin followed by removal of the duplicate attribute.}
 \ans{37}{1}{Selection returns the tuples satisfying c, which may be none or all.}
@@ -844,7 +844,7 @@ Statement II: The natural join of two relations with no common attributes is alw
 \ans{40}{2}{Primary keys never allow NULLs, and a relation can have several candidate keys.}
 \ans{41}{1}{Left, right and full outer joins differ in which side's unmatched tuples are kept.}
 \ans{42}{1}{It corresponds to GROUP BY with aggregate functions in SQL.}
-\ans{43}{3}{Codd's 1970 paper ``A Relational Model of Data for Large Shared Data Banks''.}
+\ans{43}{3}{Codd's 1970 paper "A Relational Model of Data for Large Shared Data Banks".}
 \ans{44}{2}{Relational algebra (Codd, 1970), SEQUEL (1974), QBE (1975--77).}
 \ans{45}{3}{(1, 2) and (2, 2): the duplicate (1, 2) is removed.}
 \ans{46}{2}{Selection must be applied before projecting away Dno.}
@@ -1021,7 +1021,7 @@ Which of the following distinguishes a stored function from a stored procedure i
 \end{question}
 
 \begin{question}{H}
-A login form builds the query ``SELECT * FROM users WHERE name = ''' + input + ``' AND pwd = '...'''. Entering the name ' OR '1'='1' -- is an example of
+A login form builds the query "SELECT * FROM users WHERE name = '" + input + "' AND pwd = '...'". Entering the name ' OR '1'='1' -- is an example of
 \optsshort{a buffer overflow}{cross-site scripting}{SQL injection}{a denial-of-service attack}
 \end{question}
 
@@ -1144,7 +1144,7 @@ Reason R: SQL automatically removes duplicate rows from every table.
 \ans{6}{4}{\_\allowbreak{} matches exactly one character, so the second letter must be s.}
 \ans{7}{4}{Only Bala (60000); Farhan's NULL salary makes the condition UNKNOWN.}
 \ans{8}{2}{Among the four non-null salaries there are C(4, 2) = 6 ordered pairs with E1 higher.}
-\ans{9}{4}{For x = 4, ``4 NOT IN (1, 2, 2, 3, NULL)'' is UNKNOWN because of the NULL, so no row qualifies.}
+\ans{9}{4}{For x = 4, "4 NOT IN (1, 2, 2, 3, NULL)" is UNKNOWN because of the NULL, so no row qualifies.}
 \ans{10}{3}{UNION removes duplicates, giving 1, 2, 3, NULL, 4; UNION ALL keeps all 5 + 3 rows.}
 \ans{11}{2}{COUNT(x) and COUNT(DISTINCT x) ignore NULL.}
 \ans{12}{3}{To test for NULL, IS NULL must be used.}
@@ -1160,7 +1160,7 @@ Reason R: SQL automatically removes duplicate rows from every table.
 \ans{22}{2}{Types of SQL joins.}
 \ans{23}{1}{The Cartesian product has 4 $\times$ 4 rows.}
 \ans{24}{3}{Updates through a grouped view cannot be mapped unambiguously to base rows.}
-\ans{25}{2}{Otherwise a row could ``disappear'' from the view after being updated through it.}
+\ans{25}{2}{Otherwise a row could "disappear" from the view after being updated through it.}
 \ans{26}{3}{Materialized views speed up queries at the cost of maintenance.}
 \ans{27}{3}{Triggers follow the event-condition-action (ECA) model.}
 \ans{28}{1}{A statement-level trigger fires once per statement, not once per affected row.}
@@ -1544,7 +1544,7 @@ Reason R: In 3NF every determinant of a non-trivial dependency must be a superke
 \ans{50}{2}{2NF, 3NF, BCNF, 4NF and then 5NF; each is stricter than the previous one.}
 \ans{51}{4}{This is the binary lossless-join test.}
 \ans{52}{1}{Otherwise some dependency can only be checked by joining relations.}
-\ans{53}{1}{DKNF was proposed by Fagin as the ``ultimate'' normal form.}
+\ans{53}{1}{DKNF was proposed by Fagin as the "ultimate" normal form.}
 \ans{54}{4}{Two tuples with the same A value (a1) must have the same B value.}
 \ans{55}{3}{Date and Fagin showed that a 3NF relation whose keys are all simple is in BCNF (indeed in 5NF), so A is true; R is false because 3NF also allows X $\rightarrow$ A when A is prime.}
 \end{answers}
@@ -1745,7 +1745,7 @@ Statement II: A clustered index determines the physical order of the data record
 \end{question}
 
 \begin{question}{M}
-Which index structure is best suited for spatial queries such as ``find all restaurants within this rectangle''?
+Which index structure is best suited for spatial queries such as "find all restaurants within this rectangle"?
 \optsshort{Hash index}{Bitmap index}{R-tree}{B+ tree}
 \end{question}
 
@@ -2221,7 +2221,7 @@ List II (Example): I. Information is never lost; approximated by replicating on 
 \end{question}
 
 \begin{question}{M}
-In recovery, a ``redo'' of an operation must be
+In recovery, a "redo" of an operation must be
 \optslong{idempotent: performing it several times has the same effect as performing it once}{non-idempotent}{performed in reverse order}{performed only once}
 \end{question}
 
@@ -2361,7 +2361,7 @@ Reason R: Otherwise a committed transaction's updates could be lost in a crash, 
 \ans{14}{4}{Revoking with CASCADE then also removes the privileges the recipient granted.}
 \ans{15}{2}{C's privilege depended on B's grant, so it is removed when B's is.}
 \ans{16}{1}{DAC, MAC and RBAC.}
-\ans{17}{2}{``No read up'' and ``no write down'' prevent information flowing to lower classes.}
+\ans{17}{2}{"No read up" and "no write down" prevent information flowing to lower classes.}
 \ans{18}{3}{Users can be given access to a view without any privilege on the underlying tables.}
 \ans{19}{4}{Countermeasures include minimum query-set sizes and adding noise.}
 \ans{20}{4}{It prevents low-clearance users from inferring the existence of high-classification data.}
@@ -2502,19 +2502,19 @@ List II (Description): I. Users need not know how many copies of the data exist 
 
 \begin{question}{H}
 Arrange the steps of the two-phase commit protocol for a committing transaction in order.\\
-A. The coordinator sends commit to all participants  B. Participants reply ``ready'' (vote yes)  C. The coordinator sends prepare to all participants  D. Participants acknowledge and the coordinator writes the end record
+A. The coordinator sends commit to all participants  B. Participants reply "ready" (vote yes)  C. The coordinator sends prepare to all participants  D. Participants acknowledge and the coordinator writes the end record
 \optsshort{C, A, B, D}{A, C, B, D}{C, B, A, D}{B, C, A, D}
 \end{question}
 
 \begin{question}{H}
 Given below are two statements: one is labelled as Assertion A and the other is labelled as Reason R.\\
 Assertion A: The two-phase commit protocol can block participants if the coordinator fails.\\
-Reason R: A participant that voted ``ready'' cannot decide on its own whether to commit or abort.
+Reason R: A participant that voted "ready" cannot decide on its own whether to commit or abort.
 \optslong{Both A and R are true and R is the correct explanation of A}{Both A and R are true but R is NOT the correct explanation of A}{A is true but R is false}{A is false but R is true}
 \end{question}
 
 \begin{question}{M}
-In two-phase commit, if any participant votes ``abort'',
+In two-phase commit, if any participant votes "abort",
 \optslong{the coordinator decides to abort the transaction at all sites}{the coordinator commits anyway}{the protocol restarts automatically}{only that participant aborts}
 \end{question}
 
@@ -2633,7 +2633,7 @@ In object-relational SQL, the keyword UNDER is used to
 \ans{19}{2}{Types of distribution transparency.}
 \ans{20}{3}{Phase 1 is voting (prepare and votes); phase 2 is the decision (commit or abort).}
 \ans{21}{1}{Three-phase commit was proposed to reduce this blocking.}
-\ans{22}{1}{Commit requires unanimous ``ready'' votes.}
+\ans{22}{1}{Commit requires unanimous "ready" votes.}
 \ans{23}{3}{Only the tuples that will actually join are then shipped.}
 \ans{24}{1}{Multidatabase or federated systems give a global view over independent databases.}
 \ans{25}{1}{Updates become expensive because every copy must be changed.}
@@ -2687,7 +2687,7 @@ A data cube has 3 dimensions and no concept hierarchies. The number of cuboids (
 \end{question}
 
 \begin{question}{H}
-A data cube has 3 dimensions with concept hierarchies of 4, 3 and 2 levels (not counting the virtual top level ``all''). The total number of cuboids is
+A data cube has 3 dimensions with concept hierarchies of 4, 3 and 2 levels (not counting the virtual top level "all"). The total number of cuboids is
 \optsshort{60}{24}{9}{512}
 \end{question}
 
@@ -3055,7 +3055,7 @@ Statement II: HDFS stores each block only once to save space.
 \end{question}
 
 \begin{question}{M}
-``Moving computation to the data'' in Hadoop means that
+"Moving computation to the data" in Hadoop means that
 \optslong{computation is done only on the client}{data is copied to a central server for processing}{map tasks are scheduled on nodes that hold the input blocks locally}{the NameNode processes all data}
 \end{question}
 

@@ -9,6 +9,7 @@ Match List I with List II, Assertion–Reason, Statement I / Statement II, multi
 
 | Unit | Subject | Questions | Link |
 |---|---|---|---|
+| 3 | Programming Languages and Computer Graphics | 290 | [practice/programming-graphics](practice/programming-graphics/README.md) |
 | 4 | Database Management Systems | 480 | [practice/dbms](practice/dbms/README.md) |
 | 5 | System Software and Operating System | 556 | [practice/operating-systems](practice/operating-systems/README.md) |
 | 6 | Software Engineering | 239 | [practice/software-engineering](practice/software-engineering/README.md) |

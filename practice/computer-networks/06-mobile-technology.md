@@ -776,7 +776,7 @@ The 2.4 GHz band used by Wi-Fi and Bluetooth is part of the
 </details>
 
 **Q54.** `Medium`  
-In IEEE 802.11, a station that hears an RTS or CTS frame sets its ____ and defers access for the indicated duration.
+In IEEE 802.11, a station that hears an RTS or CTS frame sets its \_\_\_\_ and defers access for the indicated duration.
 
 (1) backoff counter to zero  
 (2) beacon interval  

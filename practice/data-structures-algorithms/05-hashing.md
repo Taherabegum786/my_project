@@ -107,7 +107,7 @@ List II (Characteristic): I. Avoids both primary and secondary clustering  II. S
 </details>
 
 **Q8.** `High`  
-In open addressing with uniform hashing and load factor α < 1, the expected number of probes in an unsuccessful search is at most
+In open addressing with uniform hashing and load factor α &lt; 1, the expected number of probes in an unsuccessful search is at most
 
 (1) α  
 (2) 1/(1 − α)  
@@ -209,7 +209,7 @@ In the division method h(k) = k mod m, a good choice of m is
 </details>
 
 **Q15.** `Medium`  
-The multiplication method of hashing computes h(k) = ⌊m (kA mod 1)⌋ with 0 < A < 1. Knuth suggests A ≈
+The multiplication method of hashing computes h(k) = ⌊m (kA mod 1)⌋ with 0 &lt; A &lt; 1. Knuth suggests A ≈
 
 (1) 0.5  
 (2) 0.75  
@@ -262,7 +262,7 @@ Statement II: Perfect hashing typically uses two levels of hashing with universa
 
 <details><summary>Answer</summary>
 
-**(1)** — The second-level table for a slot with n_j keys has size n_j², which makes collisions avoidable.
+**(1)** — The second-level table for a slot with n\_j keys has size n\_j², which makes collisions avoidable.
 
 </details>
 

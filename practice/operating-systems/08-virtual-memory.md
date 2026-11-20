@@ -230,7 +230,7 @@ With a memory access time of 200 ns and a page-fault service time of 8 ms, to ke
 
 <details><summary>Answer</summary>
 
-**(2)** — 220 > 200 + 7,999,800p gives p < 2.5 × 10^-6, i.e. fewer than 1 fault in 400,000 accesses.
+**(2)** — 220 &gt; 200 + 7,999,800p gives p &lt; 2.5 × 10^-6, i.e. fewer than 1 fault in 400,000 accesses.
 
 </details>
 

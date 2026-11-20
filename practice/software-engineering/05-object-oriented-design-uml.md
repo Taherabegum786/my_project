@@ -159,7 +159,7 @@ In the CK metrics suite, LCOM measures
 </details>
 
 **Q11.** `Medium`  
-The multiplicity 1..* on an association end means
+The multiplicity 1..\* on an association end means
 
 (1) exactly one  
 (2) zero or one  
@@ -168,7 +168,7 @@ The multiplicity 1..* on an association end means
 
 <details><summary>Answer</summary>
 
-**(3)** — 0..* (or *) means zero or more.
+**(3)** — 0..\* (or \*) means zero or more.
 
 </details>
 

@@ -7,7 +7,7 @@ Each question carries 2 marks, has exactly one correct option and no negative ma
 ---
 
 **Q1.** `High`  
-The grammar E → E + E | E * E | id generates the string id + id * id with how many distinct parse trees?
+The grammar E → E + E | E \* E | id generates the string id + id \* id with how many distinct parse trees?
 
 (1) 1  
 (2) 4  
@@ -16,12 +16,12 @@ The grammar E → E + E | E * E | id generates the string id + id * id with how 
 
 <details><summary>Answer</summary>
 
-**(4)** — One tree groups (id + id) * id and the other id + (id * id), so the grammar is ambiguous.
+**(4)** — One tree groups (id + id) \* id and the other id + (id \* id), so the grammar is ambiguous.
 
 </details>
 
 **Q2.** `High`  
-With the grammar E → E + E | E * E | id, the number of parse trees for id + id * id + id (three operators) is
+With the grammar E → E + E | E \* E | id, the number of parse trees for id + id \* id + id (three operators) is
 
 (1) 6  
 (2) 5  
@@ -83,7 +83,7 @@ Which of the following languages is inherently ambiguous?
 
 (1) {a^i b^j c^k : i = j or j = k}  
 (2) {a^n b^m : n ≠ m}  
-(3) {w w^R : w ∈ {a, b}*}  
+(3) {w w^R : w ∈ {a, b}\*}  
 (4) {a^n b^n : n ≥ 0}  
 
 <details><summary>Answer</summary>
@@ -183,13 +183,13 @@ The CYK algorithm decides membership of a string of length n for a grammar in Ch
 Left recursion A → Aα | β is removed by replacing it with
 
 (1) A → Aβ | α  
-(2) A → βα*  
+(2) A → βα\*  
 (3) A → βA', A' → αA' | ε  
 (4) A → αA', A' → βA' | ε  
 
 <details><summary>Answer</summary>
 
-**(3)** — Both generate β α*, but the new grammar is right-recursive and suits top-down parsing.
+**(3)** — Both generate β α\*, but the new grammar is right-recursive and suits top-down parsing.
 
 </details>
 
@@ -294,12 +294,12 @@ The dangling-else ambiguity in "if E then if E then S else S" is usually resolve
 </details>
 
 **Q21.** `Medium`  
-To make the expression grammar E → E + E | E * E | id unambiguous, giving * higher precedence than + and making both left-associative, we write
+To make the expression grammar E → E + E | E \* E | id unambiguous, giving \* higher precedence than + and making both left-associative, we write
 
-(1) E → E * T | T, T → T + F | F, F → id  
-(2) E → T + E | T, T → F * T | F, F → id  
-(3) E → E + T | T, T → T * F | F, F → id  
-(4) E → id + E | id * E | id  
+(1) E → E \* T | T, T → T + F | F, F → id  
+(2) E → T + E | T, T → F \* T | F, F → id  
+(3) E → E + T | T, T → T \* F | F, F → id  
+(4) E → id + E | id \* E | id  
 
 <details><summary>Answer</summary>
 

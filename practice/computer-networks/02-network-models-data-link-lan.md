@@ -742,7 +742,7 @@ In Selective Repeat ARQ a negative acknowledgement NAK n means
 </details>
 
 **Q52.** `High`  
-The link utilisation of Go-Back-N with window size N, when N < 1 + 2a, is
+The link utilisation of Go-Back-N with window size N, when N &lt; 1 + 2a, is
 
 (1) N / (1 + a)  
 (2) N / (1 + 2a)  
@@ -835,7 +835,7 @@ In IEEE 802.11, which interframe space gives the highest priority to frames such
 
 <details><summary>Answer</summary>
 
-**(3)** — SIFS is the shortest interframe space, so frames waiting only SIFS get the medium first: SIFS < PIFS < DIFS.
+**(3)** — SIFS is the shortest interframe space, so frames waiting only SIFS get the medium first: SIFS &lt; PIFS &lt; DIFS.
 
 </details>
 

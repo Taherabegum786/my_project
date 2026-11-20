@@ -167,7 +167,7 @@ Spinlocks are most appropriate when
 </details>
 
 **Q12.** `Medium`  
-The test_and_set() hardware instruction, used in the simple lock algorithm, guarantees mutual exclusion but does NOT satisfy
+The test\_and\_set() hardware instruction, used in the simple lock algorithm, guarantees mutual exclusion but does NOT satisfy
 
 (1) mutual exclusion  
 (2) bounded waiting  
@@ -181,11 +181,11 @@ The test_and_set() hardware instruction, used in the simple lock algorithm, guar
 </details>
 
 **Q13.** `Medium`  
-The compare_and_swap(value, expected, new_value) instruction sets value to new_value only if
+The compare\_and\_swap(value, expected, new\_value) instruction sets value to new\_value only if
 
 (1) value is zero  
 (2) the lock is held  
-(3) new_value is greater than value  
+(3) new\_value is greater than value  
 (4) value equals expected  
 
 <details><summary>Answer</summary>
@@ -239,7 +239,7 @@ In the first readers-writers problem (readers have priority), which process may 
 </details>
 
 **Q17.** `Medium`  
-In the first readers-writers solution, the variables rw_mutex, mutex and read_count are initialised to
+In the first readers-writers solution, the variables rw\_mutex, mutex and read\_count are initialised to
 
 (1) 0, 1 and 1  
 (2) 1, 1 and 1  
@@ -248,7 +248,7 @@ In the first readers-writers solution, the variables rw_mutex, mutex and read_co
 
 <details><summary>Answer</summary>
 
-**(3)** — The first reader locks rw_mutex and the last reader releases it.
+**(3)** — The first reader locks rw\_mutex and the last reader releases it.
 
 </details>
 

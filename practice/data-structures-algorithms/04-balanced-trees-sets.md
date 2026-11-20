@@ -228,7 +228,7 @@ Statement II: A B-tree grows in height when the root splits.
 
 **Q16.** `High`  
 Match List I with List II.  
-List I (Tree): A. B tree  B. B+ tree  C. B* tree  D. 2-3 tree  
+List I (Tree): A. B tree  B. B+ tree  C. B\* tree  D. 2-3 tree  
 List II (Feature): I. Nodes are kept at least two-thirds full by redistributing with siblings before splitting  II. Keys and data may be in any node  III. A B-tree of order 3  IV. All data is in the leaves, which are linked for sequential access
 
 (1) A-II, B-I, C-IV, D-III  
@@ -481,7 +481,7 @@ In a B-tree of order m with n keys, the height is
 
 (1) O(m log n)  
 (2) O(n)  
-(3) O(log_m n)  
+(3) O(log\_m n)  
 (4) O(n/m)  
 
 <details><summary>Answer</summary>

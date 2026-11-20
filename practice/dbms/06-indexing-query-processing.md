@@ -201,7 +201,7 @@ Searching for a key in a B+ tree with n keys and fan-out f requires approximatel
 
 (1) O(1) node accesses  
 (2) O(n) node accesses  
-(3) O(log_f n) node accesses  
+(3) O(log\_f n) node accesses  
 (4) O(f) node accesses  
 
 <details><summary>Answer</summary>
@@ -292,7 +292,7 @@ Relation student has 5000 records in 100 blocks and takes has 10,000 records in 
 
 <details><summary>Answer</summary>
 
-**(2)** — n_r × b_s + b_r = 5000 × 400 + 100 = 2,000,100.
+**(2)** — n\_r × b\_s + b\_r = 5000 × 400 + 100 = 2,000,100.
 
 </details>
 
@@ -306,7 +306,7 @@ For student (100 blocks) and takes (400 blocks), with student as the outer relat
 
 <details><summary>Answer</summary>
 
-**(3)** — b_r × b_s + b_r = 100 × 400 + 100 = 40,100 block transfers.
+**(3)** — b\_r × b\_s + b\_r = 100 × 400 + 100 = 40,100 block transfers.
 
 </details>
 
@@ -320,17 +320,17 @@ For a nested-loop join of student (100 blocks) and takes (400 blocks), if the sm
 
 <details><summary>Answer</summary>
 
-**(2)** — Each relation is read only once: b_r + b_s = 500.
+**(2)** — Each relation is read only once: b\_r + b\_s = 500.
 
 </details>
 
 **Q23.** `Medium`  
-The cost of a merge join on two relations that are already sorted on the join attribute, with b_r and b_s blocks, is about
+The cost of a merge join on two relations that are already sorted on the join attribute, with b\_r and b\_s blocks, is about
 
-(1) 2(b_r + b_s) log(b_r + b_s)  
-(2) b_r × b_s  
-(3) b_r + b_s block transfers  
-(4) b_r log b_s  
+(1) 2(b\_r + b\_s) log(b\_r + b\_s)  
+(2) b\_r × b\_s  
+(3) b\_r + b\_s block transfers  
+(4) b\_r log b\_s  
 
 <details><summary>Answer</summary>
 
@@ -417,10 +417,10 @@ Reason R: In pipelining, the result of one operation is passed directly to the n
 **Q29.** `Medium`  
 Which of the following equivalence rules is valid in relational algebra?
 
-(1) π_L(E1 − E2) = π_L(E1) − π_L(E2) always  
-(2) σ_θ(E1 × E2) = E1 ⋈_θ E2  
+(1) π\_L(E1 − E2) = π\_L(E1) − π\_L(E2) always  
+(2) σ\_θ(E1 × E2) = E1 ⋈\_θ E2  
 (3) E1 − E2 = E2 − E1  
-(4) σ_θ1(E) ∪ σ_θ2(E) = σ_θ1 ∧ θ2(E)  
+(4) σ\_θ1(E) ∪ σ\_θ2(E) = σ\_θ1 ∧ θ2(E)  
 
 <details><summary>Answer</summary>
 
@@ -443,7 +443,7 @@ The selectivity of a condition is
 </details>
 
 **Q31.** `Medium`  
-For a relation r with n_r = 10,000 tuples and an attribute A with V(A, r) = 50 distinct values, the estimated number of tuples satisfying A = a is
+For a relation r with n\_r = 10,000 tuples and an attribute A with V(A, r) = 50 distinct values, the estimated number of tuples satisfying A = a is
 
 (1) 200  
 (2) 500  
@@ -452,7 +452,7 @@ For a relation r with n_r = 10,000 tuples and an attribute A with V(A, r) = 50 d
 
 <details><summary>Answer</summary>
 
-**(1)** — Assuming uniform distribution: n_r / V(A, r) = 10,000 / 50 = 200.
+**(1)** — Assuming uniform distribution: n\_r / V(A, r) = 10,000 / 50 = 200.
 
 </details>
 
@@ -573,7 +573,7 @@ Reason R: When the root splits, a new root is created one level above it.
 </details>
 
 **Q40.** `Medium`  
-In the catalog statistics used by a query optimizer, b_r denotes
+In the catalog statistics used by a query optimizer, b\_r denotes
 
 (1) the number of distinct values of an attribute  
 (2) the number of tuples in r  
@@ -582,7 +582,7 @@ In the catalog statistics used by a query optimizer, b_r denotes
 
 <details><summary>Answer</summary>
 
-**(4)** — n_r is the number of tuples and l_r the size of a tuple.
+**(4)** — n\_r is the number of tuples and l\_r the size of a tuple.
 
 </details>
 

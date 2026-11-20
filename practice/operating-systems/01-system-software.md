@@ -499,7 +499,7 @@ Which of the following is a function of the C preprocessor?
 
 <details><summary>Answer</summary>
 
-**(2)** — #define and #include are handled before compilation proper.
+**(2)** — \#define and #include are handled before compilation proper.
 
 </details>
 

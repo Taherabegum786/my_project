@@ -92,7 +92,7 @@ A data cube has 3 dimensions with concept hierarchies of 4, 3 and 2 levels (not 
 
 <details><summary>Answer</summary>
 
-**(1)** — ∏(L_i + 1) = 5 × 4 × 3 = 60.
+**(1)** — ∏(L\_i + 1) = 5 × 4 × 3 = 60.
 
 </details>
 
@@ -253,7 +253,7 @@ The lift of an association rule A → B is defined as
 
 <details><summary>Answer</summary>
 
-**(1)** — Lift > 1 indicates positive correlation; lift = 1 means independence.
+**(1)** — Lift &gt; 1 indicates positive correlation; lift = 1 means independence.
 
 </details>
 

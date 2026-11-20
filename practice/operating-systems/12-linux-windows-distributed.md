@@ -90,7 +90,7 @@ Statement II: The clone() system call creates a task, and its flags decide which
 
 <details><summary>Answer</summary>
 
-**(1)** — A thread is a task created with CLONE_VM, CLONE_FS, CLONE_FILES and CLONE_SIGHAND.
+**(1)** — A thread is a task created with CLONE\_VM, CLONE\_FS, CLONE\_FILES and CLONE\_SIGHAND.
 
 </details>
 
@@ -104,7 +104,7 @@ Linux manages physical memory using
 
 <details><summary>Answer</summary>
 
-**(4)** — Pages are grouped into zones such as ZONE_DMA, ZONE_NORMAL and ZONE_HIGHMEM.
+**(4)** — Pages are grouped into zones such as ZONE\_DMA, ZONE\_NORMAL and ZONE\_HIGHMEM.
 
 </details>
 
@@ -148,7 +148,7 @@ The /proc file system in Linux
 
 <details><summary>Answer</summary>
 
-**(3)** — For example /proc/cpuinfo and /proc/<pid>/status.
+**(3)** — For example /proc/cpuinfo and /proc/&lt;pid&gt;/status.
 
 </details>
 
@@ -364,7 +364,7 @@ In Windows, configuration information for the system and applications is stored 
 
 <details><summary>Answer</summary>
 
-**(4)** — The registry is organised into hives such as HKEY_LOCAL_MACHINE.
+**(4)** — The registry is organised into hives such as HKEY\_LOCAL\_MACHINE.
 
 </details>
 

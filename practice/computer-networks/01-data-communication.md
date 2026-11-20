@@ -142,7 +142,7 @@ How many redundant bits are needed in a Hamming code to correct a single-bit err
 
 <details><summary>Answer</summary>
 
-**(2)** — Need 2^r ≥ m + r + 1; r = 4 gives 16 ≥ 12, while r = 3 gives 8 < 11.
+**(2)** — Need 2^r ≥ m + r + 1; r = 4 gives 16 ≥ 12, while r = 3 gives 8 &lt; 11.
 
 </details>
 
@@ -589,7 +589,7 @@ A. Coaxial cable  B. Optical fibre  C. Twisted-pair cable
 
 <details><summary>Answer</summary>
 
-**(2)** — Twisted pair < coaxial cable < optical fibre.
+**(2)** — Twisted pair &lt; coaxial cable &lt; optical fibre.
 
 </details>
 

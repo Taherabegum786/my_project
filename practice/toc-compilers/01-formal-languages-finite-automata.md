@@ -318,7 +318,7 @@ The set of all languages over the alphabet {0, 1} is
 
 <details><summary>Answer</summary>
 
-**(2)** — It is the power set of the countable set Σ*, which is uncountable by Cantor's diagonal argument.
+**(2)** — It is the power set of the countable set Σ\*, which is uncountable by Cantor's diagonal argument.
 
 </details>
 

@@ -102,7 +102,7 @@ In a DFA, the transition function $\delta$ maps
 
 \begin{question}{H}
 The Myhill-Nerode theorem implies that a language L is regular if and only if
-\optslong{L has a regular grammar with $\varepsilon$-productions}{L is finite}{the relation ``xz $\in$ L exactly when yz $\in$ L for all z'' has finitely many equivalence classes}{L is accepted by a PDA}
+\optslong{L has a regular grammar with $\varepsilon$-productions}{L is finite}{the relation "xz $\in$ L exactly when yz $\in$ L for all z" has finitely many equivalence classes}{L is accepted by a PDA}
 \end{question}
 
 \begin{question}{M}
@@ -222,11 +222,11 @@ Statement II: The complement of an NFA's language is always obtained by swapping
 \ans{5}{2}{The DFA must remember the last three symbols: 2\textsuperscript{3} = 8 states. An NFA needs only 4.}
 \ans{6}{4}{This family shows that the subset construction can cause an exponential blow-up.}
 \ans{7}{4}{One state for each combination of parities.}
-\ans{8}{2}{A start state, a dead state (string begins with 0), and two states for ``starts with 1, last symbol 0 or 1''.}
+\ans{8}{2}{A start state, a dead state (string begins with 0), and two states for "starts with 1, last symbol 0 or 1".}
 \ans{9}{4}{States count the length 0, 1, 2, 3, plus a dead state for longer strings.}
 \ans{10}{3}{States for zero, one and two 1s, plus a dead state for more than two.}
 \ans{11}{3}{Product of a mod-2 counter and a mod-3 counter: 2 $\times$ 3 = 6.}
-\ans{12}{3}{A start state, then for each first symbol a state for ``last symbol same'' and one for ``last symbol different''.}
+\ans{12}{3}{A start state, then for each first symbol a state for "last symbol same" and one for "last symbol different".}
 \ans{13}{2}{Each DFA state is a subset of the NFA states.}
 \ans{14}{4}{DFAs, NFAs and $\varepsilon$-NFAs all accept exactly the regular languages.}
 \ans{15}{1}{Moore and Mealy machines are finite-state transducers.}
@@ -251,7 +251,7 @@ Statement II: The complement of an NFA's language is always obtained by swapping
 \ans{34}{3}{Kleene's theorem: finite automata and regular expressions describe the same languages.}
 \ans{35}{1}{This language needs a stack (a PDA).}
 \ans{36}{4}{An NFA accepts if at least one computation path ends in an accepting state.}
-\ans{37}{4}{States for ``last symbol not 1'', ``last symbol 1'' and a dead state after 11.}
+\ans{37}{4}{States for "last symbol not 1", "last symbol 1" and a dead state after 11.}
 \ans{38}{2}{Swapping accepting states complements a DFA (reversing transitions gives the reversal); for an NFA the swap does not work in general.}
 \end{answers}
 
@@ -278,7 +278,7 @@ The regular expression 0*(10*)* denotes
 \end{question}
 
 \begin{question}{H}
-A regular expression for strings over \{a, b\} that end with ``ab'' is
+A regular expression for strings over \{a, b\} that end with "ab" is
 \optsshort{ab(a + b)*}{a*b*ab}{(a + b)*ab(a + b)*}{(a + b)*ab}
 \end{question}
 
@@ -443,7 +443,7 @@ Statement II: The union of two non-regular languages is always non-regular.
 \end{question}
 
 \begin{answers}
-\ans{1}{2}{(a*b*)* can generate any string of a's and b's; a* + b* and a*b* cannot generate ``ba''.}
+\ans{1}{2}{(a*b*)* can generate any string of a's and b's; a* + b* and a*b* cannot generate "ba".}
 \ans{2}{1}{a* + b* does not contain mixed strings such as ab.}
 \ans{3}{4}{It is used to derive a regular expression from a finite automaton.}
 \ans{4}{3}{Any string can be written as a block of 0s followed by blocks each starting with a 1.}
@@ -583,7 +583,7 @@ The grammar S $\rightarrow$ aSbS | bSaS | $\varepsilon$ generates
 \end{question}
 
 \begin{question}{M}
-The dangling-else ambiguity in ``if E then if E then S else S'' is usually resolved by
+The dangling-else ambiguity in "if E then if E then S else S" is usually resolved by
 \optslong{reporting an error}{ignoring the else}{associating each else with the outermost if}{associating each else with the nearest unmatched then (if)}
 \end{question}
 
@@ -1092,7 +1092,7 @@ Statement II: The class NP is known to be closed under complement.
 \ans{26}{4}{LBAs accept exactly the context-sensitive languages.}
 \ans{27}{3}{LBA membership is decidable (finitely many configurations), while LBA emptiness is undecidable.}
 \ans{28}{3}{Each TM has a finite description that can be encoded as a string.}
-\ans{29}{3}{His paper ``On Computable Numbers'' also introduced the universal machine.}
+\ans{29}{3}{His paper "On Computable Numbers" also introduced the universal machine.}
 \ans{30}{2}{$\delta$: Q $\times$ $\Gamma$ $\rightarrow$ Q $\times$ $\Gamma$ $\times$ \{L, R\}.}
 \ans{31}{3}{Whether NP = co-NP is an open problem.}
 \end{answers}
@@ -1113,7 +1113,7 @@ List II (Main activity): I. Type checking and building attribute information  II
 \end{question}
 
 \begin{question}{H}
-The number of tokens in the C statement printf(``i = \%d, \&i = \%x'', i, \&i); is
+The number of tokens in the C statement printf("i = \%d, \&i = \%x", i, \&i); is
 \optsshort{9}{13}{8}{10}
 \end{question}
 
@@ -1186,7 +1186,7 @@ Statement II: A multi-pass compiler always produces faster target code than a si
 \end{question}
 
 \begin{question}{M}
-The task of recognising keywords such as ``if'' and ``while'' is usually done by
+The task of recognising keywords such as "if" and "while" is usually done by
 \optslong{the parser only}{the optimizer}{treating them as reserved words, entered in the symbol table or matched by separate patterns}{the code generator}
 \end{question}
 
@@ -1261,17 +1261,17 @@ The number of tokens in the statement if (a >= b) max = a; else max = b; is
 \begin{answers}
 \ans{1}{4}{Lexical, syntax and semantic analysis, then intermediate code generation, optimization and target code generation.}
 \ans{2}{2}{The analysis phases form the front end and the synthesis phases the back end.}
-\ans{3}{4}{printf ( ``i = \%d, \&i = \%x'' , i , \& i ) ; --- the string literal is a single token.}
+\ans{3}{4}{printf ( "i = \%d, \&i = \%x" , i , \& i ) ; --- the string literal is a single token.}
 \ans{4}{4}{int a [ 10 ] , * p = \& a [ 0 ] ; --- 15 tokens.}
 \ans{5}{1}{x = y ++ + ++ z ; --- the lexer uses the longest-match rule for ++.}
-\ans{6}{1}{For example the lexeme ``count'' gives the token (id, pointer to the symbol-table entry).}
+\ans{6}{1}{For example the lexeme "count" gives the token (id, pointer to the symbol-table entry).}
 \ans{7}{4}{Missing semicolons are syntax errors; type mismatches and undeclared names are semantic errors.}
 \ans{8}{4}{A value that is known only at run time cannot be checked by any compiler phase.}
 \ans{9}{2}{Entries are created during analysis and used during semantic checking and code generation.}
 \ans{10}{1}{This separation allows m front ends and n back ends to give m $\times$ n compilers.}
 \ans{11}{4}{Yacc (or Bison) generates LALR(1) parsers.}
-\ans{12}{3}{Translation rules have the form ``pattern \{ action \}''.}
-\ans{13}{1}{So ``if'' is a keyword only if the keyword pattern is listed before the identifier pattern.}
+\ans{12}{3}{Translation rules have the form "pattern \{ action \}".}
+\ans{13}{1}{So "if" is a keyword only if the keyword pattern is listed before the identifier pattern.}
 \ans{14}{4}{A special sentinel character marks the end of each buffer half.}
 \ans{15}{3}{Extra passes allow more optimization but do not guarantee faster code.}
 \ans{16}{3}{Reserved words cannot be used as identifiers.}
@@ -1661,7 +1661,7 @@ The dangling-else conflict in an LR parser is a
 \ans{15}{3}{Operator-precedence parsing works on such grammars.}
 \ans{16}{3}{a $\cdot$> b means a takes precedence; a $\doteq$ b means they are in the same handle.}
 \ans{17}{2}{Both are true, but R does not explain A; the LR(1) blow-up comes from splitting states by lookahead.}
-\ans{18}{2}{Yacc stands for ``Yet Another Compiler-Compiler''.}
+\ans{18}{2}{Yacc stands for "Yet Another Compiler-Compiler".}
 \ans{19}{1}{For example A $\rightarrow$ X$\cdot$YZ means X has been seen and YZ is expected.}
 \ans{20}{3}{The lookahead is used only when the dot is at the right end.}
 \ans{21}{3}{S $\rightarrow$ L = R | R, L $\rightarrow$ *R | id, R $\rightarrow$ L is LALR(1) but not SLR(1).}
@@ -1684,7 +1684,7 @@ Consider the translation scheme E $\rightarrow$ E1 \# T \{E.val = E1.val $\times
 \end{question}
 
 \begin{question}{H}
-The translation scheme E $\rightarrow$ E + T \{print(``+'')\} | T, T $\rightarrow$ num \{print(num.val)\} prints what for the input 2 + 3 + 4?
+The translation scheme E $\rightarrow$ E + T \{print("+")\} | T, T $\rightarrow$ num \{print(num.val)\} prints what for the input 2 + 3 + 4?
 \optsshort{23+4+}{2+3+4}{+2+34}{234++}
 \end{question}
 
@@ -1756,7 +1756,7 @@ Under structural equivalence of types, two type expressions are equivalent if
 \end{question}
 
 \begin{question}{M}
-In C, the declarations ``typedef int A; typedef int B;'' are compatible with each other because C uses
+In C, the declarations "typedef int A; typedef int B;" are compatible with each other because C uses
 \optslong{no type checking}{dynamic typing}{name equivalence for typedefs}{structural (or rather typedef-transparent) equivalence, since typedef only creates an alias}
 \end{question}
 
@@ -2142,7 +2142,7 @@ In translating the statement while (a < b) a = a + 1;, the intermediate code nee
 \ans{8}{4}{x3 = $\varphi$(x1, x2) selects the value according to the path taken.}
 \ans{9}{2}{Each row has 20 elements; the compiler generates this computation in the intermediate code.}
 \ans{10}{4}{Lists of jumps (truelist, falselist, nextlist) are patched once the target labels are known.}
-\ans{11}{3}{This is the semantics of || in C and ``or else'' in other languages.}
+\ans{11}{3}{This is the semantics of || in C and "or else" in other languages.}
 \ans{12}{1}{Syntax trees, DAGs, postfix and three-address code are all intermediate representations.}
 \ans{13}{3}{* has higher precedence than +.}
 \ans{14}{2}{The second argument of call is the number of parameters.}
@@ -2325,7 +2325,7 @@ Statement II: Every optimization always makes a program both faster and smaller.
 \ans{3}{2}{Leaves b0, c0, d0 and interior nodes + (a), $-$ (b and d share it) and + (c): 3 + 3 = 6.}
 \ans{4}{1}{This is common subexpression elimination; d has not changed between the two computations of a $-$ d.}
 \ans{5}{3}{a and d are defined before they are used; b is used in (1) before it is redefined in (3).}
-\ans{6}{4}{``May'' problems use union; ``must'' problems use intersection.}
+\ans{6}{4}{"May" problems use union; "must" problems use intersection.}
 \ans{7}{3}{Common machine-independent optimizations.}
 \ans{8}{2}{The computation is placed in a preheader block.}
 \ans{9}{2}{Induction-variable elimination removes redundant variables, and unrolling reduces the number of iterations.}

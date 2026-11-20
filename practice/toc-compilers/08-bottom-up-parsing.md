@@ -7,7 +7,7 @@ Each question carries 2 marks, has exactly one correct option and no negative ma
 ---
 
 **Q1.** `High`  
-The number of states in the canonical collection of LR(0) items for the augmented expression grammar E' → E, E → E + T | T, T → T * F | F, F → (E) | id is
+The number of states in the canonical collection of LR(0) items for the augmented expression grammar E' → E, E → E + T | T, T → T \* F | F, F → (E) | id is
 
 (1) 9  
 (2) 10  
@@ -67,8 +67,8 @@ A. LALR(1)  B. LR(0)  C. Canonical LR(1)  D. SLR(1)
 
 **Q5.** `High`  
 Given below are two statements.  
-Statement I: The grammar S → L = R | R, L → *R | id, R → L is not SLR(1).  
-Statement II: The grammar S → L = R | R, L → *R | id, R → L is LALR(1).
+Statement I: The grammar S → L = R | R, L → \*R | id, R → L is not SLR(1).  
+Statement II: The grammar S → L = R | R, L → \*R | id, R → L is LALR(1).
 
 (1) Both Statement I and Statement II are true  
 (2) Both Statement I and Statement II are false  
@@ -200,7 +200,7 @@ In an LR(0) automaton, a state containing both A → α· and B → β·aγ has 
 </details>
 
 **Q14.** `Medium`  
-For the expression grammar E → E + T | T, T → T * F | F, F → (E) | id, which statement is correct?
+For the expression grammar E → E + T | T, T → T \* F | F, F → (E) | id, which statement is correct?
 
 (1) It is LR(0)  
 (2) It is LL(1)  
@@ -209,7 +209,7 @@ For the expression grammar E → E + T | T, T → T * F | F, F → (E) | id, whi
 
 <details><summary>Answer</summary>
 
-**(3)** — Some LR(0) states contain both a complete item and a shift item (e.g. E → T· and T → T·*F), but FOLLOW sets resolve them.
+**(3)** — Some LR(0) states contain both a complete item and a shift item (e.g. E → T· and T → T·\*F), but FOLLOW sets resolve them.
 
 </details>
 
@@ -228,7 +228,7 @@ An operator grammar is one in which
 </details>
 
 **Q16.** `Medium`  
-In operator-precedence parsing, the relation a <· b between two terminals means
+In operator-precedence parsing, the relation a &lt;· b between two terminals means
 
 (1) a and b have equal precedence  
 (2) a has higher precedence than b  
@@ -237,7 +237,7 @@ In operator-precedence parsing, the relation a <· b between two terminals means
 
 <details><summary>Answer</summary>
 
-**(3)** — a ·> b means a takes precedence; a ≐ b means they are in the same handle.
+**(3)** — a ·&gt; b means a takes precedence; a ≐ b means they are in the same handle.
 
 </details>
 
@@ -262,7 +262,7 @@ Which parser generator tool produces LALR(1) parsers?
 
 (1) Lex  
 (2) Yacc (and Bison)  
-(3) ANTLR (LL(*))  
+(3) ANTLR (LL(\*))  
 (4) Flex  
 
 <details><summary>Answer</summary>
@@ -311,7 +311,7 @@ Statement II: Every LALR(1) grammar is SLR(1).
 
 <details><summary>Answer</summary>
 
-**(3)** — S → L = R | R, L → *R | id, R → L is LALR(1) but not SLR(1).
+**(3)** — S → L = R | R, L → \*R | id, R → L is LALR(1) but not SLR(1).
 
 </details>
 

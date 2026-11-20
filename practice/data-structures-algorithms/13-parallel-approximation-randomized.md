@@ -74,7 +74,7 @@ Brent's theorem states that a computation with total work W and depth (span) D c
 
 <details><summary>Answer</summary>
 
-**(2)** — More precisely, T_p ≤ W/p + D.
+**(2)** — More precisely, T\_p ≤ W/p + D.
 
 </details>
 
@@ -211,7 +211,7 @@ The greedy algorithm for set cover has an approximation ratio of
 **Q15.** `Medium`  
 Match List I with List II.  
 List I (Term): A. PTAS  B. FPTAS  C. Approximation ratio ρ(n)  
-List II (Meaning): I. For every ε > 0, a (1 + ε)-approximation in time polynomial in n and 1/ε  II. For every ε > 0, a (1 + ε)-approximation in time polynomial in n for each fixed ε  III. Bound on the ratio between the cost of the produced solution and the optimal cost
+List II (Meaning): I. For every ε &gt; 0, a (1 + ε)-approximation in time polynomial in n and 1/ε  II. For every ε &gt; 0, a (1 + ε)-approximation in time polynomial in n for each fixed ε  III. Bound on the ratio between the cost of the produced solution and the optimal cost
 
 (1) A-II, B-III, C-I  
 (2) A-III, B-I, C-II  

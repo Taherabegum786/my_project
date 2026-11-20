@@ -320,11 +320,11 @@ The Edmonds-Karp algorithm, which always augments along a shortest path found by
 (1) O(E log V)  
 (2) O(VE²)  
 (3) O(V³)  
-(4) O(E |f*|)  
+(4) O(E |f\*|)  
 
 <details><summary>Answer</summary>
 
-**(2)** — Ford-Fulkerson with arbitrary paths takes O(E |f*|) for integer capacities.
+**(2)** — Ford-Fulkerson with arbitrary paths takes O(E |f\*|) for integer capacities.
 
 </details>
 
@@ -554,7 +554,7 @@ A graph in which every pair of distinct vertices is joined by an edge is called 
 
 <details><summary>Answer</summary>
 
-**(2)** — K_n has n(n − 1)/2 edges.
+**(2)** — K\_n has n(n − 1)/2 edges.
 
 </details>
 
@@ -573,7 +573,7 @@ A network has edges S→A 3, S→B 2, A→B 1, A→T 2, B→T 3. The maximum flo
 </details>
 
 **Q40.** `Medium`  
-The A* search algorithm finds an optimal path if its heuristic h is
+The A\* search algorithm finds an optimal path if its heuristic h is
 
 (1) always zero only  
 (2) admissible (never overestimates the true cost)  
@@ -582,6 +582,6 @@ The A* search algorithm finds an optimal path if its heuristic h is
 
 <details><summary>Answer</summary>
 
-**(2)** — With h = 0, A* reduces to Dijkstra's algorithm.
+**(2)** — With h = 0, A\* reduces to Dijkstra's algorithm.
 
 </details>
