@@ -126,7 +126,8 @@ phase_end
 
 # the three largest raw CSVs are git-ignored as plain files; keep gzipped copies for committing
 for F in proto_results minbudget attack; do [ -f "$RAW/${F}_${MACHINE_NAME}.csv" ] && gzip -9 -k -f "$RAW/${F}_${MACHINE_NAME}.csv"; done
-echo "-- to commit this machine's results:  git add $RAW/*_${MACHINE_NAME}.*"
+echo "-- to commit this machine's results, from the repository root:"
+echo "   git add \$(git ls-files -o -m --exclude-standard papers/benchmark/results/raw | grep '_${MACHINE_NAME}\.')"
 
 echo "total $((SECONDS-T0)) s"
 if [ "$QUICK" = 1 ]; then
