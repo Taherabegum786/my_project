@@ -27,9 +27,13 @@ L = []
 
 def w(s=""): L.append(s)
 def md(df, fmt=".4g"): return df.to_markdown(index=False, floatfmt=fmt)
-def rd(n): return pd.read_csv(os.path.join(RAW, n))
-def opt(n):
+def _path(n):
+    """plain CSV, or its .gz copy (the largest raw CSVs are committed gzipped)"""
     p = os.path.join(RAW, n)
+    return p if os.path.exists(p) or not os.path.exists(p + ".gz") else p + ".gz"
+def rd(n): return pd.read_csv(_path(n))
+def opt(n):
+    p = _path(n)
     return pd.read_csv(p) if os.path.exists(p) else None
 
 

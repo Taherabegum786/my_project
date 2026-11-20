@@ -124,6 +124,10 @@ phase_start summarize
 python3 "$HERE/summarize.py"
 phase_end
 
+# the three largest raw CSVs are git-ignored as plain files; keep gzipped copies for committing
+for F in proto_results minbudget attack; do [ -f "$RAW/${F}_${MACHINE_NAME}.csv" ] && gzip -9 -k -f "$RAW/${F}_${MACHINE_NAME}.csv"; done
+echo "-- to commit this machine's results:  git add $RAW/*_${MACHINE_NAME}.*"
+
 echo "total $((SECONDS-T0)) s"
 if [ "$QUICK" = 1 ]; then
   echo "-- estimated duration of the FULL run on this machine ($PROCS cores):"
